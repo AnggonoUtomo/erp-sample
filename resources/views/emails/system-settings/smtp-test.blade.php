@@ -1,0 +1,1 @@
+{!! nl2br(e($body ?: "Halo,\n\nEmail ini dikirim untuk menguji konfigurasi SMTP aplikasi.\n\nWaktu pengujian: {$testedAt}\n\nJika email ini diterima, konfigurasi email aplikasi sudah dapat digunakan.")) !!}

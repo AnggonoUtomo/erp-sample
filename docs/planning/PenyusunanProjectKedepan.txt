@@ -1,0 +1,8 @@
+1. HR
+2. Attendance
+3. Payroll
+4. Accounting
+5. CRM
+6. Document Management
+
+
