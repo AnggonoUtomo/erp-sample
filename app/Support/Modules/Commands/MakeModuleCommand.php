@@ -85,7 +85,10 @@ class MakeModuleCommand extends Command
             return strtolower($name);
         }
 
-        return Str::kebab($name);
+        $words = preg_replace('/([A-Z]+)([A-Z][a-z])/', '$1 $2', $name) ?? $name;
+        $words = preg_replace('/([a-z0-9])([A-Z])/', '$1 $2', $words) ?? $words;
+
+        return Str::slug($words);
     }
 
     /**
