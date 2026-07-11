@@ -1,5 +1,7 @@
 # 05 — Planning and Task Breakdown
 
+Status: TASK-01–07 selesai; TASK-08 selesai secara struktur dan menunggu verification gap. Evidence checkpoint dirangkum di [guide plan koreksi](07-guide-plan-koreksi.md#status-eksekusi).
+
 ## TASK-01 — Isolasi filesystem test
 
 - Tujuan: membuat registry/generator tests deterministic dan parallel-safe.
@@ -63,5 +65,4 @@
 - CP-3 setelah TASK-06–07: security boundary terbukti.
 - CP-4 setelah TASK-08: maintainability membaik tanpa behavior drift.
 
-Plan berstatus **menunggu review/approval** sebelum implementasi.
-
+Plan berstatus **Implemented sampai CP-3; CP-4 pending verification** pada 2026-07-12. Pekerjaan lanjutan diberi task eksplisit di [guide plan koreksi](07-guide-plan-koreksi.md#pekerjaan-lanjutan-terbuka).

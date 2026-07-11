@@ -2,7 +2,7 @@
 
 ## Outcome slice
 
-Menyediakan baseline test yang deterministic untuk discovery/generator module dan avatar lifecycle. Ini hanya runbook referensi; **belum diimplementasikan**.
+Menyediakan baseline test yang deterministic untuk discovery/generator module dan avatar lifecycle. Dokumen ini bermula sebagai runbook referensi dan telah dieksekusi pada commit `d20aa3f`.
 
 ## Scope
 
@@ -10,7 +10,7 @@ Menyediakan baseline test yang deterministic untuk discovery/generator module da
 - Maksimum file yang disebut pada kedua task.
 - Tidak mengubah manifest module produksi, frontend, database schema, atau behavior pengguna.
 
-## Urutan eksekusi kelak
+## Urutan eksekusi
 
 1. Rekam kegagalan focused test dan identifikasi ownership setiap temporary directory.
 2. Buat failing regression test untuk root fixture unik/parallel collision.
@@ -28,11 +28,13 @@ Menyediakan baseline test yang deterministic untuk discovery/generator module da
 - Re-run memberi hasil sama.
 - Build dan checks tetap hijau setelah task quality-format terpisah; formatting massal tidak dicampur slice ini.
 
-## File yang berubah pada audit dokumentasi ini
+## Hasil eksekusi
 
-Tidak ada file aplikasi yang berubah. Hanya folder `docs/reviews/2026-07-11-project-baseline/` yang ditambahkan.
+- Fixture generator/registry memakai root unik di storage testing, bukan `app/Modules/TmpProject` bersama.
+- Media disk test diisolasi per process.
+- Full suite terakhir setelah TASK-03: 172 test/480 assertions.
+- Detail status lintas slice: [07-guide-plan-koreksi.md](07-guide-plan-koreksi.md#status-eksekusi).
 
-## Cara verifikasi kelak
+## Cara verifikasi
 
 `php artisan test --filter=SharedKernelTest`, `php artisan test --filter=MakeModuleCommandTest`, `php artisan test --filter=UserManagementTest`, full serial dan parallel, lalu `git status --short`.
-

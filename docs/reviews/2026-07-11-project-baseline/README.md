@@ -1,6 +1,6 @@
 # Baseline Review Laravel12 ERP
 
-Status: review dokumentasi, tidak mengubah kode aplikasi. Tanggal: 2026-07-11.
+Status: baseline review telah dieksekusi sampai CP-3; dekomposisi CP-4 selesai secara struktur tetapi verification gap frontend masih terbuka. Audit awal dibuat 2026-07-11; status terakhir tersedia di [guide plan koreksi](07-guide-plan-koreksi.md#status-eksekusi).
 
 ## Urutan baca
 
@@ -18,9 +18,8 @@ Status: review dokumentasi, tidak mengubah kode aplikasi. Tanggal: 2026-07-11.
 - Temuan `[CR-*]` di dokumen 01 dipetakan ke aturan `[CTX-*]` di dokumen 02 dan task `[TASK-*]` di dokumen 05.
 - Arah terpilih di dokumen 03 menjadi sumber requirement dokumen 04.
 - Acceptance criteria dokumen 04 diturunkan menjadi acceptance criteria per task di dokumen 05.
-- Slice 01 dokumen 06 hanya mengambil `[TASK-01]` dan `[TASK-02]`; tidak mengotorisasi coding.
+- Slice 01 dokumen 06 awalnya menjadi runbook TASK-01/02 dan sekarang juga mencatat hasil eksekusinya.
 
 ## Batas audit
 
 Audit bersifat repository-level sampling dan verifikasi otomatis. Ini bukan penetration test, audit kepatuhan, atau validasi proses bisnis ERP oleh subject-matter expert.
-

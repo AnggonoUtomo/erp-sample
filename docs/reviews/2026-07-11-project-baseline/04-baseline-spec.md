@@ -11,7 +11,7 @@
 - REQ-07: frontend page mengikuti composer pattern dan mempunyai accessibility/test strategy.
 - REQ-08: dokumentasi menghubungkan finding → requirement → task → verification.
 
-## Non-scope
+## Non-scope audit awal
 
 - Implementasi atau refactor kode dalam audit ini.
 - Redesign UI, perubahan schema/domain HR, deployment, dan migration production.
@@ -57,7 +57,6 @@ File opsional harus dinyatakan melalui `exports` di manifest; struktur target bu
 - Frontend: component interaction, keyboard/focus, permission-hidden/disabled actions, error state.
 - Non-functional: parallel test, archive limits, build bundle observation, clean-tree assertion.
 
-## Keputusan dokumentasi tahap ini
+## Status
 
-Spec berstatus **Proposed** dan perlu persetujuan manusia sebelum implementasi. Ia tidak mengubah contract production saat ini.
-
+Spec disetujui melalui eksekusi bertahap dan berstatus **Implemented sampai CP-3; CP-4 pending verification** pada 2026-07-12. Batas yang tetap berlaku: checksum full-backup v2 mendeteksi corruption/tampering, tetapi belum membuktikan authenticity lintas environment; frontend interaction test dan queue failure/retry evidence masih ditindaklanjuti melalui [guide plan koreksi](07-guide-plan-koreksi.md#pekerjaan-lanjutan-terbuka).

@@ -1,7 +1,7 @@
 # ADR-002: Manifest dan Schema sebagai Sumber Contract Modul
 
 ## Status
-Proposed
+Accepted and implemented
 
 ## Context
 Guide menyebut file wajib, sedangkan runtime memakai exports dan memiliki pengecualian aktual.
@@ -14,4 +14,3 @@ Dokumentasi-only ditolak karena drift tidak terdeteksi. Convention-only ditolak 
 
 ## Consequences
 Drift terdeteksi dini; schema perlu versioning dan escape hatch eksplisit.
-
