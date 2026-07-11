@@ -23,4 +23,3 @@ Tambahkan characterization tests lalu pecah satu service/page per increment. Mul
 - Dokumentasi/manifest/generator tidak saling bertentangan.
 - Tidak ada perbaikan lintas scope yang dicampur ke slice.
 - Semua keputusan mahal-direverse dicatat ADR.
-
