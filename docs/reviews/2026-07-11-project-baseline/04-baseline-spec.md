@@ -59,4 +59,4 @@ File opsional harus dinyatakan melalui `exports` di manifest; struktur target bu
 
 ## Status
 
-Spec disetujui melalui eksekusi bertahap dan berstatus **Implemented sampai CP-3; CP-4 pending verification** pada 2026-07-12. Batas yang tetap berlaku: checksum full-backup v2 mendeteksi corruption/tampering, tetapi belum membuktikan authenticity lintas environment; frontend interaction test dan queue failure/retry evidence masih ditindaklanjuti melalui [guide plan koreksi](07-guide-plan-koreksi.md#pekerjaan-lanjutan-terbuka).
+Spec disetujui melalui eksekusi bertahap dan berstatus **Implemented sampai CP-4** pada 2026-07-12. Batas yang tetap berlaku: checksum full-backup v2 mendeteksi corruption/tampering, tetapi belum membuktikan authenticity lintas environment; queue failure/retry evidence masih ditindaklanjuti melalui [guide plan koreksi](07-guide-plan-koreksi.md#pekerjaan-lanjutan-terbuka).

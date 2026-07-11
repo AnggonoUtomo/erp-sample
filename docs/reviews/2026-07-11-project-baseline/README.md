@@ -1,6 +1,6 @@
 # Baseline Review Laravel12 ERP
 
-Status: baseline review telah dieksekusi sampai CP-3; dekomposisi CP-4 selesai secara struktur tetapi verification gap frontend masih terbuka. Audit awal dibuat 2026-07-11; status terakhir tersedia di [guide plan koreksi](07-guide-plan-koreksi.md#status-eksekusi).
+Status: baseline review telah dieksekusi sampai CP-4. Audit awal dibuat 2026-07-11; status terakhir dan pekerjaan coverage lanjutan tersedia di [guide plan koreksi](07-guide-plan-koreksi.md#status-eksekusi).
 
 ## Urutan baca
 

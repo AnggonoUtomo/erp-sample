@@ -1,7 +1,7 @@
 # ADR-003: Remediasi Risk-first Bertahap
 
 ## Status
-Accepted; implemented through CP-3, CP-4 pending verification
+Accepted and implemented through CP-4
 
 ## Context
 Ada test nondeterministic, contract drift, dan destructive restore boundary. Rewrite penuh berisiko tinggi.
