@@ -97,8 +97,8 @@ export function LocalizationSettingsPanel({ can, localizationSettings, form, sub
                             <div>
                                 <p className="text-sm font-medium">Format Tersimpan</p>
                                 <p className="text-muted-foreground mt-1 text-xs leading-relaxed">
-                                    Format aktif saat ini adalah <span className="font-medium">{localizationSettings.datetime_format}</span>.
-                                    Setelah disimpan, modul lain bisa membaca format ini dari shared props Inertia.
+                                    Format aktif saat ini adalah <span className="font-medium">{localizationSettings.datetime_format}</span>. Setelah
+                                    disimpan, modul lain bisa membaca format ini dari shared props Inertia.
                                 </p>
                             </div>
                         </div>

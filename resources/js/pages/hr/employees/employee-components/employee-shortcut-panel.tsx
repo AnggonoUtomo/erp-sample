@@ -16,7 +16,7 @@ export function EmployeeShortcutPanel() {
     ];
 
     return (
-        <div className="rounded-lg border bg-card">
+        <div className="bg-card rounded-lg border">
             <Collapsible>
                 <CollapsibleTrigger className="group flex w-full items-center justify-between gap-3 p-4 text-left">
                     <span className="flex items-center gap-3">
@@ -25,17 +25,17 @@ export function EmployeeShortcutPanel() {
                         </span>
                         <span>
                             <span className="block font-medium">Shortcut Keyboard</span>
-                            <span className="text-sm text-muted-foreground">Buka untuk melihat pintasan modul Employees.</span>
+                            <span className="text-muted-foreground text-sm">Buka untuk melihat pintasan modul Employees.</span>
                         </span>
                     </span>
-                    <ChevronDown className="size-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+                    <ChevronDown className="text-muted-foreground size-4 transition-transform group-data-[state=open]:rotate-180" />
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                     <div className="grid gap-2 border-t p-4 sm:grid-cols-2 lg:grid-cols-3">
                         {shortcuts.map(([key, label]) => (
-                            <div key={key} className="rounded-md border bg-muted/30 p-3">
+                            <div key={key} className="bg-muted/30 rounded-md border p-3">
                                 <kbd className="text-xs font-semibold">{key}</kbd>
-                                <p className="mt-1 text-sm text-muted-foreground">{label}</p>
+                                <p className="text-muted-foreground mt-1 text-sm">{label}</p>
                             </div>
                         ))}
                     </div>

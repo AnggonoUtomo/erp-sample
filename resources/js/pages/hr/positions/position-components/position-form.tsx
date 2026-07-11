@@ -22,10 +22,17 @@ export function PositionForm({ form, editing, departementOptions, canCreate, can
     return (
         <form className="space-y-4" onSubmit={onSubmit}>
             <div className="space-y-2">
-                <FieldInfoLabel htmlFor="departement_id" required description="Departement pemilik jabatan. Data ini dipakai untuk employee profile, approval, dan report headcount.">
+                <FieldInfoLabel
+                    htmlFor="departement_id"
+                    required
+                    description="Departement pemilik jabatan. Data ini dipakai untuk employee profile, approval, dan report headcount."
+                >
                     Departement
                 </FieldInfoLabel>
-                <Select value={form.data.departement_id || 'none'} onValueChange={(value) => form.setData('departement_id', value === 'none' ? '' : value)}>
+                <Select
+                    value={form.data.departement_id || 'none'}
+                    onValueChange={(value) => form.setData('departement_id', value === 'none' ? '' : value)}
+                >
                     <SelectTrigger id="departement_id">
                         <SelectValue placeholder="Pilih departement" />
                     </SelectTrigger>
@@ -38,27 +45,38 @@ export function PositionForm({ form, editing, departementOptions, canCreate, can
                         ))}
                     </SelectContent>
                 </Select>
-                {form.errors.departement_id && <p className="text-sm text-destructive">{form.errors.departement_id}</p>}
+                {form.errors.departement_id && <p className="text-destructive text-sm">{form.errors.departement_id}</p>}
             </div>
 
             <div className="space-y-2">
-                <FieldInfoLabel htmlFor="code" required description="Kode unik jabatan. Dipakai untuk pencarian, import/export, dan referensi integrasi ke Attendance/Payroll.">
+                <FieldInfoLabel
+                    htmlFor="code"
+                    required
+                    description="Kode unik jabatan. Dipakai untuk pencarian, import/export, dan referensi integrasi ke Attendance/Payroll."
+                >
                     Code
                 </FieldInfoLabel>
                 <Input id="code" value={form.data.code} onChange={(event) => form.setData('code', event.target.value)} placeholder="HR-MGR" />
-                {form.errors.code && <p className="text-sm text-destructive">{form.errors.code}</p>}
+                {form.errors.code && <p className="text-destructive text-sm">{form.errors.code}</p>}
             </div>
 
             <div className="space-y-2">
-                <FieldInfoLabel htmlFor="name" required description="Nama jabatan yang akan tampil di profil karyawan, approval, dan laporan organisasi.">
+                <FieldInfoLabel
+                    htmlFor="name"
+                    required
+                    description="Nama jabatan yang akan tampil di profil karyawan, approval, dan laporan organisasi."
+                >
                     Nama Position
                 </FieldInfoLabel>
                 <Input id="name" value={form.data.name} onChange={(event) => form.setData('name', event.target.value)} placeholder="HR Manager" />
-                {form.errors.name && <p className="text-sm text-destructive">{form.errors.name}</p>}
+                {form.errors.name && <p className="text-destructive text-sm">{form.errors.name}</p>}
             </div>
 
             <div className="space-y-2">
-                <FieldInfoLabel htmlFor="description" description="Ringkasan fungsi jabatan. Berguna sebagai dokumentasi awal sebelum module job description dibuat.">
+                <FieldInfoLabel
+                    htmlFor="description"
+                    description="Ringkasan fungsi jabatan. Berguna sebagai dokumentasi awal sebelum module job description dibuat."
+                >
                     Deskripsi
                 </FieldInfoLabel>
                 <textarea
@@ -67,16 +85,16 @@ export function PositionForm({ form, editing, departementOptions, canCreate, can
                     onChange={(event) => form.setData('description', event.target.value)}
                     placeholder="Tanggung jawab utama jabatan"
                     rows={4}
-                    className="min-h-24 w-full resize-y rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs outline-none transition-[color,box-shadow] placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="border-input bg-background placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 min-h-24 w-full resize-y rounded-md border px-3 py-2 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50"
                 />
-                {form.errors.description && <p className="text-sm text-destructive">{form.errors.description}</p>}
+                {form.errors.description && <p className="text-destructive text-sm">{form.errors.description}</p>}
             </div>
 
             <label className="flex items-start gap-3 rounded-lg border p-3 text-sm">
                 <Checkbox checked={form.data.active} onCheckedChange={(checked) => form.setData('active', checked === true)} />
                 <span>
                     <span className="block font-medium">Position aktif</span>
-                    <span className="mt-1 block text-xs leading-5 text-muted-foreground">
+                    <span className="text-muted-foreground mt-1 block text-xs leading-5">
                         Position aktif bisa dipakai oleh module employee. Nonaktifkan jika jabatan tidak digunakan lagi, tanpa menghapus riwayat.
                     </span>
                 </span>

@@ -17,7 +17,6 @@ use App\Modules\HR\WorkLocations\Models\WorkLocation;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 
 class EmployeesService
 {

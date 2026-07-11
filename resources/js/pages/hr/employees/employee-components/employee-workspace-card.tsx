@@ -27,7 +27,7 @@ export function EmployeeWorkspaceCard({ mode, employee, form, options, canCreate
         <Card data-dashboard-card>
             <CardHeader className="border-b">
                 <CardTitle>{mode === 'create' ? 'Tambah Employee' : 'Edit Employee'}</CardTitle>
-                <p className="text-sm text-muted-foreground">Kelola identitas inti, avatar, data kerja, dan relasi organisasi employee.</p>
+                <p className="text-muted-foreground text-sm">Kelola identitas inti, avatar, data kerja, dan relasi organisasi employee.</p>
             </CardHeader>
             <CardContent className="p-5">
                 <EmployeeForm

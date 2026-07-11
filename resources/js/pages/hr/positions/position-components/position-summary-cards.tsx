@@ -57,7 +57,7 @@ export function PositionSummaryCards({ summary }: { summary: PositionSummary }) 
                             <div>
                                 <p className="text-sm font-medium">{item.title}</p>
                                 <p className="mt-2 text-2xl font-semibold">{item.value}</p>
-                                <p className="mt-1 text-xs leading-5 text-muted-foreground">{item.description}</p>
+                                <p className="text-muted-foreground mt-1 text-xs leading-5">{item.description}</p>
                             </div>
                         </CardContent>
                     </Card>

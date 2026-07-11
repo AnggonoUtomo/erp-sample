@@ -32,7 +32,7 @@ export function DeleteEmployeeDialog({ employee, form, permanent, onOpenChange, 
                         </Avatar>
                         <div>
                             <p className="font-medium">{employee.display_name}</p>
-                            <p className="text-sm text-muted-foreground">{employee.employee_number}</p>
+                            <p className="text-muted-foreground text-sm">{employee.employee_number}</p>
                         </div>
                     </div>
                 )}

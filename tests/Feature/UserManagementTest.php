@@ -17,9 +17,22 @@ class UserManagementTest extends TestCase
 {
     use RefreshDatabase;
 
+    private string $mediaDisk;
+
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->mediaDisk = 'user-media-'.getmypid();
+        config([
+            "filesystems.disks.{$this->mediaDisk}" => [
+                'driver' => 'local',
+                'root' => storage_path("framework/testing/disks/{$this->mediaDisk}"),
+                'throw' => false,
+            ],
+            'media-library.disk_name' => $this->mediaDisk,
+        ]);
+        Storage::fake($this->mediaDisk);
 
         foreach (['users.view', 'users.create', 'users.update', 'users.delete', 'users.restore', 'users.force-delete'] as $permission) {
             Permission::findOrCreate($permission);
@@ -165,8 +178,6 @@ class UserManagementTest extends TestCase
 
     public function test_authorized_users_can_create_a_user_with_avatar(): void
     {
-        Storage::fake('public');
-
         $user = User::factory()->create();
         $user->assignRole('admin');
 
@@ -188,8 +199,6 @@ class UserManagementTest extends TestCase
 
     public function test_authorized_users_can_remove_an_existing_avatar(): void
     {
-        Storage::fake('public');
-
         $admin = User::factory()->create();
         $admin->assignRole('admin');
         $target = User::factory()->create();

@@ -10,9 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Validation\ValidationException;
 use JsonException;
-use PDO;
 use RuntimeException;
-use ZipArchive;
 
 class BackupRestoreService
 {
@@ -20,6 +18,8 @@ class BackupRestoreService
 
     public function __construct(
         private readonly AuditLogService $audit,
+        private readonly FullBackupZipService $zipService,
+        private readonly SqlDumpExecutor $sqlExecutor,
     ) {}
 
     /**
@@ -237,42 +237,8 @@ class BackupRestoreService
 
     public function createFullBackupZip(): string
     {
-        if (! class_exists(ZipArchive::class)) {
-            throw new RuntimeException('PHP ZipArchive extension belum aktif.');
-        }
-
-        $backupDir = storage_path('app/backups');
-        File::ensureDirectoryExists($backupDir);
-
-        $path = $backupDir.DIRECTORY_SEPARATOR.'full-backup-'.now()->format('Ymd-His').'.zip';
-        $zip = new ZipArchive;
-
-        if ($zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-            throw new RuntimeException('Tidak bisa membuat file backup ZIP.');
-        }
-
-        $zip->addFromString('manifest.json', json_encode([
-            'schema' => 'laravel12-starterkit.full-backup',
-            'version' => self::VERSION,
-            'exported_at' => now()->toISOString(),
-            'app' => [
-                'name' => config('app.name'),
-                'url' => config('app.url'),
-                'environment' => config('app.env'),
-            ],
-            'database' => [
-                'connection' => config('database.default'),
-                'name' => config('database.connections.'.config('database.default').'.database'),
-            ],
-            'includes' => [
-                'database.sql',
-                'storage_public',
-            ],
-        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-
-        $zip->addFromString('database.sql', $this->databaseDumpSql());
-        $this->addDirectoryToZip($zip, storage_path('app/public'), 'storage_public');
-        $zip->close();
+        $databaseSql = $this->databaseDumpSql();
+        $path = $this->zipService->create($databaseSql);
 
         $this->audit->record(
             module: 'backup-restore',
@@ -306,9 +272,9 @@ class BackupRestoreService
         ];
 
         if ($extension === 'zip') {
-            $summary = $this->restoreFromFullBackupZip($file, $restoreDatabase, $restoreStoragePublic);
+            $summary = $this->zipService->restore($file, $restoreDatabase, $restoreStoragePublic);
         } elseif ($restoreDatabase) {
-            $this->runSqlDump($file->get());
+            $this->sqlExecutor->run($file->get());
             $summary['database_restored'] = true;
         } else {
             throw ValidationException::withMessages([
@@ -367,7 +333,7 @@ class BackupRestoreService
             $sql[] = $createStatement.';';
             $sql[] = '';
 
-            $connection->table($table)->orderByRaw('1')->chunk(500, function ($rows) use (&$sql, $pdo, $table, $quotedTable) {
+            $connection->table($table)->orderByRaw('1')->chunk(500, function ($rows) use (&$sql, $pdo, $quotedTable) {
                 foreach ($rows as $row) {
                     $values = (array) $row;
                     $columns = collect(array_keys($values))->map(fn (string $column) => $this->quoteIdentifier($column))->implode(', ');
@@ -437,177 +403,6 @@ class BackupRestoreService
         $sql[] = '';
 
         return implode(PHP_EOL, $sql);
-    }
-
-    private function runSqlDump(string $sql): void
-    {
-        $connection = DB::connection();
-
-        if (! in_array($connection->getDriverName(), ['mysql', 'sqlite'], true)) {
-            throw ValidationException::withMessages([
-                'backup' => 'Restore full database saat ini hanya mendukung koneksi MySQL dan SQLite.',
-            ]);
-        }
-
-        if ($connection->getDriverName() === 'mysql') {
-            $connection->unprepared('SET FOREIGN_KEY_CHECKS=0;');
-        }
-
-        foreach ($this->splitSqlStatements($sql) as $statement) {
-            $trimmed = trim($statement);
-
-            if ($trimmed === '' || str_starts_with($trimmed, '--')) {
-                continue;
-            }
-
-            $connection->unprepared($trimmed);
-        }
-
-        if ($connection->getDriverName() === 'mysql') {
-            $connection->unprepared('SET FOREIGN_KEY_CHECKS=1;');
-        }
-    }
-
-    /**
-     * @return array<int, string>
-     */
-    private function splitSqlStatements(string $sql): array
-    {
-        $statements = [];
-        $buffer = '';
-        $inString = false;
-        $stringQuote = '';
-        $escaped = false;
-
-        $length = strlen($sql);
-
-        for ($i = 0; $i < $length; $i++) {
-            $char = $sql[$i];
-            $buffer .= $char;
-
-            if ($escaped) {
-                $escaped = false;
-                continue;
-            }
-
-            if ($char === '\\' && $inString) {
-                $escaped = true;
-                continue;
-            }
-
-            if (($char === "'" || $char === '"') && (! $inString || $stringQuote === $char)) {
-                $inString = ! $inString;
-                $stringQuote = $inString ? $char : '';
-                continue;
-            }
-
-            if ($char === ';' && ! $inString) {
-                $statements[] = $buffer;
-                $buffer = '';
-            }
-        }
-
-        if (trim($buffer) !== '') {
-            $statements[] = $buffer;
-        }
-
-        return $statements;
-    }
-
-    private function restoreFromFullBackupZip(UploadedFile $file, bool $restoreDatabase, bool $restoreStoragePublic): array
-    {
-        if (! class_exists(ZipArchive::class)) {
-            throw ValidationException::withMessages([
-                'backup' => 'PHP ZipArchive extension belum aktif.',
-            ]);
-        }
-
-        $zip = new ZipArchive;
-
-        if ($zip->open($file->getRealPath()) !== true) {
-            throw ValidationException::withMessages([
-                'backup' => 'File ZIP tidak bisa dibuka.',
-            ]);
-        }
-
-        $manifestContent = $zip->getFromName('manifest.json');
-        $manifest = $manifestContent ? json_decode($manifestContent, true) : null;
-
-        if (! is_array($manifest) || ($manifest['schema'] ?? null) !== 'laravel12-starterkit.full-backup') {
-            $zip->close();
-
-            throw ValidationException::withMessages([
-                'backup' => 'File ZIP bukan full backup aplikasi ini.',
-            ]);
-        }
-
-        $summary = [
-            'database_restored' => false,
-            'storage_files_restored' => 0,
-        ];
-
-        if ($restoreDatabase) {
-            $sql = $zip->getFromName('database.sql');
-
-            if (! $sql) {
-                $zip->close();
-
-                throw ValidationException::withMessages([
-                    'backup' => 'database.sql tidak ditemukan di dalam ZIP.',
-                ]);
-            }
-
-            $this->runSqlDump($sql);
-            $summary['database_restored'] = true;
-        }
-
-        if ($restoreStoragePublic) {
-            $summary['storage_files_restored'] = $this->extractStoragePublic($zip);
-        }
-
-        $zip->close();
-
-        return $summary;
-    }
-
-    private function addDirectoryToZip(ZipArchive $zip, string $directory, string $prefix): void
-    {
-        if (! File::isDirectory($directory)) {
-            return;
-        }
-
-        foreach (File::allFiles($directory) as $file) {
-            $relative = str_replace('\\', '/', $file->getRelativePathname());
-            $zip->addFile($file->getRealPath(), trim($prefix, '/').'/'.$relative);
-        }
-    }
-
-    private function extractStoragePublic(ZipArchive $zip): int
-    {
-        $target = storage_path('app/public');
-        File::ensureDirectoryExists($target);
-        $restored = 0;
-
-        for ($i = 0; $i < $zip->numFiles; $i++) {
-            $name = $zip->getNameIndex($i);
-
-            if (! str_starts_with($name, 'storage_public/') || str_ends_with($name, '/')) {
-                continue;
-            }
-
-            $relative = substr($name, strlen('storage_public/'));
-
-            if (str_contains($relative, '..') || str_starts_with($relative, '/') || preg_match('/^[A-Za-z]:/', $relative)) {
-                continue;
-            }
-
-            $destination = $target.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $relative);
-            File::ensureDirectoryExists(dirname($destination));
-            file_put_contents($destination, $zip->getFromIndex($i));
-            $restored++;
-        }
-
-        return $restored;
     }
 
     private function directorySize(string $directory): int

@@ -50,7 +50,7 @@ export function DepartementSummaryCards({ summary }: { summary: DepartementSumma
                                 <Icon className="size-5" />
                             </div>
                             <div>
-                                <p className="text-sm text-muted-foreground">{item.label}</p>
+                                <p className="text-muted-foreground text-sm">{item.label}</p>
                                 <p className="text-2xl font-semibold">{item.value}</p>
                             </div>
                         </CardContent>

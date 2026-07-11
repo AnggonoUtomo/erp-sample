@@ -17,14 +17,15 @@ export function DeletePositionDialog({ position, form, onOpenChange, onConfirm }
                 <DialogHeader>
                     <DialogTitle>Hapus Position?</DialogTitle>
                     <DialogDescription>
-                        Position akan masuk trash melalui soft delete. Data histori dan audit tetap dipertahankan untuk kebutuhan restore atau penelusuran.
+                        Position akan masuk trash melalui soft delete. Data histori dan audit tetap dipertahankan untuk kebutuhan restore atau
+                        penelusuran.
                     </DialogDescription>
                 </DialogHeader>
 
                 {position && (
-                    <div className="rounded-lg border bg-muted/30 p-3">
-                        <p className="font-medium text-destructive">{position.name}</p>
-                        <p className="mt-1 text-sm text-muted-foreground">
+                    <div className="bg-muted/30 rounded-lg border p-3">
+                        <p className="text-destructive font-medium">{position.name}</p>
+                        <p className="text-muted-foreground mt-1 text-sm">
                             {position.code} - {position.departement?.name ?? 'Tanpa departement'}
                         </p>
                     </div>

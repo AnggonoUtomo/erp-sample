@@ -27,7 +27,7 @@ class MakeModuleCommand extends Command
         }
 
         $force = (bool) $this->option('force');
-        $modulePath = app_path("Modules/{$project}/{$module}");
+        $modulePath = rtrim((string) config('modules.backend_root', app_path('Modules')), '/\\')."/{$project}/{$module}";
         $namespace = "App\\Modules\\{$project}\\{$module}";
         $title = Str::headline($module);
         $projectSlug = $this->slugName($project);

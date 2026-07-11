@@ -11,8 +11,8 @@ import {
     Building2,
     CheckCircle2,
     FileText,
-    ListFilter,
     Layers3,
+    ListFilter,
     MapPin,
     Network,
     ShieldCheck,
@@ -161,7 +161,8 @@ export default function HRDashboard() {
         {
             title: 'Module Aktif',
             value: '8',
-            description: 'Departements, Positions, Job Levels, Work Locations, Employment Statuses, Employment Types, HR Reference Data, dan Organization Structures sudah tersedia.',
+            description:
+                'Departements, Positions, Job Levels, Work Locations, Employment Statuses, Employment Types, HR Reference Data, dan Organization Structures sudah tersedia.',
             icon: Layers3,
         },
         {
@@ -183,7 +184,7 @@ export default function HRDashboard() {
             <Head title="HR Dashboard" />
 
             <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 p-4 sm:p-6">
-                <section className="rounded-lg border bg-card p-5 shadow-sm">
+                <section className="bg-card rounded-lg border p-5 shadow-sm">
                     <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                         <div className="flex items-start gap-4">
                             <IconBox icon={Building2} tone="success" />
@@ -192,8 +193,9 @@ export default function HRDashboard() {
                                     <h1 className="text-2xl font-semibold tracking-tight">HR Dashboard</h1>
                                     <Badge variant="secondary">People Operation</Badge>
                                 </div>
-                                <p className="mt-1 max-w-3xl text-sm leading-6 text-muted-foreground">
-                                    Ringkasan project HR untuk mengelola struktur organisasi, employee master, dokumen, dan integrasi ke Attendance serta Payroll.
+                                <p className="text-muted-foreground mt-1 max-w-3xl text-sm leading-6">
+                                    Ringkasan project HR untuk mengelola struktur organisasi, employee master, dokumen, dan integrasi ke Attendance
+                                    serta Payroll.
                                 </p>
                             </div>
                         </div>
@@ -215,7 +217,7 @@ export default function HRDashboard() {
                                 <div>
                                     <p className="text-sm font-medium">{item.title}</p>
                                     <p className="mt-2 text-2xl font-semibold">{item.value}</p>
-                                    <p className="mt-1 text-xs leading-5 text-muted-foreground">{item.description}</p>
+                                    <p className="text-muted-foreground mt-1 text-xs leading-5">{item.description}</p>
                                 </div>
                             </CardContent>
                         </Card>
@@ -226,19 +228,19 @@ export default function HRDashboard() {
                     <Card>
                         <CardHeader>
                             <CardTitle>Quick Actions</CardTitle>
-                            <p className="text-sm text-muted-foreground">Module kerja utama di project HR.</p>
+                            <p className="text-muted-foreground text-sm">Module kerja utama di project HR.</p>
                         </CardHeader>
                         <CardContent className="grid gap-3 sm:grid-cols-2">
                             {quickActions.map((item) => {
                                 const content = (
-                                    <div className="flex h-full gap-4 rounded-lg border p-4 transition hover:border-primary/35 hover:bg-muted/30">
+                                    <div className="hover:border-primary/35 hover:bg-muted/30 flex h-full gap-4 rounded-lg border p-4 transition">
                                         <IconBox icon={item.icon} tone={item.href ? 'success' : 'warning'} />
                                         <div className="min-w-0 flex-1">
                                             <div className="flex items-center justify-between gap-2">
                                                 <p className="font-semibold">{item.title}</p>
                                                 <Badge variant={item.href ? 'default' : 'secondary'}>{item.status}</Badge>
                                             </div>
-                                            <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.description}</p>
+                                            <p className="text-muted-foreground mt-2 text-sm leading-6">{item.description}</p>
                                         </div>
                                     </div>
                                 );
@@ -257,7 +259,7 @@ export default function HRDashboard() {
                     <Card>
                         <CardHeader>
                             <CardTitle>Roadmap HR</CardTitle>
-                            <p className="text-sm text-muted-foreground">Urutan module yang sedang disiapkan.</p>
+                            <p className="text-muted-foreground text-sm">Urutan module yang sedang disiapkan.</p>
                         </CardHeader>
                         <CardContent className="space-y-3">
                             {roadmapItems.map((item) => {
@@ -268,7 +270,7 @@ export default function HRDashboard() {
                                         <Icon className="size-4 text-emerald-600" />
                                         <div className="min-w-0 flex-1">
                                             <p className="text-sm font-medium">{item.label}</p>
-                                            <p className="text-xs text-muted-foreground">{item.status}</p>
+                                            <p className="text-muted-foreground text-xs">{item.status}</p>
                                         </div>
                                     </div>
                                 );
@@ -284,7 +286,7 @@ export default function HRDashboard() {
                                 <IconBox icon={item.icon} tone="success" />
                                 <div>
                                     <p className="font-semibold">{item.title}</p>
-                                    <p className="mt-1 text-sm leading-6 text-muted-foreground">{item.description}</p>
+                                    <p className="text-muted-foreground mt-1 text-sm leading-6">{item.description}</p>
                                 </div>
                             </CardContent>
                         </Card>

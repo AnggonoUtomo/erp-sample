@@ -22,9 +22,9 @@ export function DeleteDepartementDialog({ departement, form, onOpenChange, onCon
                     </DialogDescription>
                 </DialogHeader>
                 {departement && (
-                    <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4">
-                        <p className="font-medium text-destructive">{departement.name}</p>
-                        <p className="mt-1 text-sm text-muted-foreground">{departement.code}</p>
+                    <div className="border-destructive/30 bg-destructive/5 rounded-lg border p-4">
+                        <p className="text-destructive font-medium">{departement.name}</p>
+                        <p className="text-muted-foreground mt-1 text-sm">{departement.code}</p>
                     </div>
                 )}
                 <DialogFooter>

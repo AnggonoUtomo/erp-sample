@@ -49,5 +49,8 @@ jobs:
       - name: Generate Application Key
         run: php artisan key:generate
 
+      - name: Validate module contracts
+        run: php artisan module:validate
+
       - name: Tests
         run: ./vendor/bin/phpunit

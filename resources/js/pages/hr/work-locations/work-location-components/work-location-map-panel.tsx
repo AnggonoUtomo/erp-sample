@@ -91,10 +91,13 @@ export function WorkLocationMapPanel({ form, mapSettings }: Props) {
         [form.data.latitude, form.data.longitude],
     );
 
-    const setCoordinates = useCallback((lat: number, lng: number) => {
-        form.setData('latitude', lat.toFixed(7));
-        form.setData('longitude', lng.toFixed(7));
-    }, [form]);
+    const setCoordinates = useCallback(
+        (lat: number, lng: number) => {
+            form.setData('latitude', lat.toFixed(7));
+            form.setData('longitude', lng.toFixed(7));
+        },
+        [form],
+    );
 
     useEffect(() => {
         if (!mapSettings.enabled || !mapSettings.google_maps_api_key || !mapRef.current) {
@@ -170,7 +173,15 @@ export function WorkLocationMapPanel({ form, mapSettings }: Props) {
         return () => {
             mounted = false;
         };
-    }, [form.data.latitude, form.data.longitude, mapSettings.enabled, mapSettings.google_maps_api_key, mapSettings.google_maps_map_id, position, setCoordinates]);
+    }, [
+        form.data.latitude,
+        form.data.longitude,
+        mapSettings.enabled,
+        mapSettings.google_maps_api_key,
+        mapSettings.google_maps_map_id,
+        position,
+        setCoordinates,
+    ]);
 
     useEffect(() => {
         mapInstance.current?.setCenter(position);
@@ -180,31 +191,31 @@ export function WorkLocationMapPanel({ form, mapSettings }: Props) {
     const showMap = mapSettings.enabled && mapSettings.google_maps_api_key;
 
     return (
-        <div className="space-y-3 rounded-lg border bg-background/60 p-4">
+        <div className="bg-background/60 space-y-3 rounded-lg border p-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                     <FieldInfoLabel description="Klik area map atau drag marker untuk mengisi latitude dan longitude lokasi kerja.">
                         Titik Lokasi Map
                     </FieldInfoLabel>
-                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                    <p className="text-muted-foreground mt-1 text-xs leading-relaxed">
                         Koordinat dan radius ini menjadi dasar lokasi kantor, attendance area, dan validasi geofence.
                     </p>
                 </div>
                 <Badge variant={showMap ? 'default' : 'secondary'}>{showMap ? 'Map aktif' : 'Perlu konfigurasi'}</Badge>
             </div>
 
-            <div className="relative h-72 overflow-hidden rounded-lg border bg-muted/40">
+            <div className="bg-muted/40 relative h-72 overflow-hidden rounded-lg border">
                 {showMap ? (
                     <>
                         <div ref={mapRef} className="h-full w-full" />
                         {mapState === 'loading' && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-background/70 text-sm text-muted-foreground">
+                            <div className="bg-background/70 text-muted-foreground absolute inset-0 flex items-center justify-center text-sm">
                                 <Loader2 className="mr-2 size-4 animate-spin" />
                                 Memuat Google Maps...
                             </div>
                         )}
                         {mapState === 'error' && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-background/90 p-5 text-center text-sm text-destructive">
+                            <div className="bg-background/90 text-destructive absolute inset-0 flex items-center justify-center p-5 text-center text-sm">
                                 Google Maps gagal dimuat. Periksa API Key, domain restriction, atau koneksi.
                             </div>
                         )}
@@ -215,7 +226,7 @@ export function WorkLocationMapPanel({ form, mapSettings }: Props) {
                             <MapPinned className="size-5" />
                         </span>
                         <p className="mt-3 text-sm font-medium">Google Maps belum aktif</p>
-                        <p className="mt-1 max-w-md text-xs leading-relaxed text-muted-foreground">
+                        <p className="text-muted-foreground mt-1 max-w-md text-xs leading-relaxed">
                             Isi API Key dan Map ID dari menu Console System Settings agar panel ini berubah menjadi map interaktif.
                         </p>
                     </div>
@@ -262,7 +273,12 @@ export function WorkLocationMapPanel({ form, mapSettings }: Props) {
                         onChange={(event) => form.setData('geofence_radius_meters', event.target.value)}
                     />
                 </div>
-                <Button type="button" variant="outline" className="lg:self-end" onClick={() => setCoordinates(defaultPosition.lat, defaultPosition.lng)}>
+                <Button
+                    type="button"
+                    variant="outline"
+                    className="lg:self-end"
+                    onClick={() => setCoordinates(defaultPosition.lat, defaultPosition.lng)}
+                >
                     <LocateFixed className="size-4" />
                     Jakarta
                 </Button>

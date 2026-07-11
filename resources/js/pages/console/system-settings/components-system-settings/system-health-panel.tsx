@@ -66,7 +66,9 @@ export function SystemHealthPanel({ systemHealth }: { systemHealth: SystemHealth
                     <div className="space-y-4">
                         <div className="rounded-lg border border-dashed p-4">
                             <p className="text-sm font-medium">Runtime Info</p>
-                            <p className="text-muted-foreground mt-1 text-xs leading-relaxed">Dibaca langsung dari konfigurasi aktif. Secret tidak ditampilkan.</p>
+                            <p className="text-muted-foreground mt-1 text-xs leading-relaxed">
+                                Dibaca langsung dari konfigurasi aktif. Secret tidak ditampilkan.
+                            </p>
                         </div>
                         <div className="grid gap-2">
                             {Object.entries(systemHealth.runtime).map(([key, value]) => (

@@ -23,32 +23,57 @@ export function WorkLocationForm({ form, editing, canCreate, canUpdate, mapSetti
         <form className="space-y-4" onSubmit={onSubmit}>
             <div className="grid gap-3 sm:grid-cols-2">
                 <div className="space-y-2">
-                    <FieldInfoLabel htmlFor="code" required description="Kode unik lokasi kerja. Dipakai untuk employee profile, attendance, payroll area, dan integrasi.">
+                    <FieldInfoLabel
+                        htmlFor="code"
+                        required
+                        description="Kode unik lokasi kerja. Dipakai untuk employee profile, attendance, payroll area, dan integrasi."
+                    >
                         Code
                     </FieldInfoLabel>
                     <Input id="code" value={form.data.code} onChange={(event) => form.setData('code', event.target.value)} placeholder="HQ-JKT" />
-                    {form.errors.code && <p className="text-sm text-destructive">{form.errors.code}</p>}
+                    {form.errors.code && <p className="text-destructive text-sm">{form.errors.code}</p>}
                 </div>
 
                 <div className="space-y-2">
-                    <FieldInfoLabel htmlFor="timezone" required description="Timezone lokasi kerja. Penting untuk attendance, shift, scheduler, dan cut off payroll.">
+                    <FieldInfoLabel
+                        htmlFor="timezone"
+                        required
+                        description="Timezone lokasi kerja. Penting untuk attendance, shift, scheduler, dan cut off payroll."
+                    >
                         Timezone
                     </FieldInfoLabel>
-                    <Input id="timezone" value={form.data.timezone} onChange={(event) => form.setData('timezone', event.target.value)} placeholder="Asia/Jakarta" />
-                    {form.errors.timezone && <p className="text-sm text-destructive">{form.errors.timezone}</p>}
+                    <Input
+                        id="timezone"
+                        value={form.data.timezone}
+                        onChange={(event) => form.setData('timezone', event.target.value)}
+                        placeholder="Asia/Jakarta"
+                    />
+                    {form.errors.timezone && <p className="text-destructive text-sm">{form.errors.timezone}</p>}
                 </div>
             </div>
 
             <div className="space-y-2">
-                <FieldInfoLabel htmlFor="name" required description="Nama lokasi kerja yang tampil pada employee profile, filter attendance, payroll, dan laporan headcount.">
+                <FieldInfoLabel
+                    htmlFor="name"
+                    required
+                    description="Nama lokasi kerja yang tampil pada employee profile, filter attendance, payroll, dan laporan headcount."
+                >
                     Nama Lokasi
                 </FieldInfoLabel>
-                <Input id="name" value={form.data.name} onChange={(event) => form.setData('name', event.target.value)} placeholder="Head Office Jakarta" />
-                {form.errors.name && <p className="text-sm text-destructive">{form.errors.name}</p>}
+                <Input
+                    id="name"
+                    value={form.data.name}
+                    onChange={(event) => form.setData('name', event.target.value)}
+                    placeholder="Head Office Jakarta"
+                />
+                {form.errors.name && <p className="text-destructive text-sm">{form.errors.name}</p>}
             </div>
 
             <div className="space-y-2">
-                <FieldInfoLabel htmlFor="address" description="Alamat lengkap lokasi kerja. Berguna untuk data kantor, kontrak kerja, dan referensi operasional.">
+                <FieldInfoLabel
+                    htmlFor="address"
+                    description="Alamat lengkap lokasi kerja. Berguna untuk data kantor, kontrak kerja, dan referensi operasional."
+                >
                     Alamat
                 </FieldInfoLabel>
                 <textarea
@@ -57,9 +82,9 @@ export function WorkLocationForm({ form, editing, canCreate, canUpdate, mapSetti
                     onChange={(event) => form.setData('address', event.target.value)}
                     placeholder="Jl. Jend. Sudirman Kav. 52-53"
                     rows={3}
-                    className="min-h-20 w-full resize-y rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs outline-none transition-[color,box-shadow] placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="border-input bg-background placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 min-h-20 w-full resize-y rounded-md border px-3 py-2 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50"
                 />
-                {form.errors.address && <p className="text-sm text-destructive">{form.errors.address}</p>}
+                {form.errors.address && <p className="text-destructive text-sm">{form.errors.address}</p>}
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
@@ -68,46 +93,68 @@ export function WorkLocationForm({ form, editing, canCreate, canUpdate, mapSetti
                         Kota
                     </FieldInfoLabel>
                     <Input id="city" value={form.data.city} onChange={(event) => form.setData('city', event.target.value)} placeholder="Jakarta" />
-                    {form.errors.city && <p className="text-sm text-destructive">{form.errors.city}</p>}
+                    {form.errors.city && <p className="text-destructive text-sm">{form.errors.city}</p>}
                 </div>
 
                 <div className="space-y-2">
                     <FieldInfoLabel htmlFor="province" description="Provinsi atau wilayah administrasi lokasi kerja.">
                         Provinsi
                     </FieldInfoLabel>
-                    <Input id="province" value={form.data.province} onChange={(event) => form.setData('province', event.target.value)} placeholder="DKI Jakarta" />
-                    {form.errors.province && <p className="text-sm text-destructive">{form.errors.province}</p>}
+                    <Input
+                        id="province"
+                        value={form.data.province}
+                        onChange={(event) => form.setData('province', event.target.value)}
+                        placeholder="DKI Jakarta"
+                    />
+                    {form.errors.province && <p className="text-destructive text-sm">{form.errors.province}</p>}
                 </div>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
                 <div className="space-y-2">
-                    <FieldInfoLabel htmlFor="country" required description="Negara lokasi kerja. Default Indonesia, tetapi bisa disesuaikan untuk cabang regional.">
+                    <FieldInfoLabel
+                        htmlFor="country"
+                        required
+                        description="Negara lokasi kerja. Default Indonesia, tetapi bisa disesuaikan untuk cabang regional."
+                    >
                         Negara
                     </FieldInfoLabel>
-                    <Input id="country" value={form.data.country} onChange={(event) => form.setData('country', event.target.value)} placeholder="Indonesia" />
-                    {form.errors.country && <p className="text-sm text-destructive">{form.errors.country}</p>}
+                    <Input
+                        id="country"
+                        value={form.data.country}
+                        onChange={(event) => form.setData('country', event.target.value)}
+                        placeholder="Indonesia"
+                    />
+                    {form.errors.country && <p className="text-destructive text-sm">{form.errors.country}</p>}
                 </div>
 
                 <div className="space-y-2">
                     <FieldInfoLabel htmlFor="postal_code" description="Kode pos lokasi kerja jika tersedia.">
                         Kode Pos
                     </FieldInfoLabel>
-                    <Input id="postal_code" value={form.data.postal_code} onChange={(event) => form.setData('postal_code', event.target.value)} placeholder="12190" />
-                    {form.errors.postal_code && <p className="text-sm text-destructive">{form.errors.postal_code}</p>}
+                    <Input
+                        id="postal_code"
+                        value={form.data.postal_code}
+                        onChange={(event) => form.setData('postal_code', event.target.value)}
+                        placeholder="12190"
+                    />
+                    {form.errors.postal_code && <p className="text-destructive text-sm">{form.errors.postal_code}</p>}
                 </div>
             </div>
 
             <WorkLocationMapPanel form={form} mapSettings={mapSettings} />
 
             {(form.errors.latitude || form.errors.longitude || form.errors.geofence_radius_meters) && (
-                <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
+                <div className="border-destructive/30 bg-destructive/5 text-destructive rounded-lg border p-3 text-sm">
                     {form.errors.latitude || form.errors.longitude || form.errors.geofence_radius_meters}
                 </div>
             )}
 
             <div className="space-y-2">
-                <FieldInfoLabel htmlFor="description" description="Catatan fungsi lokasi, cakupan operasional, atau informasi tambahan untuk admin HR.">
+                <FieldInfoLabel
+                    htmlFor="description"
+                    description="Catatan fungsi lokasi, cakupan operasional, atau informasi tambahan untuk admin HR."
+                >
                     Deskripsi
                 </FieldInfoLabel>
                 <textarea
@@ -116,16 +163,16 @@ export function WorkLocationForm({ form, editing, canCreate, canUpdate, mapSetti
                     onChange={(event) => form.setData('description', event.target.value)}
                     placeholder="Kantor pusat untuk fungsi manajemen dan operation support"
                     rows={4}
-                    className="min-h-24 w-full resize-y rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs outline-none transition-[color,box-shadow] placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="border-input bg-background placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 min-h-24 w-full resize-y rounded-md border px-3 py-2 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50"
                 />
-                {form.errors.description && <p className="text-sm text-destructive">{form.errors.description}</p>}
+                {form.errors.description && <p className="text-destructive text-sm">{form.errors.description}</p>}
             </div>
 
             <label className="flex items-start gap-3 rounded-lg border p-3 text-sm">
                 <Checkbox checked={form.data.active} onCheckedChange={(checked) => form.setData('active', checked === true)} />
                 <span>
                     <span className="block font-medium">Lokasi aktif</span>
-                    <span className="mt-1 block text-xs leading-5 text-muted-foreground">
+                    <span className="text-muted-foreground mt-1 block text-xs leading-5">
                         Lokasi aktif bisa dipilih pada employee profile, attendance, dan payroll. Nonaktifkan jika lokasi sudah tidak digunakan.
                     </span>
                 </span>

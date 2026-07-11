@@ -2,10 +2,11 @@
 
 namespace App\Support\Modules;
 
+use App\Integration\Support\IntegrationRegistry;
 use App\Shared\Contracts\DomainEventDispatcher;
 use App\Shared\Events\LaravelDomainEventDispatcher;
 use App\Support\Modules\Commands\MakeModuleCommand;
-use App\Integration\Support\IntegrationRegistry;
+use App\Support\Modules\Commands\ValidateModulesCommand;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -20,6 +21,7 @@ class ModuleServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 MakeModuleCommand::class,
+                ValidateModulesCommand::class,
             ]);
         }
 

@@ -37,7 +37,7 @@ export function WorkLocationWorkspaceCard({ mode, workLocation, form, canCreate,
                             </span>
                             {isEdit ? 'Edit Work Location' : 'Tambah Work Location'}
                         </CardTitle>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-muted-foreground text-sm">
                             Field bertanda bintang wajib diisi. Gunakan tooltip tanda tanya untuk memahami fungsi setiap field.
                         </p>
                     </div>

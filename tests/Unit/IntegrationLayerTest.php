@@ -3,9 +3,11 @@
 namespace Tests\Unit;
 
 use App\Integration\Contracts\IntegrationAdapter;
+use App\Integration\Contracts\IntegrationContext;
 use App\Integration\DTO\IntegrationMessageData;
 use App\Integration\Support\EventIntegrationContext;
 use App\Integration\Support\IntegrationRegistry;
+use App\Shared\Contracts\DomainEvent;
 use App\Shared\Events\BaseDomainEvent;
 use App\Shared\Support\Result;
 use App\Shared\ValueObjects\ModuleIdentifier;
@@ -108,12 +110,12 @@ PHP);
                 return ModuleIdentifier::parse('Payroll.PayrollPeriods');
             }
 
-            public function canHandle(\App\Shared\Contracts\DomainEvent $event): bool
+            public function canHandle(DomainEvent $event): bool
             {
                 return $event instanceof IntegrationLayerFakeEvent;
             }
 
-            public function handle(\App\Shared\Contracts\DomainEvent $event, \App\Integration\Contracts\IntegrationContext $context): Result
+            public function handle(DomainEvent $event, IntegrationContext $context): Result
             {
                 return Result::success([
                     'source' => $context->source()->key(),

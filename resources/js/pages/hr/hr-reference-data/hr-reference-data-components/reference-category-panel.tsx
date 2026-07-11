@@ -37,11 +37,11 @@ export function ReferenceCategoryPanel({ categories, form, editing, canCreate, c
                                     </span>
                                     Kategori Reference
                                 </CardTitle>
-                                <p className="mt-2 text-sm text-muted-foreground">
+                                <p className="text-muted-foreground mt-2 text-sm">
                                     {categories.length} kategori terdaftar. Klik untuk mengelola kategori dropdown reference data.
                                 </p>
                             </div>
-                            <ChevronDown className="mt-2 size-4 shrink-0 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+                            <ChevronDown className="text-muted-foreground mt-2 size-4 shrink-0 transition-transform group-data-[state=open]:rotate-180" />
                         </div>
                     </CardHeader>
                 </CollapsibleTrigger>
@@ -50,7 +50,11 @@ export function ReferenceCategoryPanel({ categories, form, editing, canCreate, c
                         <form className="space-y-3" onSubmit={onSubmit}>
                             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
                                 <div className="space-y-2">
-                                    <FieldInfoLabel htmlFor="category_name" required description="Nama kategori yang tampil di dropdown reference data.">
+                                    <FieldInfoLabel
+                                        htmlFor="category_name"
+                                        required
+                                        description="Nama kategori yang tampil di dropdown reference data."
+                                    >
                                         Nama kategori
                                     </FieldInfoLabel>
                                     <Input
@@ -59,10 +63,14 @@ export function ReferenceCategoryPanel({ categories, form, editing, canCreate, c
                                         onChange={(event) => form.setData('name', event.target.value)}
                                         placeholder="Employment Document Type"
                                     />
-                                    {form.errors.name && <p className="text-sm text-destructive">{form.errors.name}</p>}
+                                    {form.errors.name && <p className="text-destructive text-sm">{form.errors.name}</p>}
                                 </div>
                                 <div className="space-y-2">
-                                    <FieldInfoLabel htmlFor="category_code" required description="Kode kategori yang disimpan di database, misalnya gender, bank, atau blood-type.">
+                                    <FieldInfoLabel
+                                        htmlFor="category_code"
+                                        required
+                                        description="Kode kategori yang disimpan di database, misalnya gender, bank, atau blood-type."
+                                    >
                                         Code
                                     </FieldInfoLabel>
                                     <Input
@@ -71,7 +79,7 @@ export function ReferenceCategoryPanel({ categories, form, editing, canCreate, c
                                         onChange={(event) => form.setData('code', event.target.value)}
                                         placeholder="employment-document-type"
                                     />
-                                    {form.errors.code && <p className="text-sm text-destructive">{form.errors.code}</p>}
+                                    {form.errors.code && <p className="text-destructive text-sm">{form.errors.code}</p>}
                                 </div>
                             </div>
                             <div className="space-y-2">
@@ -83,14 +91,16 @@ export function ReferenceCategoryPanel({ categories, form, editing, canCreate, c
                                     value={form.data.description}
                                     onChange={(event) => form.setData('description', event.target.value)}
                                     rows={2}
-                                    className="min-h-16 w-full resize-y rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                    className="border-input bg-background placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 min-h-16 w-full resize-y rounded-md border px-3 py-2 text-sm shadow-xs outline-none focus-visible:ring-[3px]"
                                 />
                             </div>
                             <label className="flex items-start gap-3 rounded-lg border p-3 text-sm">
                                 <Checkbox checked={form.data.active} onCheckedChange={(checked) => form.setData('active', checked === true)} />
                                 <span>
                                     <span className="block font-medium">Kategori aktif</span>
-                                    <span className="mt-1 block text-xs leading-5 text-muted-foreground">Kategori aktif muncul di dropdown add/edit reference data.</span>
+                                    <span className="text-muted-foreground mt-1 block text-xs leading-5">
+                                        Kategori aktif muncul di dropdown add/edit reference data.
+                                    </span>
                                 </span>
                             </label>
                             <div className="flex gap-2">
@@ -130,7 +140,9 @@ export function ReferenceCategoryPanel({ categories, form, editing, canCreate, c
                                                     {category.active ? 'Aktif' : 'Nonaktif'}
                                                 </Badge>
                                             </div>
-                                            <p className="mt-1 text-xs text-muted-foreground">{category.items_count} reference data memakai kategori ini</p>
+                                            <p className="text-muted-foreground mt-1 text-xs">
+                                                {category.items_count} reference data memakai kategori ini
+                                            </p>
                                         </div>
                                         <div className="flex shrink-0 gap-1">
                                             {canUpdate && (
@@ -143,9 +155,13 @@ export function ReferenceCategoryPanel({ categories, form, editing, canCreate, c
                                                     type="button"
                                                     variant="ghost"
                                                     size="icon"
-                                                    className="size-8 text-destructive hover:text-destructive"
+                                                    className="text-destructive hover:text-destructive size-8"
                                                     disabled={category.items_count > 0}
-                                                    title={category.items_count > 0 ? 'Kategori sedang dipakai dan tidak bisa dihapus' : `Hapus ${category.name}`}
+                                                    title={
+                                                        category.items_count > 0
+                                                            ? 'Kategori sedang dipakai dan tidak bisa dihapus'
+                                                            : `Hapus ${category.name}`
+                                                    }
                                                     onClick={() => onDelete(category)}
                                                 >
                                                     <Trash2 className="size-4" />

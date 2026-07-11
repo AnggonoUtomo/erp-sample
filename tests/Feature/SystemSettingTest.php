@@ -353,5 +353,4 @@ class SystemSettingTest extends TestCase
             Artisan::call('up');
         }
     }
-
 }

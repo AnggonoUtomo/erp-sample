@@ -30,7 +30,7 @@ export function DepartementForm({ form, editing, parentOptions, canCreate, canUp
                     Code
                 </FieldInfoLabel>
                 <Input id="code" value={form.data.code} onChange={(event) => form.setData('code', event.target.value)} placeholder="HRD" />
-                {form.errors.code && <p className="text-sm text-destructive">{form.errors.code}</p>}
+                {form.errors.code && <p className="text-destructive text-sm">{form.errors.code}</p>}
             </div>
 
             <div className="space-y-2">
@@ -41,12 +41,20 @@ export function DepartementForm({ form, editing, parentOptions, canCreate, canUp
                 >
                     Nama Departement
                 </FieldInfoLabel>
-                <Input id="name" value={form.data.name} onChange={(event) => form.setData('name', event.target.value)} placeholder="Human Resources" />
-                {form.errors.name && <p className="text-sm text-destructive">{form.errors.name}</p>}
+                <Input
+                    id="name"
+                    value={form.data.name}
+                    onChange={(event) => form.setData('name', event.target.value)}
+                    placeholder="Human Resources"
+                />
+                {form.errors.name && <p className="text-destructive text-sm">{form.errors.name}</p>}
             </div>
 
             <div className="space-y-2">
-                <FieldInfoLabel htmlFor="parent_id" description="Parent menentukan hierarchy. Pilih Root Departement jika unit ini berada di level paling atas.">
+                <FieldInfoLabel
+                    htmlFor="parent_id"
+                    description="Parent menentukan hierarchy. Pilih Root Departement jika unit ini berada di level paling atas."
+                >
                     Parent Departement
                 </FieldInfoLabel>
                 <Select value={form.data.parent_id || 'none'} onValueChange={(value) => form.setData('parent_id', value === 'none' ? '' : value)}>
@@ -62,11 +70,14 @@ export function DepartementForm({ form, editing, parentOptions, canCreate, canUp
                         ))}
                     </SelectContent>
                 </Select>
-                {form.errors.parent_id && <p className="text-sm text-destructive">{form.errors.parent_id}</p>}
+                {form.errors.parent_id && <p className="text-destructive text-sm">{form.errors.parent_id}</p>}
             </div>
 
             <div className="space-y-2">
-                <FieldInfoLabel htmlFor="description" description="Catatan singkat tentang fungsi Departement. Berguna untuk admin baru, audit, dan dokumentasi organisasi.">
+                <FieldInfoLabel
+                    htmlFor="description"
+                    description="Catatan singkat tentang fungsi Departement. Berguna untuk admin baru, audit, dan dokumentasi organisasi."
+                >
                     Deskripsi
                 </FieldInfoLabel>
                 <textarea
@@ -75,16 +86,16 @@ export function DepartementForm({ form, editing, parentOptions, canCreate, canUp
                     onChange={(event) => form.setData('description', event.target.value)}
                     placeholder="Fungsi utama departement"
                     rows={4}
-                    className="min-h-24 w-full resize-y rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs outline-none transition-[color,box-shadow] placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="border-input bg-background placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 min-h-24 w-full resize-y rounded-md border px-3 py-2 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50"
                 />
-                {form.errors.description && <p className="text-sm text-destructive">{form.errors.description}</p>}
+                {form.errors.description && <p className="text-destructive text-sm">{form.errors.description}</p>}
             </div>
 
             <label className="flex items-start gap-3 rounded-lg border p-3 text-sm">
                 <Checkbox checked={form.data.active} onCheckedChange={(checked) => form.setData('active', checked === true)} />
                 <span>
                     <span className="block font-medium">Departement aktif</span>
-                    <span className="mt-1 block text-xs leading-5 text-muted-foreground">
+                    <span className="text-muted-foreground mt-1 block text-xs leading-5">
                         Departement aktif bisa dipilih oleh module lain. Nonaktifkan jika Departement sudah tidak digunakan, tanpa menghapus riwayat.
                     </span>
                 </span>

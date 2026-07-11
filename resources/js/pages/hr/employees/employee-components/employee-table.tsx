@@ -58,7 +58,7 @@ export function EmployeeTable({
                 <div className="flex items-start justify-between gap-3">
                     <div>
                         <h2 className="text-lg font-semibold tracking-tight">Employee Directory</h2>
-                        <p className="mt-0.5 text-sm text-muted-foreground">Cari, filter, dan kelola master employee HR.</p>
+                        <p className="text-muted-foreground mt-0.5 text-sm">Cari, filter, dan kelola master employee HR.</p>
                     </div>
                     <Badge variant="outline" className="shrink-0 rounded-sm">
                         {employees.total} total
@@ -67,7 +67,7 @@ export function EmployeeTable({
 
                 <div className="flex min-w-0 flex-1 flex-col gap-2 md:flex-row md:flex-wrap">
                     <div className="relative md:w-[220px]">
-                        <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+                        <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
                         <Input
                             id="employee-search-input"
                             value={search}
@@ -122,7 +122,7 @@ export function EmployeeTable({
             <div className="w-full min-w-0 overflow-hidden rounded-md border">
                 <div className="w-full overflow-x-auto">
                     <table className="w-full min-w-[720px] table-fixed text-sm">
-                        <thead className="bg-muted/60 text-left text-muted-foreground">
+                        <thead className="bg-muted/60 text-muted-foreground text-left">
                             <tr>
                                 <th className="w-[36%] px-2.5 py-2.5 font-semibold">Employee</th>
                                 <th className="w-[24%] px-2.5 py-2.5 font-semibold">Organisasi</th>
@@ -133,7 +133,7 @@ export function EmployeeTable({
                         </thead>
                         <tbody>
                             {employees.data.map((row, index) => (
-                                <tr key={row.id} className="border-t transition hover:bg-muted/40">
+                                <tr key={row.id} className="hover:bg-muted/40 border-t transition">
                                     <td className="px-2.5 py-2.5">
                                         <button
                                             id={`employee-table-row-${index}`}
@@ -145,7 +145,7 @@ export function EmployeeTable({
                                                     onSelect(row);
                                                 }
                                             }}
-                                            className="flex min-w-0 items-center gap-2.5 rounded-md text-left outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                            className="focus-visible:ring-ring flex min-w-0 items-center gap-2.5 rounded-md text-left outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                                         >
                                             <Avatar className="size-10 rounded-lg">
                                                 <AvatarImage src={row.avatar ?? undefined} alt={row.display_name} />
@@ -153,7 +153,7 @@ export function EmployeeTable({
                                             </Avatar>
                                             <span className="min-w-0">
                                                 <span className="block truncate font-medium">{row.display_name}</span>
-                                                <span className="mt-0.5 block truncate text-xs text-muted-foreground">
+                                                <span className="text-muted-foreground mt-0.5 block truncate text-xs">
                                                     {row.employee_number} | {row.work_email ?? row.personal_email ?? 'Email belum diisi'}
                                                 </span>
                                             </span>
@@ -161,11 +161,15 @@ export function EmployeeTable({
                                     </td>
                                     <td className="px-2.5 py-2.5">
                                         <p className="truncate font-medium">{row.departement?.name ?? 'Departement belum dipilih'}</p>
-                                        <p className="mt-0.5 truncate text-xs text-muted-foreground">{row.position?.name ?? 'Position belum dipilih'}</p>
+                                        <p className="text-muted-foreground mt-0.5 truncate text-xs">
+                                            {row.position?.name ?? 'Position belum dipilih'}
+                                        </p>
                                     </td>
                                     <td className="px-2.5 py-2.5">
                                         <p className="truncate">{row.employment_status?.name ?? 'Status belum dipilih'}</p>
-                                        <p className="mt-0.5 truncate text-xs text-muted-foreground">{row.work_location?.name ?? 'Lokasi belum dipilih'}</p>
+                                        <p className="text-muted-foreground mt-0.5 truncate text-xs">
+                                            {row.work_location?.name ?? 'Lokasi belum dipilih'}
+                                        </p>
                                     </td>
                                     <td className="px-2.5 py-2.5">
                                         {row.deleted_at ? (
@@ -179,12 +183,26 @@ export function EmployeeTable({
                                     <td className="px-2.5 py-2.5">
                                         <div className="flex justify-end gap-1">
                                             {!row.deleted_at && canUpdate && (
-                                                <Button type="button" variant="ghost" size="icon" className="size-8" title={`Edit ${row.display_name}`} onClick={() => onEdit(row)}>
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="size-8"
+                                                    title={`Edit ${row.display_name}`}
+                                                    onClick={() => onEdit(row)}
+                                                >
                                                     <Edit3 className="size-4" />
                                                 </Button>
                                             )}
                                             {row.deleted_at && canRestore && (
-                                                <Button type="button" variant="ghost" size="icon" className="size-8" title={`Pulihkan ${row.display_name}`} onClick={() => onRestore(row)}>
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="size-8"
+                                                    title={`Pulihkan ${row.display_name}`}
+                                                    onClick={() => onRestore(row)}
+                                                >
                                                     <RotateCcw className="size-4" />
                                                 </Button>
                                             )}
@@ -193,7 +211,7 @@ export function EmployeeTable({
                                                     type="button"
                                                     variant="ghost"
                                                     size="icon"
-                                                    className="size-8 text-destructive hover:text-destructive"
+                                                    className="text-destructive hover:text-destructive size-8"
                                                     title={`Arsipkan ${row.display_name}`}
                                                     onClick={() => onDelete(row)}
                                                 >
@@ -205,7 +223,7 @@ export function EmployeeTable({
                                                     type="button"
                                                     variant="ghost"
                                                     size="icon"
-                                                    className="size-8 text-destructive hover:text-destructive"
+                                                    className="text-destructive hover:text-destructive size-8"
                                                     title={`Hapus permanen ${row.display_name}`}
                                                     onClick={() => onDelete(row)}
                                                 >
@@ -218,7 +236,7 @@ export function EmployeeTable({
                             ))}
                             {!employees.data.length && (
                                 <tr>
-                                    <td colSpan={5} className="px-4 py-10 text-center text-muted-foreground">
+                                    <td colSpan={5} className="text-muted-foreground px-4 py-10 text-center">
                                         Belum ada Employee yang sesuai filter.
                                     </td>
                                 </tr>
@@ -229,10 +247,15 @@ export function EmployeeTable({
             </div>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div className="text-sm text-muted-foreground">
+                <div className="text-muted-foreground text-sm">
                     Showing {employees.data.length} of {employees.total} Employees
                 </div>
-                <PaginationBar meta={employees} routeName="hr.employees.index" filters={{ search, departement, status, archive }} idPrefix="employee" />
+                <PaginationBar
+                    meta={employees}
+                    routeName="hr.employees.index"
+                    filters={{ search, departement, status, archive }}
+                    idPrefix="employee"
+                />
             </div>
         </div>
     );

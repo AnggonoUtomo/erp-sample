@@ -30,7 +30,7 @@ export function EmploymentStatusDetailCard({ employmentStatus }: Props) {
                         Employment Status Preview
                     </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3 text-sm text-muted-foreground">
+                <CardContent className="text-muted-foreground space-y-3 text-sm">
                     <p>Pilih salah satu Employment Status pada tabel untuk melihat detailnya di panel ini.</p>
                     <p>Status kerja dipakai untuk lifecycle employee, attendance eligibility, payroll inclusion, dan report HR.</p>
                 </CardContent>
@@ -49,7 +49,7 @@ export function EmploymentStatusDetailCard({ employmentStatus }: Props) {
                             </span>
                             {employmentStatus.name}
                         </CardTitle>
-                        <p className="mt-2 text-sm text-muted-foreground">Kode: {employmentStatus.code}</p>
+                        <p className="text-muted-foreground mt-2 text-sm">Kode: {employmentStatus.code}</p>
                     </div>
                     {employmentStatus.deleted_at ? (
                         <Badge className="bg-amber-600 text-white">Arsip</Badge>
@@ -63,7 +63,7 @@ export function EmploymentStatusDetailCard({ employmentStatus }: Props) {
 
             <CardContent className="space-y-4 p-5">
                 <div>
-                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Deskripsi</p>
+                    <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">Deskripsi</p>
                     <p className="mt-1 text-sm leading-6">{employmentStatus.description || 'Belum ada deskripsi untuk Employment Status ini.'}</p>
                 </div>
 
@@ -81,11 +81,12 @@ export function EmploymentStatusDetailCard({ employmentStatus }: Props) {
 
                 <div className="rounded-lg border p-3">
                     <div className="flex items-start gap-3">
-                        <ArchiveRestore className="mt-0.5 size-4 text-muted-foreground" />
+                        <ArchiveRestore className="text-muted-foreground mt-0.5 size-4" />
                         <div>
                             <p className="text-sm font-medium">Penggunaan data</p>
-                            <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                                Status kerja ini menjadi referensi Employees untuk menentukan apakah seseorang masih aktif, wajib attendance, masuk payroll, atau sudah berada pada status akhir.
+                            <p className="text-muted-foreground mt-1 text-xs leading-5">
+                                Status kerja ini menjadi referensi Employees untuk menentukan apakah seseorang masih aktif, wajib attendance, masuk
+                                payroll, atau sudah berada pada status akhir.
                             </p>
                         </div>
                     </div>
@@ -93,7 +94,7 @@ export function EmploymentStatusDetailCard({ employmentStatus }: Props) {
 
                 <div className="rounded-lg border p-3">
                     <div className="flex items-start gap-3">
-                        <CalendarClock className="mt-0.5 size-4 text-muted-foreground" />
+                        <CalendarClock className="text-muted-foreground mt-0.5 size-4" />
                         <div className="space-y-1 text-sm">
                             <p>
                                 <span className="text-muted-foreground">Dibuat:</span> {formatDate(employmentStatus.created_at)}

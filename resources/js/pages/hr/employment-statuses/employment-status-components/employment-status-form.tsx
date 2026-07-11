@@ -28,7 +28,7 @@ export function EmploymentStatusForm({ form, editing, canCreate, canUpdate, onSu
                     Code
                 </FieldInfoLabel>
                 <Input id="code" value={form.data.code} onChange={(event) => form.setData('code', event.target.value)} placeholder="PROBATION" />
-                {form.errors.code && <p className="text-sm text-destructive">{form.errors.code}</p>}
+                {form.errors.code && <p className="text-destructive text-sm">{form.errors.code}</p>}
             </div>
 
             <div className="space-y-2">
@@ -40,11 +40,14 @@ export function EmploymentStatusForm({ form, editing, canCreate, canUpdate, onSu
                     Nama Employment Status
                 </FieldInfoLabel>
                 <Input id="name" value={form.data.name} onChange={(event) => form.setData('name', event.target.value)} placeholder="Probation" />
-                {form.errors.name && <p className="text-sm text-destructive">{form.errors.name}</p>}
+                {form.errors.name && <p className="text-destructive text-sm">{form.errors.name}</p>}
             </div>
 
             <div className="space-y-2">
-                <FieldInfoLabel htmlFor="description" description="Catatan fungsi status, aturan lifecycle, atau dampaknya terhadap attendance dan payroll.">
+                <FieldInfoLabel
+                    htmlFor="description"
+                    description="Catatan fungsi status, aturan lifecycle, atau dampaknya terhadap attendance dan payroll."
+                >
                     Deskripsi
                 </FieldInfoLabel>
                 <textarea
@@ -53,27 +56,33 @@ export function EmploymentStatusForm({ form, editing, canCreate, canUpdate, onSu
                     onChange={(event) => form.setData('description', event.target.value)}
                     placeholder="Contoh: karyawan dalam masa percobaan dan masih mengikuti evaluasi awal"
                     rows={4}
-                    className="min-h-24 w-full resize-y rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs outline-none transition-[color,box-shadow] placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="border-input bg-background placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 min-h-24 w-full resize-y rounded-md border px-3 py-2 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50"
                 />
-                {form.errors.description && <p className="text-sm text-destructive">{form.errors.description}</p>}
+                {form.errors.description && <p className="text-destructive text-sm">{form.errors.description}</p>}
             </div>
 
             <div className="grid gap-3">
                 <label className="flex items-start gap-3 rounded-lg border p-3 text-sm">
-                    <Checkbox checked={form.data.requires_attendance} onCheckedChange={(checked) => form.setData('requires_attendance', checked === true)} />
+                    <Checkbox
+                        checked={form.data.requires_attendance}
+                        onCheckedChange={(checked) => form.setData('requires_attendance', checked === true)}
+                    />
                     <span>
                         <span className="block font-medium">Wajib attendance</span>
-                        <span className="mt-1 block text-xs leading-5 text-muted-foreground">
+                        <span className="text-muted-foreground mt-1 block text-xs leading-5">
                             Aktifkan jika employee dengan status ini tetap wajib check-in/check-out atau masuk perhitungan kehadiran.
                         </span>
                     </span>
                 </label>
 
                 <label className="flex items-start gap-3 rounded-lg border p-3 text-sm">
-                    <Checkbox checked={form.data.included_in_payroll} onCheckedChange={(checked) => form.setData('included_in_payroll', checked === true)} />
+                    <Checkbox
+                        checked={form.data.included_in_payroll}
+                        onCheckedChange={(checked) => form.setData('included_in_payroll', checked === true)}
+                    />
                     <span>
                         <span className="block font-medium">Masuk payroll</span>
-                        <span className="mt-1 block text-xs leading-5 text-muted-foreground">
+                        <span className="text-muted-foreground mt-1 block text-xs leading-5">
                             Aktifkan jika employee dengan status ini masuk proses payroll rutin atau perhitungan kompensasi.
                         </span>
                     </span>
@@ -83,7 +92,7 @@ export function EmploymentStatusForm({ form, editing, canCreate, canUpdate, onSu
                     <Checkbox checked={form.data.is_final_status} onCheckedChange={(checked) => form.setData('is_final_status', checked === true)} />
                     <span>
                         <span className="block font-medium">Status akhir</span>
-                        <span className="mt-1 block text-xs leading-5 text-muted-foreground">
+                        <span className="text-muted-foreground mt-1 block text-xs leading-5">
                             Tandai untuk status seperti resigned atau terminated, yaitu employee tidak lagi aktif secara lifecycle.
                         </span>
                     </span>
@@ -94,8 +103,9 @@ export function EmploymentStatusForm({ form, editing, canCreate, canUpdate, onSu
                 <Checkbox checked={form.data.active} onCheckedChange={(checked) => form.setData('active', checked === true)} />
                 <span>
                     <span className="block font-medium">Employment Status aktif</span>
-                    <span className="mt-1 block text-xs leading-5 text-muted-foreground">
-                        Status aktif bisa dipilih di module employee dan dipakai oleh Attendance serta Payroll. Nonaktifkan jika status tidak dipakai lagi.
+                    <span className="text-muted-foreground mt-1 block text-xs leading-5">
+                        Status aktif bisa dipilih di module employee dan dipakai oleh Attendance serta Payroll. Nonaktifkan jika status tidak dipakai
+                        lagi.
                     </span>
                 </span>
             </label>

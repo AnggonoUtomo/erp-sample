@@ -37,7 +37,7 @@ export function EmploymentTypeWorkspaceCard({ mode, employmentType, form, canCre
                             </span>
                             {isEdit ? 'Edit Employment Type' : 'Tambah Employment Type'}
                         </CardTitle>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-muted-foreground text-sm">
                             Field bertanda bintang wajib diisi. Gunakan tooltip tanda tanya untuk memahami fungsi setiap field.
                         </p>
                     </div>

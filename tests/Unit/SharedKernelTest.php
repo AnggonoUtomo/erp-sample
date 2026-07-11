@@ -16,6 +16,7 @@ use App\Support\Modules\ModuleRegistry;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class SharedKernelTest extends TestCase
@@ -109,7 +110,10 @@ class SharedKernelTest extends TestCase
 
     public function test_module_manifest_can_register_domain_event_listeners(): void
     {
-        $modulePath = app_path('Modules/TmpProject/EventfulModule');
+        $backendRoot = storage_path('framework/testing/modules/'.Str::uuid());
+        $modulePath = $backendRoot.'/TmpProject/EventfulModule';
+
+        config(['modules.backend_root' => $backendRoot]);
 
         File::deleteDirectory($modulePath);
         File::ensureDirectoryExists($modulePath);
@@ -137,7 +141,7 @@ PHP);
 
             $this->assertContains(SharedKernelFakeSubscriber::class, $listeners->get(SharedKernelFakeEvent::class));
         } finally {
-            File::deleteDirectory(app_path('Modules/TmpProject'));
+            File::deleteDirectory($backendRoot);
         }
     }
 }

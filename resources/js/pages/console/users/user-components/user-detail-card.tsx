@@ -147,12 +147,12 @@ export default function UserDetailCard({
                         <div className="space-y-3 p-3">
                             {roleNames.length ? (
                                 roleNames.map((role) => (
-                                    <div key={role} className="rounded-lg border bg-background/60 p-3">
+                                    <div key={role} className="bg-background/60 rounded-lg border p-3">
                                         <div className="mb-3 flex items-center justify-between gap-2">
-                                            <Badge className={`capitalize ${roleColorMap[role] ?? 'bg-muted text-muted-foreground'}`}>
-                                                {role}
-                                            </Badge>
-                                            <span className="text-xs text-muted-foreground">{user.rolePermissions?.[role]?.length ?? 0} permission</span>
+                                            <Badge className={`capitalize ${roleColorMap[role] ?? 'bg-muted text-muted-foreground'}`}>{role}</Badge>
+                                            <span className="text-muted-foreground text-xs">
+                                                {user.rolePermissions?.[role]?.length ?? 0} permission
+                                            </span>
                                         </div>
                                         <PermissionGroups permissions={user.rolePermissions?.[role] ?? []} permissionGroups={permissionGroups} />
                                     </div>
@@ -174,7 +174,9 @@ export default function UserDetailCard({
                             {directPermissions.length ? (
                                 <PermissionGroups permissions={directPermissions} permissionGroups={permissionGroups} />
                             ) : (
-                                <p className="text-muted-foreground text-sm">Tidak ada direct permission tambahan. Akses user ini berasal dari role.</p>
+                                <p className="text-muted-foreground text-sm">
+                                    Tidak ada direct permission tambahan. Akses user ini berasal dari role.
+                                </p>
                             )}
                         </div>
                     </div>
@@ -200,7 +202,7 @@ function PermissionGroups({ permissions, permissionGroups }: { permissions: stri
 
                 return (
                     <div key={group.module} className="space-y-2">
-                        <p className="text-xs font-semibold uppercase text-muted-foreground">{group.module}</p>
+                        <p className="text-muted-foreground text-xs font-semibold uppercase">{group.module}</p>
                         <div className="flex flex-wrap gap-1.5">
                             {matchedPermissions.map((permission) => (
                                 <Badge key={permission.id} variant="outline" className="gap-1 text-xs">
@@ -214,7 +216,7 @@ function PermissionGroups({ permissions, permissionGroups }: { permissions: stri
             })}
             {externalPermissions.length > 0 && (
                 <div className="space-y-2">
-                    <p className="text-xs font-semibold uppercase text-muted-foreground">external</p>
+                    <p className="text-muted-foreground text-xs font-semibold uppercase">external</p>
                     <div className="flex flex-wrap gap-1.5">
                         {externalPermissions.map((permission) => (
                             <Badge key={permission} variant="outline" className="gap-1 text-xs">

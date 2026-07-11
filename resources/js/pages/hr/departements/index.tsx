@@ -59,10 +59,7 @@ export default function DepartementsIndex({ departements, departementOptions, fi
     const form = useForm<DepartementForm>(emptyForm());
     const deleteForm = useForm<Record<string, never>>({});
 
-    const parentOptions = useMemo(
-        () => departementOptions.filter((option) => !editing || option.id !== editing.id),
-        [departementOptions, editing],
-    );
+    const parentOptions = useMemo(() => departementOptions.filter((option) => !editing || option.id !== editing.id), [departementOptions, editing]);
 
     const resetEditor = useCallback(() => {
         setEditing(null);
@@ -231,7 +228,7 @@ export default function DepartementsIndex({ departements, departementOptions, fi
             <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 p-4 sm:p-6">
                 <div>
                     <h1 className="text-2xl font-semibold tracking-tight">Departements</h1>
-                    <p className="mt-1 text-sm text-muted-foreground">
+                    <p className="text-muted-foreground mt-1 text-sm">
                         Kelola struktur unit organisasi HR untuk employee, attendance, payroll, approval flow, dan laporan headcount.
                     </p>
                 </div>

@@ -84,11 +84,7 @@ export default function UserForm({ user, roles, permissionGroups, onSuccess, onC
             .toUpperCase() ||
         user?.initials ||
         'US';
-    const inheritedPermissions = new Set(
-        roles
-            .filter((role) => form.data.roles.includes(role.name))
-            .flatMap((role) => role.permissions),
-    );
+    const inheritedPermissions = new Set(roles.filter((role) => form.data.roles.includes(role.name)).flatMap((role) => role.permissions));
 
     const toggleRole = (role: string, checked: boolean) => {
         form.setData('roles', checked ? [...form.data.roles, role] : form.data.roles.filter((name) => name !== role));
@@ -221,11 +217,11 @@ export default function UserForm({ user, roles, permissionGroups, onSuccess, onC
                         <div className="space-y-1">
                             <p className="text-sm font-medium">Password diatur oleh pemilik akun.</p>
                             <p className="text-muted-foreground text-xs leading-relaxed">
-                                Admin tidak mengisi password manual dari User Management. Centang opsi ini jika user perlu menerima tautan
-                                untuk mengatur ulang password melalui email.
+                                Admin tidak mengisi password manual dari User Management. Centang opsi ini jika user perlu menerima tautan untuk
+                                mengatur ulang password melalui email.
                             </p>
                         </div>
-                        <label className="flex items-center gap-2 text-sm font-medium text-foreground">
+                        <label className="text-foreground flex items-center gap-2 text-sm font-medium">
                             <Checkbox
                                 checked={form.data.send_password_reset_link}
                                 onCheckedChange={(checked) => form.setData('send_password_reset_link', Boolean(checked))}
@@ -296,8 +292,8 @@ export default function UserForm({ user, roles, permissionGroups, onSuccess, onC
                     </div>
                 </div>
                 <p className="text-muted-foreground text-xs">
-                    Permission bertanda <span className="font-medium">dari role</span> mengikuti role yang dipilih. Hapus centangnya lewat role,
-                    bukan dari direct permission.
+                    Permission bertanda <span className="font-medium">dari role</span> mengikuti role yang dipilih. Hapus centangnya lewat role, bukan
+                    dari direct permission.
                 </p>
             </div>
 

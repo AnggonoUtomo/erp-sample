@@ -26,7 +26,7 @@ export function WorkLocationSummaryCards({ summary }: Props) {
                                 <Icon className="size-5" />
                             </span>
                             <div>
-                                <p className="text-sm text-muted-foreground">{card.label}</p>
+                                <p className="text-muted-foreground text-sm">{card.label}</p>
                                 <p className="text-2xl font-semibold tracking-tight">{summary[card.key]}</p>
                             </div>
                         </CardContent>

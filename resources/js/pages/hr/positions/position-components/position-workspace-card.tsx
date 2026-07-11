@@ -29,7 +29,7 @@ export function PositionWorkspaceCard({ mode, position, form, departementOptions
 
     return (
         <Card data-dashboard-card className="overflow-hidden">
-            <CardHeader className="border-b bg-muted/20">
+            <CardHeader className="bg-muted/20 border-b">
                 <CardTitle className="flex items-center gap-2 text-base">
                     <span className="dashboard-icon icon-tone-sky flex size-8 items-center justify-center rounded-lg">
                         <Icon className="size-4" />

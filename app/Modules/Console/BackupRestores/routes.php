@@ -8,5 +8,5 @@ Route::middleware(['auth'])->prefix('backup-restore')->name('backup-restore.')->
     Route::get('export', [BackupRestoreController::class, 'export'])->name('export');
     Route::post('restore', [BackupRestoreController::class, 'restore'])->name('restore');
     Route::get('full/export', [BackupRestoreController::class, 'fullExport'])->name('full.export');
-    Route::post('full/restore', [BackupRestoreController::class, 'fullRestore'])->name('full.restore');
+    Route::post('full/restore', [BackupRestoreController::class, 'fullRestore'])->middleware('throttle:3,10')->name('full.restore');
 });

@@ -28,7 +28,7 @@ export function EmploymentTypeForm({ form, editing, canCreate, canUpdate, onSubm
                     Code
                 </FieldInfoLabel>
                 <Input id="code" value={form.data.code} onChange={(event) => form.setData('code', event.target.value)} placeholder="PERMANENT" />
-                {form.errors.code && <p className="text-sm text-destructive">{form.errors.code}</p>}
+                {form.errors.code && <p className="text-destructive text-sm">{form.errors.code}</p>}
             </div>
 
             <div className="space-y-2">
@@ -40,7 +40,7 @@ export function EmploymentTypeForm({ form, editing, canCreate, canUpdate, onSubm
                     Nama Employment Type
                 </FieldInfoLabel>
                 <Input id="name" value={form.data.name} onChange={(event) => form.setData('name', event.target.value)} placeholder="Permanent" />
-                {form.errors.name && <p className="text-sm text-destructive">{form.errors.name}</p>}
+                {form.errors.name && <p className="text-destructive text-sm">{form.errors.name}</p>}
             </div>
 
             <div className="space-y-2">
@@ -53,47 +53,59 @@ export function EmploymentTypeForm({ form, editing, canCreate, canUpdate, onSubm
                     onChange={(event) => form.setData('description', event.target.value)}
                     placeholder="Contoh: hubungan kerja tetap untuk employee inti perusahaan"
                     rows={4}
-                    className="min-h-24 w-full resize-y rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs outline-none transition-[color,box-shadow] placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="border-input bg-background placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 min-h-24 w-full resize-y rounded-md border px-3 py-2 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50"
                 />
-                {form.errors.description && <p className="text-sm text-destructive">{form.errors.description}</p>}
+                {form.errors.description && <p className="text-destructive text-sm">{form.errors.description}</p>}
             </div>
 
             <div className="grid gap-3">
                 <label className="flex items-start gap-3 rounded-lg border p-3 text-sm">
-                    <Checkbox checked={form.data.requires_contract_end_date} onCheckedChange={(checked) => form.setData('requires_contract_end_date', checked === true)} />
+                    <Checkbox
+                        checked={form.data.requires_contract_end_date}
+                        onCheckedChange={(checked) => form.setData('requires_contract_end_date', checked === true)}
+                    />
                     <span>
                         <span className="block font-medium">Wajib tanggal akhir kontrak</span>
-                        <span className="mt-1 block text-xs leading-5 text-muted-foreground">
+                        <span className="text-muted-foreground mt-1 block text-xs leading-5">
                             Aktifkan untuk kontrak, magang, outsourcing, atau tipe kerja yang harus punya end date.
                         </span>
                     </span>
                 </label>
 
                 <label className="flex items-start gap-3 rounded-lg border p-3 text-sm">
-                    <Checkbox checked={form.data.included_in_payroll} onCheckedChange={(checked) => form.setData('included_in_payroll', checked === true)} />
+                    <Checkbox
+                        checked={form.data.included_in_payroll}
+                        onCheckedChange={(checked) => form.setData('included_in_payroll', checked === true)}
+                    />
                     <span>
                         <span className="block font-medium">Masuk payroll</span>
-                        <span className="mt-1 block text-xs leading-5 text-muted-foreground">
+                        <span className="text-muted-foreground mt-1 block text-xs leading-5">
                             Aktifkan jika employee dengan tipe ini masuk proses payroll rutin atau perhitungan kompensasi internal.
                         </span>
                     </span>
                 </label>
 
                 <label className="flex items-start gap-3 rounded-lg border p-3 text-sm">
-                    <Checkbox checked={form.data.eligible_for_benefits} onCheckedChange={(checked) => form.setData('eligible_for_benefits', checked === true)} />
+                    <Checkbox
+                        checked={form.data.eligible_for_benefits}
+                        onCheckedChange={(checked) => form.setData('eligible_for_benefits', checked === true)}
+                    />
                     <span>
                         <span className="block font-medium">Eligible benefit</span>
-                        <span className="mt-1 block text-xs leading-5 text-muted-foreground">
+                        <span className="text-muted-foreground mt-1 block text-xs leading-5">
                             Aktifkan jika tipe kerja ini berhak mengikuti benefit, allowance, atau fasilitas perusahaan.
                         </span>
                     </span>
                 </label>
 
                 <label className="flex items-start gap-3 rounded-lg border p-3 text-sm">
-                    <Checkbox checked={form.data.eligible_for_overtime} onCheckedChange={(checked) => form.setData('eligible_for_overtime', checked === true)} />
+                    <Checkbox
+                        checked={form.data.eligible_for_overtime}
+                        onCheckedChange={(checked) => form.setData('eligible_for_overtime', checked === true)}
+                    />
                     <span>
                         <span className="block font-medium">Eligible overtime</span>
-                        <span className="mt-1 block text-xs leading-5 text-muted-foreground">
+                        <span className="text-muted-foreground mt-1 block text-xs leading-5">
                             Aktifkan jika tipe kerja ini boleh masuk perhitungan lembur Attendance dan Payroll.
                         </span>
                     </span>
@@ -104,7 +116,7 @@ export function EmploymentTypeForm({ form, editing, canCreate, canUpdate, onSubm
                 <Checkbox checked={form.data.active} onCheckedChange={(checked) => form.setData('active', checked === true)} />
                 <span>
                     <span className="block font-medium">Employment Type aktif</span>
-                    <span className="mt-1 block text-xs leading-5 text-muted-foreground">
+                    <span className="text-muted-foreground mt-1 block text-xs leading-5">
                         Tipe aktif bisa dipilih di module employee dan dipakai oleh kontrak, benefit, Attendance, serta Payroll.
                     </span>
                 </span>

@@ -51,10 +51,7 @@ export function SecurityPolicyPanel({ can, securityPolicy, form, submit }: Props
                     <div className="grid gap-4 lg:grid-cols-3">
                         <SummaryTile label="Session Timeout" value={`${securityPolicy.session_lifetime_minutes}m`} />
                         <SummaryTile label="Login Attempts" value={securityPolicy.login_max_attempts} />
-                        <SummaryTile
-                            label="Password Confirm"
-                            value={`${Math.round(securityPolicy.password_confirmation_timeout_seconds / 60)}m`}
-                        />
+                        <SummaryTile label="Password Confirm" value={`${Math.round(securityPolicy.password_confirmation_timeout_seconds / 60)}m`} />
                     </div>
 
                     <div className="grid gap-4 md:grid-cols-2">

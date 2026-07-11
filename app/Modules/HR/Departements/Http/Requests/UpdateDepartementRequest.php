@@ -3,7 +3,6 @@
 namespace App\Modules\HR\Departements\Http\Requests;
 
 use App\Modules\HR\Departements\DTO\DepartementData;
-use App\Modules\HR\Departements\Models\Departement;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 

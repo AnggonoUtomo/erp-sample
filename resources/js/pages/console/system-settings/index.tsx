@@ -295,12 +295,7 @@ export default function SystemSettings({
                     ) : activeSection === 'security' ? (
                         <SecurityPolicyPanel can={can} securityPolicy={securityPolicy} form={securityForm} submit={submitSecurityPolicy} />
                     ) : activeSection === 'password' ? (
-                        <PasswordPolicyPanel
-                            can={can}
-                            passwordPolicy={passwordPolicy}
-                            form={passwordPolicyForm}
-                            submit={submitPasswordPolicy}
-                        />
+                        <PasswordPolicyPanel can={can} passwordPolicy={passwordPolicy} form={passwordPolicyForm} submit={submitPasswordPolicy} />
                     ) : activeSection === 'health' ? (
                         <SystemHealthPanel systemHealth={systemHealth} />
                     ) : activeSection === 'environment' ? (

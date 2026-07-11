@@ -15,7 +15,12 @@ export function QueuePager({ paginator, pageName, onNavigate }: Props) {
         <div className="flex items-center justify-between gap-4 pt-2">
             <p className="text-muted-foreground text-sm">{paginator.total ? `${from}-${to} of ${paginator.total}` : 'No results'}</p>
             <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" disabled={paginator.current_page <= 1} onClick={() => onNavigate(pageName, paginator.current_page - 1)}>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={paginator.current_page <= 1}
+                    onClick={() => onNavigate(pageName, paginator.current_page - 1)}
+                >
                     Prev
                 </Button>
                 <span className="text-sm">

@@ -17,6 +17,10 @@ export function AppMenuHeader({ breadcrumbs = [] }: { breadcrumbs?: BreadcrumbIt
     const getInitials = useInitials();
     const isDark = appearance === 'dark';
 
+    if (!auth.user) {
+        return null;
+    }
+
     return (
         <header className="bg-card/92 supports-[backdrop-filter]:bg-card/78 sticky top-3 z-40 mx-3 mt-3 rounded-xl border px-3 py-2 shadow-sm backdrop-blur md:mx-4 md:px-4">
             <div className="flex min-h-11 items-center justify-between gap-3">

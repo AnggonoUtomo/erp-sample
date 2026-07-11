@@ -44,7 +44,8 @@ const projects: ProjectItem[] = [
     },
     {
         name: 'HR',
-        description: 'Workspace people operation untuk struktur organisasi, departement, employee profile, lifecycle, dan fondasi Attendance/Payroll.',
+        description:
+            'Workspace people operation untuk struktur organisasi, departement, employee profile, lifecycle, dan fondasi Attendance/Payroll.',
         status: 'ready',
         href: route('hr.dashboard'),
         loginHref: route('hr.login'),
@@ -89,7 +90,10 @@ export default function Welcome() {
                                 const Icon = item.icon;
 
                                 return (
-                                    <span key={item.label} className="text-muted-foreground bg-muted/70 inline-flex items-center gap-2 rounded-md px-3 py-2 text-xs font-medium">
+                                    <span
+                                        key={item.label}
+                                        className="text-muted-foreground bg-muted/70 inline-flex items-center gap-2 rounded-md px-3 py-2 text-xs font-medium"
+                                    >
                                         <Icon className="size-3.5" />
                                         {item.label}
                                     </span>
@@ -119,7 +123,8 @@ export default function Welcome() {
                                         Satu pintu untuk semua workspace project.
                                     </h1>
                                     <p className="text-muted-foreground max-w-2xl text-base leading-7 sm:text-lg">
-                                        Console menjadi lapisan awal untuk administrasi, konfigurasi, keamanan, monitoring, dan generator modul lintas project.
+                                        Console menjadi lapisan awal untuk administrasi, konfigurasi, keamanan, monitoring, dan generator modul lintas
+                                        project.
                                     </p>
                                 </div>
                             </div>
@@ -153,9 +158,13 @@ export default function Welcome() {
                         <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                             <div>
                                 <h2 className="text-xl font-semibold">Project Workspace</h2>
-                                <p className="text-muted-foreground text-sm">Pilih project yang sudah aktif atau siapkan target generator berikutnya.</p>
+                                <p className="text-muted-foreground text-sm">
+                                    Pilih project yang sudah aktif atau siapkan target generator berikutnya.
+                                </p>
                             </div>
-                            <Badge variant="secondary" className="w-fit">Console ready</Badge>
+                            <Badge variant="secondary" className="w-fit">
+                                Console ready
+                            </Badge>
                         </div>
 
                         <div className="grid gap-4 lg:grid-cols-2">
@@ -280,7 +289,7 @@ function ProjectCard({ project, isAuthenticated }: { project: ProjectItem; isAut
     const href = project.status === 'ready' ? (isAuthenticated ? project.href : (project.loginHref ?? route('login'))) : null;
 
     const content = (
-        <div className="group bg-card/92 text-card-foreground flex h-full flex-col rounded-lg border p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-lg">
+        <div className="group bg-card/92 text-card-foreground hover:border-primary/35 flex h-full flex-col rounded-lg border p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
             <div className="mb-5 flex items-start justify-between gap-4">
                 <span className={`dashboard-icon ${project.tone} flex size-12 items-center justify-center rounded-md`}>
                     <Icon className="size-6" />

@@ -75,7 +75,7 @@ export function QueueWorkspaceCard({ overview, pendingJobs, failedJobs, queues, 
                                 ))}
                             </SelectContent>
                         </Select>
-                        <Button variant="outline" onClick={() => router.reload({ preserveScroll: true })}>
+                        <Button variant="outline" onClick={() => router.reload()}>
                             <RefreshCcw className="size-4" />
                             Refresh
                         </Button>
@@ -180,10 +180,22 @@ export function QueueWorkspaceCard({ overview, pendingJobs, failedJobs, queues, 
                                                 <td className="px-3 py-3">{job.failed_at}</td>
                                                 <td className="px-3 py-3">
                                                     <div className="flex justify-end gap-2">
-                                                        <Button size="icon" variant="outline" disabled={!canManage} onClick={() => retryJob(job)} title="Retry job">
+                                                        <Button
+                                                            size="icon"
+                                                            variant="outline"
+                                                            disabled={!canManage}
+                                                            onClick={() => retryJob(job)}
+                                                            title="Retry job"
+                                                        >
                                                             <RotateCcw className="size-4" />
                                                         </Button>
-                                                        <Button size="icon" variant="destructive" disabled={!canManage} onClick={() => deleteJob(job)} title="Delete failed job">
+                                                        <Button
+                                                            size="icon"
+                                                            variant="destructive"
+                                                            disabled={!canManage}
+                                                            onClick={() => deleteJob(job)}
+                                                            title="Delete failed job"
+                                                        >
                                                             <Trash2 className="size-4" />
                                                         </Button>
                                                     </div>

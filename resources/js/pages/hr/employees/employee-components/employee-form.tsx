@@ -45,7 +45,10 @@ export function EmployeeForm({ form, editing, options, canCreate, canUpdate, onS
         return () => URL.revokeObjectURL(objectUrl);
     }, [form.data.avatar]);
 
-    const fallback = useMemo(() => (form.data.display_name || form.data.first_name || 'EM').slice(0, 2).toUpperCase(), [form.data.display_name, form.data.first_name]);
+    const fallback = useMemo(
+        () => (form.data.display_name || form.data.first_name || 'EM').slice(0, 2).toUpperCase(),
+        [form.data.display_name, form.data.first_name],
+    );
 
     const handleAvatar = (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0] ?? null;
@@ -72,7 +75,7 @@ export function EmployeeForm({ form, editing, options, canCreate, canUpdate, onS
                         <FieldInfoLabel htmlFor="employee_avatar" description="Foto avatar employee. Disimpan melalui Spatie Media Library.">
                             Avatar
                         </FieldInfoLabel>
-                        <label className="mt-2 flex h-10 cursor-pointer items-center gap-2 rounded-md border px-3 text-sm hover:bg-muted/50">
+                        <label className="hover:bg-muted/50 mt-2 flex h-10 cursor-pointer items-center gap-2 rounded-md border px-3 text-sm">
                             <ImagePlus className="size-4" />
                             <span className="truncate">{form.data.avatar?.name ?? 'Upload avatar'}</span>
                             <Input id="employee_avatar" type="file" accept="image/*" className="hidden" onChange={handleAvatar} />
@@ -96,7 +99,7 @@ export function EmployeeForm({ form, editing, options, canCreate, canUpdate, onS
                         </Button>
                     )}
                 </div>
-                {form.errors.avatar && <p className="mt-2 text-sm text-destructive">{form.errors.avatar}</p>}
+                {form.errors.avatar && <p className="text-destructive mt-2 text-sm">{form.errors.avatar}</p>}
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
@@ -104,29 +107,49 @@ export function EmployeeForm({ form, editing, options, canCreate, canUpdate, onS
                     <FieldInfoLabel htmlFor="employee_number" required description="Nomor unik employee untuk payroll, attendance, dan dokumen HR.">
                         Employee Number
                     </FieldInfoLabel>
-                    <Input id="employee_number" value={form.data.employee_number} onChange={(event) => form.setData('employee_number', event.target.value)} placeholder="EMP-0001" />
-                    {form.errors.employee_number && <p className="text-sm text-destructive">{form.errors.employee_number}</p>}
+                    <Input
+                        id="employee_number"
+                        value={form.data.employee_number}
+                        onChange={(event) => form.setData('employee_number', event.target.value)}
+                        placeholder="EMP-0001"
+                    />
+                    {form.errors.employee_number && <p className="text-destructive text-sm">{form.errors.employee_number}</p>}
                 </div>
                 <div className="space-y-2">
                     <FieldInfoLabel htmlFor="display_name" description="Nama tampil. Jika kosong, backend memakai gabungan nama depan dan belakang.">
                         Display Name
                     </FieldInfoLabel>
-                    <Input id="display_name" value={form.data.display_name} onChange={(event) => form.setData('display_name', event.target.value)} placeholder="Ayu Prameswari" />
-                    {form.errors.display_name && <p className="text-sm text-destructive">{form.errors.display_name}</p>}
+                    <Input
+                        id="display_name"
+                        value={form.data.display_name}
+                        onChange={(event) => form.setData('display_name', event.target.value)}
+                        placeholder="Ayu Prameswari"
+                    />
+                    {form.errors.display_name && <p className="text-destructive text-sm">{form.errors.display_name}</p>}
                 </div>
                 <div className="space-y-2">
                     <FieldInfoLabel htmlFor="first_name" required description="Nama depan employee untuk identitas HR.">
                         First Name
                     </FieldInfoLabel>
-                    <Input id="first_name" value={form.data.first_name} onChange={(event) => form.setData('first_name', event.target.value)} placeholder="Ayu" />
-                    {form.errors.first_name && <p className="text-sm text-destructive">{form.errors.first_name}</p>}
+                    <Input
+                        id="first_name"
+                        value={form.data.first_name}
+                        onChange={(event) => form.setData('first_name', event.target.value)}
+                        placeholder="Ayu"
+                    />
+                    {form.errors.first_name && <p className="text-destructive text-sm">{form.errors.first_name}</p>}
                 </div>
                 <div className="space-y-2">
                     <FieldInfoLabel htmlFor="last_name" description="Nama belakang employee jika ada.">
                         Last Name
                     </FieldInfoLabel>
-                    <Input id="last_name" value={form.data.last_name} onChange={(event) => form.setData('last_name', event.target.value)} placeholder="Prameswari" />
-                    {form.errors.last_name && <p className="text-sm text-destructive">{form.errors.last_name}</p>}
+                    <Input
+                        id="last_name"
+                        value={form.data.last_name}
+                        onChange={(event) => form.setData('last_name', event.target.value)}
+                        placeholder="Prameswari"
+                    />
+                    {form.errors.last_name && <p className="text-destructive text-sm">{form.errors.last_name}</p>}
                 </div>
             </div>
 
@@ -135,15 +158,25 @@ export function EmployeeForm({ form, editing, options, canCreate, canUpdate, onS
                     <FieldInfoLabel htmlFor="work_email" description="Email kerja employee. Harus unik jika diisi.">
                         Work Email
                     </FieldInfoLabel>
-                    <Input id="work_email" value={form.data.work_email} onChange={(event) => form.setData('work_email', event.target.value)} placeholder="ayu@company.test" />
-                    {form.errors.work_email && <p className="text-sm text-destructive">{form.errors.work_email}</p>}
+                    <Input
+                        id="work_email"
+                        value={form.data.work_email}
+                        onChange={(event) => form.setData('work_email', event.target.value)}
+                        placeholder="ayu@company.test"
+                    />
+                    {form.errors.work_email && <p className="text-destructive text-sm">{form.errors.work_email}</p>}
                 </div>
                 <div className="space-y-2">
                     <FieldInfoLabel htmlFor="phone" description="Nomor telepon utama employee.">
                         Phone
                     </FieldInfoLabel>
-                    <Input id="phone" value={form.data.phone} onChange={(event) => form.setData('phone', event.target.value)} placeholder="+62812..." />
-                    {form.errors.phone && <p className="text-sm text-destructive">{form.errors.phone}</p>}
+                    <Input
+                        id="phone"
+                        value={form.data.phone}
+                        onChange={(event) => form.setData('phone', event.target.value)}
+                        placeholder="+62812..."
+                    />
+                    {form.errors.phone && <p className="text-destructive text-sm">{form.errors.phone}</p>}
                 </div>
             </div>
 
@@ -166,7 +199,9 @@ export function EmployeeForm({ form, editing, options, canCreate, canUpdate, onS
                 </Select>
                 <Select value={selectValue(form.data.departement_id)} onValueChange={(value) => selectField('departement_id', value)}>
                     <div className="space-y-2">
-                        <FieldInfoLabel description="Departement employee untuk struktur organisasi, reporting, dan filter HR.">Departement</FieldInfoLabel>
+                        <FieldInfoLabel description="Departement employee untuk struktur organisasi, reporting, dan filter HR.">
+                            Departement
+                        </FieldInfoLabel>
                         <SelectTrigger>
                             <SelectValue placeholder="Pilih departement" />
                         </SelectTrigger>
@@ -251,7 +286,9 @@ export function EmployeeForm({ form, editing, options, canCreate, canUpdate, onS
                 </Select>
                 <Select value={selectValue(form.data.employment_type_id)} onValueChange={(value) => selectField('employment_type_id', value)}>
                     <div className="space-y-2">
-                        <FieldInfoLabel description="Tipe hubungan kerja, misalnya permanent, contract, intern, freelance.">Employment Type</FieldInfoLabel>
+                        <FieldInfoLabel description="Tipe hubungan kerja, misalnya permanent, contract, intern, freelance.">
+                            Employment Type
+                        </FieldInfoLabel>
                         <SelectTrigger>
                             <SelectValue placeholder="Pilih type" />
                         </SelectTrigger>
@@ -267,12 +304,26 @@ export function EmployeeForm({ form, editing, options, canCreate, canUpdate, onS
                 </Select>
                 <div className="grid gap-3 sm:grid-cols-2">
                     <div className="space-y-2">
-                        <FieldInfoLabel htmlFor="hired_at" description="Tanggal mulai kerja.">Join Date</FieldInfoLabel>
-                        <Input id="hired_at" type="date" value={form.data.hired_at} onChange={(event) => form.setData('hired_at', event.target.value)} />
+                        <FieldInfoLabel htmlFor="hired_at" description="Tanggal mulai kerja.">
+                            Join Date
+                        </FieldInfoLabel>
+                        <Input
+                            id="hired_at"
+                            type="date"
+                            value={form.data.hired_at}
+                            onChange={(event) => form.setData('hired_at', event.target.value)}
+                        />
                     </div>
                     <div className="space-y-2">
-                        <FieldInfoLabel htmlFor="ended_at" description="Tanggal akhir kerja jika employee sudah selesai bekerja.">End Date</FieldInfoLabel>
-                        <Input id="ended_at" type="date" value={form.data.ended_at} onChange={(event) => form.setData('ended_at', event.target.value)} />
+                        <FieldInfoLabel htmlFor="ended_at" description="Tanggal akhir kerja jika employee sudah selesai bekerja.">
+                            End Date
+                        </FieldInfoLabel>
+                        <Input
+                            id="ended_at"
+                            type="date"
+                            value={form.data.ended_at}
+                            onChange={(event) => form.setData('ended_at', event.target.value)}
+                        />
                     </div>
                 </div>
             </div>
@@ -286,16 +337,18 @@ export function EmployeeForm({ form, editing, options, canCreate, canUpdate, onS
                     value={form.data.notes}
                     onChange={(event) => form.setData('notes', event.target.value)}
                     rows={3}
-                    className="min-h-20 w-full resize-y rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                    className="border-input bg-background placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 min-h-20 w-full resize-y rounded-md border px-3 py-2 text-sm shadow-xs outline-none focus-visible:ring-[3px]"
                 />
-                {form.errors.notes && <p className="text-sm text-destructive">{form.errors.notes}</p>}
+                {form.errors.notes && <p className="text-destructive text-sm">{form.errors.notes}</p>}
             </div>
 
             <label className="flex items-start gap-3 rounded-lg border p-3 text-sm">
                 <Checkbox checked={form.data.active} onCheckedChange={(checked) => form.setData('active', checked === true)} />
                 <span>
                     <span className="block font-medium">Employee aktif</span>
-                    <span className="mt-1 block text-xs leading-5 text-muted-foreground">Employee aktif bisa dipakai oleh Attendance, Payroll, dan module HR lanjutan.</span>
+                    <span className="text-muted-foreground mt-1 block text-xs leading-5">
+                        Employee aktif bisa dipakai oleh Attendance, Payroll, dan module HR lanjutan.
+                    </span>
                 </span>
             </label>
 

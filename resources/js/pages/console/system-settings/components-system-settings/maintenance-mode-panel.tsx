@@ -57,8 +57,8 @@ export function MaintenanceModePanel({
                     <div className="rounded-lg border border-dashed p-4">
                         <p className="text-sm font-medium">Cara Kerja Maintenance Mode</p>
                         <p className="text-muted-foreground mt-1 text-xs leading-relaxed">
-                            Saat aktif, aplikasi ditutup sementara untuk user umum. Gunakan ini saat deploy, migrasi database, perbaikan urgent,
-                            atau perawatan server. Admin/developer tetap bisa masuk melalui secret bypass jika disiapkan.
+                            Saat aktif, aplikasi ditutup sementara untuk user umum. Gunakan ini saat deploy, migrasi database, perbaikan urgent, atau
+                            perawatan server. Admin/developer tetap bisa masuk melalui secret bypass jika disiapkan.
                         </p>
                     </div>
 
@@ -69,7 +69,11 @@ export function MaintenanceModePanel({
                     </div>
 
                     <label className="bg-background/60 flex items-start gap-3 rounded-lg border p-4">
-                        <Checkbox checked={form.data.enabled} disabled={disabled} onCheckedChange={(checked) => form.setData('enabled', Boolean(checked))} />
+                        <Checkbox
+                            checked={form.data.enabled}
+                            disabled={disabled}
+                            onCheckedChange={(checked) => form.setData('enabled', Boolean(checked))}
+                        />
                         <span>
                             <span className="block text-sm font-medium">Aktifkan maintenance mode</span>
                             <span className="text-muted-foreground mt-1 block text-xs leading-relaxed">
@@ -92,7 +96,9 @@ export function MaintenanceModePanel({
                     </div>
 
                     <div className="space-y-3">
-                        <FieldInfoLabel description="Pilih visual halaman yang ditampilkan saat aplikasi masuk maintenance mode.">Style Halaman</FieldInfoLabel>
+                        <FieldInfoLabel description="Pilih visual halaman yang ditampilkan saat aplikasi masuk maintenance mode.">
+                            Style Halaman
+                        </FieldInfoLabel>
                         <Select
                             value={form.data.page_style}
                             disabled={disabled}
@@ -143,7 +149,9 @@ export function MaintenanceModePanel({
                             setRetryUnit={setRetryUnit}
                         />
                         <div className="space-y-2">
-                            <FieldInfoLabel description="Auto refresh browser saat maintenance. Kosongkan untuk nonaktif.">Refresh Seconds</FieldInfoLabel>
+                            <FieldInfoLabel description="Auto refresh browser saat maintenance. Kosongkan untuk nonaktif.">
+                                Refresh Seconds
+                            </FieldInfoLabel>
                             <Input
                                 type="number"
                                 min="5"
@@ -158,7 +166,9 @@ export function MaintenanceModePanel({
                             <InputError message={form.errors.refresh_seconds} />
                         </div>
                         <div className="space-y-2">
-                            <FieldInfoLabel description="Slug rahasia untuk bypass maintenance. Contoh: admin-bypass-2026.">Secret Bypass</FieldInfoLabel>
+                            <FieldInfoLabel description="Slug rahasia untuk bypass maintenance. Contoh: admin-bypass-2026.">
+                                Secret Bypass
+                            </FieldInfoLabel>
                             <Input
                                 value={form.data.secret}
                                 disabled={disabled}

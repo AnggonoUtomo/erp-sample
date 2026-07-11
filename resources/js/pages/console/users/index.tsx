@@ -68,36 +68,43 @@ export default function UserIndex() {
         setWorkspaceMode('detail');
     };
 
-    const handleDeleteUser = useCallback((user: UserRow) => {
-        if (user.deleted_at) {
-            if (!can('users.force-delete') || user.can?.forceDelete === false) {
+    const handleDeleteUser = useCallback(
+        (user: UserRow) => {
+            if (user.deleted_at) {
+                if (!can('users.force-delete') || user.can?.forceDelete === false) {
+                    return;
+                }
+
+                setDeletingUser(user);
+                return;
+            }
+
+            if (!can('users.delete') || user.can?.delete === false) {
                 return;
             }
 
             setDeletingUser(user);
-            return;
-        }
-
-        if (!can('users.delete') || user.can?.delete === false) {
-            return;
-        }
-
-        setDeletingUser(user);
-    }, [can]);
+        },
+        [can],
+    );
 
     const handleRestoreUser = (user: UserRow) => {
         if (!can('users.restore') || user.can?.restore === false) {
             return;
         }
 
-        router.patch(route('users.restore', user.id), {}, {
-            preserveScroll: true,
-            onSuccess: () => {
-                if (selectedUser?.id === user.id) {
-                    setSelectedUser(null);
-                }
+        router.patch(
+            route('users.restore', user.id),
+            {},
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    if (selectedUser?.id === user.id) {
+                        setSelectedUser(null);
+                    }
+                },
             },
-        });
+        );
     };
 
     const handleImpersonateUser = (user: UserRow) => {

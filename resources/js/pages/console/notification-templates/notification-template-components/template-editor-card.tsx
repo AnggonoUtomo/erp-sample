@@ -24,7 +24,9 @@ export function TemplateEditorCard({ selectedTemplate, canUpdate, form, onSubmit
                     <div>
                         <CardTitle>{selectedTemplate?.name ?? 'Template'}</CardTitle>
                         <CardDescription>
-                            {selectedTemplate?.updated_at ? `Terakhir diperbarui ${selectedTemplate.updated_at}.` : 'Atur subject dan isi pesan template.'}
+                            {selectedTemplate?.updated_at
+                                ? `Terakhir diperbarui ${selectedTemplate.updated_at}.`
+                                : 'Atur subject dan isi pesan template.'}
                         </CardDescription>
                     </div>
                     {selectedTemplate && <Badge variant="outline">{selectedTemplate.key}</Badge>}
@@ -66,7 +68,11 @@ export function TemplateEditorCard({ selectedTemplate, canUpdate, form, onSubmit
                                 </div>
 
                                 <label className="flex items-center gap-3 rounded-md border p-3 text-sm">
-                                    <Checkbox checked={form.data.active} disabled={!canUpdate} onCheckedChange={(checked) => form.setData('active', checked === true)} />
+                                    <Checkbox
+                                        checked={form.data.active}
+                                        disabled={!canUpdate}
+                                        onCheckedChange={(checked) => form.setData('active', checked === true)}
+                                    />
                                     <span>
                                         <span className="block font-medium">Template aktif</span>
                                         <span className="text-muted-foreground text-xs">Jika nonaktif, sistem tetap memakai fallback bawaan.</span>
@@ -90,7 +96,8 @@ export function TemplateEditorCard({ selectedTemplate, canUpdate, form, onSubmit
                                     </div>
                                 </div>
                                 <div className="bg-muted/40 rounded-lg border p-4 text-xs leading-5">
-                                    Gunakan variable dengan format kurung kurawal. Contoh: <code className="bg-background rounded px-1 py-0.5">{'{{ name }}'}</code>.
+                                    Gunakan variable dengan format kurung kurawal. Contoh:{' '}
+                                    <code className="bg-background rounded px-1 py-0.5">{'{{ name }}'}</code>.
                                 </div>
                             </aside>
                         </div>

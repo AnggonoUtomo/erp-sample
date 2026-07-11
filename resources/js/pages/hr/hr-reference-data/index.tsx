@@ -342,7 +342,7 @@ export default function HRReferenceDataIndex({ referenceData, categoryOptions, r
             <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 p-4 sm:p-6">
                 <div>
                     <h1 className="text-2xl font-semibold tracking-tight">HR Reference Data</h1>
-                    <p className="mt-1 text-sm text-muted-foreground">
+                    <p className="text-muted-foreground mt-1 text-sm">
                         Kelola referensi umum seperti gender, marital status, education level, religion, bank, dan blood type.
                     </p>
                 </div>

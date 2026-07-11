@@ -4,13 +4,13 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
 import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
+import type { WorkLocationForm, WorkLocationPageProps, WorkLocationRow } from './types';
 import { DeleteWorkLocationDialog } from './work-location-components/delete-work-location-dialog';
+import { WorkLocationDetailCard } from './work-location-components/work-location-detail-card';
 import { WorkLocationShortcutPanel } from './work-location-components/work-location-shortcut-panel';
 import { WorkLocationSummaryCards } from './work-location-components/work-location-summary-cards';
 import { WorkLocationTable } from './work-location-components/work-location-table';
-import { WorkLocationDetailCard } from './work-location-components/work-location-detail-card';
 import { WorkLocationWorkspaceCard, type WorkLocationWorkspaceMode } from './work-location-components/work-location-workspace-card';
-import type { WorkLocationForm, WorkLocationPageProps, WorkLocationRow } from './types';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -273,7 +273,7 @@ export default function WorkLocationsIndex({ workLocations, cityOptions, filters
             <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 p-4 sm:p-6">
                 <div>
                     <h1 className="text-2xl font-semibold tracking-tight">Work Locations</h1>
-                    <p className="mt-1 text-sm text-muted-foreground">
+                    <p className="text-muted-foreground mt-1 text-sm">
                         Kelola lokasi kerja yang menjadi referensi employee profile, attendance area, payroll, dan laporan organisasi.
                     </p>
                 </div>
@@ -298,28 +298,28 @@ export default function WorkLocationsIndex({ workLocations, cityOptions, filters
 
                         <Card data-dashboard-card className="w-full min-w-0 overflow-hidden">
                             <CardContent className="w-full min-w-0 overflow-hidden p-5">
-                            <WorkLocationTable
-                                workLocations={workLocations}
-                                cityOptions={cityOptions}
-                                search={search}
-                                status={status}
-                                archive={archive}
-                                city={city}
-                                canCreate={canCreate}
-                                canUpdate={canUpdate}
-                                canDelete={canDelete}
-                                canRestore={canRestore}
-                                canForceDelete={canForceDelete}
-                                onSearchChange={setSearch}
-                                onStatusChange={setStatus}
-                                onArchiveChange={setArchive}
-                                onCityChange={setCity}
-                                onAdd={startCreate}
-                                onSelect={selectWorkLocation}
-                                onEdit={startEdit}
-                                onDelete={setDeleteTarget}
-                                onRestore={restoreWorkLocation}
-                            />
+                                <WorkLocationTable
+                                    workLocations={workLocations}
+                                    cityOptions={cityOptions}
+                                    search={search}
+                                    status={status}
+                                    archive={archive}
+                                    city={city}
+                                    canCreate={canCreate}
+                                    canUpdate={canUpdate}
+                                    canDelete={canDelete}
+                                    canRestore={canRestore}
+                                    canForceDelete={canForceDelete}
+                                    onSearchChange={setSearch}
+                                    onStatusChange={setStatus}
+                                    onArchiveChange={setArchive}
+                                    onCityChange={setCity}
+                                    onAdd={startCreate}
+                                    onSelect={selectWorkLocation}
+                                    onEdit={startEdit}
+                                    onDelete={setDeleteTarget}
+                                    onRestore={restoreWorkLocation}
+                                />
                             </CardContent>
                         </Card>
                     </div>

@@ -42,15 +42,19 @@ export function HRReferenceDataForm({ form, editing, categoryOptions, canCreate,
                             ))}
                         </SelectContent>
                     </Select>
-                    {form.errors.category && <p className="text-sm text-destructive">{form.errors.category}</p>}
+                    {form.errors.category && <p className="text-destructive text-sm">{form.errors.category}</p>}
                 </div>
 
                 <div className="space-y-2">
-                    <FieldInfoLabel htmlFor="code" required description="Kode unik di dalam kategori. Gunakan format singkat dan konsisten, misalnya MALE, S1, atau BCA.">
+                    <FieldInfoLabel
+                        htmlFor="code"
+                        required
+                        description="Kode unik di dalam kategori. Gunakan format singkat dan konsisten, misalnya MALE, S1, atau BCA."
+                    >
                         Code
                     </FieldInfoLabel>
                     <Input id="code" value={form.data.code} onChange={(event) => form.setData('code', event.target.value)} placeholder="MALE" />
-                    {form.errors.code && <p className="text-sm text-destructive">{form.errors.code}</p>}
+                    {form.errors.code && <p className="text-destructive text-sm">{form.errors.code}</p>}
                 </div>
             </div>
 
@@ -59,7 +63,7 @@ export function HRReferenceDataForm({ form, editing, categoryOptions, canCreate,
                     Nama Reference Data
                 </FieldInfoLabel>
                 <Input id="name" value={form.data.name} onChange={(event) => form.setData('name', event.target.value)} placeholder="Male" />
-                {form.errors.name && <p className="text-sm text-destructive">{form.errors.name}</p>}
+                {form.errors.name && <p className="text-destructive text-sm">{form.errors.name}</p>}
             </div>
 
             <div className="space-y-2">
@@ -72,16 +76,16 @@ export function HRReferenceDataForm({ form, editing, categoryOptions, canCreate,
                     onChange={(event) => form.setData('description', event.target.value)}
                     placeholder="Contoh: pilihan gender untuk employee profile"
                     rows={3}
-                    className="min-h-20 w-full resize-y rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs outline-none transition-[color,box-shadow] placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="border-input bg-background placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 min-h-20 w-full resize-y rounded-md border px-3 py-2 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50"
                 />
-                {form.errors.description && <p className="text-sm text-destructive">{form.errors.description}</p>}
+                {form.errors.description && <p className="text-destructive text-sm">{form.errors.description}</p>}
             </div>
 
             <label className="flex items-start gap-3 rounded-lg border p-3 text-sm">
                 <Checkbox checked={form.data.active} onCheckedChange={(checked) => form.setData('active', checked === true)} />
                 <span>
                     <span className="block font-medium">Reference data aktif</span>
-                    <span className="mt-1 block text-xs leading-5 text-muted-foreground">
+                    <span className="text-muted-foreground mt-1 block text-xs leading-5">
                         Data aktif bisa dipilih pada form employee dan dipakai oleh modul HR lain.
                     </span>
                 </span>

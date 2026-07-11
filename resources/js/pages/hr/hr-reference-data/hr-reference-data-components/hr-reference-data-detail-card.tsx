@@ -34,7 +34,7 @@ export function HRReferenceDataDetailCard({ referenceData }: Props) {
                         Reference Data Preview
                     </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3 text-sm text-muted-foreground">
+                <CardContent className="text-muted-foreground space-y-3 text-sm">
                     <p>Pilih salah satu reference data pada tabel untuk melihat detailnya di panel ini.</p>
                     <p>Reference data dipakai sebagai sumber pilihan dropdown untuk employee profile, dokumen, report, dan integrasi HR.</p>
                 </CardContent>
@@ -53,7 +53,7 @@ export function HRReferenceDataDetailCard({ referenceData }: Props) {
                             </span>
                             {referenceData.name}
                         </CardTitle>
-                        <p className="mt-2 text-sm text-muted-foreground">
+                        <p className="text-muted-foreground mt-2 text-sm">
                             Kategori: {categoryLabel(referenceData.category)} | Kode: {referenceData.code}
                         </p>
                     </div>
@@ -69,28 +69,29 @@ export function HRReferenceDataDetailCard({ referenceData }: Props) {
 
             <CardContent className="space-y-4 p-5">
                 <div>
-                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Deskripsi</p>
+                    <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">Deskripsi</p>
                     <p className="mt-1 text-sm leading-6">{referenceData.description || 'Belum ada deskripsi untuk reference data ini.'}</p>
                 </div>
 
                 <div className="grid gap-2 sm:grid-cols-2">
                     <div className="rounded-lg border p-3">
-                        <p className="text-xs text-muted-foreground">Kategori</p>
+                        <p className="text-muted-foreground text-xs">Kategori</p>
                         <p className="mt-1 text-sm font-medium">{categoryLabel(referenceData.category)}</p>
                     </div>
                     <div className="rounded-lg border p-3">
-                        <p className="text-xs text-muted-foreground">Kode</p>
+                        <p className="text-muted-foreground text-xs">Kode</p>
                         <p className="mt-1 text-sm font-medium">{referenceData.code}</p>
                     </div>
                 </div>
 
                 <div className="rounded-lg border p-3">
                     <div className="flex items-start gap-3">
-                        <ArchiveRestore className="mt-0.5 size-4 text-muted-foreground" />
+                        <ArchiveRestore className="text-muted-foreground mt-0.5 size-4" />
                         <div>
                             <p className="text-sm font-medium">Penggunaan data</p>
-                            <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                                Reference data ini menjadi pilihan master untuk Employees, report HR, dan integrasi project lain melalui contract/event.
+                            <p className="text-muted-foreground mt-1 text-xs leading-5">
+                                Reference data ini menjadi pilihan master untuk Employees, report HR, dan integrasi project lain melalui
+                                contract/event.
                             </p>
                         </div>
                     </div>
@@ -98,7 +99,7 @@ export function HRReferenceDataDetailCard({ referenceData }: Props) {
 
                 <div className="rounded-lg border p-3">
                     <div className="flex items-start gap-3">
-                        <CalendarClock className="mt-0.5 size-4 text-muted-foreground" />
+                        <CalendarClock className="text-muted-foreground mt-0.5 size-4" />
                         <div className="space-y-1 text-sm">
                             <p>
                                 <span className="text-muted-foreground">Dibuat:</span> {formatDate(referenceData.created_at)}

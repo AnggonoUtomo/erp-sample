@@ -31,7 +31,7 @@ export function WorkLocationDetailCard({ workLocation }: Props) {
                         Work Location Preview
                     </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3 text-sm text-muted-foreground">
+                <CardContent className="text-muted-foreground space-y-3 text-sm">
                     <p>Pilih salah satu lokasi kerja pada tabel untuk melihat detailnya di panel ini.</p>
                     <p>Lokasi kerja dipakai sebagai referensi employee profile, attendance area, payroll, dan laporan organisasi.</p>
                 </CardContent>
@@ -50,7 +50,7 @@ export function WorkLocationDetailCard({ workLocation }: Props) {
                             </span>
                             {workLocation.name}
                         </CardTitle>
-                        <p className="mt-2 text-sm text-muted-foreground">Kode: {workLocation.code}</p>
+                        <p className="text-muted-foreground mt-2 text-sm">Kode: {workLocation.code}</p>
                     </div>
                     {workLocation.deleted_at ? (
                         <Badge className="bg-amber-600 text-white">Arsip</Badge>
@@ -69,12 +69,12 @@ export function WorkLocationDetailCard({ workLocation }: Props) {
                 </div>
 
                 <div className="space-y-2">
-                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Alamat</p>
+                    <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">Alamat</p>
                     <textarea
                         disabled
                         value={workLocation.address || 'Alamat belum diisi.'}
                         rows={3}
-                        className="min-h-20 w-full resize-none rounded-md border border-input bg-muted/40 px-3 py-2 text-sm text-muted-foreground disabled:opacity-100"
+                        className="border-input bg-muted/40 text-muted-foreground min-h-20 w-full resize-none rounded-md border px-3 py-2 text-sm disabled:opacity-100"
                     />
                     <div className="grid gap-3 sm:grid-cols-2">
                         <ReadonlyField label="Kota" value={workLocation.city || 'Belum diisi'} />
@@ -94,21 +94,21 @@ export function WorkLocationDetailCard({ workLocation }: Props) {
                 </div>
 
                 <div className="space-y-2">
-                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Deskripsi</p>
+                    <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">Deskripsi</p>
                     <textarea
                         disabled
                         value={workLocation.description || 'Belum ada deskripsi untuk lokasi kerja ini.'}
                         rows={4}
-                        className="min-h-24 w-full resize-none rounded-md border border-input bg-muted/40 px-3 py-2 text-sm text-muted-foreground disabled:opacity-100"
+                        className="border-input bg-muted/40 text-muted-foreground min-h-24 w-full resize-none rounded-md border px-3 py-2 text-sm disabled:opacity-100"
                     />
                 </div>
 
                 <div className="rounded-lg border p-3">
                     <div className="flex items-start gap-3">
-                        <Clock3 className="mt-0.5 size-4 text-muted-foreground" />
+                        <Clock3 className="text-muted-foreground mt-0.5 size-4" />
                         <div>
                             <p className="text-sm font-medium">{workLocation.timezone}</p>
-                            <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                            <p className="text-muted-foreground mt-1 text-xs leading-5">
                                 Timezone ini menjadi basis waktu attendance, shift, scheduler, cut off payroll, dan aktivitas operasional lokasi.
                             </p>
                         </div>
@@ -117,7 +117,7 @@ export function WorkLocationDetailCard({ workLocation }: Props) {
 
                 <div className="rounded-lg border p-3">
                     <div className="flex items-start gap-3">
-                        <CalendarClock className="mt-0.5 size-4 text-muted-foreground" />
+                        <CalendarClock className="text-muted-foreground mt-0.5 size-4" />
                         <div className="space-y-1 text-sm">
                             <p>
                                 <span className="text-muted-foreground">Dibuat:</span> {formatDate(workLocation.created_at)}
@@ -141,7 +141,7 @@ export function WorkLocationDetailCard({ workLocation }: Props) {
 function ReadonlyField({ label, value }: { label: string; value: string }) {
     return (
         <div className="space-y-1.5">
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
+            <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">{label}</p>
             <Input disabled value={value} className="bg-muted/40 text-sm disabled:opacity-100" />
         </div>
     );

@@ -93,14 +93,7 @@ const operationalLinks = [
     { title: 'Notification Templates', href: '/notification-templates', icon: MailCheck },
 ];
 
-const roadmapProjects = [
-    'HR',
-    'Attendance',
-    'Payroll',
-    'Accounting',
-    'CRM',
-    'Document Management',
-];
+const roadmapProjects = ['HR', 'Attendance', 'Payroll', 'Accounting', 'CRM', 'Document Management'];
 
 function IconBox({ icon: Icon, tone = 'primary' }: { icon: ComponentType<{ className?: string }>; tone?: 'primary' | 'success' | 'warning' }) {
     const toneClass =
@@ -156,7 +149,7 @@ export default function Dashboard() {
             <Head title="Dashboard Console" />
 
             <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 p-4 sm:p-6">
-                <section className="rounded-2xl border border-sidebar-border/70 bg-card p-6 shadow-sm dark:border-sidebar-border">
+                <section className="border-sidebar-border/70 bg-card dark:border-sidebar-border rounded-2xl border p-6 shadow-sm">
                     <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                         <div className="max-w-3xl">
                             <Badge variant="secondary" className="rounded-full">
@@ -164,9 +157,9 @@ export default function Dashboard() {
                                 Console Starterkit
                             </Badge>
                             <h1 className="mt-4 text-2xl font-semibold tracking-tight sm:text-3xl">Dashboard fondasi project modular.</h1>
-                            <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                                Console ini menjadi pusat administrasi, konfigurasi, observability, dan fondasi arsitektur untuk project
-                                bisnis seperti HR, Attendance, Payroll, Accounting, CRM, dan Document Management.
+                            <p className="text-muted-foreground mt-3 text-sm leading-6">
+                                Console ini menjadi pusat administrasi, konfigurasi, observability, dan fondasi arsitektur untuk project bisnis
+                                seperti HR, Attendance, Payroll, Accounting, CRM, dan Document Management.
                             </p>
                         </div>
                         <div className="grid gap-2 sm:grid-cols-2 lg:min-w-80">
@@ -194,7 +187,7 @@ export default function Dashboard() {
                                 <div>
                                     <div className="text-2xl font-semibold">{value}</div>
                                     <div className="mt-1 font-medium">{title}</div>
-                                    <p className="mt-2 text-sm leading-5 text-muted-foreground">{description}</p>
+                                    <p className="text-muted-foreground mt-2 text-sm leading-5">{description}</p>
                                 </div>
                             </CardContent>
                         </Card>
@@ -208,12 +201,12 @@ export default function Dashboard() {
                         </CardHeader>
                         <CardContent className="grid gap-4 md:grid-cols-2">
                             {foundationItems.map(({ title, description, icon }, index) => (
-                                <div key={title} className="rounded-xl border bg-background/60 p-4">
+                                <div key={title} className="bg-background/60 rounded-xl border p-4">
                                     <div className="flex items-start gap-3">
                                         <IconBox icon={icon} tone={index < 2 ? 'primary' : 'success'} />
                                         <div>
                                             <h2 className="font-semibold">{title}</h2>
-                                            <p className="mt-2 text-sm leading-6 text-muted-foreground">{description}</p>
+                                            <p className="text-muted-foreground mt-2 text-sm leading-6">{description}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -237,7 +230,7 @@ export default function Dashboard() {
                                     <CheckCircle2 className="mt-0.5 size-5 text-emerald-500" />
                                     <div>
                                         <div className="font-medium">{title}</div>
-                                        <div className="text-sm text-muted-foreground">{description}</div>
+                                        <div className="text-muted-foreground text-sm">{description}</div>
                                     </div>
                                 </div>
                             ))}
@@ -255,13 +248,13 @@ export default function Dashboard() {
                                 <Link
                                     key={title}
                                     href={href}
-                                    className="rounded-xl border bg-background/60 p-4 transition hover:border-primary/40 hover:bg-primary/5"
+                                    className="bg-background/60 hover:border-primary/40 hover:bg-primary/5 rounded-xl border p-4 transition"
                                 >
                                     <div className="flex items-start gap-3">
                                         <IconBox icon={icon} />
                                         <div>
                                             <div className="font-medium">{title}</div>
-                                            <p className="mt-1 text-sm leading-5 text-muted-foreground">{description}</p>
+                                            <p className="text-muted-foreground mt-1 text-sm leading-5">{description}</p>
                                         </div>
                                     </div>
                                 </Link>
@@ -278,7 +271,7 @@ export default function Dashboard() {
                                 <Link
                                     key={title}
                                     href={href}
-                                    className="flex items-center justify-between rounded-xl border bg-background/60 px-4 py-3 transition hover:border-primary/40 hover:bg-primary/5"
+                                    className="bg-background/60 hover:border-primary/40 hover:bg-primary/5 flex items-center justify-between rounded-xl border px-4 py-3 transition"
                                 >
                                     <span className="flex items-center gap-3">
                                         <IconBox icon={icon} tone="warning" />
@@ -301,8 +294,8 @@ export default function Dashboard() {
                         <CardContent>
                             <div className="grid gap-2 sm:grid-cols-2">
                                 {roadmapProjects.map((project, index) => (
-                                    <div key={project} className="flex items-center gap-3 rounded-xl border bg-background/60 px-4 py-3">
-                                        <span className="flex size-7 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
+                                    <div key={project} className="bg-background/60 flex items-center gap-3 rounded-xl border px-4 py-3">
+                                        <span className="bg-primary/10 text-primary flex size-7 items-center justify-center rounded-full text-sm font-semibold">
                                             {index + 1}
                                         </span>
                                         <span className="font-medium">{project}</span>
@@ -317,17 +310,17 @@ export default function Dashboard() {
                             <CardTitle>Backup & Kesehatan Sistem</CardTitle>
                         </CardHeader>
                         <CardContent className="grid gap-3 sm:grid-cols-2">
-                            <div className="rounded-xl border bg-background/60 p-4">
+                            <div className="bg-background/60 rounded-xl border p-4">
                                 <IconBox icon={DatabaseBackup} />
                                 <div className="mt-4 font-medium">Backup Restore</div>
-                                <p className="mt-2 text-sm leading-5 text-muted-foreground">
+                                <p className="text-muted-foreground mt-2 text-sm leading-5">
                                     Backup setting, database, dan server archive tersedia dari Console.
                                 </p>
                             </div>
-                            <div className="rounded-xl border bg-background/60 p-4">
+                            <div className="bg-background/60 rounded-xl border p-4">
                                 <IconBox icon={HeartPulse} tone="success" />
                                 <div className="mt-4 font-medium">System Health</div>
-                                <p className="mt-2 text-sm leading-5 text-muted-foreground">
+                                <p className="text-muted-foreground mt-2 text-sm leading-5">
                                     Health panel tersedia di System Settings untuk membaca kondisi runtime.
                                 </p>
                             </div>

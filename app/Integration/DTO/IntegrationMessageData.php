@@ -43,7 +43,7 @@ final readonly class IntegrationMessageData extends DataObject
      */
     public static function fromArray(array $payload): static
     {
-        return new static(
+        return new self(
             eventId: (string) $payload['event_id'],
             eventName: (string) $payload['event_name'],
             aggregateId: (string) $payload['aggregate_id'],

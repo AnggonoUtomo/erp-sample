@@ -266,8 +266,7 @@ export function AppSidebar() {
 
             return groups;
         }, {}),
-    )
-        .filter((group) => group.items.length > 0);
+    ).filter((group) => group.items.length > 0);
 
     const rememberSidebarScroll = useCallback(() => {
         if (typeof window === 'undefined' || !sidebarContentRef.current) {

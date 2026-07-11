@@ -38,7 +38,7 @@ export function DepartementWorkspaceCard({ mode, departement, form, parentOption
                             </span>
                             {isEdit ? 'Edit Departement' : 'Tambah Departement'}
                         </CardTitle>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-muted-foreground text-sm">
                             Field bertanda bintang wajib diisi. Gunakan tooltip tanda tanya untuk memahami fungsi setiap field.
                         </p>
                     </div>

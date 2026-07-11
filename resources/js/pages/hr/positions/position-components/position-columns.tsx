@@ -1,6 +1,1 @@
-export const positionColumns = [
-    'Position',
-    'Departement',
-    'Status',
-    'Actions',
-] as const;
+export const positionColumns = ['Position', 'Departement', 'Status', 'Actions'] as const;

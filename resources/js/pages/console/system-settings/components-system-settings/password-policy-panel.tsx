@@ -94,8 +94,8 @@ export function PasswordPolicyPanel({ can, passwordPolicy, form, submit }: Props
                     <div className="rounded-lg border border-dashed p-4">
                         <p className="text-sm font-medium">Status Implementasi</p>
                         <p className="text-muted-foreground mt-1 text-xs leading-relaxed">
-                            Aturan minimum length, uppercase/lowercase, angka, simbol, dan uncompromised sudah aktif pada reset password dan
-                            profile password. Expiry/history disimpan untuk tahap enforcement berikutnya.
+                            Aturan minimum length, uppercase/lowercase, angka, simbol, dan uncompromised sudah aktif pada reset password dan profile
+                            password. Expiry/history disimpan untuk tahap enforcement berikutnya.
                         </p>
                     </div>
 

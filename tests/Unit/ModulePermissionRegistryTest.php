@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Modules\Console\SystemSettings\Providers\SystemSettingsServiceProvider;
 use App\Support\Modules\ModulePermissionRegistry;
 use App\Support\Modules\ModuleRegistry;
 use Tests\TestCase;
@@ -41,7 +42,7 @@ class ModulePermissionRegistryTest extends TestCase
         $this->assertSame('system-settings', $systemSettings['slug']);
         $this->assertTrue($systemSettings['enabled']);
         $this->assertContains(
-            \App\Modules\Console\SystemSettings\Providers\SystemSettingsServiceProvider::class,
+            SystemSettingsServiceProvider::class,
             $systemSettings['providers'],
         );
     }

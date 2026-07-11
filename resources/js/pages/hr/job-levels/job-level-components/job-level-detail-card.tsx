@@ -30,7 +30,7 @@ export function JobLevelDetailCard({ jobLevel }: Props) {
                         Job Level Preview
                     </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3 text-sm text-muted-foreground">
+                <CardContent className="text-muted-foreground space-y-3 text-sm">
                     <p>Pilih salah satu job level pada tabel untuk melihat detailnya di panel ini.</p>
                     <p>Job level dipakai sebagai grade jabatan yang bisa menjadi dasar approval, benefit, dan payroll.</p>
                 </CardContent>
@@ -49,7 +49,7 @@ export function JobLevelDetailCard({ jobLevel }: Props) {
                             </span>
                             {jobLevel.name}
                         </CardTitle>
-                        <p className="mt-2 text-sm text-muted-foreground">Kode: {jobLevel.code}</p>
+                        <p className="text-muted-foreground mt-2 text-sm">Kode: {jobLevel.code}</p>
                     </div>
                     {jobLevel.deleted_at ? (
                         <Badge className="bg-amber-600 text-white">Arsip</Badge>
@@ -63,17 +63,18 @@ export function JobLevelDetailCard({ jobLevel }: Props) {
 
             <CardContent className="space-y-4 p-5">
                 <div>
-                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Deskripsi</p>
+                    <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">Deskripsi</p>
                     <p className="mt-1 text-sm leading-6">{jobLevel.description || 'Belum ada deskripsi untuk job level ini.'}</p>
                 </div>
 
                 <div className="rounded-lg border p-3">
                     <div className="flex items-start gap-3">
-                        <ArchiveRestore className="mt-0.5 size-4 text-muted-foreground" />
+                        <ArchiveRestore className="text-muted-foreground mt-0.5 size-4" />
                         <div>
                             <p className="text-sm font-medium">Penggunaan data</p>
-                            <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                                Job level ini bersifat lintas departement dan disiapkan sebagai referensi untuk employee profile, approval, benefit, dan payroll.
+                            <p className="text-muted-foreground mt-1 text-xs leading-5">
+                                Job level ini bersifat lintas departement dan disiapkan sebagai referensi untuk employee profile, approval, benefit,
+                                dan payroll.
                             </p>
                         </div>
                     </div>
@@ -81,7 +82,7 @@ export function JobLevelDetailCard({ jobLevel }: Props) {
 
                 <div className="rounded-lg border p-3">
                     <div className="flex items-start gap-3">
-                        <CalendarClock className="mt-0.5 size-4 text-muted-foreground" />
+                        <CalendarClock className="text-muted-foreground mt-0.5 size-4" />
                         <div className="space-y-1 text-sm">
                             <p>
                                 <span className="text-muted-foreground">Dibuat:</span> {formatDate(jobLevel.created_at)}

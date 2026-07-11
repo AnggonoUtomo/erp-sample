@@ -31,7 +31,11 @@ export function BrandingSettingsPanel({ can, form, logoPreview, faviconPreview, 
             <CardContent className="p-5 sm:p-6">
                 <form onSubmit={submit} className="space-y-6">
                     <div className="space-y-2">
-                        <FieldInfoLabel htmlFor="app_name" required description="Nama ini dipakai pada title halaman dan identitas aplikasi di layout.">
+                        <FieldInfoLabel
+                            htmlFor="app_name"
+                            required
+                            description="Nama ini dipakai pada title halaman dan identitas aplikasi di layout."
+                        >
                             Nama Aplikasi
                         </FieldInfoLabel>
                         <Input

@@ -38,7 +38,7 @@ export function HRReferenceDataWorkspaceCard({ mode, referenceData, form, catego
                             </span>
                             {isEdit ? 'Edit Reference Data' : 'Tambah Reference Data'}
                         </CardTitle>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-muted-foreground text-sm">
                             Field bertanda bintang wajib diisi. Gunakan tooltip tanda tanya untuk memahami fungsi setiap field.
                         </p>
                     </div>

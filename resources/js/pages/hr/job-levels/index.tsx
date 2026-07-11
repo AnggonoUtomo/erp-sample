@@ -247,7 +247,7 @@ export default function JobLevelsIndex({ jobLevels, filters, summary }: JobLevel
             <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 p-4 sm:p-6">
                 <div>
                     <h1 className="text-2xl font-semibold tracking-tight">Job Levels</h1>
-                    <p className="mt-1 text-sm text-muted-foreground">
+                    <p className="text-muted-foreground mt-1 text-sm">
                         Kelola grade atau level jabatan yang menjadi referensi employee profile, approval flow, benefit, dan payroll.
                     </p>
                 </div>

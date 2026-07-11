@@ -37,7 +37,7 @@ export function EmploymentStatusWorkspaceCard({ mode, employmentStatus, form, ca
                             </span>
                             {isEdit ? 'Edit Employment Status' : 'Tambah Employment Status'}
                         </CardTitle>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-muted-foreground text-sm">
                             Field bertanda bintang wajib diisi. Gunakan tooltip tanda tanya untuk memahami fungsi setiap field.
                         </p>
                     </div>

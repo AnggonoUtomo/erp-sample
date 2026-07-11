@@ -38,10 +38,12 @@ export interface AccessControlAbilities {
 }
 
 export interface PermissionFormData {
+    [key: string]: string[];
     permissions: string[];
 }
 
 export interface CreateRoleFormData {
+    [key: string]: string;
     name: string;
     guard_name: string;
 }

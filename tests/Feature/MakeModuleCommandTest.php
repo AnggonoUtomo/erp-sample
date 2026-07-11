@@ -3,14 +3,40 @@
 namespace Tests\Feature;
 
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class MakeModuleCommandTest extends TestCase
 {
+    private string $backendRoot;
+
+    private string $frontendRoot;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $fixtureRoot = storage_path('framework/testing/module-generator/'.Str::uuid());
+        $this->backendRoot = $fixtureRoot.'/backend';
+        $this->frontendRoot = $fixtureRoot.'/frontend';
+
+        config([
+            'modules.backend_root' => $this->backendRoot,
+            'modules.frontend_root' => $this->frontendRoot,
+        ]);
+    }
+
+    protected function tearDown(): void
+    {
+        File::deleteDirectory(dirname($this->backendRoot));
+
+        parent::tearDown();
+    }
+
     public function test_it_generates_a_module_inside_an_explicit_project(): void
     {
-        $backendPath = app_path('Modules/TmpProject/SandboxModule');
-        $frontendPath = resource_path('js/pages/tmp-project/sandbox-module');
+        $backendPath = $this->backendRoot.'/TmpProject/SandboxModule';
+        $frontendPath = $this->frontendRoot.'/tmp-project/sandbox-module';
 
         File::deleteDirectory($backendPath);
         File::deleteDirectory($frontendPath);
@@ -37,14 +63,12 @@ class MakeModuleCommandTest extends TestCase
         } finally {
             File::deleteDirectory($backendPath);
             File::deleteDirectory($frontendPath);
-            File::deleteDirectory(app_path('Modules/TmpProject'));
-            File::deleteDirectory(resource_path('js/pages/tmp-project'));
         }
     }
 
     public function test_it_accepts_project_and_module_shorthand(): void
     {
-        $backendPath = app_path('Modules/TmpProject/SandboxModule');
+        $backendPath = $this->backendRoot.'/TmpProject/SandboxModule';
 
         File::deleteDirectory($backendPath);
 
@@ -56,11 +80,9 @@ class MakeModuleCommandTest extends TestCase
 
             $this->assertFileExists($backendPath.'/module.php');
             $this->assertFileExists($backendPath.'/routes.php');
-            $this->assertFileDoesNotExist(resource_path('js/pages/tmp-project/sandbox-module/index.tsx'));
+            $this->assertFileDoesNotExist($this->frontendRoot.'/tmp-project/sandbox-module/index.tsx');
         } finally {
             File::deleteDirectory($backendPath);
-            File::deleteDirectory(app_path('Modules/TmpProject'));
-            File::deleteDirectory(resource_path('js/pages/tmp-project'));
         }
     }
 }

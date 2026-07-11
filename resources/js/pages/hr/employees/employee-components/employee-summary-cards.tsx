@@ -20,7 +20,7 @@ export function EmployeeSummaryCards({ summary }: Props) {
                 <Card key={card.label} data-dashboard-card>
                     <CardContent className="flex items-center justify-between gap-4 p-5">
                         <div>
-                            <p className="text-sm text-muted-foreground">{card.label}</p>
+                            <p className="text-muted-foreground text-sm">{card.label}</p>
                             <p className="mt-1 text-2xl font-semibold">{card.value}</p>
                         </div>
                         <span className={`dashboard-icon ${card.tone} flex size-11 items-center justify-center rounded-lg`}>

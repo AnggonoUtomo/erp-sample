@@ -8,7 +8,7 @@ export function DepartementDetailCard({ departement }: { departement: Departemen
     if (!departement) {
         return (
             <Card data-dashboard-card className="overflow-hidden">
-                <CardHeader className="border-b bg-muted/20">
+                <CardHeader className="bg-muted/20 border-b">
                     <CardTitle className="flex items-center gap-2 text-base">
                         <span className="dashboard-icon icon-tone-emerald flex size-8 items-center justify-center rounded-lg">
                             <Building2 className="size-4" />
@@ -22,7 +22,9 @@ export function DepartementDetailCard({ departement }: { departement: Departemen
                     </div>
                     <div className="space-y-1">
                         <p className="font-medium">Pilih departement dari tabel</p>
-                        <p className="max-w-[260px] text-sm text-muted-foreground">Detail hierarchy, status, dan deskripsi unit organisasi akan tampil di sini.</p>
+                        <p className="text-muted-foreground max-w-[260px] text-sm">
+                            Detail hierarchy, status, dan deskripsi unit organisasi akan tampil di sini.
+                        </p>
                     </div>
                 </CardContent>
             </Card>
@@ -31,7 +33,7 @@ export function DepartementDetailCard({ departement }: { departement: Departemen
 
     return (
         <Card data-dashboard-card className="overflow-hidden">
-            <CardHeader className="border-b bg-muted/20">
+            <CardHeader className="bg-muted/20 border-b">
                 <CardTitle className="flex items-center gap-2 text-base">
                     <span className="dashboard-icon icon-tone-emerald flex size-8 items-center justify-center rounded-lg">
                         <Building2 className="size-4" />
@@ -41,7 +43,7 @@ export function DepartementDetailCard({ departement }: { departement: Departemen
             </CardHeader>
             <CardContent className="space-y-5 p-5">
                 <div className="space-y-3 text-center">
-                    <div className="mx-auto flex size-20 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <div className="bg-primary/10 text-primary mx-auto flex size-20 items-center justify-center rounded-xl">
                         <Building2 className="size-9" />
                     </div>
                     <div className="space-y-1">
@@ -61,7 +63,7 @@ export function DepartementDetailCard({ departement }: { departement: Departemen
 
                 <div className="grid gap-3 text-sm">
                     <div className="flex items-center justify-between gap-3">
-                        <span className="flex items-center gap-2 text-muted-foreground">
+                        <span className="text-muted-foreground flex items-center gap-2">
                             <GitBranch className="size-4" />
                             Parent
                         </span>
@@ -70,7 +72,7 @@ export function DepartementDetailCard({ departement }: { departement: Departemen
                         </span>
                     </div>
                     <div className="flex items-start justify-between gap-3">
-                        <span className="flex items-center gap-2 text-muted-foreground">
+                        <span className="text-muted-foreground flex items-center gap-2">
                             <Building2 className="size-4" />
                             Sub-departement
                         </span>
@@ -86,7 +88,7 @@ export function DepartementDetailCard({ departement }: { departement: Departemen
 
                 <div className="space-y-2">
                     <p className="text-sm font-medium">Deskripsi</p>
-                    <p className="min-h-[96px] rounded-lg border bg-muted/20 p-3 text-sm leading-6 text-muted-foreground">
+                    <p className="bg-muted/20 text-muted-foreground min-h-[96px] rounded-lg border p-3 text-sm leading-6">
                         {departement.description || 'Belum ada deskripsi untuk departement ini.'}
                     </p>
                 </div>

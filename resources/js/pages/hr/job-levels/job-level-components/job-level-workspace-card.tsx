@@ -37,7 +37,7 @@ export function JobLevelWorkspaceCard({ mode, jobLevel, form, canCreate, canUpda
                             </span>
                             {isEdit ? 'Edit Job Level' : 'Tambah Job Level'}
                         </CardTitle>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-muted-foreground text-sm">
                             Field bertanda bintang wajib diisi. Gunakan tooltip tanda tanya untuk memahami fungsi setiap field.
                         </p>
                     </div>

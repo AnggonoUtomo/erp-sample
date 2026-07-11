@@ -13,5 +13,7 @@ return [
 
     'default_project' => env('MODULE_DEFAULT_PROJECT', 'Console'),
 
+    'backend_root' => app_path('Modules'),
+
     'frontend_root' => resource_path('js/pages'),
 ];

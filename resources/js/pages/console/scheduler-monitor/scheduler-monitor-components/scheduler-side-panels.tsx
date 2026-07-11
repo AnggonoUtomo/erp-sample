@@ -33,7 +33,9 @@ export function SchedulerSidePanels({ overview }: { overview: SchedulerOverview 
                         </div>
                         <div className="flex items-start gap-2 rounded-lg border p-3">
                             <Badge className="mt-0.5 bg-amber-500 text-white">Stale</Badge>
-                            <span className="text-muted-foreground leading-relaxed">Heartbeat telat 2-10 menit, biasanya cron lambat atau worker sibuk.</span>
+                            <span className="text-muted-foreground leading-relaxed">
+                                Heartbeat telat 2-10 menit, biasanya cron lambat atau worker sibuk.
+                            </span>
                         </div>
                         <div className="flex items-start gap-2 rounded-lg border p-3">
                             <Badge className="mt-0.5 bg-red-600 text-white">Down</Badge>
@@ -57,7 +59,8 @@ export function SchedulerSidePanels({ overview }: { overview: SchedulerOverview 
                     <div className="rounded-lg border p-4">
                         <p className="font-medium">Monitoring otomatis</p>
                         <p className="text-muted-foreground mt-1 text-xs leading-relaxed">
-                            Memastikan scheduler server aktif sehingga email queue, cleanup, laporan berkala, dan task periodik lain bisa berjalan tanpa klik manual.
+                            Memastikan scheduler server aktif sehingga email queue, cleanup, laporan berkala, dan task periodik lain bisa berjalan
+                            tanpa klik manual.
                         </p>
                     </div>
                     <div className="rounded-lg border p-4">
@@ -90,11 +93,12 @@ export function SchedulerSidePanels({ overview }: { overview: SchedulerOverview 
                         <code className="text-xs whitespace-pre">{overview.cron_command}</code>
                     </div>
                     <div className="bg-muted/50 rounded-lg border p-4 text-xs leading-relaxed">
-                        Pasang command ini di crontab server agar Laravel Scheduler memanggil `schedule:run` setiap menit. Di Windows lokal, konsepnya bisa diganti Task Scheduler atau menjalankan command manual saat development.
+                        Pasang command ini di crontab server agar Laravel Scheduler memanggil `schedule:run` setiap menit. Di Windows lokal, konsepnya
+                        bisa diganti Task Scheduler atau menjalankan command manual saat development.
                     </div>
                     <div className="rounded-lg border p-4">
                         <p className="text-muted-foreground text-xs">Artisan Path</p>
-                        <p className="mt-2 break-all text-sm font-medium">{overview.artisan_path}</p>
+                        <p className="mt-2 text-sm font-medium break-all">{overview.artisan_path}</p>
                     </div>
                 </CardContent>
             </Card>

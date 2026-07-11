@@ -13,7 +13,13 @@ class ModuleRegistry
      */
     public static function modules(): Collection
     {
-        return collect(File::directories(app_path('Modules')))
+        $root = (string) config('modules.backend_root', app_path('Modules'));
+
+        if (! File::isDirectory($root)) {
+            return collect();
+        }
+
+        return collect(File::directories($root))
             ->flatMap(function (string $path) {
                 if (self::isModuleDirectory($path)) {
                     return [self::moduleDefinition($path)];

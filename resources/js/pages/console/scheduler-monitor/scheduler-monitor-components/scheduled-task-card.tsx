@@ -30,7 +30,7 @@ export function ScheduledTaskCard({ events, canManage, onRun }: Props) {
                         </p>
                     </div>
                     <div className="flex flex-col gap-2 sm:flex-row">
-                        <Button variant="outline" onClick={() => router.reload({ preserveScroll: true })}>
+                        <Button variant="outline" onClick={() => router.reload()}>
                             <RefreshCcw className="size-4" />
                             Refresh
                         </Button>
@@ -77,7 +77,9 @@ export function ScheduledTaskCard({ events, canManage, onRun }: Props) {
                                             </span>
                                         </td>
                                         <td className="px-4 py-3 text-right">
-                                            <Badge variant={event.is_due_soon ? 'default' : 'secondary'}>{event.is_due_soon ? 'Soon' : 'Later'}</Badge>
+                                            <Badge variant={event.is_due_soon ? 'default' : 'secondary'}>
+                                                {event.is_due_soon ? 'Soon' : 'Later'}
+                                            </Badge>
                                         </td>
                                     </tr>
                                 ))

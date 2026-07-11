@@ -42,7 +42,18 @@ const statusBadgeMap = {
     archived: 'bg-amber-600 text-white',
 } as const;
 
-export default function UserDatatable({ data, meta, filters, roles, onAdd, onSelectUser, onEditUser, onDeleteUser, onRestoreUser, onImpersonateUser }: Props) {
+export default function UserDatatable({
+    data,
+    meta,
+    filters,
+    roles,
+    onAdd,
+    onSelectUser,
+    onEditUser,
+    onDeleteUser,
+    onRestoreUser,
+    onImpersonateUser,
+}: Props) {
     const { can } = usePermission();
     const [search, setSearch] = useState(filters.search ?? '');
     const [selectedRole, setSelectedRole] = useState(filters.role ?? 'all');
@@ -218,7 +229,7 @@ export default function UserDatatable({ data, meta, filters, roles, onAdd, onSel
                                                     <Button
                                                         variant="ghost"
                                                         size="icon"
-                                                        className="size-8 text-destructive hover:text-destructive"
+                                                        className="text-destructive hover:text-destructive size-8"
                                                         title={`Arsipkan ${user.name}`}
                                                         onClick={() => onDeleteUser(user)}
                                                     >
@@ -229,7 +240,7 @@ export default function UserDatatable({ data, meta, filters, roles, onAdd, onSel
                                                     <Button
                                                         variant="ghost"
                                                         size="icon"
-                                                        className="size-8 text-destructive hover:text-destructive"
+                                                        className="text-destructive hover:text-destructive size-8"
                                                         title={`Hapus permanen ${user.name}`}
                                                         onClick={() => onDeleteUser(user)}
                                                     >
