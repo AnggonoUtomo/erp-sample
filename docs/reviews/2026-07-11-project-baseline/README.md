@@ -1,6 +1,6 @@
 # Baseline Review Laravel12 ERP
 
-Status: baseline review telah dieksekusi sampai CP-4. Audit awal dibuat 2026-07-11; status terakhir dan pekerjaan coverage lanjutan tersedia di [guide plan koreksi](07-guide-plan-koreksi.md#status-eksekusi).
+Status: implementasi struktural P0–P3 selesai; exit CP-3 masih menunggu global mutation denial matrix. Audit awal dibuat 2026-07-11; status terakhir tersedia di [guide plan koreksi](07-guide-plan-koreksi.md#status-eksekusi).
 
 ## Urutan baca
 
