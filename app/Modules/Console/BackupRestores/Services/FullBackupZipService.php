@@ -6,6 +6,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
 use Illuminate\Validation\ValidationException;
 use RuntimeException;
+use Throwable;
 use ZipArchive;
 
 class FullBackupZipService
@@ -14,6 +15,7 @@ class FullBackupZipService
 
     public function __construct(
         private readonly FullBackupArchiveValidator $archiveValidator,
+        private readonly BackupSignatureService $signature,
         private readonly SqlDumpExecutor $sqlExecutor,
     ) {}
 
@@ -26,13 +28,13 @@ class FullBackupZipService
         $backupDir = storage_path('app/backups');
         File::ensureDirectoryExists($backupDir);
         $path = $backupDir.DIRECTORY_SEPARATOR.'full-backup-'.now()->format('Ymd-His').'.zip';
-        $zip = new ZipArchive;
-
-        if ($zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-            throw new RuntimeException('Tidak bisa membuat file backup ZIP.');
+        $storageFiles = $this->storageFiles();
+        $entryHashes = ['database.sql' => hash('sha256', $databaseSql)];
+        foreach ($storageFiles as $entry => $realPath) {
+            $entryHashes[$entry] = hash_file('sha256', $realPath);
         }
 
-        $zip->addFromString('manifest.json', json_encode([
+        $manifest = [
             'schema' => 'laravel12-starterkit.full-backup',
             'version' => self::VERSION,
             'exported_at' => now()->toISOString(),
@@ -42,10 +44,23 @@ class FullBackupZipService
                 'name' => config('database.connections.'.config('database.default').'.database'),
             ],
             'includes' => ['database.sql', 'storage_public'],
-            'integrity' => ['database_sql_sha256' => hash('sha256', $databaseSql)],
-        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+            'integrity' => [
+                'database_sql_sha256' => $entryHashes['database.sql'],
+                'entries_sha256' => $entryHashes,
+            ],
+        ];
+        $manifest['authenticity'] = $this->signature->sign($manifest);
+
+        $zip = new ZipArchive;
+        if ($zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+            throw new RuntimeException('Tidak bisa membuat file backup ZIP.');
+        }
+
+        $zip->addFromString('manifest.json', json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
         $zip->addFromString('database.sql', $databaseSql);
-        $this->addDirectory($zip, storage_path('app/public'), 'storage_public');
+        foreach ($storageFiles as $entry => $realPath) {
+            $zip->addFile($realPath, $entry);
+        }
         $zip->close();
 
         return $path;
@@ -77,18 +92,20 @@ class FullBackupZipService
             throw ValidationException::withMessages(['backup' => 'Versi full backup tidak didukung. Buat backup baru dengan versi aplikasi saat ini.']);
         }
 
+        try {
+            $this->signature->verify($manifest);
+            $this->verifyEntryIntegrity($zip, $manifest);
+        } catch (Throwable $exception) {
+            $zip->close();
+            throw $exception;
+        }
+
         $summary = ['database_restored' => false, 'storage_files_restored' => 0];
         if ($restoreDatabase) {
             $sql = $zip->getFromName('database.sql');
             if (! $sql) {
                 $zip->close();
                 throw ValidationException::withMessages(['backup' => 'database.sql tidak ditemukan di dalam ZIP.']);
-            }
-
-            $expectedHash = $manifest['integrity']['database_sql_sha256'] ?? null;
-            if (! is_string($expectedHash) || ! hash_equals($expectedHash, hash('sha256', $sql))) {
-                $zip->close();
-                throw ValidationException::withMessages(['backup' => 'Checksum database.sql tidak valid. File backup mungkin rusak atau telah diubah.']);
             }
 
             $this->sqlExecutor->run($sql);
@@ -104,15 +121,54 @@ class FullBackupZipService
         return $summary;
     }
 
-    private function addDirectory(ZipArchive $zip, string $directory, string $prefix): void
+    /** @return array<string, string> */
+    private function storageFiles(): array
     {
+        $directory = storage_path('app/public');
         if (! File::isDirectory($directory)) {
-            return;
+            return [];
         }
 
+        $files = [];
         foreach (File::allFiles($directory) as $file) {
             $relative = str_replace('\\', '/', $file->getRelativePathname());
-            $zip->addFile($file->getRealPath(), trim($prefix, '/').'/'.$relative);
+            $files['storage_public/'.$relative] = $file->getRealPath();
+        }
+
+        ksort($files, SORT_STRING);
+
+        return $files;
+    }
+
+    /** @param array<string, mixed> $manifest */
+    private function verifyEntryIntegrity(ZipArchive $zip, array $manifest): void
+    {
+        $expected = $manifest['integrity']['entries_sha256'] ?? null;
+        if (! is_array($expected)) {
+            throw ValidationException::withMessages(['backup' => 'Daftar checksum payload backup tidak ditemukan.']);
+        }
+
+        $actualEntries = [];
+        for ($i = 0; $i < $zip->numFiles; $i++) {
+            $name = $zip->getNameIndex($i);
+            if ($name === 'manifest.json' || str_ends_with($name, '/')) {
+                continue;
+            }
+            $actualEntries[] = $name;
+        }
+
+        sort($actualEntries, SORT_STRING);
+        $expectedEntries = array_keys($expected);
+        sort($expectedEntries, SORT_STRING);
+        if ($actualEntries !== $expectedEntries) {
+            throw ValidationException::withMessages(['backup' => 'Daftar payload ZIP tidak sesuai dengan manifest yang ditandatangani.']);
+        }
+
+        foreach ($expected as $entry => $hash) {
+            $contents = is_string($entry) ? $zip->getFromName($entry) : false;
+            if (! is_string($hash) || ! is_string($contents) || ! hash_equals($hash, hash('sha256', $contents))) {
+                throw ValidationException::withMessages(['backup' => "Checksum payload tidak valid: {$entry}."]);
+            }
         }
     }
 

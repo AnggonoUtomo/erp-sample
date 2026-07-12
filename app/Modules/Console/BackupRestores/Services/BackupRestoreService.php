@@ -17,7 +17,6 @@ class BackupRestoreService
         private readonly AuditLogService $audit,
         private readonly SettingsBackupService $settingsBackup,
         private readonly FullBackupZipService $zipService,
-        private readonly SqlDumpExecutor $sqlExecutor,
     ) {}
 
     /**
@@ -70,22 +69,7 @@ class BackupRestoreService
             ]);
         }
 
-        $extension = strtolower($file->getClientOriginalExtension());
-        $summary = [
-            'database_restored' => false,
-            'storage_files_restored' => 0,
-        ];
-
-        if ($extension === 'zip') {
-            $summary = $this->zipService->restore($file, $restoreDatabase, $restoreStoragePublic);
-        } elseif ($restoreDatabase) {
-            $this->sqlExecutor->run($file->get());
-            $summary['database_restored'] = true;
-        } else {
-            throw ValidationException::withMessages([
-                'backup' => 'File SQL hanya bisa digunakan untuk restore database.',
-            ]);
-        }
+        $summary = $this->zipService->restore($file, $restoreDatabase, $restoreStoragePublic);
 
         $this->audit->record(
             module: 'backup-restore',

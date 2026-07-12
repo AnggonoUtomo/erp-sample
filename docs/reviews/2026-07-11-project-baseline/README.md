@@ -13,6 +13,7 @@ Status: baseline review dan koreksi P0–P3 selesai sampai CP-4. Audit awal dibu
 7. [07-guide-plan-koreksi.md](07-guide-plan-koreksi.md) — urutan koreksi lintas temuan.
 8. [decisions/README.md](decisions/README.md) — keputusan dan statusnya.
 9. [08-mutation-authorization-matrix.md](08-mutation-authorization-matrix.md) — ownership dan denial evidence seluruh mutation berpermission.
+10. [09-backup-signature-runbook.md](09-backup-signature-runbook.md) — provisioning, verification, dan rotation key lintas environment.
 
 ## Relevansi silang
 

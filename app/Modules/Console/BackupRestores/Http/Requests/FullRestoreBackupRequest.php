@@ -37,8 +37,8 @@ class FullRestoreBackupRequest extends FormRequest
 
             $extension = strtolower($file->getClientOriginalExtension());
 
-            if (! in_array($extension, ['zip', 'sql', 'txt'], true)) {
-                $validator->errors()->add('backup', 'Full restore hanya menerima file .zip, .sql, atau .txt.');
+            if ($extension !== 'zip') {
+                $validator->errors()->add('backup', 'Full restore hanya menerima signed full backup .zip.');
             }
         });
     }

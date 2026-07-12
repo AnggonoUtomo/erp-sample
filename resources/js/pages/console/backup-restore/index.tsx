@@ -111,18 +111,18 @@ export default function BackupRestore({ overview, can }: Props) {
                                     </span>
                                     Full Restore
                                 </CardTitle>
-                                <CardDescription>Restore database dan storage public dari ZIP full backup atau SQL dump.</CardDescription>
+                                <CardDescription>Restore database dan storage public dari signed ZIP full backup.</CardDescription>
                             </CardHeader>
                             <CardContent className="p-5 sm:p-6">
                                 <form onSubmit={submitFullRestore} className="space-y-5">
                                     <div className="space-y-2">
                                         <label htmlFor="full_backup" className="text-sm font-medium">
-                                            File ZIP / SQL
+                                            Signed ZIP backup
                                         </label>
                                         <Input
                                             id="full_backup"
                                             type="file"
-                                            accept=".zip,.sql,text/plain"
+                                            accept=".zip,application/zip"
                                             disabled={!can.fullRestore || fullForm.processing}
                                             onChange={(event) => fullForm.setData('backup', event.target.files?.[0] ?? null)}
                                         />

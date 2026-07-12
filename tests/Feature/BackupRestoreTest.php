@@ -3,10 +3,13 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Modules\Console\BackupRestores\Services\FullBackupZipService;
 use App\Modules\Console\SystemSettings\Models\SystemSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
+use Illuminate\Validation\ValidationException;
+use RuntimeException;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
@@ -19,6 +22,11 @@ class BackupRestoreTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        config([
+            'backup.signature_key' => 'testing-shared-backup-signature-key-32-bytes',
+            'backup.signature_key_id' => 'test-primary',
+        ]);
 
         foreach (['backup-restore.view', 'backup-restore.export', 'backup-restore.restore'] as $permission) {
             Permission::findOrCreate($permission);
@@ -232,7 +240,7 @@ class BackupRestoreTest extends TestCase
             ]);
     }
 
-    public function test_full_restore_accepts_sql_extension_without_strict_mime(): void
+    public function test_full_restore_rejects_unsigned_sql_dump(): void
     {
         $user = User::factory()->create();
         $user->assignRole('admin');
@@ -245,8 +253,9 @@ class BackupRestoreTest extends TestCase
                 'restore_database' => true,
                 'confirmation' => 'RESTORE FULL BACKUP',
             ])
-            ->assertRedirect(route('login'))
-            ->assertSessionHas('status', 'Full database restore selesai. Silakan login ulang karena session database ikut diperbarui.');
+            ->assertSessionHasErrors([
+                'backup' => 'Full restore hanya menerima signed full backup .zip.',
+            ]);
     }
 
     public function test_full_restore_rejects_arbitrary_sql(): void
@@ -293,12 +302,43 @@ class BackupRestoreTest extends TestCase
     {
         $user = User::factory()->create();
         $user->givePermissionTo('backup-restore.full-restore');
-        $path = storage_path('framework/testing/tampered-'.uniqid().'.zip');
+        $path = app(FullBackupZipService::class)->create('-- Laravel 12 Starterkit full database backup');
+        $zip = new ZipArchive;
+        $zip->open($path);
+        $zip->addFromString('database.sql', '-- Laravel 12 Starterkit full database backup'.PHP_EOL.'SELECT 1;');
+        $zip->close();
+
+        try {
+            $file = new UploadedFile($path, 'backup.zip', 'application/zip', null, true);
+            $this->actingAs($user)->post(route('backup-restore.full.restore'), [
+                'backup' => $file,
+                'restore_database' => true,
+                'confirmation' => 'RESTORE FULL BACKUP',
+            ])->assertSessionHasErrors('backup');
+            $this->assertDatabaseHas('users', ['id' => $user->id]);
+        } finally {
+            File::delete($path);
+        }
+    }
+
+    public function test_full_restore_rejects_forged_manifest_signature_before_writing(): void
+    {
+        $user = User::factory()->create();
+        $user->givePermissionTo('backup-restore.full-restore');
+        $path = storage_path('framework/testing/forged-signature-'.uniqid().'.zip');
         $sql = '-- Laravel 12 Starterkit full database backup'.PHP_EOL.'SELECT 1;';
         $manifest = [
             'schema' => 'laravel12-starterkit.full-backup',
             'version' => 2,
-            'integrity' => ['database_sql_sha256' => hash('sha256', 'different contents')],
+            'integrity' => [
+                'database_sql_sha256' => hash('sha256', $sql),
+                'entries_sha256' => ['database.sql' => hash('sha256', $sql)],
+            ],
+            'authenticity' => [
+                'algorithm' => 'hmac-sha256',
+                'key_id' => 'test-primary',
+                'signature' => str_repeat('0', 64),
+            ],
         ];
         File::ensureDirectoryExists(dirname($path));
         $zip = new ZipArchive;
@@ -317,6 +357,72 @@ class BackupRestoreTest extends TestCase
             $this->assertDatabaseHas('users', ['id' => $user->id]);
         } finally {
             File::delete($path);
+        }
+    }
+
+    public function test_signed_backup_can_be_verified_in_another_environment_with_the_shared_key(): void
+    {
+        $service = app(FullBackupZipService::class);
+        $path = $service->create('-- Laravel 12 Starterkit full database backup');
+
+        try {
+            config(['app.env' => 'disaster-recovery', 'app.url' => 'https://recovery.example.test']);
+            $file = new UploadedFile($path, 'backup.zip', 'application/zip', null, true);
+
+            $this->assertSame(
+                ['database_restored' => false, 'storage_files_restored' => 0],
+                $service->restore($file, false, false),
+            );
+        } finally {
+            File::delete($path);
+        }
+    }
+
+    public function test_signed_backup_is_rejected_in_an_environment_with_a_different_key(): void
+    {
+        $service = app(FullBackupZipService::class);
+        $path = $service->create('-- Laravel 12 Starterkit full database backup');
+
+        try {
+            config(['backup.signature_key' => 'different-environment-signature-key-32-bytes']);
+            $file = new UploadedFile($path, 'backup.zip', 'application/zip', null, true);
+
+            $this->expectException(ValidationException::class);
+            $service->restore($file, false, false);
+        } finally {
+            File::delete($path);
+        }
+    }
+
+    public function test_full_backup_export_fails_closed_without_a_signature_key(): void
+    {
+        config(['backup.signature_key' => null]);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('BACKUP_SIGNATURE_KEY');
+
+        app(FullBackupZipService::class)->create('-- Laravel 12 Starterkit full database backup');
+    }
+
+    public function test_signed_backup_rejects_storage_payload_tampering(): void
+    {
+        $storagePath = storage_path('app/public/signature-test.txt');
+        File::ensureDirectoryExists(dirname($storagePath));
+        File::put($storagePath, 'trusted contents');
+        $service = app(FullBackupZipService::class);
+        $path = $service->create('-- Laravel 12 Starterkit full database backup');
+        $zip = new ZipArchive;
+        $zip->open($path);
+        $zip->addFromString('storage_public/signature-test.txt', 'tampered contents');
+        $zip->close();
+
+        try {
+            $file = new UploadedFile($path, 'backup.zip', 'application/zip', null, true);
+            $this->expectException(ValidationException::class);
+            $service->restore($file, false, false);
+        } finally {
+            File::delete($path);
+            File::delete($storagePath);
         }
     }
 

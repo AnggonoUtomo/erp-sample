@@ -4,12 +4,12 @@ Status eksekusi terakhir: 2026-07-12. Urutan tetap risk-first; item berstatus se
 
 ## Status eksekusi
 
-| Tahap | Status | Evidence utama |
-| --- | --- | --- |
-| P0 / CP-1 | Selesai | TASK-01–02 pada `d20aa3f`; suite penuh 170 test/475 assertions pada verifikasi 2026-07-12. |
-| P1 / CP-2 | Selesai | TASK-04–05 pada `d20aa3f`; TASK-03 ditutup pada slice 2026-07-12 dengan regression test acronym, penghapusan page legacy, typecheck, dan build hijau. |
+| Tahap     | Status  | Evidence utama                                                                                                                                                |
+| --------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| P0 / CP-1 | Selesai | TASK-01–02 pada `d20aa3f`; suite penuh 170 test/475 assertions pada verifikasi 2026-07-12.                                                                    |
+| P1 / CP-2 | Selesai | TASK-04–05 pada `d20aa3f`; TASK-03 ditutup pada slice 2026-07-12 dengan regression test acronym, penghapusan page legacy, typecheck, dan build hijau.         |
 | P2 / CP-3 | Selesai | Full-backup v2 hardening pada `d20aa3f`; global route×permission denial matrix terdokumentasi dan executable melalui runtime tests serta route contract test. |
-| P3 / CP-4 | Selesai | Tiga dekomposisi pada `5145c47`, `6cd4374`, `28bad32`; TASK-09 menambahkan 4 frontend characterization tests tanpa kebocoran ke production bundle. |
+| P3 / CP-4 | Selesai | Tiga dekomposisi pada `5145c47`, `6cd4374`, `28bad32`; TASK-09 menambahkan 4 frontend characterization tests tanpa kebocoran ke production bundle.            |
 
 Detail requirement/task dan cara verifikasi tetap mengikuti [baseline spec](04-baseline-spec.md) serta [delivery plan](05-delivery-plan.md).
 
@@ -41,16 +41,16 @@ Tambahkan characterization tests lalu pecah satu service/page per increment. Mul
 
 ## Matrix penyelesaian finding
 
-| Finding | Owner | Severity | Task | Evidence/keputusan |
-| --- | --- | --- | --- | --- |
-| CR-01 | Platform backend | Critical | TASK-01 | Selesai `d20aa3f`; fixture root unik. |
-| CR-02 | Console/user backend | Required | TASK-02 | Selesai `d20aa3f`; media disk per process. |
-| CR-03 | Backup/security | Required/Security | TASK-07 | Selesai dengan batas ADR-004; signature lintas environment non-scope baseline. |
-| CR-04 | Tooling/CI | Required | TASK-04 | Selesai `d20aa3f`; check dan fix terpisah. |
-| CR-05 | Module tooling/frontend | Required | TASK-03 | Selesai `460ff9f`; canonical acronym regression test. |
-| CR-06 | Module platform | Required | TASK-05 | Selesai `d20aa3f`; manifest validator read-only. |
-| CR-07 | Backup/settings/frontend | Maintainability | TASK-08, TASK-09 | Selesai; dekomposisi dan characterization frontend hijau. |
-| CR-08 | Quality/security | Coverage | TASK-06, TASK-09, TASK-10 | Restore, frontend interaction, queue failure/retry, dan global mutation denial matrix selesai. |
+| Finding | Owner                    | Severity          | Task                      | Evidence/keputusan                                                                             |
+| ------- | ------------------------ | ----------------- | ------------------------- | ---------------------------------------------------------------------------------------------- |
+| CR-01   | Platform backend         | Critical          | TASK-01                   | Selesai `d20aa3f`; fixture root unik.                                                          |
+| CR-02   | Console/user backend     | Required          | TASK-02                   | Selesai `d20aa3f`; media disk per process.                                                     |
+| CR-03   | Backup/security          | Required/Security | TASK-07                   | Selesai; archive limits ADR-004 dan signature lintas environment ADR-005.                      |
+| CR-04   | Tooling/CI               | Required          | TASK-04                   | Selesai `d20aa3f`; check dan fix terpisah.                                                     |
+| CR-05   | Module tooling/frontend  | Required          | TASK-03                   | Selesai `460ff9f`; canonical acronym regression test.                                          |
+| CR-06   | Module platform          | Required          | TASK-05                   | Selesai `d20aa3f`; manifest validator read-only.                                               |
+| CR-07   | Backup/settings/frontend | Maintainability   | TASK-08, TASK-09          | Selesai; dekomposisi dan characterization frontend hijau.                                      |
+| CR-08   | Quality/security         | Coverage          | TASK-06, TASK-09, TASK-10 | Restore, frontend interaction, queue failure/retry, dan global mutation denial matrix selesai. |
 
 ## Evidence task tambahan
 
@@ -85,6 +85,6 @@ Status: **Selesai 2026-07-12**. Matrix: [08-mutation-authorization-matrix.md](08
 - Acceptance: setiap POST/PUT/PATCH/DELETE memiliki owner permission dan evidence denial; tidak menerima 404 sebagai pengganti authorization untuk resource yang valid.
 - Test: focused authorization tests per modul, lalu full backend suite.
 
-### Concern dependency audit
+### Dependency audit
 
-`npm audit --omit=dev` pada 2026-07-12 melaporkan 13 advisory pada dependency tree lama (termasuk high/critical). Jangan menjalankan `npm audit fix` massal di dalam TASK-09; lakukan upgrade dependency sebagai perubahan terpisah dengan compatibility test dan review lockfile.
+Status: **Selesai 2026-07-12**. `npm audit --omit=dev` dan audit penuh melaporkan 0 vulnerability setelah compatible lockfile remediation; frontend quality gate tetap hijau.
