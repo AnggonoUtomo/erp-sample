@@ -163,6 +163,20 @@ class HREmploymentStatusTest extends TestCase
         ]);
     }
 
+    public function test_users_without_permission_cannot_mutate_employment_statuses(): void
+    {
+        $user = User::factory()->create();
+        $status = $this->employmentStatus('DENY');
+
+        $this->actingAs($user)->post(route('hr.employment-statuses.store'))->assertForbidden();
+        $this->actingAs($user)->put(route('hr.employment-statuses.update', $status))->assertForbidden();
+        $this->actingAs($user)->delete(route('hr.employment-statuses.destroy', $status))->assertForbidden();
+        $status->delete();
+        $this->actingAs($user)->patch(route('hr.employment-statuses.restore', $status->id))->assertForbidden();
+        $this->actingAs($user)->delete(route('hr.employment-statuses.force-destroy', $status->id))->assertForbidden();
+        $this->assertSoftDeleted('hr_employment_statuses', ['id' => $status->id]);
+    }
+
     private function employmentStatus(string $code = 'TMP'): EmploymentStatus
     {
         return EmploymentStatus::query()->create([

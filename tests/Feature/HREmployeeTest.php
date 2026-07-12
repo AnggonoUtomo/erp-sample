@@ -164,6 +164,20 @@ class HREmployeeTest extends TestCase
         ]);
     }
 
+    public function test_users_without_permission_cannot_mutate_employees(): void
+    {
+        $user = User::factory()->create();
+        $employee = $this->employee();
+
+        $this->actingAs($user)->post(route('hr.employees.store'))->assertForbidden();
+        $this->actingAs($user)->put(route('hr.employees.update', $employee))->assertForbidden();
+        $this->actingAs($user)->delete(route('hr.employees.destroy', $employee))->assertForbidden();
+        $employee->delete();
+        $this->actingAs($user)->patch(route('hr.employees.restore', $employee->id))->assertForbidden();
+        $this->actingAs($user)->delete(route('hr.employees.force-destroy', $employee->id))->assertForbidden();
+        $this->assertSoftDeleted('hr_employees', ['id' => $employee->id]);
+    }
+
     /**
      * @return array<string, mixed>
      */

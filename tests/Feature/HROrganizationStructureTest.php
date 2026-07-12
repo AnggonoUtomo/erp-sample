@@ -85,6 +85,20 @@ class HROrganizationStructureTest extends TestCase
         $this->assertDatabaseMissing('hr_organization_structures', ['id' => $structure->id]);
     }
 
+    public function test_users_without_permission_cannot_mutate_organization_structures(): void
+    {
+        $user = User::factory()->create();
+        $structure = $this->structure('DENY');
+
+        $this->actingAs($user)->post(route('hr.organization-structures.store'))->assertForbidden();
+        $this->actingAs($user)->put(route('hr.organization-structures.update', $structure))->assertForbidden();
+        $this->actingAs($user)->delete(route('hr.organization-structures.destroy', $structure))->assertForbidden();
+        $structure->delete();
+        $this->actingAs($user)->patch(route('hr.organization-structures.restore', $structure->id))->assertForbidden();
+        $this->actingAs($user)->delete(route('hr.organization-structures.force-destroy', $structure->id))->assertForbidden();
+        $this->assertSoftDeleted('hr_organization_structures', ['id' => $structure->id]);
+    }
+
     private function user(): User
     {
         $user = User::factory()->create();

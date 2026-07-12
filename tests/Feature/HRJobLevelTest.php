@@ -159,4 +159,18 @@ class HRJobLevelTest extends TestCase
             'id' => $jobLevel->id,
         ]);
     }
+
+    public function test_users_without_permission_cannot_mutate_job_levels(): void
+    {
+        $user = User::factory()->create();
+        $level = JobLevel::query()->create(['code' => 'DENY', 'name' => 'Denied', 'active' => true]);
+
+        $this->actingAs($user)->post(route('hr.job-levels.store'))->assertForbidden();
+        $this->actingAs($user)->put(route('hr.job-levels.update', $level))->assertForbidden();
+        $this->actingAs($user)->delete(route('hr.job-levels.destroy', $level))->assertForbidden();
+        $level->delete();
+        $this->actingAs($user)->patch(route('hr.job-levels.restore', $level->id))->assertForbidden();
+        $this->actingAs($user)->delete(route('hr.job-levels.force-destroy', $level->id))->assertForbidden();
+        $this->assertSoftDeleted('hr_job_levels', ['id' => $level->id]);
+    }
 }

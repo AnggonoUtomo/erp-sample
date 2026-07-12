@@ -237,6 +237,24 @@ class HRReferenceDataTest extends TestCase
         ]);
     }
 
+    public function test_users_without_permission_cannot_mutate_reference_data_or_categories(): void
+    {
+        $user = User::factory()->create();
+        $category = $this->category('deny', 'Denied');
+        $reference = $this->referenceData('DENY', 'deny');
+
+        $this->actingAs($user)->post(route('hr.hr-reference-data.store'))->assertForbidden();
+        $this->actingAs($user)->put(route('hr.hr-reference-data.update', $reference))->assertForbidden();
+        $this->actingAs($user)->delete(route('hr.hr-reference-data.destroy', $reference))->assertForbidden();
+        $this->actingAs($user)->post(route('hr.hr-reference-data.categories.store'))->assertForbidden();
+        $this->actingAs($user)->put(route('hr.hr-reference-data.categories.update', $category))->assertForbidden();
+        $this->actingAs($user)->delete(route('hr.hr-reference-data.categories.destroy', $category))->assertForbidden();
+        $reference->delete();
+        $this->actingAs($user)->patch(route('hr.hr-reference-data.restore', $reference->id))->assertForbidden();
+        $this->actingAs($user)->delete(route('hr.hr-reference-data.force-destroy', $reference->id))->assertForbidden();
+        $this->assertSoftDeleted('hr_reference_data', ['id' => $reference->id]);
+    }
+
     private function category(string $code = 'test-category', string $name = 'Test Category'): ReferenceCategory
     {
         return ReferenceCategory::query()->create([

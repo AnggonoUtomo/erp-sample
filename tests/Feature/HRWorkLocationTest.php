@@ -217,6 +217,20 @@ class HRWorkLocationTest extends TestCase
         ]);
     }
 
+    public function test_users_without_permission_cannot_mutate_work_locations(): void
+    {
+        $user = User::factory()->create();
+        $location = $this->workLocation('DENY');
+
+        $this->actingAs($user)->post(route('hr.work-locations.store'))->assertForbidden();
+        $this->actingAs($user)->put(route('hr.work-locations.update', $location))->assertForbidden();
+        $this->actingAs($user)->delete(route('hr.work-locations.destroy', $location))->assertForbidden();
+        $location->delete();
+        $this->actingAs($user)->patch(route('hr.work-locations.restore', $location->id))->assertForbidden();
+        $this->actingAs($user)->delete(route('hr.work-locations.force-destroy', $location->id))->assertForbidden();
+        $this->assertSoftDeleted('hr_work_locations', ['id' => $location->id]);
+    }
+
     private function workLocation(string $code = 'TMP'): WorkLocation
     {
         return WorkLocation::query()->create([

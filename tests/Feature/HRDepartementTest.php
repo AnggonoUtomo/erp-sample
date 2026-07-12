@@ -143,4 +143,15 @@ class HRDepartementTest extends TestCase
             'id' => $parent->id,
         ]);
     }
+
+    public function test_users_without_permission_cannot_mutate_departements(): void
+    {
+        $user = User::factory()->create();
+        $departement = Departement::query()->create(['code' => 'DENY', 'name' => 'Denied', 'active' => true]);
+
+        $this->actingAs($user)->post(route('hr.departements.store'))->assertForbidden();
+        $this->actingAs($user)->put(route('hr.departements.update', $departement))->assertForbidden();
+        $this->actingAs($user)->delete(route('hr.departements.destroy', $departement))->assertForbidden();
+        $this->assertDatabaseHas('hr_departements', ['id' => $departement->id, 'deleted_at' => null]);
+    }
 }

@@ -135,6 +135,22 @@ class HRPositionTest extends TestCase
             ->assertSessionHasErrors('departement_id');
     }
 
+    public function test_users_without_permission_cannot_mutate_positions(): void
+    {
+        $user = User::factory()->create();
+        $position = Position::query()->create([
+            'departement_id' => $this->departement()->id,
+            'code' => 'DENY',
+            'name' => 'Denied',
+            'active' => true,
+        ]);
+
+        $this->actingAs($user)->post(route('hr.positions.store'))->assertForbidden();
+        $this->actingAs($user)->put(route('hr.positions.update', $position))->assertForbidden();
+        $this->actingAs($user)->delete(route('hr.positions.destroy', $position))->assertForbidden();
+        $this->assertDatabaseHas('hr_positions', ['id' => $position->id, 'deleted_at' => null]);
+    }
+
     private function departement(): Departement
     {
         return Departement::query()->create([

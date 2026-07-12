@@ -168,6 +168,20 @@ class HREmploymentTypeTest extends TestCase
         ]);
     }
 
+    public function test_users_without_permission_cannot_mutate_employment_types(): void
+    {
+        $user = User::factory()->create();
+        $type = $this->employmentType('DENY');
+
+        $this->actingAs($user)->post(route('hr.employment-types.store'))->assertForbidden();
+        $this->actingAs($user)->put(route('hr.employment-types.update', $type))->assertForbidden();
+        $this->actingAs($user)->delete(route('hr.employment-types.destroy', $type))->assertForbidden();
+        $type->delete();
+        $this->actingAs($user)->patch(route('hr.employment-types.restore', $type->id))->assertForbidden();
+        $this->actingAs($user)->delete(route('hr.employment-types.force-destroy', $type->id))->assertForbidden();
+        $this->assertSoftDeleted('hr_employment_types', ['id' => $type->id]);
+    }
+
     private function employmentType(string $code = 'TMP'): EmploymentType
     {
         return EmploymentType::query()->create([
