@@ -353,4 +353,26 @@ class SystemSettingTest extends TestCase
             Artisan::call('up');
         }
     }
+
+    public function test_users_without_permission_cannot_mutate_system_settings(): void
+    {
+        $user = User::factory()->create();
+        $requests = [
+            ['put', 'system-settings.branding.update'],
+            ['put', 'system-settings.email.update'],
+            ['post', 'system-settings.email.test'],
+            ['put', 'system-settings.localization.update'],
+            ['put', 'system-settings.pagination.update'],
+            ['put', 'system-settings.map.update'],
+            ['put', 'system-settings.security-policy.update'],
+            ['put', 'system-settings.password-policy.update'],
+            ['put', 'system-settings.maintenance-mode.update'],
+        ];
+
+        foreach ($requests as [$method, $routeName]) {
+            $this->actingAs($user)->{$method}(route($routeName))->assertForbidden();
+        }
+
+        $this->assertDatabaseCount('system_settings', 0);
+    }
 }

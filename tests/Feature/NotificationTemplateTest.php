@@ -62,4 +62,14 @@ class NotificationTemplateTest extends TestCase
             'active' => true,
         ]);
     }
+
+    public function test_users_without_permission_cannot_update_notification_templates(): void
+    {
+        app(NotificationTemplateService::class)->ensureDefaults();
+        $template = NotificationTemplate::query()->where('key', 'user.activation')->firstOrFail();
+
+        $this->actingAs(User::factory()->create())
+            ->put(route('notification-templates.update', $template))
+            ->assertForbidden();
+    }
 }

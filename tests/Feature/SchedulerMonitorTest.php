@@ -46,4 +46,11 @@ class SchedulerMonitorTest extends TestCase
             ->assertRedirect()
             ->assertSessionHas('success');
     }
+
+    public function test_users_without_permission_cannot_run_scheduler_tasks(): void
+    {
+        $this->actingAs(User::factory()->create())
+            ->post(route('scheduler-monitor.run'))
+            ->assertForbidden();
+    }
 }

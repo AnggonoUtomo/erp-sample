@@ -80,4 +80,24 @@ class AccessControlTest extends TestCase
         $this->assertTrue($role->refresh()->hasPermissionTo('users.view'));
         $this->assertTrue($role->hasPermissionTo('users.create'));
     }
+
+    public function test_users_without_permission_cannot_mutate_access_control(): void
+    {
+        $user = User::factory()->create();
+        $role = Role::findOrCreate('editor');
+        $permission = Permission::findOrCreate('reports.view');
+
+        $requests = [
+            ['post', route('access-control.roles.store')],
+            ['put', route('access-control.roles.update', $role)],
+            ['delete', route('access-control.roles.destroy', $role)],
+            ['put', route('access-control.roles.permissions.sync', $role)],
+            ['post', route('access-control.permissions.store')],
+            ['delete', route('access-control.permissions.destroy', $permission)],
+        ];
+
+        foreach ($requests as [$method, $url]) {
+            $this->actingAs($user)->{$method}($url)->assertForbidden();
+        }
+    }
 }

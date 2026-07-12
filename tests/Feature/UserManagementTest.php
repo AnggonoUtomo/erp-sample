@@ -249,4 +249,20 @@ class UserManagementTest extends TestCase
 
         $this->assertDatabaseMissing('users', ['id' => $target->id]);
     }
+
+    public function test_users_without_permission_cannot_mutate_users(): void
+    {
+        $actor = User::factory()->create();
+        $target = User::factory()->create();
+
+        $this->actingAs($actor)->post(route('users.store'))->assertForbidden();
+        $this->actingAs($actor)->put(route('users.update', $target))->assertForbidden();
+        $this->actingAs($actor)->delete(route('users.destroy', $target))->assertForbidden();
+
+        $target->delete();
+
+        $this->actingAs($actor)->patch(route('users.restore', $target->id))->assertForbidden();
+        $this->actingAs($actor)->delete(route('users.force-destroy', $target->id))->assertForbidden();
+        $this->assertSoftDeleted('users', ['id' => $target->id]);
+    }
 }
