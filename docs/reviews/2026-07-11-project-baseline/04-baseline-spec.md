@@ -59,4 +59,4 @@ File opsional harus dinyatakan melalui `exports` di manifest; struktur target bu
 
 ## Status
 
-Spec disetujui melalui eksekusi bertahap. Implementasi struktural sampai P3 selesai pada 2026-07-12, tetapi **exit CP-3 masih pending** sampai global mutation denial matrix lengkap. Checksum full-backup v2 juga belum membuktikan authenticity lintas environment; lihat [guide plan koreksi](07-guide-plan-koreksi.md#pekerjaan-lanjutan-terbuka).
+Spec disetujui dan **Implemented sampai CP-4** pada 2026-07-12. Checksum full-backup v2 belum membuktikan authenticity lintas environment; batas ini tetap dicatat pada ADR-004.

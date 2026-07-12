@@ -1,6 +1,6 @@
 # 05 — Planning and Task Breakdown
 
-Status: TASK-01–05, TASK-07–10 selesai; TASK-06 masih memerlukan global mutation denial matrix. Evidence checkpoint dirangkum di [guide plan koreksi](07-guide-plan-koreksi.md#status-eksekusi).
+Status: seluruh TASK-01–10 selesai. Evidence checkpoint dirangkum di [guide plan koreksi](07-guide-plan-koreksi.md#status-eksekusi).
 
 ## TASK-01 — Isolasi filesystem test
 
@@ -65,4 +65,4 @@ Status: TASK-01–05, TASK-07–10 selesai; TASK-06 masih memerlukan global muta
 - CP-3 setelah TASK-06–07: security boundary terbukti.
 - CP-4 setelah TASK-08: maintainability membaik tanpa behavior drift.
 
-Implementasi struktural plan selesai pada 2026-07-12; **CP-3 belum ditutup** sampai sisa TASK-06 selesai. Scope lanjutan tercatat di [guide plan koreksi](07-guide-plan-koreksi.md#pekerjaan-lanjutan-terbuka).
+Plan berstatus **Implemented sampai CP-4** pada 2026-07-12. Pekerjaan dependency audit tetap merupakan scope terpisah.

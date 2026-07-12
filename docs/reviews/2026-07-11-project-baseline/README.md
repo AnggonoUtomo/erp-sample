@@ -1,6 +1,6 @@
 # Baseline Review Laravel12 ERP
 
-Status: implementasi struktural P0–P3 selesai; exit CP-3 masih menunggu global mutation denial matrix. Audit awal dibuat 2026-07-11; status terakhir tersedia di [guide plan koreksi](07-guide-plan-koreksi.md#status-eksekusi).
+Status: baseline review dan koreksi P0–P3 selesai sampai CP-4. Audit awal dibuat 2026-07-11; status terakhir tersedia di [guide plan koreksi](07-guide-plan-koreksi.md#status-eksekusi).
 
 ## Urutan baca
 
@@ -12,6 +12,7 @@ Status: implementasi struktural P0–P3 selesai; exit CP-3 masih menunggu global
 6. [06-vertical-slice-01.md](06-vertical-slice-01.md) — simulasi vertical slice pertama, tanpa implementasi.
 7. [07-guide-plan-koreksi.md](07-guide-plan-koreksi.md) — urutan koreksi lintas temuan.
 8. [decisions/README.md](decisions/README.md) — keputusan dan statusnya.
+9. [08-mutation-authorization-matrix.md](08-mutation-authorization-matrix.md) — ownership dan denial evidence seluruh mutation berpermission.
 
 ## Relevansi silang
 
