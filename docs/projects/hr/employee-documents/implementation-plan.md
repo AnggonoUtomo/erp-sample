@@ -30,7 +30,7 @@ Document Management contract ──> attachment gateway + access boundary
 
 ## Phase 1 — Foundation dan vertical slice metadata
 
-1. Formalisasi document type metadata pada HR Reference Data.
+1. Formalisasi document type metadata pada HR Reference Data. ✅
 2. Scaffold module, schema metadata, permission, dan sensitive-data policy.
 3. Implement create/list paginated untuk metadata tanpa attachment.
 
@@ -96,4 +96,4 @@ Document Management contract ──> attachment gateway + access boundary
 
 ## Approval checkpoint
 
-Dokumen ini belum mengotorisasi coding. Human review diperlukan setelah Task 01–03 dirinci di [tasks.md](tasks.md), terutama untuk encryption, uniqueness, dan DMS ownership release.
+Task 01 telah disetujui dan selesai. Task berikutnya tetap dijalankan hanya setelah instruksi manusia; review khusus masih diperlukan sebelum menetapkan encryption, uniqueness, dan DMS ownership release.

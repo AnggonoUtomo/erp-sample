@@ -9,7 +9,7 @@ Keberhasilan berarti HR dapat menjawab: dokumen apa yang dimiliki employee, mana
 ## 2. Target user dan asumsi
 
 1. Pengguna utama adalah `hr-officer`, `hr-manager`, dan auditor HR read-only.
-2. `Employees` adalah sumber employee; tipe dokumen HR berasal dari `HRReferenceData` category `EMPLOYEE_DOCUMENT_TYPE`.
+2. `Employees` adalah sumber employee; tipe dokumen HR berasal dari `HRReferenceData` category simbolik `EMPLOYEE_DOCUMENT_TYPE` dengan code database `employee-document-type`.
 3. Vertical slice pertama tidak menerima upload; `document_reference` nullable sampai Document Management tersedia.
 4. Tanggal adalah business date `YYYY-MM-DD`; query expiry selalu menerima tanggal acuan eksplisit.
 5. Nomor dokumen dapat mengandung PII dan tidak boleh masuk event, log description, atau snapshot umum secara utuh.

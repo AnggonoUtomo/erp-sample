@@ -46,6 +46,14 @@ class HRReferenceDataSeeder extends Seeder
             ['category' => 'bank', 'code' => 'BRI', 'name' => 'Bank Rakyat Indonesia', 'sort_order' => 30],
             ['category' => 'bank', 'code' => 'BNI', 'name' => 'Bank Negara Indonesia', 'sort_order' => 40],
             ['category' => 'bank', 'code' => 'CIMB', 'name' => 'CIMB Niaga', 'sort_order' => 50],
+
+            ['category' => 'employee-document-type', 'code' => 'KTP', 'name' => 'KTP', 'sort_order' => 10, 'metadata' => ['requires_expiry' => false, 'requires_number' => true, 'number_unique_scope' => 'GLOBAL']],
+            ['category' => 'employee-document-type', 'code' => 'NPWP', 'name' => 'NPWP', 'sort_order' => 20, 'metadata' => ['requires_expiry' => false, 'requires_number' => true, 'number_unique_scope' => 'GLOBAL']],
+            ['category' => 'employee-document-type', 'code' => 'PASSPORT', 'name' => 'Passport', 'sort_order' => 30, 'metadata' => ['requires_expiry' => true, 'requires_number' => true, 'number_unique_scope' => 'GLOBAL']],
+            ['category' => 'employee-document-type', 'code' => 'CONTRACT', 'name' => 'Contract', 'sort_order' => 40, 'metadata' => ['requires_expiry' => false, 'requires_number' => true, 'number_unique_scope' => 'PER_EMPLOYEE']],
+            ['category' => 'employee-document-type', 'code' => 'CERTIFICATE', 'name' => 'Certificate', 'sort_order' => 50, 'metadata' => ['requires_expiry' => false, 'requires_number' => false, 'number_unique_scope' => 'PER_EMPLOYEE']],
+            ['category' => 'employee-document-type', 'code' => 'MEDICAL', 'name' => 'Medical Document', 'sort_order' => 60, 'metadata' => ['requires_expiry' => true, 'requires_number' => false, 'number_unique_scope' => 'PER_EMPLOYEE']],
+            ['category' => 'employee-document-type', 'code' => 'OTHER', 'name' => 'Other', 'sort_order' => 70, 'metadata' => ['requires_expiry' => false, 'requires_number' => false, 'number_unique_scope' => 'NONE']],
         ];
 
         collect($items)

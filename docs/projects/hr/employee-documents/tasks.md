@@ -2,7 +2,7 @@
 
 Semua task belum dikerjakan. Implementasi harus berurutan dan berhenti di setiap checkpoint untuk review.
 
-## Task 01 — Document type contract
+## Task 01 — Document type contract ✅
 
 **Tujuan:** mendefinisikan tipe dokumen HR dan aturan apakah expiry/nomor wajib tanpa membuat master type kedua di DMS.
 
@@ -10,13 +10,15 @@ Semua task belum dikerjakan. Implementasi harus berurutan dan berhenti di setiap
 
 **Acceptance criteria:**
 
-- [ ] Category `EMPLOYEE_DOCUMENT_TYPE` memiliki code stabil dan metadata `requires_expiry`, `requires_number`, serta `number_unique_scope` tervalidasi.
-- [ ] Type DMS/category storage tidak dipakai sebagai pengganti business type HR.
-- [ ] Type archived tetap dapat memberi label histori tetapi tidak dapat dipilih untuk input baru.
+- [x] Category simbolik `EMPLOYEE_DOCUMENT_TYPE` memakai code database stabil `employee-document-type` dan metadata `requires_expiry`, `requires_number`, serta `number_unique_scope` tervalidasi.
+- [x] Type DMS/category storage tidak dipakai sebagai pengganti business type HR.
+- [x] Type archived tetap dapat memberi label histori tetapi tidak dapat dipilih untuk input baru.
 
 **Test:** `php artisan test --filter=EmployeeDocumentType`
 
 **Dependencies:** persetujuan specification. **Scope:** M, 3–5 files.
+
+**Hasil:** selesai 2026-07-13. Seeder idempotent menyediakan KTP, NPWP, passport, contract, certificate, medical, dan other. Catalog memisahkan pilihan input aktif dari resolver histori termasuk archived.
 
 ## Task 02 — Metadata-only create dan list
 

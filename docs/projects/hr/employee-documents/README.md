@@ -4,7 +4,9 @@ Paket dokumen ini mendefinisikan module `HR/EmployeeDocuments` sebelum implement
 
 ## Status
 
-`Proposed specification — menunggu persetujuan sebelum coding`.
+`Task 01 implemented; Task 02 menunggu instruksi`.
+
+Document type contract telah tersedia melalui HR Reference Data dengan seed KTP, NPWP, passport, contract, certificate, medical, dan other. Metadata type divalidasi, pilihan input hanya memuat type aktif, sedangkan resolver histori tetap dapat membaca type inactive/archived.
 
 ## Urutan baca
 

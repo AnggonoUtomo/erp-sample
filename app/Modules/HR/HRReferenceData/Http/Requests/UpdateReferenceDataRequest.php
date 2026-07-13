@@ -3,6 +3,7 @@
 namespace App\Modules\HR\HRReferenceData\Http\Requests;
 
 use App\Modules\HR\HRReferenceData\DTO\ReferenceDataData;
+use App\Modules\HR\HRReferenceData\Support\ReferenceMetadataContract;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -34,7 +35,7 @@ class UpdateReferenceDataRequest extends FormRequest
             ],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:2000'],
-            'metadata' => ['nullable', 'array'],
+            ...ReferenceMetadataContract::rulesFor((string) $this->input('category')),
             'active' => ['boolean'],
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:999999'],
         ];
