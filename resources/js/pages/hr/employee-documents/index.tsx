@@ -12,17 +12,21 @@ import { ScrollText } from 'lucide-react';
 import type { FormEvent } from 'react';
 import { useState } from 'react';
 import { ArchiveDocumentDialog } from './employee-document-components/archive-document-dialog';
+import { AttachmentDialog, DownloadAttachmentButton } from './employee-document-components/attachment-dialog';
 import { VerificationDialog, type VerificationAction } from './employee-document-components/verification-dialog';
 import type { DocumentForm, EmployeeDocumentPageProps, EmployeeDocumentRow } from './types';
 
 export default function EmployeeDocumentsIndex({ documents, options, filters }: EmployeeDocumentPageProps) {
-    const { canAny } = usePermission();
+    const { can, canAny } = usePermission();
     const canCreate = canAny(['employee-documents.create', 'employee-documents.manage']);
     const canVerify = canAny(['employee-documents.verify', 'employee-documents.manage']);
     const canArchive = canAny(['employee-documents.archive', 'employee-documents.manage']);
     const canRestore = canAny(['employee-documents.restore', 'employee-documents.manage']);
+    const canAttach = canAny(['employee-documents.attach', 'employee-documents.manage']);
+    const canDownload = canAny(['employee-documents.view', 'employee-documents.manage']) && can('documents.download');
     const [review, setReview] = useState<{ document: EmployeeDocumentRow; action: VerificationAction } | null>(null);
     const [archiveTarget, setArchiveTarget] = useState<EmployeeDocumentRow | null>(null);
+    const [attachmentTarget, setAttachmentTarget] = useState<EmployeeDocumentRow | null>(null);
     const form = useForm<DocumentForm>({
         employee_id: '',
         document_type_id: '',
@@ -170,6 +174,27 @@ export default function EmployeeDocumentsIndex({ documents, options, filters }: 
                                                     <span className="bg-muted rounded-full px-2.5 py-1 text-xs font-medium">
                                                         {document.verification_status}
                                                     </span>
+                                                    <p className="text-muted-foreground mt-2 text-xs">
+                                                        File:{' '}
+                                                        {document.attachment_state === 'ATTACHED'
+                                                            ? 'Terhubung'
+                                                            : document.attachment_state === 'PENDING'
+                                                              ? 'Menunggu retry'
+                                                              : 'Belum ada'}
+                                                    </p>
+                                                    {!document.archived && canAttach && (
+                                                        <Button
+                                                            className="mt-2"
+                                                            size="sm"
+                                                            variant="outline"
+                                                            onClick={() => setAttachmentTarget(document)}
+                                                        >
+                                                            {document.attachment_state === 'ATTACHED' ? 'Kelola file' : 'Upload file'}
+                                                        </Button>
+                                                    )}
+                                                    {!document.archived && document.attachment_state === 'ATTACHED' && canDownload && (
+                                                        <DownloadAttachmentButton document={document} />
+                                                    )}
                                                     {!document.archived && canVerify && (
                                                         <div className="mt-3 flex flex-wrap gap-2">
                                                             {document.verification_status === 'PENDING' ? (
@@ -304,7 +329,8 @@ export default function EmployeeDocumentsIndex({ documents, options, filters }: 
                                     {form.errors.notes && <p className="text-destructive text-xs">{form.errors.notes}</p>}
                                 </div>
                                 <p className="text-muted-foreground text-xs leading-5">
-                                    Slice ini hanya menyimpan metadata. File akan dikelola oleh Document Management pada task integrasi terpisah.
+                                    Simpan metadata terlebih dahulu, lalu gunakan aksi Upload file pada baris dokumen. Binary tetap dikelola private
+                                    oleh Document Management.
                                 </p>
                                 <Button className="w-full" disabled={form.processing}>
                                     Simpan metadata
@@ -316,6 +342,7 @@ export default function EmployeeDocumentsIndex({ documents, options, filters }: 
             </div>
             <VerificationDialog document={review?.document ?? null} action={review?.action ?? null} onClose={() => setReview(null)} />
             <ArchiveDocumentDialog document={archiveTarget} onClose={() => setArchiveTarget(null)} />
+            <AttachmentDialog document={attachmentTarget} onClose={() => setAttachmentTarget(null)} />
         </AppLayout>
     );
 }

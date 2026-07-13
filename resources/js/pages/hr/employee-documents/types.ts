@@ -12,6 +12,7 @@ export type EmployeeDocumentRow = {
     expires_at: string | null;
     expiry_state: 'NOT_APPLICABLE' | 'VALID' | 'EXPIRING' | 'EXPIRED';
     verification_status: 'PENDING' | 'VERIFIED' | 'REJECTED';
+    attachment_state: 'NONE' | 'PENDING' | 'ATTACHED';
     archived: boolean;
     notes: string | null;
     created_at: string;

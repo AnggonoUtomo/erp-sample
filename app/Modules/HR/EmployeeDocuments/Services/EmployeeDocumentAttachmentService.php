@@ -68,20 +68,23 @@ class EmployeeDocumentAttachmentService
     {
         return $this->transaction->run(function () use ($document, $actor): EmployeeDocument {
             $locked = EmployeeDocument::query()->lockForUpdate()->findOrFail($document->getKey());
-            if ($locked->document_reference === null) {
+            if ($locked->document_reference === null && $locked->attachment_idempotency_key_hash === null) {
                 return $locked;
             }
 
+            $wasAttached = $locked->document_reference !== null;
             $locked->document_reference = null;
             $locked->document_reference_version = null;
             $locked->attachment_idempotency_key_hash = null;
             $locked->save();
             $this->audit->record(
                 module: 'hr.employee-documents',
-                event: 'EmployeeDocument.attachment_detached',
+                event: $wasAttached ? 'EmployeeDocument.attachment_detached' : 'EmployeeDocument.attachment_retry_cancelled',
                 auditable: $locked,
-                description: "Detached DMS reference from employee document #{$locked->getKey()}",
-                oldValues: ['attached' => true, 'reference_schema_version' => 1],
+                description: $wasAttached
+                    ? "Detached DMS reference from employee document #{$locked->getKey()}"
+                    : "Cancelled pending attachment retry for employee document #{$locked->getKey()}",
+                oldValues: ['attached' => $wasAttached, 'pending' => ! $wasAttached],
                 newValues: ['attached' => false],
                 actor: $actor,
             );

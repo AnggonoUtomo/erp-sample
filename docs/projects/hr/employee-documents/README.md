@@ -4,7 +4,7 @@ Paket dokumen ini mendefinisikan module `HR/EmployeeDocuments` sebelum implement
 
 ## Status
 
-`Task 01–08 implemented; contract dan production attachment adapter DMS v1 tersedia; Task 09 attach/detach siap dikerjakan`.
+`Task 01–10 implemented; metadata, attachment DMS, dan secure download handoff selesai pada 2026-07-14`.
 
 Document type contract telah tersedia melalui HR Reference Data dengan seed KTP, NPWP, passport, contract, certificate, medical, dan other. Metadata type divalidasi, pilihan input hanya memuat type aktif, sedangkan resolver histori tetap dapat membaca type inactive/archived.
 
@@ -27,8 +27,9 @@ Expiry report read-only tersedia melalui `php artisan hr:documents-expiring --da
 3. [ADR-002: Archive melepaskan uniqueness claim](decisions/002-archive-releases-uniqueness-claim.md) — invariant archive/restore dan duplicate revival.
 4. [ADR-003: Versioned opaque DMS reference contract](decisions/003-versioned-dms-reference-contract.md) — DTO, failure state, privacy, dan production binding boundary.
 5. [ADR-004: Consumer-owned DMS attachment adapter](decisions/004-consumer-owned-dms-attachment-adapter.md) — arah dependency, input minimal, idempotency, dan failure semantics.
-6. [Implementation plan](implementation-plan.md) — urutan vertical slice, dependency, risiko, dan checkpoint.
-7. [Tasks](tasks.md) — unit kerja kecil dengan tujuan, file, acceptance criteria, dependency, dan cara test.
+6. [ADR-005: Dual-authority secure delivery](decisions/005-dual-authority-secure-delivery.md) — permission HR+DMS, owner binding, token, dan download boundary.
+7. [Implementation plan](implementation-plan.md) — urutan vertical slice, dependency, risiko, dan checkpoint.
+8. [Tasks](tasks.md) — unit kerja kecil dengan tujuan, file, acceptance criteria, dependency, dan cara test.
 
 ## Relasi lintas dokumen
 
@@ -44,7 +45,7 @@ Expiry report read-only tersedia melalui `php artisan hr:documents-expiring --da
 - Document Management memiliki file: blob, MIME, size, checksum, version, scan, preview, download, share, retention, dan legal hold.
 - Integrasi menggunakan reference opaque dan contract versioned; tidak ada FK atau import model lintas project.
 - Verification status dan expiry state adalah dua dimensi berbeda.
-- Vertical slice pertama adalah metadata-only. Upload file menunggu contract Document Management tersedia.
+- Metadata tetap dimiliki HR; upload dan download sekarang memakai contract Document Management tanpa menyimpan path/URL/file metadata DMS.
 
 ## Gate sebelum coding
 

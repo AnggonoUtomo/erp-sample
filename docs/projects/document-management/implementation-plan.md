@@ -68,8 +68,8 @@ HR adapter -> Employee Documents Task 09 -> Task 10
 ## Phase 4 — Consumer integration
 
 10. Implement adapter `EmployeeDocumentAttachmentGateway` terhadap DMS contract.
-11. Jalankan HR Task 09 attach/detach dengan failure injection dan idempotency.
-12. Jalankan HR Task 10 secure access handoff end-to-end.
+11. Jalankan HR Task 09 attach/detach dengan failure injection dan idempotency. ✅
+12. Jalankan HR Task 10 secure access handoff end-to-end. ✅
 
 ### Final checkpoint foundation
 

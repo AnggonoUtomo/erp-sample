@@ -113,7 +113,7 @@ DocumentReferenceReader
   describe(reference, actor): DocumentDescriptor
 
 EmployeeDocumentAttachmentGateway
-  createFor(ownerContext, uploadIntent): DocumentReference
+  createFor(attachmentRequest): DocumentReference
   authorizeAccess(reference, actor, action): AccessDecision
 ```
 

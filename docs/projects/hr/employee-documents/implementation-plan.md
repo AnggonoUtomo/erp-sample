@@ -79,8 +79,8 @@ DMS reference contract v1 selesai pada Task 08: interface/DTO/schema/fake tersed
 ## Phase 4 — DMS boundary
 
 9. Definisikan interface, DTO owner context v1, dan fake adapter.
-10. Implement attach/detach workflow serta state unavailable tanpa file write HR.
-11. Implement preview/download handoff yang selalu meminta authorization DMS.
+10. Implement attach/detach workflow serta state unavailable tanpa file write HR. ✅
+11. Implement download handoff yang selalu meminta authorization DMS. ✅
 
 ### Checkpoint final
 

@@ -4,7 +4,7 @@ Paket ini adalah acuan pembangunan foundation project `DocumentManagement`: satu
 
 ## Status
 
-`Specification dan ADR-001–004 accepted; Task 01–10 serta Checkpoint A–C selesai pada 2026-07-14, siap menuju Task 11`.
+`Specification dan ADR-001–004 accepted; Task 01–11 serta Checkpoint A–C selesai pada 2026-07-14`.
 
 Persetujuan ini mengizinkan pembangunan contract dan metadata foundation. Upload production tetap tertahan sampai keputusan private disk, batas/tipe file, malware/quarantine, delivery, dan retention pada ADR-001 dipenuhi.
 

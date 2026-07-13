@@ -27,6 +27,11 @@ class EmployeeDocumentPolicy
         return $user->hasAnyPermission(['employee-documents.attach', 'employee-documents.manage']);
     }
 
+    public function accessAttachment(User $user, EmployeeDocument $document): bool
+    {
+        return $user->hasAnyPermission(['employee-documents.view', 'employee-documents.manage']);
+    }
+
     public function delete(User $user, EmployeeDocument $document): bool
     {
         return $user->hasAnyPermission(['employee-documents.archive', 'employee-documents.manage']);

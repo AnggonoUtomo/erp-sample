@@ -168,13 +168,15 @@ Semua task belum dikerjakan. Implementasi harus berurutan dan berhenti di setiap
 
 **Acceptance criteria:**
 
-- [ ] Attach memakai idempotency/owner context dan menyimpan reference hanya setelah DMS sukses.
-- [ ] Timeout/retry tidak membuat duplicate/orphan; detach tidak menghapus blob.
-- [ ] Perubahan reference mereset verification ke `PENDING` dan diaudit tanpa URL/file detail sensitif.
+- [x] Attach memakai idempotency/owner context dan menyimpan reference hanya setelah DMS sukses.
+- [x] Timeout/retry tidak membuat duplicate/orphan; detach tidak menghapus blob.
+- [x] Perubahan reference mereset verification ke `PENDING` dan diaudit tanpa URL/file detail sensitif.
 
 **Test:** `php artisan test --filter=EmployeeDocumentAttachment`
 
 **Dependencies:** Task 08 dan DMS foundation. **Scope:** pecah backend dan UI; masing-masing maksimal M.
+
+**Hasil:** selesai 2026-07-14. Attach menyimpan HMAC idempotency reservation sebelum memanggil DMS, menyimpan opaque reference hanya setelah version `AVAILABLE`, dan retry timeout-after-success menggunakan reference/object yang sama. Key berbeda saat pending/attached ditolak. Detach hanya mengosongkan reference HR, mempertahankan logical document/blob DMS, mereset verification melalui material-field invariant, dan mengaudit boolean attachment tanpa reference/path/URL. UI upload menerima PDF/JPEG/PNG maksimum 20 MiB dan mempertahankan key selama retry. Verifikasi: `EmployeeDocumentAttachmentTest` dan gateway contract hijau.
 
 ## Task 10 — Secure access handoff
 
@@ -184,13 +186,15 @@ Semua task belum dikerjakan. Implementasi harus berurutan dan berhenti di setiap
 
 **Acceptance criteria:**
 
-- [ ] User harus lolos permission metadata HR dan access decision DMS.
-- [ ] HR tidak menghasilkan storage URL atau melakukan stream blob sendiri.
-- [ ] IDOR, expired delivery URL, missing reference, dan revoked access ditolak fail-closed.
+- [x] User harus lolos permission metadata HR dan access decision DMS.
+- [x] HR tidak menghasilkan storage URL atau melakukan stream blob sendiri.
+- [x] IDOR, expired delivery URL, missing reference, dan revoked access ditolak fail-closed.
 
 **Test:** `php artisan test --filter=EmployeeDocumentAccess && npm run build`
 
 **Dependencies:** Task 08–09 dan DMS access contract. **Scope:** M.
+
+**Hasil:** selesai 2026-07-14. Policy metadata HR dan permission DMS keduanya wajib. HR hanya menerbitkan handoff untuk exact owner context; browser mengonsumsi one-time token melalui authenticated controller DMS. Missing reference, owner-mismatch IDOR, expired, replayed, dan revoked permission ditolak. Token tidak masuk URL/database HR dan binary tidak melewati controller HR. Lihat [ADR-005](decisions/005-dual-authority-secure-delivery.md). Verifikasi: `EmployeeDocumentAccessTest`, lint, typecheck, dan build hijau.
 
 ## Final quality checkpoint
 

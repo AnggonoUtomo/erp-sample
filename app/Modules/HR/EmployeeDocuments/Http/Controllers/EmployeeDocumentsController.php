@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Modules\HR\EmployeeDocuments\Http\Requests\EmployeeDocumentAttachmentRequest;
 use App\Modules\HR\EmployeeDocuments\Http\Requests\EmployeeDocumentVerificationRequest;
 use App\Modules\HR\EmployeeDocuments\Http\Requests\StoreEmployeeDocumentRequest;
+use App\Modules\HR\EmployeeDocuments\Integration\Exceptions\EmployeeDocumentAccessDenied;
 use App\Modules\HR\EmployeeDocuments\Models\EmployeeDocument;
+use App\Modules\HR\EmployeeDocuments\Services\EmployeeDocumentAccessService;
 use App\Modules\HR\EmployeeDocuments\Services\EmployeeDocumentAttachmentService;
 use App\Modules\HR\EmployeeDocuments\Services\EmployeeDocumentsService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -19,6 +22,7 @@ class EmployeeDocumentsController extends Controller
     public function __construct(
         private EmployeeDocumentsService $documents,
         private EmployeeDocumentAttachmentService $attachments,
+        private EmployeeDocumentAccessService $access,
     ) {}
 
     public function index(Request $request): Response
@@ -87,5 +91,23 @@ class EmployeeDocumentsController extends Controller
         $this->attachments->detach($employeeDocument, $request->user());
 
         return back()->with('success', 'Reference file berhasil dilepas tanpa menghapus file DMS.');
+    }
+
+    public function delivery(Request $request, EmployeeDocument $employeeDocument): JsonResponse
+    {
+        $this->authorize('accessAttachment', $employeeDocument);
+
+        try {
+            $handoff = $this->access->issueDownload(
+                $employeeDocument,
+                'user:'.$request->user()->getAuthIdentifier(),
+            );
+        } catch (EmployeeDocumentAccessDenied) {
+            return response()->json([
+                'error' => ['code' => 'ATTACHMENT_ACCESS_DENIED', 'message' => 'Attachment access was denied.'],
+            ], 403);
+        }
+
+        return response()->json(['data' => $handoff->toArray()], 201);
     }
 }

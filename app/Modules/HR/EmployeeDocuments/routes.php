@@ -13,4 +13,6 @@ Route::middleware(['auth'])->prefix('hr/employee-documents')->name('hr.employee-
     Route::patch('{employeeDocument}/restore', [EmployeeDocumentsController::class, 'restore'])->withTrashed()->name('restore');
     Route::post('{employeeDocument}/attachment', [EmployeeDocumentsController::class, 'attach'])->name('attachment.store');
     Route::delete('{employeeDocument}/attachment', [EmployeeDocumentsController::class, 'detach'])->name('attachment.destroy');
+    Route::post('{employeeDocument}/attachment/delivery', [EmployeeDocumentsController::class, 'delivery'])
+        ->middleware('throttle:20,1')->name('attachment.delivery');
 });

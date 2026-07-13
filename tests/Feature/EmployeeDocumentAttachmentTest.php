@@ -108,6 +108,10 @@ class EmployeeDocumentAttachmentTest extends TestCase
         $this->actingAs($user)->post(route('hr.employee-documents.attachment.store', $document), $this->payload('other-key'))
             ->assertSessionHasErrors('idempotency_key');
         $this->assertDatabaseCount('dm_documents', 0);
+
+        $this->actingAs($user)->delete(route('hr.employee-documents.attachment.destroy', $document))->assertSessionHasNoErrors();
+        $this->assertNull($document->refresh()->attachment_idempotency_key_hash);
+        $this->assertDatabaseHas('audit_logs', ['event' => 'EmployeeDocument.attachment_retry_cancelled']);
     }
 
     public function test_detach_clears_only_hr_reference_resets_verification_and_preserves_dms_binary(): void

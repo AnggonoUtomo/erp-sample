@@ -214,13 +214,15 @@ Implementasi wajib berurutan dan berhenti pada setiap checkpoint. Setiap task ad
 
 **Acceptance criteria:**
 
-- [ ] Employee Documents Task 09 dan 10 seluruhnya hijau.
-- [ ] Tidak ada path/URL/file metadata DMS disalin ke tabel HR.
-- [ ] Detach/archive HR tidak menghapus blob; DMS tetap security authority.
+- [x] Employee Documents Task 09 dan 10 seluruhnya hijau.
+- [x] Tidak ada path/URL/file metadata DMS disalin ke tabel HR.
+- [x] Detach/archive HR tidak menghapus blob; DMS tetap security authority.
 
 **Test:** suite `EmployeeDocumentAttachment`, `EmployeeDocumentAccess`, dan full quality gates.
 
 **Dependencies:** Task 10. **Scope:** dua vertical slice terpisah.
+
+**Completed:** 2026-07-14 — HR Task 09 attach/detach dan Task 10 secure access handoff dibuka kembali dan selesai sebagai dua commit/slice. HR menyimpan opaque reference + schema version dan HMAC idempotency reservation saja; DMS tetap memiliki version, storage, integrity, access decision, delivery, dan binary stream. Dual permission, exact owner, timeout retry, detach preservation, IDOR, expiry, replay, dan revoke dibuktikan executable tests. Dokumentasi: [Employee Documents README](../hr/employee-documents/README.md), [ADR-004](../hr/employee-documents/decisions/004-consumer-owned-dms-attachment-adapter.md), dan [ADR-005](../hr/employee-documents/decisions/005-dual-authority-secure-delivery.md).
 
 ## Final quality checkpoint
 
