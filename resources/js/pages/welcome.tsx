@@ -3,63 +3,40 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-import {
-    ArrowRight,
-    Building2,
-    Cable,
-    CheckCircle2,
-    CircleDot,
-    LayoutDashboard,
-    LockKeyhole,
-    Network,
-    ShieldCheck,
-    Sparkles,
-    TerminalSquare,
-    WandSparkles,
-} from 'lucide-react';
+import { ArrowRight, Boxes, Building2, Database, LayoutDashboard, ShieldCheck } from 'lucide-react';
 
-type ProjectItem = {
+type LoginDestination = {
     name: string;
     description: string;
-    status: 'ready' | 'planned';
-    href: string | null;
-    loginHref?: string;
+    loginRoute: string;
+    dashboardRoute: string;
     icon: typeof LayoutDashboard;
-    tone: string;
-    modules: string[];
-    meta: string;
+    cardClassName: string;
+    iconClassName: string;
+    buttonClassName: string;
 };
 
-const projects: ProjectItem[] = [
+const destinations: LoginDestination[] = [
     {
         name: 'Console',
-        description: 'Control center untuk user, access control, system setting, audit, queue, scheduler, backup, dan monitoring.',
-        status: 'ready',
-        href: route('dashboard'),
-        loginHref: route('login'),
+        description: 'Administrasi sistem dan pengaturan aplikasi.',
+        loginRoute: route('login'),
+        dashboardRoute: route('dashboard'),
         icon: LayoutDashboard,
-        tone: 'icon-tone-sky',
-        modules: ['User Management', 'Access Control', 'System Settings', 'Monitoring'],
-        meta: '10 modules ready',
+        cardClassName: 'border-sky-800/70 bg-sky-950 text-white',
+        iconClassName: 'border-white/15 bg-white/10 text-sky-100',
+        buttonClassName: 'bg-sky-500 text-white hover:bg-sky-400',
     },
     {
-        name: 'HR',
-        description:
-            'Workspace people operation untuk struktur organisasi, departement, employee profile, lifecycle, dan fondasi Attendance/Payroll.',
-        status: 'ready',
-        href: route('hr.dashboard'),
-        loginHref: route('hr.login'),
+        name: 'Human Resources',
+        description: 'Data karyawan dan operasional HR.',
+        loginRoute: route('hr.login'),
+        dashboardRoute: route('hr.dashboard'),
         icon: Building2,
-        tone: 'icon-tone-emerald',
-        modules: ['departements', 'Positions', 'Employees', 'Organization'],
-        meta: 'Departements ready',
+        cardClassName: 'border-emerald-800/70 bg-emerald-950 text-white',
+        iconClassName: 'border-white/15 bg-white/10 text-emerald-100',
+        buttonClassName: 'bg-emerald-500 text-white hover:bg-emerald-400',
     },
-];
-
-const foundations = [
-    { label: 'Shared Kernel', icon: Network },
-    { label: 'Module Contract', icon: Cable },
-    { label: 'Domain Event', icon: CircleDot },
 ];
 
 export default function Welcome() {
@@ -68,291 +45,112 @@ export default function Welcome() {
 
     return (
         <>
-            <Head title="Project Launcher" />
-            <main className="bg-background text-foreground min-h-screen overflow-hidden">
-                <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,color-mix(in_oklab,var(--border)_52%,transparent)_1px,transparent_1px),linear-gradient(to_bottom,color-mix(in_oklab,var(--border)_46%,transparent)_1px,transparent_1px)] bg-[size:44px_44px]" />
-                <div className="absolute inset-x-0 top-0 -z-10 h-80 bg-[linear-gradient(180deg,color-mix(in_oklab,var(--primary)_12%,transparent),transparent)]" />
+            <Head title="Masuk" />
 
-                <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-5 py-6 sm:px-8 lg:px-10">
-                    <header className="bg-card/86 supports-[backdrop-filter]:bg-card/72 flex items-center justify-between gap-4 rounded-lg border px-4 py-3 shadow-sm backdrop-blur">
-                        <div className="flex items-center gap-3">
-                            <span className="bg-primary text-primary-foreground flex size-10 items-center justify-center rounded-md">
-                                <AppLogoIcon className="size-6 fill-current" />
-                            </span>
-                            <div>
-                                <p className="text-sm font-semibold">Console Starterkit</p>
-                                <p className="text-muted-foreground text-xs">Multi-project launcher</p>
-                            </div>
-                        </div>
+            <main className="bg-muted/30 text-foreground relative flex min-h-screen flex-col overflow-x-hidden px-5 lg:h-screen lg:overflow-hidden">
+                <div className="bg-primary/5 absolute top-0 left-1/2 h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl" />
 
-                        <div className="hidden items-center gap-2 md:flex">
-                            {foundations.map((item) => {
-                                const Icon = item.icon;
+                <section className="relative mx-auto flex w-full max-w-5xl flex-1 flex-col justify-center py-6" aria-labelledby="welcome-title">
+                    <div className="mb-5 text-center">
+                        <span className="bg-primary text-primary-foreground mx-auto flex size-10 items-center justify-center rounded-lg shadow-sm">
+                            <AppLogoIcon className="size-6 fill-current" />
+                        </span>
+                        <p className="text-muted-foreground mt-3 text-[10px] font-semibold tracking-[0.22em] uppercase">
+                            Enterprise Resource Planning
+                        </p>
+                        <h1 id="welcome-title" className="mt-2 text-2xl font-semibold tracking-tight">
+                            Selamat datang
+                        </h1>
+                        <p className="text-muted-foreground mt-1 text-xs leading-5">
+                            {isAuthenticated ? 'Pilih workspace yang ingin Anda buka.' : 'Pilih workspace untuk melanjutkan ke halaman login.'}
+                        </p>
+                    </div>
 
-                                return (
-                                    <span
-                                        key={item.label}
-                                        className="text-muted-foreground bg-muted/70 inline-flex items-center gap-2 rounded-md px-3 py-2 text-xs font-medium"
-                                    >
-                                        <Icon className="size-3.5" />
-                                        {item.label}
-                                    </span>
-                                );
-                            })}
-                        </div>
+                    <div className="mx-auto grid w-full max-w-md gap-4 sm:grid-cols-2">
+                        {destinations.map((destination) => {
+                            const Icon = destination.icon;
+                            const href = isAuthenticated ? destination.dashboardRoute : destination.loginRoute;
 
-                        {isAuthenticated ? (
-                            <Button asChild>
-                                <Link href={route('dashboard')}>
-                                    Buka Console
-                                    <ArrowRight className="size-4" />
-                                </Link>
-                            </Button>
-                        ) : null}
-                    </header>
-
-                    <section className="grid flex-1 items-center gap-8 py-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(520px,1.05fr)] lg:py-14">
-                        <div className="space-y-7">
-                            <div className="space-y-5">
-                                <Badge variant="outline" className="bg-card/80 w-fit gap-2 px-3 py-1.5">
-                                    <Sparkles className="size-3.5" />
-                                    Console as project foundation
-                                </Badge>
-                                <div className="max-w-3xl space-y-4">
-                                    <h1 className="text-4xl leading-tight font-semibold tracking-tight sm:text-5xl lg:text-6xl">
-                                        Satu pintu untuk semua workspace project.
-                                    </h1>
-                                    <p className="text-muted-foreground max-w-2xl text-base leading-7 sm:text-lg">
-                                        Console menjadi lapisan awal untuk administrasi, konfigurasi, keamanan, monitoring, dan generator modul lintas
-                                        project.
-                                    </p>
+                            return (
+                                <div
+                                    key={destination.name}
+                                    className={`flex aspect-square flex-col items-start justify-between rounded-xl border p-5 shadow-lg shadow-black/10 transition-transform duration-200 hover:-translate-y-1 ${destination.cardClassName}`}
+                                >
+                                    <div>
+                                        <span className={`flex size-10 items-center justify-center rounded-lg border ${destination.iconClassName}`}>
+                                            <Icon className="size-5" aria-hidden="true" />
+                                        </span>
+                                        <h2 className="mt-4 text-lg font-semibold">{destination.name}</h2>
+                                        <p className="mt-1 text-xs leading-5 text-white/70">{destination.description}</p>
+                                    </div>
+                                    <Button asChild className={`w-full justify-between ${destination.buttonClassName}`}>
+                                        <Link href={href} aria-label={`${isAuthenticated ? 'Buka' : 'Login ke'} ${destination.name}`}>
+                                            {isAuthenticated ? 'Buka' : 'Login'}
+                                            <ArrowRight className="size-4" aria-hidden="true" />
+                                        </Link>
+                                    </Button>
                                 </div>
-                            </div>
+                            );
+                        })}
+                    </div>
+                </section>
 
-                            <div className="grid gap-3 sm:grid-cols-3">
-                                <Metric label="Project aktif" value="Console + HR" />
-                                <Metric label="HR module" value="1" />
-                                <Metric label="Next phase" value="HR Core" />
-                            </div>
-
-                            <div className="grid gap-3 sm:grid-cols-3">
-                                {foundations.map((item) => {
-                                    const Icon = item.icon;
-
-                                    return (
-                                        <div key={item.label} className="bg-card/82 rounded-lg border p-4 shadow-sm">
-                                            <span className="dashboard-icon icon-tone-indigo flex size-9 items-center justify-center rounded-md">
-                                                <Icon className="size-4" />
-                                            </span>
-                                            <p className="mt-3 text-sm font-semibold">{item.label}</p>
-                                        </div>
-                                    );
-                                })}
-                            </div>
+                <footer className="bg-muted/30 relative -mx-5 border-t pt-3">
+                    <div className="mx-auto w-full max-w-5xl px-5">
+                        <div className="flex flex-wrap justify-center gap-2">
+                            <FeatureCard
+                                icon={ShieldCheck}
+                                title="Akses terkontrol"
+                                description="Policy server-side"
+                                tone="bg-sky-500/12 text-sky-600"
+                            />
+                            <FeatureCard
+                                icon={Boxes}
+                                title="Arsitektur modular"
+                                description="Boundary terpisah"
+                                tone="bg-emerald-500/12 text-emerald-600"
+                            />
+                            <FeatureCard
+                                icon={Database}
+                                title="Data terlindungi"
+                                description="Validasi dan audit"
+                                tone="bg-amber-500/12 text-amber-600"
+                            />
                         </div>
+                    </div>
 
-                        <ConsolePreview isAuthenticated={isAuthenticated} />
-                    </section>
-
-                    <section className="pb-8">
-                        <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-                            <div>
-                                <h2 className="text-xl font-semibold">Project Workspace</h2>
-                                <p className="text-muted-foreground text-sm">
-                                    Pilih project yang sudah aktif atau siapkan target generator berikutnya.
-                                </p>
+                    <div className="mt-3 w-full border-t border-slate-800 bg-slate-950 px-5 py-3 text-white">
+                        <div className="mx-auto flex w-full max-w-5xl flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                            <div className="flex flex-wrap items-center gap-2" aria-label="Informasi teknis">
+                                <Badge className="border border-sky-400/20 bg-sky-400/10 text-sky-200 hover:bg-sky-400/10">
+                                    <Boxes className="size-3" /> Laravel 12
+                                </Badge>
+                                <Badge className="border border-emerald-400/20 bg-emerald-400/10 text-emerald-200 hover:bg-emerald-400/10">
+                                    <LayoutDashboard className="size-3" /> React + Inertia
+                                </Badge>
+                                <Badge className="border border-amber-400/20 bg-amber-400/10 text-amber-200 hover:bg-amber-400/10">
+                                    <ShieldCheck className="size-3" /> TypeScript
+                                </Badge>
                             </div>
-                            <Badge variant="secondary" className="w-fit">
-                                Console ready
-                            </Badge>
+                            <p className="text-[11px] text-slate-300">Akun dari administrator · © {new Date().getFullYear()} ERP</p>
                         </div>
-
-                        <div className="grid gap-4 lg:grid-cols-2">
-                            {projects.map((project) => (
-                                <ProjectCard key={project.name} project={project} isAuthenticated={isAuthenticated} />
-                            ))}
-                        </div>
-                    </section>
-                </div>
+                    </div>
+                </footer>
             </main>
         </>
     );
 }
 
-function ConsolePreview({ isAuthenticated }: { isAuthenticated: boolean }) {
+function FeatureCard({ icon: Icon, title, description, tone }: { icon: typeof ShieldCheck; title: string; description: string; tone: string }) {
     return (
-        <div className="relative">
-            <div className="bg-card/90 overflow-hidden rounded-lg border shadow-xl shadow-black/5">
-                <div className="border-b px-4 py-3">
-                    <div className="flex items-center justify-between gap-4">
-                        <div className="flex items-center gap-2">
-                            <span className="size-2.5 rounded-full bg-rose-400" />
-                            <span className="size-2.5 rounded-full bg-amber-400" />
-                            <span className="size-2.5 rounded-full bg-emerald-400" />
-                        </div>
-                        <Badge variant={isAuthenticated ? 'default' : 'secondary'}>{isAuthenticated ? 'Session aktif' : 'Console login'}</Badge>
-                    </div>
-                </div>
-
-                <div className="grid min-h-[420px] md:grid-cols-[180px_minmax(0,1fr)]">
-                    <aside className="bg-muted/40 hidden border-r p-4 md:block">
-                        <div className="mb-5 flex items-center gap-2">
-                            <span className="dashboard-icon icon-tone-sky flex size-8 items-center justify-center rounded-md">
-                                <TerminalSquare className="size-4" />
-                            </span>
-                            <span className="text-sm font-semibold">Console</span>
-                        </div>
-                        <div className="space-y-2">
-                            {['Dashboard', 'Users', 'Access Control', 'System Settings', 'Monitors'].map((item, index) => (
-                                <div
-                                    key={item}
-                                    className={
-                                        index === 0
-                                            ? 'bg-background text-foreground rounded-md border px-3 py-2 text-xs font-medium shadow-xs'
-                                            : 'text-muted-foreground rounded-md px-3 py-2 text-xs font-medium'
-                                    }
-                                >
-                                    {item}
-                                </div>
-                            ))}
-                        </div>
-                    </aside>
-
-                    <div className="space-y-4 p-4 sm:p-5">
-                        <div className="grid gap-3 sm:grid-cols-3">
-                            <PreviewStat label="Modules" value="10" tone="icon-tone-sky" />
-                            <PreviewStat label="Policies" value="Ready" tone="icon-tone-emerald" />
-                            <PreviewStat label="Events" value="Next" tone="icon-tone-amber" />
-                        </div>
-
-                        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_180px]">
-                            <div className="rounded-lg border p-4">
-                                <div className="mb-4 flex items-center justify-between gap-3">
-                                    <div>
-                                        <p className="text-sm font-semibold">Module Contract</p>
-                                        <p className="text-muted-foreground text-xs">routes, permissions, provider, navigation</p>
-                                    </div>
-                                    <ShieldCheck className="text-primary size-5" />
-                                </div>
-                                <div className="space-y-3">
-                                    {[
-                                        ['Console', '10 modules', '100%'],
-                                        ['HR', '1 module', '30%'],
-                                        ['Next project', 'planned', '10%'],
-                                    ].map(([name, meta, width]) => (
-                                        <div key={name} className="space-y-2">
-                                            <div className="flex items-center justify-between text-xs">
-                                                <span className="font-medium">{name}</span>
-                                                <span className="text-muted-foreground">{meta}</span>
-                                            </div>
-                                            <div className="bg-muted h-2 overflow-hidden rounded-full">
-                                                <div className="bg-primary h-full rounded-full" style={{ width }} />
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <div className="rounded-lg border p-4">
-                                <p className="text-sm font-semibold">Generator Queue</p>
-                                <div className="mt-4 space-y-3">
-                                    {['Project', 'Module', 'Event'].map((item, index) => (
-                                        <div key={item} className="flex items-center gap-2 text-xs">
-                                            <span className={index === 0 ? 'text-primary' : 'text-muted-foreground'}>
-                                                {index === 0 ? <WandSparkles className="size-4" /> : <CheckCircle2 className="size-4" />}
-                                            </span>
-                                            <span>{item}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="rounded-lg border p-4">
-                            <div className="grid gap-3 sm:grid-cols-3">
-                                {['Shared Kernel', 'Module Contract', 'Domain Event'].map((item) => (
-                                    <div key={item} className="bg-muted/45 rounded-md px-3 py-2 text-xs font-medium">
-                                        {item}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <article className="bg-background/80 flex w-full items-center gap-3 rounded-lg border px-3 py-2.5 sm:w-56">
+            <span className={`flex size-8 shrink-0 items-center justify-center rounded-md ${tone}`}>
+                <Icon className="size-4" aria-hidden="true" />
+            </span>
+            <div>
+                <h2 className="text-xs font-semibold">{title}</h2>
+                <p className="text-muted-foreground text-[11px] leading-4">{description}</p>
             </div>
-        </div>
-    );
-}
-
-function ProjectCard({ project, isAuthenticated }: { project: ProjectItem; isAuthenticated: boolean }) {
-    const Icon = project.icon;
-    const href = project.status === 'ready' ? (isAuthenticated ? project.href : (project.loginHref ?? route('login'))) : null;
-
-    const content = (
-        <div className="group bg-card/92 text-card-foreground hover:border-primary/35 flex h-full flex-col rounded-lg border p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
-            <div className="mb-5 flex items-start justify-between gap-4">
-                <span className={`dashboard-icon ${project.tone} flex size-12 items-center justify-center rounded-md`}>
-                    <Icon className="size-6" />
-                </span>
-                <Badge variant={project.status === 'ready' ? 'default' : 'secondary'}>{project.status === 'ready' ? 'Ready' : 'Planned'}</Badge>
-            </div>
-
-            <div className="min-w-0 flex-1 space-y-3">
-                <div>
-                    <h3 className="text-xl font-semibold">{project.name}</h3>
-                    <p className="text-muted-foreground mt-1 text-xs font-medium">{project.meta}</p>
-                </div>
-                <p className="text-muted-foreground text-sm leading-6">{project.description}</p>
-                <div className="flex flex-wrap gap-2">
-                    {project.modules.map((module) => (
-                        <span key={module} className="bg-muted text-muted-foreground rounded-md px-2.5 py-1 text-xs font-medium">
-                            {module}
-                        </span>
-                    ))}
-                </div>
-            </div>
-
-            <div className="mt-5 flex items-center justify-between border-t pt-4">
-                {project.status === 'ready' ? (
-                    <span className="text-primary inline-flex items-center gap-2 text-sm font-semibold">
-                        {isAuthenticated ? 'Masuk' : 'Masuk Console'}
-                        <ArrowRight className="size-4 transition group-hover:translate-x-1" />
-                    </span>
-                ) : (
-                    <span className="text-muted-foreground inline-flex items-center gap-2 text-sm font-semibold">
-                        <LockKeyhole className="size-4" />
-                        Segera
-                    </span>
-                )}
-                <span className="text-muted-foreground text-xs">workspace</span>
-            </div>
-        </div>
-    );
-
-    return href ? <Link href={href}>{content}</Link> : content;
-}
-
-function Metric({ label, value }: { label: string; value: string }) {
-    return (
-        <div className="bg-card/88 rounded-lg border p-4 shadow-sm">
-            <p className="text-muted-foreground text-xs">{label}</p>
-            <p className="mt-2 text-xl font-semibold">{value}</p>
-        </div>
-    );
-}
-
-function PreviewStat({ label, value, tone }: { label: string; value: string; tone: string }) {
-    return (
-        <div className="rounded-lg border p-3">
-            <div className="flex items-center gap-3">
-                <span className={`dashboard-icon ${tone} flex size-9 items-center justify-center rounded-md`}>
-                    <CircleDot className="size-4" />
-                </span>
-                <div>
-                    <p className="text-muted-foreground text-xs">{label}</p>
-                    <p className="text-sm font-semibold">{value}</p>
-                </div>
-            </div>
-        </div>
+        </article>
     );
 }
