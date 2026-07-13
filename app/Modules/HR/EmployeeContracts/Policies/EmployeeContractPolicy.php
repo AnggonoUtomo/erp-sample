@@ -20,4 +20,14 @@ class EmployeeContractPolicy
     {
         return $user->hasAnyPermission(['employee-contracts.activate', 'employee-contracts.manage']);
     }
+
+    public function terminate(User $user): bool
+    {
+        return $user->hasAnyPermission(['employee-contracts.terminate', 'employee-contracts.manage']);
+    }
+
+    public function cancel(User $user): bool
+    {
+        return $user->hasAnyPermission(['employee-contracts.cancel', 'employee-contracts.manage']);
+    }
 }

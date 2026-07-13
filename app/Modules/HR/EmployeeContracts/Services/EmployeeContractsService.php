@@ -20,7 +20,7 @@ class EmployeeContractsService
             'contracts' => EmployeeContract::query()->with(['employee', 'employmentType'])->latest('start_date')->paginate(15)->through(fn ($contract) => [
                 'id' => $contract->id, 'employee_id' => $contract->employee_id, 'employment_type_id' => $contract->employment_type_id,
                 'contract_number' => $contract->contract_number, 'start_date' => $contract->start_date->toDateString(),
-                'end_date' => $contract->end_date?->toDateString(), 'status' => $contract->status, 'notes' => $contract->notes,
+                'end_date' => $contract->end_date?->toDateString(), 'status' => $contract->status, 'ended_reason' => $contract->ended_reason, 'notes' => $contract->notes,
                 'employee' => ['id' => $contract->employee->id, 'display_name' => $contract->employee->display_name],
                 'employment_type' => ['id' => $contract->employmentType->id, 'name' => $contract->employmentType->name],
             ]),
@@ -87,6 +87,36 @@ class EmployeeContractsService
                 description: "Activated contract {$locked->contract_number}",
                 oldValues: ['status' => 'DRAFT'],
                 newValues: ['status' => 'ACTIVE'],
+            );
+
+            return $locked->refresh();
+        });
+    }
+
+    public function terminate(EmployeeContract $contract, string $endDate, string $reason): EmployeeContract
+    {
+        return $this->transition($contract, ['ACTIVE'], 'ENDED', $reason, ['end_date' => $endDate], 'terminated');
+    }
+
+    public function cancel(EmployeeContract $contract, string $reason): EmployeeContract
+    {
+        return $this->transition($contract, ['DRAFT', 'ACTIVE'], 'CANCELLED', $reason, [], 'cancelled');
+    }
+
+    private function transition(EmployeeContract $contract, array $allowedFrom, string $status, string $reason, array $values, string $event): EmployeeContract
+    {
+        return $this->transaction->run(function () use ($contract, $allowedFrom, $status, $reason, $values, $event) {
+            $locked = EmployeeContract::query()->lockForUpdate()->findOrFail($contract->id);
+            if (! in_array($locked->status, $allowedFrom, true)) {
+                throw ValidationException::withMessages(['status' => "Contract berstatus {$locked->status} tidak dapat {$event}."]);
+            }
+
+            $oldStatus = $locked->status;
+            $locked->update([...$values, 'status' => $status, 'ended_reason' => $reason]);
+            $this->audit->record(
+                module: 'hr.employee-contracts', event: "EmployeeContract.{$event}", auditable: $locked,
+                description: ucfirst($event)." contract {$locked->contract_number}",
+                oldValues: ['status' => $oldStatus], newValues: ['status' => $status, 'end_date' => $locked->end_date?->toDateString(), 'reason' => $reason],
             );
 
             return $locked->refresh();

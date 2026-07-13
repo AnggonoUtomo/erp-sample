@@ -6,7 +6,9 @@ import { usePermission } from '@/hooks/use-permission';
 import AppLayout from '@/layouts/app-layout';
 import { Head, router, useForm } from '@inertiajs/react';
 import type { FormEvent } from 'react';
-import type { ContractForm, ContractPageProps } from './types';
+import { useState } from 'react';
+import { ContractLifecycleDialog, type LifecycleAction } from './employee-contract-components/contract-lifecycle-dialog';
+import type { ContractForm, ContractPageProps, ContractRow } from './types';
 
 const emptyForm: ContractForm = {
     employee_id: '',
@@ -22,6 +24,14 @@ const emptyForm: ContractForm = {
 export default function EmployeeContractsIndex({ contracts, options }: ContractPageProps) {
     const { canAny } = usePermission();
     const canActivate = canAny(['employee-contracts.activate', 'employee-contracts.manage']);
+    const canTerminate = canAny(['employee-contracts.terminate', 'employee-contracts.manage']);
+    const canCancel = canAny(['employee-contracts.cancel', 'employee-contracts.manage']);
+    const [lifecycleTarget, setLifecycleTarget] = useState<ContractRow | null>(null);
+    const [lifecycleAction, setLifecycleAction] = useState<LifecycleAction | null>(null);
+    const openLifecycle = (contract: ContractRow, action: LifecycleAction) => {
+        setLifecycleTarget(contract);
+        setLifecycleAction(action);
+    };
     const form = useForm<ContractForm>(emptyForm);
     const submit = (event: FormEvent) => {
         event.preventDefault();
@@ -79,6 +89,26 @@ export default function EmployeeContractsIndex({ contracts, options }: ContractP
                                                         }
                                                     >
                                                         Activate
+                                                    </Button>
+                                                )}
+                                                {contract.status === 'ACTIVE' && canTerminate && (
+                                                    <Button
+                                                        className="ml-2"
+                                                        size="sm"
+                                                        variant="outline"
+                                                        onClick={() => openLifecycle(contract, 'terminate')}
+                                                    >
+                                                        Terminate
+                                                    </Button>
+                                                )}
+                                                {['DRAFT', 'ACTIVE'].includes(contract.status) && canCancel && (
+                                                    <Button
+                                                        className="ml-2"
+                                                        size="sm"
+                                                        variant="destructive"
+                                                        onClick={() => openLifecycle(contract, 'cancel')}
+                                                    >
+                                                        Cancel
                                                     </Button>
                                                 )}
                                             </td>
@@ -156,6 +186,14 @@ export default function EmployeeContractsIndex({ contracts, options }: ContractP
                     </CardContent>
                 </Card>
             </div>
+            <ContractLifecycleDialog
+                contract={lifecycleTarget}
+                action={lifecycleAction}
+                onClose={() => {
+                    setLifecycleTarget(null);
+                    setLifecycleAction(null);
+                }}
+            />
         </AppLayout>
     );
 }

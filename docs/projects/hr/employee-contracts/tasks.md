@@ -62,7 +62,7 @@ npm run typecheck && npm run build
 
 **Dependencies:** Task 02. **Scope:** M; pecah audit/event jika melampaui lima file.
 
-## Task 04 — Terminate dan cancel
+## Task 04 — Terminate dan cancel ✅
 
 **Tujuan:** menyediakan akhir lifecycle dengan reason dan histori yang dapat diaudit.
 
@@ -70,9 +70,9 @@ npm run typecheck && npm run build
 
 **Acceptance criteria:**
 
-- [ ] Active dapat diakhiri pada effective date valid; draft/active dapat dibatalkan sesuai matrix.
-- [ ] Reason wajib dan tersimpan di audit tanpa mengekspos data berlebih.
-- [ ] Invalid/repeated transition tidak mengubah state.
+- [x] Active dapat diakhiri pada effective date valid; draft/active dapat dibatalkan sesuai matrix.
+- [x] Reason wajib dan tersimpan di audit tanpa mengekspos data berlebih.
+- [x] Invalid/repeated transition tidak mengubah state.
 
 **Test:** `php artisan test --filter=EmployeeContractLifecycle && npm run typecheck`
 

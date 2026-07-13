@@ -20,7 +20,7 @@ class HREmployeeContractTest extends TestCase
         parent::setUp();
         $this->withoutVite();
 
-        foreach (['hr.view', 'employee-contracts.view', 'employee-contracts.create', 'employee-contracts.activate'] as $permission) {
+        foreach (['hr.view', 'employee-contracts.view', 'employee-contracts.create', 'employee-contracts.activate', 'employee-contracts.terminate', 'employee-contracts.cancel'] as $permission) {
             Permission::findOrCreate($permission);
         }
     }
@@ -152,6 +152,62 @@ class HREmployeeContractTest extends TestCase
         $contract = $this->contract($employee, $type, 'DRAFT-DENIED', '2026-01-01', '2026-12-31', 'DRAFT');
 
         $this->actingAs($user)->post(route('hr.employee-contracts.activate', $contract))->assertForbidden();
+    }
+
+    public function test_authorized_user_can_terminate_active_contract_with_reason(): void
+    {
+        $user = User::factory()->create();
+        $user->givePermissionTo('employee-contracts.terminate');
+        [$employee, $type] = $this->references();
+        $contract = $this->contract($employee, $type, 'ACTIVE-END', '2026-01-01', '2026-12-31');
+
+        $this->actingAs($user)->post(route('hr.employee-contracts.terminate', $contract), [
+            'end_date' => '2026-06-30', 'reason' => 'Mutual agreement',
+        ])->assertRedirect();
+
+        $this->assertDatabaseHas('hr_employee_contracts', [
+            'id' => $contract->id, 'status' => 'ENDED', 'end_date' => '2026-06-30 00:00:00',
+            'ended_reason' => 'Mutual agreement',
+        ]);
+    }
+
+    public function test_terminate_rejects_missing_reason_invalid_date_and_non_active_state(): void
+    {
+        $user = User::factory()->create();
+        $user->givePermissionTo('employee-contracts.terminate');
+        [$employee, $type] = $this->references();
+        $active = $this->contract($employee, $type, 'ACTIVE-INVALID', '2026-01-01', '2026-12-31');
+        $draft = $this->contract($employee, $type, 'DRAFT-INVALID', '2027-01-01', '2027-12-31', 'DRAFT');
+
+        $this->actingAs($user)->post(route('hr.employee-contracts.terminate', $active), ['end_date' => '2025-12-31'])
+            ->assertSessionHasErrors(['end_date', 'reason']);
+        $this->actingAs($user)->post(route('hr.employee-contracts.terminate', $draft), ['end_date' => '2027-06-30', 'reason' => 'Invalid'])
+            ->assertSessionHasErrors('status');
+    }
+
+    public function test_authorized_user_can_cancel_draft_contract_but_cannot_repeat_transition(): void
+    {
+        $user = User::factory()->create();
+        $user->givePermissionTo('employee-contracts.cancel');
+        [$employee, $type] = $this->references();
+        $contract = $this->contract($employee, $type, 'DRAFT-CANCEL', '2026-01-01', '2026-12-31', 'DRAFT');
+
+        $this->actingAs($user)->post(route('hr.employee-contracts.cancel', $contract), ['reason' => 'Created in error'])
+            ->assertRedirect();
+        $this->assertDatabaseHas('hr_employee_contracts', ['id' => $contract->id, 'status' => 'CANCELLED', 'ended_reason' => 'Created in error']);
+
+        $this->actingAs($user)->post(route('hr.employee-contracts.cancel', $contract), ['reason' => 'Again'])
+            ->assertSessionHasErrors('status');
+    }
+
+    public function test_user_without_lifecycle_permissions_cannot_terminate_or_cancel(): void
+    {
+        $user = User::factory()->create();
+        [$employee, $type] = $this->references();
+        $contract = $this->contract($employee, $type, 'ACTIVE-DENIED', '2026-01-01', '2026-12-31');
+
+        $this->actingAs($user)->post(route('hr.employee-contracts.terminate', $contract))->assertForbidden();
+        $this->actingAs($user)->post(route('hr.employee-contracts.cancel', $contract))->assertForbidden();
     }
 
     /** @return array{Employee, EmploymentType} */

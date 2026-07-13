@@ -3,7 +3,9 @@
 namespace App\Modules\HR\EmployeeContracts\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Modules\HR\EmployeeContracts\Http\Requests\CancelEmployeeContractRequest;
 use App\Modules\HR\EmployeeContracts\Http\Requests\StoreEmployeeContractRequest;
+use App\Modules\HR\EmployeeContracts\Http\Requests\TerminateEmployeeContractRequest;
 use App\Modules\HR\EmployeeContracts\Models\EmployeeContract;
 use App\Modules\HR\EmployeeContracts\Services\EmployeeContractsService;
 use Illuminate\Http\RedirectResponse;
@@ -34,5 +36,19 @@ class EmployeeContractsController extends Controller
         $contract = $this->contracts->activate($employeeContract);
 
         return back()->with('success', "Contract {$contract->contract_number} berhasil diaktifkan.");
+    }
+
+    public function terminate(TerminateEmployeeContractRequest $request, EmployeeContract $employeeContract): RedirectResponse
+    {
+        $contract = $this->contracts->terminate($employeeContract, $request->date('end_date')->toDateString(), $request->string('reason')->trim()->toString());
+
+        return back()->with('success', "Contract {$contract->contract_number} berhasil diakhiri.");
+    }
+
+    public function cancel(CancelEmployeeContractRequest $request, EmployeeContract $employeeContract): RedirectResponse
+    {
+        $contract = $this->contracts->cancel($employeeContract, $request->string('reason')->trim()->toString());
+
+        return back()->with('success', "Contract {$contract->contract_number} berhasil dibatalkan.");
     }
 }

@@ -15,7 +15,7 @@ class EmployeeContract extends Model
 
     protected $table = 'hr_employee_contracts';
 
-    protected $fillable = ['employee_id', 'employment_type_id', 'contract_number', 'start_date', 'end_date', 'probation_end_date', 'signed_date', 'status', 'notes'];
+    protected $fillable = ['employee_id', 'employment_type_id', 'contract_number', 'start_date', 'end_date', 'probation_end_date', 'signed_date', 'status', 'ended_reason', 'notes'];
 
     protected function casts(): array
     {

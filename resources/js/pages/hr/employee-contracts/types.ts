@@ -8,7 +8,8 @@ export type ContractRow = {
     contract_number: string;
     start_date: string;
     end_date: string | null;
-    status: 'DRAFT' | 'ACTIVE';
+    status: 'DRAFT' | 'ACTIVE' | 'ENDED' | 'CANCELLED';
+    ended_reason: string | null;
     notes: string | null;
     employee: { id: number; display_name: string };
     employment_type: { id: number; name: string };
