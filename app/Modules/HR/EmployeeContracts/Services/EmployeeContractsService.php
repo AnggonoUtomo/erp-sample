@@ -35,10 +35,8 @@ class EmployeeContractsService
     {
         return $this->transaction->run(function () use ($data) {
             $overlaps = EmployeeContract::query()
-                ->where('employee_id', $data->employeeId)
-                ->where('status', '!=', 'CANCELLED')
-                ->whereDate('start_date', '<=', $data->endDate ?: '9999-12-31')
-                ->where(fn ($query) => $query->whereNull('end_date')->orWhereDate('end_date', '>=', $data->startDate))
+                ->forEmployee($data->employeeId)
+                ->overlapping($data->startDate, $data->endDate)
                 ->lockForUpdate()
                 ->exists();
 

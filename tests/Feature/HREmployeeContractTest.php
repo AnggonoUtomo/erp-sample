@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Modules\HR\EmployeeContracts\Models\EmployeeContract;
 use App\Modules\HR\Employees\Models\Employee;
 use App\Modules\HR\EmploymentStatuses\Models\EmploymentStatus;
 use App\Modules\HR\EmploymentTypes\Models\EmploymentType;
@@ -94,6 +95,28 @@ class HREmployeeContractTest extends TestCase
         $this->actingAs($user)->post(route('hr.employee-contracts.store'))->assertForbidden();
     }
 
+    public function test_effective_contract_query_uses_inclusive_boundaries_and_ignores_cancelled_or_archived(): void
+    {
+        [$employee, $type] = $this->references();
+        $active = $this->contract($employee, $type, 'ACTIVE-001', '2026-01-01', '2026-12-31');
+        $this->contract($employee, $type, 'CANCELLED-001', '2026-01-01', '2026-12-31', 'CANCELLED');
+        $archived = $this->contract($employee, $type, 'ARCHIVED-001', '2026-01-01', '2026-12-31');
+        $archived->delete();
+
+        $this->assertSame([$active->id], EmployeeContract::query()->effectiveOn('2026-01-01')->pluck('id')->all());
+        $this->assertSame([$active->id], EmployeeContract::query()->effectiveOn('2026-12-31')->pluck('id')->all());
+        $this->assertFalse(EmployeeContract::query()->effectiveOn('2027-01-01')->exists());
+    }
+
+    public function test_open_ended_contract_overlaps_every_later_period(): void
+    {
+        [$employee, $type] = $this->references();
+        $this->contract($employee, $type, 'OPEN-001', '2026-01-01', null);
+
+        $this->assertTrue(EmployeeContract::query()->forEmployee($employee->id)->overlapping('2030-01-01', '2030-12-31')->exists());
+        $this->assertFalse(EmployeeContract::query()->forEmployee($employee->id)->overlapping('2025-01-01', '2025-12-31')->exists());
+    }
+
     /** @return array{Employee, EmploymentType} */
     private function references(): array
     {
@@ -114,5 +137,13 @@ class HREmployeeContractTest extends TestCase
         ]);
 
         return [$employee, $type];
+    }
+
+    private function contract(Employee $employee, EmploymentType $type, string $number, string $start, ?string $end, string $status = 'ACTIVE'): EmployeeContract
+    {
+        return EmployeeContract::query()->create([
+            'employee_id' => $employee->id, 'employment_type_id' => $type->id,
+            'contract_number' => $number, 'start_date' => $start, 'end_date' => $end, 'status' => $status,
+        ]);
     }
 }

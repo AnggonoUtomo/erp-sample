@@ -30,7 +30,7 @@ npm run typecheck && npm run build
 
 **Dependencies:** Employees, EmploymentTypes, ADR-001 disetujui. **Scope:** L, wajib dieksekusi sebagai beberapa increment tetapi satu vertical outcome.
 
-## Task 02 — Interval query dan overlap guard
+## Task 02 — Interval query dan overlap guard ✅
 
 **Tujuan:** memusatkan aturan effective-at-date dan overlap agar semua use case memakai semantics yang sama.
 
@@ -38,9 +38,9 @@ npm run typecheck && npm run build
 
 **Acceptance criteria:**
 
-- [ ] Boundary start/end inklusif, open-ended, cancelled, dan archived teruji.
-- [ ] Overlap lama-menutup-baru, baru-menutup-lama, boundary collision, dan open-ended ditolak.
-- [ ] Query memiliki perilaku deterministik pada tanggal input eksplisit.
+- [x] Boundary start/end inklusif, open-ended, cancelled, dan archived teruji.
+- [x] Overlap lama-menutup-baru, baru-menutup-lama, boundary collision, dan open-ended ditolak.
+- [x] Query memiliki perilaku deterministik pada tanggal input eksplisit.
 
 **Test:** `php artisan test --filter=EmployeeContractInterval`
 

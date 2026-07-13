@@ -44,8 +44,7 @@ class StoreEmployeeContractRequest extends FormRequest
             $start = $this->date('start_date')->toDateString();
             $end = $this->input('end_date');
             $overlaps = EmployeeContract::query()->where('employee_id', $this->integer('employee_id'))
-                ->where('status', '!=', 'CANCELLED')->whereDate('start_date', '<=', $end ?: '9999-12-31')
-                ->where(fn ($query) => $query->whereNull('end_date')->orWhereDate('end_date', '>=', $start))->exists();
+                ->overlapping($start, $end)->exists();
             if ($overlaps) {
                 $validator->errors()->add('start_date', 'Periode kontrak overlap dengan kontrak lain.');
             }
