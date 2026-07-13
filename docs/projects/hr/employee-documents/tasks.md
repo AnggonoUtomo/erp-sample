@@ -62,7 +62,7 @@ Semua task belum dikerjakan. Implementasi harus berurutan dan berhenti di setiap
 - [x] Tidak ada storage path, media collection, blob, atau direct DMS dependency.
 - [x] Pint, lint, format, typecheck, build, module validation, dan backend suite hijau.
 
-## Task 04 — Deterministic expiry query
+## Task 04 — Deterministic expiry query ✅
 
 **Tujuan:** menghitung expiry state dengan tanggal dan warning window eksplisit.
 
@@ -70,13 +70,15 @@ Semua task belum dikerjakan. Implementasi harus berurutan dan berhenti di setiap
 
 **Acceptance criteria:**
 
-- [ ] `NOT_APPLICABLE`, `VALID`, `EXPIRING`, dan `EXPIRED` benar pada semua boundary.
-- [ ] Query tidak memakai waktu tersembunyi bila caller memberikan `asOf`.
-- [ ] Archived record dikecualikan secara default.
+- [x] `NOT_APPLICABLE`, `VALID`, `EXPIRING`, dan `EXPIRED` benar pada semua boundary.
+- [x] Query tidak memakai waktu tersembunyi bila caller memberikan `asOf`.
+- [x] Archived record dikecualikan secara default.
 
 **Test:** `php artisan test --filter=EmployeeDocumentExpiry`
 
 **Dependencies:** Task 02. **Scope:** M, 3–5 files.
+
+**Hasil:** selesai 2026-07-13. List menerima `as_of`, `warning_days`, dan `expiry_state`; tanggal acuan yang telah di-resolve dikembalikan ke frontend. Classifier dan SQL filter memakai boundary yang sama, sedangkan soft-deleted metadata tidak ikut query default.
 
 ## Task 05 — Verification lifecycle
 

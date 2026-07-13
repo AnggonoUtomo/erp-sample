@@ -77,6 +77,39 @@ export default function EmployeeDocumentsIndex({ documents, options, filters }: 
                                 ]}
                                 onChange={(value) => filter('status', value)}
                             />
+                            <div className="space-y-2">
+                                <Label htmlFor="employee-document-as-of">Tanggal acuan</Label>
+                                <Input
+                                    id="employee-document-as-of"
+                                    type="date"
+                                    value={filters.as_of}
+                                    onChange={(event) => filter('as_of', event.target.value)}
+                                />
+                            </div>
+                            <FilterSelect
+                                label="Warning window"
+                                value={String(filters.warning_days)}
+                                includeAll={false}
+                                options={[
+                                    { value: 0, label: 'Hari ini' },
+                                    { value: 7, label: '7 hari' },
+                                    { value: 30, label: '30 hari' },
+                                    { value: 60, label: '60 hari' },
+                                    { value: 90, label: '90 hari' },
+                                ]}
+                                onChange={(value) => filter('warning_days', value)}
+                            />
+                            <FilterSelect
+                                label="Filter expiry"
+                                value={filters.expiry_state || 'all'}
+                                options={[
+                                    { value: 'NOT_APPLICABLE', label: 'Tidak berlaku' },
+                                    { value: 'VALID', label: 'Valid' },
+                                    { value: 'EXPIRING', label: 'Akan kedaluwarsa' },
+                                    { value: 'EXPIRED', label: 'Kedaluwarsa' },
+                                ]}
+                                onChange={(value) => filter('expiry_state', value)}
+                            />
                         </div>
                     </CardHeader>
                     <CardContent className="space-y-4">
@@ -112,6 +145,7 @@ export default function EmployeeDocumentsIndex({ documents, options, filters }: 
                                                 <td className="p-3 text-xs">
                                                     <p>Terbit: {document.issued_at ?? '—'}</p>
                                                     <p>Kedaluwarsa: {document.expires_at ?? '—'}</p>
+                                                    <p className="font-medium">{expiryLabel(document.expiry_state)}</p>
                                                 </td>
                                                 <td className="p-3">
                                                     <span className="bg-muted rounded-full px-2.5 py-1 text-xs font-medium">
@@ -131,6 +165,9 @@ export default function EmployeeDocumentsIndex({ documents, options, filters }: 
                                 employee: filters.employee || undefined,
                                 document_type: filters.document_type || undefined,
                                 status: filters.status || undefined,
+                                as_of: filters.as_of,
+                                warning_days: filters.warning_days,
+                                expiry_state: filters.expiry_state || undefined,
                             }}
                             idPrefix="employee-documents"
                         />
@@ -218,11 +255,13 @@ function FilterSelect({
     value,
     options,
     onChange,
+    includeAll = true,
 }: {
     label: string;
     value: string;
     options: SelectOption[];
     onChange: (value: string) => void;
+    includeAll?: boolean;
 }) {
     return (
         <Select value={value} onValueChange={onChange}>
@@ -230,7 +269,7 @@ function FilterSelect({
                 <SelectValue />
             </SelectTrigger>
             <SelectContent>
-                <SelectItem value="all">Semua</SelectItem>
+                {includeAll && <SelectItem value="all">Semua</SelectItem>}
                 {options.map((option) => (
                     <SelectItem key={option.value} value={String(option.value)}>
                         {option.label}
@@ -239,6 +278,15 @@ function FilterSelect({
             </SelectContent>
         </Select>
     );
+}
+
+function expiryLabel(state: EmployeeDocumentPageProps['documents']['data'][number]['expiry_state']): string {
+    return {
+        NOT_APPLICABLE: 'Tidak berlaku',
+        VALID: 'Valid',
+        EXPIRING: 'Akan kedaluwarsa',
+        EXPIRED: 'Kedaluwarsa',
+    }[state];
 }
 
 function FormSelect({

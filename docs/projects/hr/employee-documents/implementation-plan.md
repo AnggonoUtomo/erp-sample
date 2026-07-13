@@ -36,6 +36,8 @@ Document Management contract ──> attachment gateway + access boundary
 
 Authorization matrix untuk vertical slice metadata selesai pada Task 03 dan menjadi gate setiap mutation baru. ✅
 
+Deterministic expiry query dan list filter selesai pada Task 04 tanpa menyimpan expiry sebagai lifecycle status. ✅
+
 ### Checkpoint 1
 
 - User berizin dapat membuat dan melihat metadata.

@@ -10,6 +10,7 @@ export type EmployeeDocumentRow = {
     issuer: string | null;
     issued_at: string | null;
     expires_at: string | null;
+    expiry_state: 'NOT_APPLICABLE' | 'VALID' | 'EXPIRING' | 'EXPIRED';
     verification_status: 'PENDING' | 'VERIFIED' | 'REJECTED';
     notes: string | null;
     created_at: string;
@@ -32,5 +33,12 @@ export type EmployeeDocumentPageProps = {
         total: number;
     };
     options: { employees: Option[]; documentTypes: DocumentTypeOption[] };
-    filters: { employee: number | ''; document_type: number | ''; status: string };
+    filters: {
+        employee: number | '';
+        document_type: number | '';
+        status: string;
+        as_of: string;
+        warning_days: number;
+        expiry_state: string;
+    };
 };

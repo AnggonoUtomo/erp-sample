@@ -55,6 +55,8 @@ expires_at > D + warningDays        => VALID
 
 Default `warningDays = 30`, tetapi query/command harus menerima nilai eksplisit agar reproducible. Verification dan expiry independen: dokumen dapat `VERIFIED + EXPIRED`.
 
+List memakai query contract `as_of=YYYY-MM-DD`, `warning_days=0..3650`, dan optional `expiry_state`. Response selalu mengembalikan tanggal acuan serta warning window yang telah di-resolve, sehingga label state dan pagination tetap reproducible. Nilai `as_of` valid tidak boleh diganti dengan clock server.
+
 ### 3.4 Authorization
 
 ```txt

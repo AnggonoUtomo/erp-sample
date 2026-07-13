@@ -9,6 +9,7 @@ use App\Modules\HR\EmployeeDocuments\Support\EmployeeDocumentTypeCatalog;
 use App\Modules\HR\EmployeeDocuments\Transactions\EmployeeDocumentsTransaction;
 use App\Modules\HR\Employees\Models\Employee;
 use App\Modules\HR\HRReferenceData\Models\ReferenceData;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
@@ -24,6 +25,7 @@ class EmployeeDocumentsService
         private EmployeeDocumentsTransaction $transaction,
         private AuditLogService $audit,
         private EmployeeDocumentTypeCatalog $types,
+        private EmployeeDocumentExpiryService $expiry,
     ) {}
 
     public function pageData(array $filters = []): array
@@ -34,12 +36,21 @@ class EmployeeDocumentsService
             ? (int) ($filters['per_page'] ?? 15) : 15;
         $status = in_array(($filters['status'] ?? ''), ['PENDING', 'VERIFIED', 'REJECTED'], true)
             ? $filters['status'] : '';
+        $asOf = $this->date((string) ($filters['as_of'] ?? '')) ?? CarbonImmutable::today();
+        $warningDays = max(0, min((int) ($filters['warning_days'] ?? 30), 3650));
+        $expiryState = in_array(($filters['expiry_state'] ?? ''), EmployeeDocumentExpiryService::STATES, true)
+            ? $filters['expiry_state'] : '';
 
-        $documents = EmployeeDocument::query()
+        $query = EmployeeDocument::query()
             ->with(['employee:id,employee_number,display_name', 'documentType:id,code,name'])
             ->when($employee > 0, fn (Builder $query) => $query->where('employee_id', $employee))
             ->when($documentType > 0, fn (Builder $query) => $query->where('document_type_id', $documentType))
-            ->when($status !== '', fn (Builder $query) => $query->where('verification_status', $status))
+            ->when($status !== '', fn (Builder $query) => $query->where('verification_status', $status));
+        if ($expiryState !== '') {
+            $this->expiry->applyState($query, $expiryState, $asOf, $warningDays);
+        }
+
+        $documents = $query
             ->latest()
             ->paginate($perPage)
             ->withQueryString()
@@ -51,6 +62,7 @@ class EmployeeDocumentsService
                 'issuer' => $document->issuer,
                 'issued_at' => $document->issued_at?->toDateString(),
                 'expires_at' => $document->expires_at?->toDateString(),
+                'expiry_state' => $this->expiry->state($document->expires_at, $asOf, $warningDays),
                 'verification_status' => $document->verification_status,
                 'notes' => $document->notes,
                 'created_at' => $document->created_at?->toISOString(),
@@ -68,7 +80,10 @@ class EmployeeDocumentsService
                         'requires_number' => (bool) $item->metadata['requires_number'],
                     ]),
             ],
-            'filters' => ['employee' => $employee ?: '', 'document_type' => $documentType ?: '', 'status' => $status],
+            'filters' => [
+                'employee' => $employee ?: '', 'document_type' => $documentType ?: '', 'status' => $status,
+                'as_of' => $asOf->toDateString(), 'warning_days' => $warningDays, 'expiry_state' => $expiryState,
+            ],
         ];
     }
 
@@ -140,5 +155,20 @@ class EmployeeDocumentsService
         $visible = mb_substr($number, -4);
 
         return str_repeat('*', max(0, mb_strlen($number) - mb_strlen($visible))).$visible;
+    }
+
+    private function date(string $date): ?CarbonImmutable
+    {
+        if (! preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+            return null;
+        }
+
+        try {
+            $parsed = CarbonImmutable::createFromFormat('!Y-m-d', $date);
+
+            return $parsed->format('Y-m-d') === $date ? $parsed : null;
+        } catch (\Throwable) {
+            return null;
+        }
     }
 }
