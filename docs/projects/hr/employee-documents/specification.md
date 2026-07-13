@@ -137,6 +137,8 @@ Failure semantics:
 - Akses ditolak DMS: HR meneruskan denial; tidak membuat URL storage sendiri.
 - Archive metadata HR tidak otomatis menghapus document DMS; retention/release ownership adalah use case eksplisit DMS.
 
+Contract v1 yang disetujui tersedia sebagai `DocumentReferenceReader`, `EmployeeDocumentOwnerContextV1`, `DocumentReferenceV1`, dan `DocumentReferenceDescriptorV1`. Descriptor hanya memuat `schemaVersion`, opaque `reference`, dan state `AVAILABLE|MISSING|ARCHIVED|UNAVAILABLE|DENIED`. Schema normatif owner context berada di `Integration/Schemas/employee-document-owner-context-v1.json`; fake adapter hanya untuk contract test dan tidak menjadi production binding.
+
 ## 6. Non-scope
 
 - Blob/file storage, Spatie media collection baru pada model EmployeeDocument, filesystem path, atau signed URL generation.

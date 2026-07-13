@@ -142,7 +142,7 @@ Semua task belum dikerjakan. Implementasi harus berurutan dan berhenti di setiap
 
 **Keputusan checkpoint:** approved. Metadata lifecycle dinyatakan complete. Task 08 belum boleh mengaktifkan attachment/storage; pekerjaan berikutnya hanya mendefinisikan DMS reference contract v1 dan tetap memerlukan persetujuan boundary lintas project.
 
-## Task 08 — DMS reference contract v1
+## Task 08 — DMS reference contract v1 ✅
 
 **Tujuan:** mendefinisikan interface/DTO lintas project tanpa import model atau schema internal DMS.
 
@@ -150,13 +150,15 @@ Semua task belum dikerjakan. Implementasi harus berurutan dan berhenti di setiap
 
 **Acceptance criteria:**
 
-- [ ] Owner context memakai `schemaVersion: 1` dan field minimal.
-- [ ] Reference opaque; HR tidak menafsirkan ID atau menyimpan path/URL.
-- [ ] Missing, denied, archived, dan unavailable DMS memiliki semantics eksplisit.
+- [x] Owner context memakai `schemaVersion: 1` dan field minimal.
+- [x] Reference opaque; HR tidak menafsirkan ID atau menyimpan path/URL.
+- [x] Missing, denied, archived, dan unavailable DMS memiliki semantics eksplisit.
 
 **Test:** `php artisan test --filter=EmployeeDocumentDmsContract`
 
 **Dependencies:** persetujuan interface Document Management. **Scope:** M, 3–5 files.
+
+**Hasil:** selesai 2026-07-13. Contract read-only v1 menyediakan owner context empat field, opaque reference, descriptor lima state, normative JSON schema, fake adapter, dan module integration metadata. Fake tidak di-bind sebagai adapter production; route attachment/storage tetap belum ada.
 
 ## Task 09 — Attach dan detach reference
 

@@ -4,7 +4,7 @@ Paket dokumen ini mendefinisikan module `HR/EmployeeDocuments` sebelum implement
 
 ## Status
 
-`Task 01–07 implemented; Checkpoint B approved; Task 08 menunggu persetujuan contract DMS`.
+`Task 01–08 implemented; contract DMS v1 approved; Task 09 menunggu adapter DMS nyata`.
 
 Document type contract telah tersedia melalui HR Reference Data dengan seed KTP, NPWP, passport, contract, certificate, medical, dan other. Metadata type divalidasi, pilihan input hanya memuat type aktif, sedangkan resolver histori tetap dapat membaca type inactive/archived.
 
@@ -25,8 +25,9 @@ Expiry report read-only tersedia melalui `php artisan hr:documents-expiring --da
 1. [Specification](specification.md) — requirement, non-scope, data contract, route, acceptance criteria, dan test plan.
 2. [ADR-001: Pisahkan metadata HR dari storage dokumen](decisions/001-hr-metadata-dms-storage-boundary.md) — ownership data dan kontrak integrasi.
 3. [ADR-002: Archive melepaskan uniqueness claim](decisions/002-archive-releases-uniqueness-claim.md) — invariant archive/restore dan duplicate revival.
-4. [Implementation plan](implementation-plan.md) — urutan vertical slice, dependency, risiko, dan checkpoint.
-5. [Tasks](tasks.md) — unit kerja kecil dengan tujuan, file, acceptance criteria, dependency, dan cara test.
+4. [ADR-003: Versioned opaque DMS reference contract](decisions/003-versioned-dms-reference-contract.md) — DTO, failure state, privacy, dan production binding boundary.
+5. [Implementation plan](implementation-plan.md) — urutan vertical slice, dependency, risiko, dan checkpoint.
+6. [Tasks](tasks.md) — unit kerja kecil dengan tujuan, file, acceptance criteria, dependency, dan cara test.
 
 ## Relasi lintas dokumen
 

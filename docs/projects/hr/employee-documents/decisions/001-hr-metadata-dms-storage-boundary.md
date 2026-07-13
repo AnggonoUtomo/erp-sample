@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Accepted
 
 ## Date
 
@@ -71,4 +71,4 @@ Vertical slice pertama metadata-only. Attachment diaktifkan kemudian melalui gat
 - Archive HR tidak otomatis menghapus DMS document.
 - Contract owner context memakai `schemaVersion`.
 - Perubahan ownership atau reference semantics membutuhkan ADR dan versi contract baru.
-- ADR menjadi `Accepted` hanya setelah stakeholder menyetujui boundary dan DMS contract owner.
+- Boundary dan DMS contract v1 disetujui pada 2026-07-13; perubahan ownership/reference semantics membutuhkan ADR baru.

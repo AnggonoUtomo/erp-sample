@@ -46,6 +46,8 @@ Read-only expiring command dengan explicit date/window dan privacy-safe output s
 
 Checkpoint B approved pada 2026-07-13 setelah sensitive-data review dan seluruh quality gate hijau. Metadata lifecycle complete; integrasi DMS tetap berada di phase/approval terpisah. ✅
 
+DMS reference contract v1 selesai pada Task 08: interface/DTO/schema/fake tersedia tanpa production binding, route attachment, atau storage implementation. ✅
+
 ### Checkpoint 1
 
 - User berizin dapat membuat dan melihat metadata.
