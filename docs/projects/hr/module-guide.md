@@ -554,6 +554,8 @@ Setelah itu baru masuk ke data employee:
 6. `EmployeeContracts`
 7. `EmployeeMovements`
 
+`EmployeeDocuments` direncanakan sebagai owner metadata bisnis, expiry, dan verification dokumen employee. Blob, version, checksum, download, retention, dan legal hold tetap dimiliki Document Management melalui reference contract, bukan storage kedua di HR. Lihat [spesifikasi Employee Documents](employee-documents/specification.md) dan [ADR boundary HR–DMS](employee-documents/decisions/001-hr-metadata-dms-storage-boundary.md).
+
 `EmployeeMovements` vertical slice pertama tersedia untuk transfer efektif hari ini. Module menyimpan snapshot assignment sebelum/sesudah dan menjadi satu-satunya jalur pada slice ini yang menerapkan perubahan department, position, work location, dan supervisor ke profile Employees. Lihat [spesifikasi Employee Movements](employee-movements/specification.md) dan [ADR effective-dated movement](employee-movements/decisions/001-effective-dated-movements.md).
 
 ## Contract Wajib Per Module HR

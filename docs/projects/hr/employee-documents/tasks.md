@@ -1,0 +1,194 @@
+# Tasks: Employee Documents
+
+Semua task belum dikerjakan. Implementasi harus berurutan dan berhenti di setiap checkpoint untuk review.
+
+## Task 01 — Document type contract
+
+**Tujuan:** mendefinisikan tipe dokumen HR dan aturan apakah expiry/nomor wajib tanpa membuat master type kedua di DMS.
+
+**Files:** HR Reference Data seeder/category contract, Employee Documents support type, tests, specification jika keputusan berubah.
+
+**Acceptance criteria:**
+
+- [ ] Category `EMPLOYEE_DOCUMENT_TYPE` memiliki code stabil dan metadata `requires_expiry`, `requires_number`, serta `number_unique_scope` tervalidasi.
+- [ ] Type DMS/category storage tidak dipakai sebagai pengganti business type HR.
+- [ ] Type archived tetap dapat memberi label histori tetapi tidak dapat dipilih untuk input baru.
+
+**Test:** `php artisan test --filter=EmployeeDocumentType`
+
+**Dependencies:** persetujuan specification. **Scope:** M, 3–5 files.
+
+## Task 02 — Metadata-only create dan list
+
+**Tujuan:** memberi HR vertical path pertama untuk membuat dan melihat metadata dokumen tanpa upload.
+
+**Files:** module contract; migration/model; request/DTO/service/transaction/controller/policy; page/types; feature test. Pecah backend dan frontend menjadi increment terpisah bila lebih dari lima file.
+
+**Acceptance criteria:**
+
+- [ ] Authorized HR dapat membuat metadata berstatus `PENDING` dan melihat list paginated/filter employee/type/status.
+- [ ] Required-expiry, date order, duplicate policy, normalization, dan archived employee/type rules tervalidasi.
+- [ ] Nomor sensitif masked di list dan tidak muncul plaintext di audit; tidak ada media/file write.
+
+**Test:** `php artisan test --filter=HREmployeeDocument && npm run typecheck && npm run build`
+
+**Dependencies:** Task 01. **Scope:** L outcome; implement sebagai backend M lalu frontend M.
+
+## Task 03 — Mutation authorization matrix
+
+**Tujuan:** menutup seluruh metadata mutation dengan policy server-side dan audit actor.
+
+**Files:** permissions/policy, authorization feature test, navigation, role sync contract.
+
+**Acceptance criteria:**
+
+- [ ] Guest dan user tanpa permission ditolak untuk seluruh mutation.
+- [ ] `hr-officer`, `hr-manager`, dan `hr-viewer` hanya menerima permission yang didokumentasikan.
+- [ ] Frontend controls tidak dianggap security boundary.
+
+**Test:** `php artisan test --filter=HREmployeeDocumentAuthorization`
+
+**Dependencies:** Task 02. **Scope:** S/M, 2–4 files.
+
+## Checkpoint A — Approve vertical slice pertama
+
+- [ ] Task 01–03 hijau dan direview manusia.
+- [ ] Tidak ada storage path, media collection, blob, atau direct DMS dependency.
+- [ ] Pint, lint, format, typecheck, build, module validation, dan backend suite hijau.
+
+## Task 04 — Deterministic expiry query
+
+**Tujuan:** menghitung expiry state dengan tanggal dan warning window eksplisit.
+
+**Files:** query/service, tests, list filter/types, specification.
+
+**Acceptance criteria:**
+
+- [ ] `NOT_APPLICABLE`, `VALID`, `EXPIRING`, dan `EXPIRED` benar pada semua boundary.
+- [ ] Query tidak memakai waktu tersembunyi bila caller memberikan `asOf`.
+- [ ] Archived record dikecualikan secara default.
+
+**Test:** `php artisan test --filter=EmployeeDocumentExpiry`
+
+**Dependencies:** Task 02. **Scope:** M, 3–5 files.
+
+## Task 05 — Verification lifecycle
+
+**Tujuan:** menyediakan verify, reject, dan resubmit sebagai transition eksplisit dan atomic.
+
+**Files:** lifecycle requests, service/transaction, routes/controller, frontend dialog, tests.
+
+**Acceptance criteria:**
+
+- [ ] Transition matrix valid berhasil dengan actor/timestamp; reject mewajibkan reason.
+- [ ] Invalid/repeated transition tidak mengubah record atau membuat audit ganda.
+- [ ] Perubahan field material mengembalikan status ke `PENDING` dalam transaksi yang sama.
+
+**Test:** `php artisan test --filter=EmployeeDocumentVerification && npm run typecheck`
+
+**Dependencies:** Task 03. **Scope:** pecah backend M dan frontend S.
+
+## Task 06 — Archive dan restore metadata
+
+**Tujuan:** menjaga histori metadata tanpa menyentuh file atau retention DMS.
+
+**Files:** service/policy, controller/routes, tests, archive filter/dialog.
+
+**Acceptance criteria:**
+
+- [ ] Archive memakai soft delete dan tidak ada force-delete route.
+- [ ] Archive/restore tidak memanggil delete DMS.
+- [ ] Restore menjalankan invariant duplicate/type kembali dan tercatat di audit.
+
+**Test:** `php artisan test --filter=EmployeeDocumentArchive`
+
+**Dependencies:** Task 02. **Scope:** M, pecah UI bila perlu.
+
+## Task 07 — Expiring read-only command
+
+**Tujuan:** menyediakan sumber reminder/report tanpa side effect notification.
+
+**Files:** command, expiry service, provider registration, tests, README.
+
+**Acceptance criteria:**
+
+- [ ] `--date` dan `--within` tervalidasi serta output reproducible.
+- [ ] Command tidak mengubah metadata, verification, audit, atau mengirim notification.
+- [ ] Exit code dan empty result terdokumentasi.
+
+**Test:** `php artisan test --filter=EmployeeDocumentsExpiringCommand`
+
+**Dependencies:** Task 04. **Scope:** M, 3–5 files.
+
+## Checkpoint B — Metadata lifecycle complete
+
+- [ ] Task 04–07 hijau dan direview manusia.
+- [ ] Sensitive-data review memastikan masking, encryption, fingerprint, audit redaction benar.
+- [ ] Full quality gates hijau.
+
+## Task 08 — DMS reference contract v1
+
+**Tujuan:** mendefinisikan interface/DTO lintas project tanpa import model atau schema internal DMS.
+
+**Files:** Integration contracts/DTO/schema, fake adapter, contract tests, ADR/spec/module integration metadata.
+
+**Acceptance criteria:**
+
+- [ ] Owner context memakai `schemaVersion: 1` dan field minimal.
+- [ ] Reference opaque; HR tidak menafsirkan ID atau menyimpan path/URL.
+- [ ] Missing, denied, archived, dan unavailable DMS memiliki semantics eksplisit.
+
+**Test:** `php artisan test --filter=EmployeeDocumentDmsContract`
+
+**Dependencies:** persetujuan interface Document Management. **Scope:** M, 3–5 files.
+
+## Task 09 — Attach dan detach reference
+
+**Tujuan:** menghubungkan metadata HR ke logical document DMS secara idempotent tanpa partial state.
+
+**Files:** attachment request/DTO, service/transaction, gateway adapter, controller/routes, tests, frontend control.
+
+**Acceptance criteria:**
+
+- [ ] Attach memakai idempotency/owner context dan menyimpan reference hanya setelah DMS sukses.
+- [ ] Timeout/retry tidak membuat duplicate/orphan; detach tidak menghapus blob.
+- [ ] Perubahan reference mereset verification ke `PENDING` dan diaudit tanpa URL/file detail sensitif.
+
+**Test:** `php artisan test --filter=EmployeeDocumentAttachment`
+
+**Dependencies:** Task 08 dan DMS foundation. **Scope:** pecah backend dan UI; masing-masing maksimal M.
+
+## Task 10 — Secure access handoff
+
+**Tujuan:** preview/download selalu melalui authorization dan delivery milik DMS.
+
+**Files:** access adapter, controller handoff, policy tests, frontend action, integration docs.
+
+**Acceptance criteria:**
+
+- [ ] User harus lolos permission metadata HR dan access decision DMS.
+- [ ] HR tidak menghasilkan storage URL atau melakukan stream blob sendiri.
+- [ ] IDOR, expired delivery URL, missing reference, dan revoked access ditolak fail-closed.
+
+**Test:** `php artisan test --filter=EmployeeDocumentAccess && npm run build`
+
+**Dependencies:** Task 08–09 dan DMS access contract. **Scope:** M.
+
+## Final quality checkpoint
+
+```bash
+php artisan module:validate
+vendor/bin/pint --test
+npm run lint:check
+npm run format:check
+npm run typecheck
+npm run test:frontend
+npm run build
+php artisan test
+git diff --check
+```
+
+- [ ] Semua acceptance criteria specification hijau.
+- [ ] Tidak ada duplicate storage engine atau direct cross-project model import.
+- [ ] Mutation denial matrix mencakup seluruh route baru.
+- [ ] README/spec/plan/tasks/ADR sesuai perilaku aktual.

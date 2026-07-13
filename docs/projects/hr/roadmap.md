@@ -195,11 +195,13 @@ Module:
 
 - `EmployeeDocuments`
 - `EmployeeContracts`
-- `DocumentTypes`
+- `HRReferenceData` category `EMPLOYEE_DOCUMENT_TYPE`
+
+Rancangan Employee Documents kini dipisahkan tegas dari storage engine: HR memiliki metadata, expiry, dan verification; Document Management memiliki file/version/access/retention. Lihat [paket spesifikasi Employee Documents](employee-documents/README.md).
 
 Fitur:
 
-- Upload dokumen karyawan dengan Spatie Media Library.
+- Hubungkan metadata dokumen karyawan ke file Document Management melalui reference contract; jangan membuat media collection dokumen kedua di HR.
 - Document type: KTP, NPWP, contract, certificate, medical, other.
 - Contract record: start date, end date, status.
 - Contract reminder.
