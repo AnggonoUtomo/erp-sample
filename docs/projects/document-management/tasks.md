@@ -28,13 +28,15 @@ Implementasi wajib berurutan dan berhenti pada setiap checkpoint. Setiap task ad
 
 **Acceptance criteria:**
 
-- [ ] Reference unique/immutable; owner context tervalidasi dan indexed.
-- [ ] Create idempotent terhadap owner context + idempotency key.
-- [ ] Tidak ada disk/path/binary/public URL pada output contract.
+- [x] Reference unique/immutable; owner context tervalidasi dan indexed.
+- [x] Create idempotent terhadap owner context + idempotency key.
+- [x] Tidak ada disk/path/binary/public URL pada output contract.
 
 **Test:** `php artisan test --filter=DocumentManagementLogicalDocument`
 
 **Dependencies:** Task 01. **Scope:** M.
+
+**Completed:** 2026-07-13 — logical metadata `PENDING`, opaque ULID reference, indexed owner context, dan HMAC idempotency record dibuat dalam satu transaction. Tidak ada binary, disk/path, route, atau public URL. Verifikasi: `DocumentManagementLogicalDocumentTest` (5 test, 16 assertions) lulus.
 
 ## Task 03 — Private StorageAdapter contract
 

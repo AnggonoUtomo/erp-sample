@@ -7,6 +7,8 @@ use App\Modules\DocumentManagement\Foundation\Integration\DTO\DocumentOwnerConte
 use App\Modules\DocumentManagement\Foundation\Integration\DTO\DocumentReferenceDescriptorV1;
 use App\Modules\DocumentManagement\Foundation\Integration\DTO\DocumentReferenceV1;
 use App\Support\Modules\ModuleContractValidator;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Schema;
 use InvalidArgumentException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -14,6 +16,8 @@ use Tests\TestCase;
 
 class DocumentManagementFoundationContractTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_module_manifest_is_valid_and_does_not_export_routes_or_navigation(): void
     {
         $module = require base_path('app/Modules/DocumentManagement/Foundation/module.php');
@@ -120,7 +124,11 @@ class DocumentManagementFoundationContractTest extends TestCase
             }
         }
 
-        $this->assertDirectoryDoesNotExist($root.'/Database');
+        $columns = collect(Schema::getColumns('dm_documents'))->pluck('name')->all();
+        $this->assertEmpty(array_intersect(
+            ['path', 'url', 'disk', 'binary', 'content', 'blob', 'object_key', 'storage_key'],
+            $columns,
+        ));
         $this->assertFileDoesNotExist($root.'/routes.php');
         $this->assertSame([], $forbiddenImports);
     }

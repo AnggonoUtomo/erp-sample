@@ -6,5 +6,8 @@ use Illuminate\Support\ServiceProvider;
 
 class FoundationServiceProvider extends ServiceProvider
 {
-    // Bindings are added only when a concrete storage or reader implementation exists.
+    public function boot(): void
+    {
+        $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+    }
 }
