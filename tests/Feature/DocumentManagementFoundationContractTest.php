@@ -18,13 +18,13 @@ class DocumentManagementFoundationContractTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_module_manifest_is_valid_and_does_not_export_routes_or_navigation(): void
+    public function test_module_manifest_is_valid_and_exports_only_protected_runtime_contracts(): void
     {
         $module = require base_path('app/Modules/DocumentManagement/Foundation/module.php');
 
         $this->assertSame('DocumentManagement', $module['project']);
         $this->assertSame('Foundation', $module['name']);
-        $this->assertFalse($module['exports']['routes']);
+        $this->assertTrue($module['exports']['routes']);
         $this->assertTrue($module['exports']['permissions']);
         $this->assertFalse($module['exports']['navigation']);
         $this->assertSame([], app(ModuleContractValidator::class)->validate('DocumentManagement.Foundation'));
@@ -129,7 +129,7 @@ class DocumentManagementFoundationContractTest extends TestCase
             ['path', 'url', 'disk', 'binary', 'content', 'blob', 'object_key', 'storage_key'],
             $columns,
         ));
-        $this->assertFileDoesNotExist($root.'/routes.php');
+        $this->assertFileExists($root.'/routes.php');
         $this->assertSame([], $forbiddenImports);
     }
 }

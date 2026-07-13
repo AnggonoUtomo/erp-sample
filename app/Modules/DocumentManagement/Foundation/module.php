@@ -15,9 +15,9 @@ return [
     'providers' => [
         FoundationServiceProvider::class,
     ],
-    'dependencies' => [],
+    'dependencies' => ['Console.AuditLogs'],
     'exports' => [
-        'routes' => false,
+        'routes' => true,
         'permissions' => true,
         'navigation' => false,
     ],

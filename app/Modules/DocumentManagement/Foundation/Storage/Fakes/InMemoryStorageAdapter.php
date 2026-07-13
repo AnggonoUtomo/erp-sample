@@ -13,8 +13,13 @@ class InMemoryStorageAdapter implements StorageAdapter
     /** @var array<string, string> */
     private array $objects = [];
 
+    public function __construct(private ?string $failOperation = null) {}
+
     public function stage(mixed $stream): StagedObjectV1
     {
+        if ($this->failOperation === 'stage') {
+            throw new RuntimeException('Injected stage failure.');
+        }
         $this->assertStream($stream);
         $key = new StorageObjectKeyV1('staged/'.str()->ulid());
         $contents = stream_get_contents($stream);
@@ -48,6 +53,9 @@ class InMemoryStorageAdapter implements StorageAdapter
 
     public function promote(StagedObjectV1 $staged): StorageObjectKeyV1
     {
+        if ($this->failOperation === 'promote') {
+            throw new RuntimeException('Injected promote failure.');
+        }
         if (! $this->exists($staged->key)) {
             throw new RuntimeException('Staged object does not exist.');
         }
@@ -62,6 +70,16 @@ class InMemoryStorageAdapter implements StorageAdapter
     public function deleteStaged(StagedObjectV1 $staged): void
     {
         unset($this->objects[$staged->key->value()]);
+    }
+
+    public function deleteFailedObject(StorageObjectKeyV1 $key): void
+    {
+        unset($this->objects[$key->value()]);
+    }
+
+    public function objectCount(): int
+    {
+        return count($this->objects);
     }
 
     private function assertStream(mixed $stream): void

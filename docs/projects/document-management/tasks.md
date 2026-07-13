@@ -90,13 +90,15 @@ Implementasi wajib berurutan dan berhenti pada setiap checkpoint. Setiap task ad
 
 **Acceptance criteria:**
 
-- [ ] Valid stream menghasilkan satu `AVAILABLE` version dengan `scan_status=NOT_CONFIGURED` dan opaque reference pada MVP.
-- [ ] Retry identik mengembalikan result yang sama; key sama dengan fingerprint berbeda ditolak conflict.
-- [ ] Validation/storage/checksum failure tidak meninggalkan active partial document dan staged cleanup/reconciliation tercatat.
+- [x] Valid stream menghasilkan satu `AVAILABLE` version dengan `scan_status=NOT_CONFIGURED` dan opaque reference pada MVP.
+- [x] Retry identik mengembalikan result yang sama; key sama dengan fingerprint berbeda ditolak conflict.
+- [x] Validation/storage/checksum failure tidak meninggalkan active partial document dan staged cleanup/reconciliation tercatat.
 
 **Test:** `php artisan test --filter=DocumentIngestion`
 
 **Dependencies:** Task 03–04. **Scope:** L outcome, pecah menjadi increment backend M.
+
+**Completed:** 2026-07-13 — endpoint internal terautentikasi membuat logical document dan immutable version pertama melalui alur validate/hash, private stage, transaction metadata/idempotency, promote, lalu publish `AVAILABLE`. Retry identik tidak menggandakan row/object; fingerprint berbeda menghasilkan conflict. Failure injection pada stage dan promote membuktikan rollback database serta cleanup storage tanpa partial aktif. Audit hanya mencatat identifier/status aman dan UI belum dibuat. Verifikasi: `DocumentIngestionTest` (6 test, 37 assertions), regression terarah (34 test, 166 assertions), Pint, dan `module:validate` lulus.
 
 ## Task 06 — Immutable replacement version
 

@@ -17,4 +17,6 @@ interface StorageAdapter
     public function promote(StagedObjectV1 $staged): StorageObjectKeyV1;
 
     public function deleteStaged(StagedObjectV1 $staged): void;
+
+    public function deleteFailedObject(StorageObjectKeyV1 $key): void;
 }

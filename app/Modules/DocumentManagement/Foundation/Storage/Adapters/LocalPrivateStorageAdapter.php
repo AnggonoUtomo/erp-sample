@@ -9,6 +9,7 @@ use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use InvalidArgumentException;
 use RuntimeException;
+use Throwable;
 
 class LocalPrivateStorageAdapter implements StorageAdapter
 {
@@ -31,8 +32,19 @@ class LocalPrivateStorageAdapter implements StorageAdapter
         $this->assertStream($stream);
         $key = new StorageObjectKeyV1('staged/'.str()->ulid());
 
-        if (! $this->disk()->writeStream($key->value(), $stream)) {
-            throw new RuntimeException('Unable to write staged object.');
+        try {
+            if (! $this->disk()->writeStream($key->value(), $stream)) {
+                throw new RuntimeException('Unable to write staged object.');
+            }
+        } catch (Throwable $exception) {
+            try {
+                if ($this->disk()->exists($key->value())) {
+                    $this->disk()->delete($key->value());
+                }
+            } catch (Throwable $cleanupException) {
+                report($cleanupException);
+            }
+            throw $exception;
         }
 
         return new StagedObjectV1($key);
@@ -71,6 +83,13 @@ class LocalPrivateStorageAdapter implements StorageAdapter
     {
         if ($this->exists($staged->key) && ! $this->disk()->delete($staged->key->value())) {
             throw new RuntimeException('Unable to delete staged object.');
+        }
+    }
+
+    public function deleteFailedObject(StorageObjectKeyV1 $key): void
+    {
+        if ($this->exists($key) && ! $this->disk()->delete($key->value())) {
+            throw new RuntimeException('Unable to delete failed storage object.');
         }
     }
 

@@ -13,6 +13,7 @@ class IdempotencyKey extends Model
         'key_hash',
         'request_fingerprint',
         'document_id',
+        'version_id',
         'status',
         'expires_at',
     ];
