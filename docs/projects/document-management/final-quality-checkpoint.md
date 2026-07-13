@@ -51,4 +51,3 @@ Checkpoint ini menutup implementasi foundation Task 01–11. Approval membuktika
 - [Checkpoint C — Secure DMS foundation](checkpoint-c-secure-dms-foundation.md)
 - [Access decision matrix](access-decision-matrix.md)
 - [HR secure delivery ADR](../hr/employee-documents/decisions/005-dual-authority-secure-delivery.md)
-
