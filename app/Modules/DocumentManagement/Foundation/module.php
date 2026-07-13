@@ -2,6 +2,7 @@
 
 use App\Modules\DocumentManagement\Foundation\Integration\Contracts\DocumentAccessGateway;
 use App\Modules\DocumentManagement\Foundation\Integration\Contracts\DocumentDeliveryGateway;
+use App\Modules\DocumentManagement\Foundation\Integration\Contracts\DocumentIngestionGateway;
 use App\Modules\DocumentManagement\Foundation\Integration\Contracts\DocumentReferenceReader;
 use App\Modules\DocumentManagement\Foundation\Integration\DTO\DocumentReferenceDescriptorV1;
 use App\Modules\DocumentManagement\Foundation\Providers\FoundationServiceProvider;
@@ -46,6 +47,12 @@ return [
                 'schema_version' => 1,
                 'reader' => DocumentDeliveryGateway::class,
                 'schema' => 'Integration/Schemas/document-delivery-handoff-v1.json',
+            ],
+            [
+                'name' => 'DocumentIngestionGateway',
+                'schema_version' => 1,
+                'reader' => DocumentIngestionGateway::class,
+                'schema' => 'Integration/Schemas/document-ingestion-v1.json',
             ],
         ],
     ],

@@ -196,13 +196,15 @@ Implementasi wajib berurutan dan berhenti pada setiap checkpoint. Setiap task ad
 
 **Acceptance criteria:**
 
-- [ ] Owner context v1 dan idempotency diteruskan tanpa employee profile/PII tambahan.
-- [ ] Success mengembalikan opaque reference hanya setelah DMS version available.
-- [ ] Timeout/missing/denied/unavailable tidak membuat partial HR reference atau orphan aktif.
+- [x] Owner context v1 dan idempotency diteruskan tanpa employee profile/PII tambahan.
+- [x] Success mengembalikan opaque reference hanya setelah DMS version available.
+- [x] Timeout/missing/denied/unavailable tidak membuat partial HR reference atau orphan aktif.
 
 **Test:** `php artisan test --filter=EmployeeDocumentAttachmentGateway`
 
 **Dependencies:** Checkpoint C. **Scope:** M.
+
+**Completed:** 2026-07-14 — DMS mengekspor generic `DocumentIngestionGateway` v1; consumer HR memiliki `EmployeeDocumentAttachmentGateway` dan adapter yang menerjemahkan owner context minimal tanpa import model/storage DMS atau profile/PII employee. Retry identik mengembalikan reference sama setelah version `AVAILABLE`; timeout, non-available result, dan storage failure fail-closed serta tidak meninggalkan row/object aktif. Penempatan adapter di consumer menjaga dependency HR → public DMS contract; lihat [HR ADR-004](../hr/employee-documents/decisions/004-consumer-owned-dms-attachment-adapter.md). Verifikasi: `EmployeeDocumentAttachmentGatewayTest` (7 test, 32 assertions), module validation, Pint, dan regression suite lulus.
 
 ## Task 11 — Buka kembali HR Task 09 dan Task 10
 

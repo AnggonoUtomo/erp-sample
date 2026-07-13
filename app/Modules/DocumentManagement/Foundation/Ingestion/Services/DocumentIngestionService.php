@@ -6,6 +6,7 @@ use App\Modules\Console\AuditLogs\Services\AuditLogService;
 use App\Modules\DocumentManagement\Foundation\Ingestion\DTO\IngestDocumentV1;
 use App\Modules\DocumentManagement\Foundation\Ingestion\DTO\IngestionResultV1;
 use App\Modules\DocumentManagement\Foundation\Ingestion\Transactions\DocumentIngestionTransaction;
+use App\Modules\DocumentManagement\Foundation\Integration\Contracts\DocumentIngestionGateway;
 use App\Modules\DocumentManagement\Foundation\Integration\DTO\DocumentReferenceV1;
 use App\Modules\DocumentManagement\Foundation\Models\DocumentVersion;
 use App\Modules\DocumentManagement\Foundation\Models\IdempotencyKey;
@@ -21,7 +22,7 @@ use Illuminate\Support\Str;
 use RuntimeException;
 use Throwable;
 
-class DocumentIngestionService
+class DocumentIngestionService implements DocumentIngestionGateway
 {
     private const IDEMPOTENCY_SCOPE = 'document-ingestion.v1';
 

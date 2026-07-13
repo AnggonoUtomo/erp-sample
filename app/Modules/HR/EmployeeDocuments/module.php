@@ -1,6 +1,7 @@
 <?php
 
 use App\Modules\HR\EmployeeDocuments\Integration\Contracts\DocumentReferenceReader;
+use App\Modules\HR\EmployeeDocuments\Integration\Contracts\EmployeeDocumentAttachmentGateway;
 use App\Modules\HR\EmployeeDocuments\Integration\DTO\DocumentReferenceDescriptorV1;
 use App\Modules\HR\EmployeeDocuments\Providers\EmployeeDocumentsServiceProvider;
 
@@ -26,12 +27,20 @@ return [
     'listeners' => [],
     'integrations' => [
         'depends_on' => ['DocumentManagement'],
-        'contracts' => [[
-            'name' => 'DocumentReferenceReader',
-            'schema_version' => 1,
-            'reader' => DocumentReferenceReader::class,
-            'schema' => 'Integration/Schemas/employee-document-owner-context-v1.json',
-            'states' => DocumentReferenceDescriptorV1::STATES,
-        ]],
+        'contracts' => [
+            [
+                'name' => 'DocumentReferenceReader',
+                'schema_version' => 1,
+                'reader' => DocumentReferenceReader::class,
+                'schema' => 'Integration/Schemas/employee-document-owner-context-v1.json',
+                'states' => DocumentReferenceDescriptorV1::STATES,
+            ],
+            [
+                'name' => 'EmployeeDocumentAttachmentGateway',
+                'schema_version' => 1,
+                'reader' => EmployeeDocumentAttachmentGateway::class,
+                'schema' => 'Integration/Schemas/employee-document-owner-context-v1.json',
+            ],
+        ],
     ],
 ];

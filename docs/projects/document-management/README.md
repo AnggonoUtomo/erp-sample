@@ -4,7 +4,7 @@ Paket ini adalah acuan pembangunan foundation project `DocumentManagement`: satu
 
 ## Status
 
-`Specification dan ADR-001–004 accepted; Task 01–09 serta Checkpoint A–C selesai pada 2026-07-14, siap menuju Task 10`.
+`Specification dan ADR-001–004 accepted; Task 01–10 serta Checkpoint A–C selesai pada 2026-07-14, siap menuju Task 11`.
 
 Persetujuan ini mengizinkan pembangunan contract dan metadata foundation. Upload production tetap tertahan sampai keputusan private disk, batas/tipe file, malware/quarantine, delivery, dan retention pada ADR-001 dipenuhi.
 
@@ -15,6 +15,8 @@ Lifecycle archive/restore tersedia melalui permission `documents.archive` dan `d
 `DocumentAccessGateway` v1 sekarang menjadi security authority sebelum binary delivery. Keputusan memerlukan actor, action, permission DMS, expected owner exact, lifecycle/version, dan private-object availability. Lihat [access decision matrix](access-decision-matrix.md); status `AVAILABLE` hanya mengizinkan proses dilanjutkan ke Task 09 dan bukan token akses.
 
 `DocumentDeliveryGateway` v1 menerbitkan token one-time ber-TTL 300 detik yang hanya disimpan sebagai HMAC di DMS. Consume mengulang access decision dan streaming dilakukan oleh controller DMS sebagai attachment; consumer tidak menerima path, object key, credential, atau URL storage. Lihat [ADR-004](decisions/004-one-time-secure-delivery.md).
+
+`DocumentIngestionGateway` v1 sekarang menjadi public provider contract untuk adapter consumer. Adapter Employee Documents berada di HR agar dependency tetap searah dan hanya meneruskan owner context minimal, upload intent, actor, idempotency key, serta stream.
 
 Upload policy diterapkan pada staged ingestion: maksimal 20 MiB, PDF/JPEG/PNG, extension–declared MIME–signature wajib cocok, terminal marker wajib valid, trailing payload ditolak, dan hasil menyatakan `scanStatus=NOT_CONFIGURED`. Binary ditulis ke private staging, dipromosikan dengan object key buatan server, dan dibersihkan bila transaction/promotion gagal.
 
