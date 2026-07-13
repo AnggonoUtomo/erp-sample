@@ -9,4 +9,5 @@ Route::middleware('auth')->prefix('hr/employee-contracts')->name('hr.employee-co
     Route::post('{employeeContract}/activate', [EmployeeContractsController::class, 'activate'])->name('activate');
     Route::post('{employeeContract}/terminate', [EmployeeContractsController::class, 'terminate'])->name('terminate');
     Route::post('{employeeContract}/cancel', [EmployeeContractsController::class, 'cancel'])->name('cancel');
+    Route::post('{employeeContract}/supersede', [EmployeeContractsController::class, 'supersede'])->name('supersede');
 });

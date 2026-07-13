@@ -4,7 +4,7 @@ Paket dokumen ini mendefinisikan module `HR/EmployeeContracts` sebelum implement
 
 ## Status
 
-`Implementation in progress` — ADR-001 dan Task 01–04 telah selesai. Task 05 supersede menjadi pekerjaan berikutnya.
+`Implementation in progress` — ADR-001 dan Task 01–05 telah selesai. Task 06 archive/restore menjadi pekerjaan berikutnya.
 
 ## Urutan baca
 

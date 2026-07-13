@@ -20,7 +20,7 @@ class HREmployeeContractTest extends TestCase
         parent::setUp();
         $this->withoutVite();
 
-        foreach (['hr.view', 'employee-contracts.view', 'employee-contracts.create', 'employee-contracts.activate', 'employee-contracts.terminate', 'employee-contracts.cancel'] as $permission) {
+        foreach (['hr.view', 'employee-contracts.view', 'employee-contracts.create', 'employee-contracts.activate', 'employee-contracts.terminate', 'employee-contracts.cancel', 'employee-contracts.supersede'] as $permission) {
             Permission::findOrCreate($permission);
         }
     }
@@ -208,6 +208,57 @@ class HREmployeeContractTest extends TestCase
 
         $this->actingAs($user)->post(route('hr.employee-contracts.terminate', $contract))->assertForbidden();
         $this->actingAs($user)->post(route('hr.employee-contracts.cancel', $contract))->assertForbidden();
+    }
+
+    public function test_authorized_user_can_supersede_active_contract_atomically(): void
+    {
+        $user = User::factory()->create();
+        $user->givePermissionTo('employee-contracts.supersede');
+        [$employee, $type] = $this->references();
+        $old = $this->contract($employee, $type, 'OLD-001', '2026-01-01', null);
+
+        $this->actingAs($user)->post(route('hr.employee-contracts.supersede', $old), [
+            'employment_type_id' => $type->id, 'contract_number' => 'NEW-001',
+            'start_date' => '2027-01-01', 'end_date' => '2027-12-31',
+            'reason' => 'Annual renewal',
+        ])->assertRedirect();
+
+        $replacement = EmployeeContract::query()->where('contract_number', 'NEW-001')->firstOrFail();
+        $this->assertDatabaseHas('hr_employee_contracts', [
+            'id' => $old->id, 'status' => 'ENDED', 'end_date' => '2026-12-31 00:00:00',
+            'superseded_by_id' => $replacement->id, 'ended_reason' => 'Annual renewal',
+        ]);
+        $this->assertSame('ACTIVE', $replacement->status);
+        $this->assertSame($employee->id, $replacement->employee_id);
+    }
+
+    public function test_failed_supersede_rolls_back_old_contract(): void
+    {
+        $user = User::factory()->create();
+        $user->givePermissionTo('employee-contracts.supersede');
+        [$employee, $type] = $this->references();
+        $old = $this->contract($employee, $type, 'OLD-ROLLBACK', '2026-01-01', null);
+        $this->contract($employee, $type, 'DUPLICATE-NUMBER', '2025-01-01', '2025-12-31', 'ENDED');
+
+        $this->actingAs($user)->post(route('hr.employee-contracts.supersede', $old), [
+            'employment_type_id' => $type->id, 'contract_number' => 'DUPLICATE-NUMBER',
+            'start_date' => '2027-01-01', 'end_date' => '2027-12-31', 'reason' => 'Should fail',
+        ])->assertSessionHasErrors('contract_number');
+
+        $this->assertDatabaseHas('hr_employee_contracts', ['id' => $old->id, 'status' => 'ACTIVE', 'end_date' => null, 'superseded_by_id' => null]);
+    }
+
+    public function test_supersede_rejects_non_active_contract_and_unauthorized_user(): void
+    {
+        [$employee, $type] = $this->references();
+        $draft = $this->contract($employee, $type, 'DRAFT-SUPERSEDE', '2026-01-01', '2026-12-31', 'DRAFT');
+        $payload = ['employment_type_id' => $type->id, 'contract_number' => 'NEW-DENIED', 'start_date' => '2027-01-01', 'end_date' => '2027-12-31', 'reason' => 'Renewal'];
+
+        $authorized = User::factory()->create();
+        $authorized->givePermissionTo('employee-contracts.supersede');
+        $this->actingAs($authorized)->post(route('hr.employee-contracts.supersede', $draft), $payload)->assertSessionHasErrors('status');
+
+        $this->actingAs(User::factory()->create())->post(route('hr.employee-contracts.supersede', $draft), $payload)->assertForbidden();
     }
 
     /** @return array{Employee, EmploymentType} */

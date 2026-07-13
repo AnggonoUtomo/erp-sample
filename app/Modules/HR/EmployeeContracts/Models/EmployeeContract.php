@@ -15,7 +15,7 @@ class EmployeeContract extends Model
 
     protected $table = 'hr_employee_contracts';
 
-    protected $fillable = ['employee_id', 'employment_type_id', 'contract_number', 'start_date', 'end_date', 'probation_end_date', 'signed_date', 'status', 'ended_reason', 'notes'];
+    protected $fillable = ['employee_id', 'employment_type_id', 'contract_number', 'start_date', 'end_date', 'probation_end_date', 'signed_date', 'status', 'ended_reason', 'superseded_by_id', 'notes'];
 
     protected function casts(): array
     {
@@ -30,6 +30,11 @@ class EmployeeContract extends Model
     public function employmentType(): BelongsTo
     {
         return $this->belongsTo(EmploymentType::class);
+    }
+
+    public function supersededBy(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'superseded_by_id');
     }
 
     public function scopeForEmployee(Builder $query, int $employeeId): Builder

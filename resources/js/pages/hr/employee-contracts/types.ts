@@ -10,6 +10,7 @@ export type ContractRow = {
     end_date: string | null;
     status: 'DRAFT' | 'ACTIVE' | 'ENDED' | 'CANCELLED';
     ended_reason: string | null;
+    superseded_by_id: number | null;
     notes: string | null;
     employee: { id: number; display_name: string };
     employment_type: { id: number; name: string };

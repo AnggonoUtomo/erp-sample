@@ -8,6 +8,7 @@ import { Head, router, useForm } from '@inertiajs/react';
 import type { FormEvent } from 'react';
 import { useState } from 'react';
 import { ContractLifecycleDialog, type LifecycleAction } from './employee-contract-components/contract-lifecycle-dialog';
+import { SupersedeContractDialog } from './employee-contract-components/supersede-contract-dialog';
 import type { ContractForm, ContractPageProps, ContractRow } from './types';
 
 const emptyForm: ContractForm = {
@@ -26,8 +27,10 @@ export default function EmployeeContractsIndex({ contracts, options }: ContractP
     const canActivate = canAny(['employee-contracts.activate', 'employee-contracts.manage']);
     const canTerminate = canAny(['employee-contracts.terminate', 'employee-contracts.manage']);
     const canCancel = canAny(['employee-contracts.cancel', 'employee-contracts.manage']);
+    const canSupersede = canAny(['employee-contracts.supersede', 'employee-contracts.manage']);
     const [lifecycleTarget, setLifecycleTarget] = useState<ContractRow | null>(null);
     const [lifecycleAction, setLifecycleAction] = useState<LifecycleAction | null>(null);
+    const [supersedeTarget, setSupersedeTarget] = useState<ContractRow | null>(null);
     const openLifecycle = (contract: ContractRow, action: LifecycleAction) => {
         setLifecycleTarget(contract);
         setLifecycleAction(action);
@@ -99,6 +102,11 @@ export default function EmployeeContractsIndex({ contracts, options }: ContractP
                                                         onClick={() => openLifecycle(contract, 'terminate')}
                                                     >
                                                         Terminate
+                                                    </Button>
+                                                )}
+                                                {contract.status === 'ACTIVE' && canSupersede && (
+                                                    <Button className="ml-2" size="sm" variant="outline" onClick={() => setSupersedeTarget(contract)}>
+                                                        Supersede
                                                     </Button>
                                                 )}
                                                 {['DRAFT', 'ACTIVE'].includes(contract.status) && canCancel && (
@@ -194,6 +202,7 @@ export default function EmployeeContractsIndex({ contracts, options }: ContractP
                     setLifecycleAction(null);
                 }}
             />
+            <SupersedeContractDialog contract={supersedeTarget} employmentTypes={options.employmentTypes} onClose={() => setSupersedeTarget(null)} />
         </AppLayout>
     );
 }

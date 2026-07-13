@@ -5,6 +5,7 @@ namespace App\Modules\HR\EmployeeContracts\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\HR\EmployeeContracts\Http\Requests\CancelEmployeeContractRequest;
 use App\Modules\HR\EmployeeContracts\Http\Requests\StoreEmployeeContractRequest;
+use App\Modules\HR\EmployeeContracts\Http\Requests\SupersedeEmployeeContractRequest;
 use App\Modules\HR\EmployeeContracts\Http\Requests\TerminateEmployeeContractRequest;
 use App\Modules\HR\EmployeeContracts\Models\EmployeeContract;
 use App\Modules\HR\EmployeeContracts\Services\EmployeeContractsService;
@@ -50,5 +51,12 @@ class EmployeeContractsController extends Controller
         $contract = $this->contracts->cancel($employeeContract, $request->string('reason')->trim()->toString());
 
         return back()->with('success', "Contract {$contract->contract_number} berhasil dibatalkan.");
+    }
+
+    public function supersede(SupersedeEmployeeContractRequest $request, EmployeeContract $employeeContract): RedirectResponse
+    {
+        $replacement = $this->contracts->supersede($employeeContract, $request->validated());
+
+        return back()->with('success', "Contract {$employeeContract->contract_number} digantikan oleh {$replacement->contract_number}.");
     }
 }

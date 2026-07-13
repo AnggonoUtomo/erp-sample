@@ -8,6 +8,7 @@ use App\Modules\HR\EmployeeContracts\Models\EmployeeContract;
 use App\Modules\HR\EmployeeContracts\Transactions\EmployeeContractsTransaction;
 use App\Modules\HR\Employees\Models\Employee;
 use App\Modules\HR\EmploymentTypes\Models\EmploymentType;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\ValidationException;
 
 class EmployeeContractsService
@@ -20,7 +21,8 @@ class EmployeeContractsService
             'contracts' => EmployeeContract::query()->with(['employee', 'employmentType'])->latest('start_date')->paginate(15)->through(fn ($contract) => [
                 'id' => $contract->id, 'employee_id' => $contract->employee_id, 'employment_type_id' => $contract->employment_type_id,
                 'contract_number' => $contract->contract_number, 'start_date' => $contract->start_date->toDateString(),
-                'end_date' => $contract->end_date?->toDateString(), 'status' => $contract->status, 'ended_reason' => $contract->ended_reason, 'notes' => $contract->notes,
+                'end_date' => $contract->end_date?->toDateString(), 'status' => $contract->status, 'ended_reason' => $contract->ended_reason,
+                'superseded_by_id' => $contract->superseded_by_id, 'notes' => $contract->notes,
                 'employee' => ['id' => $contract->employee->id, 'display_name' => $contract->employee->display_name],
                 'employment_type' => ['id' => $contract->employmentType->id, 'name' => $contract->employmentType->name],
             ]),
@@ -120,6 +122,48 @@ class EmployeeContractsService
             );
 
             return $locked->refresh();
+        });
+    }
+
+    public function supersede(EmployeeContract $contract, array $data): EmployeeContract
+    {
+        return $this->transaction->run(function () use ($contract, $data) {
+            $old = EmployeeContract::query()->lockForUpdate()->findOrFail($contract->id);
+            if ($old->status !== 'ACTIVE' || $old->superseded_by_id) {
+                throw ValidationException::withMessages(['status' => 'Hanya active contract yang belum digantikan dapat disupersede.']);
+            }
+
+            $replacementStart = Carbon::parse($data['start_date'])->startOfDay();
+            if ($replacementStart->lte($old->start_date)) {
+                throw ValidationException::withMessages(['start_date' => 'Replacement harus dimulai setelah contract lama.']);
+            }
+
+            $overlaps = EmployeeContract::query()->forEmployee($old->employee_id)
+                ->overlapping($replacementStart->toDateString(), $data['end_date'] ?? null)
+                ->whereKeyNot($old->id)->lockForUpdate()->exists();
+            if ($overlaps) {
+                throw ValidationException::withMessages(['start_date' => 'Periode replacement overlap dengan contract lain.']);
+            }
+
+            $replacement = EmployeeContract::query()->create([
+                'employee_id' => $old->employee_id, 'employment_type_id' => $data['employment_type_id'],
+                'contract_number' => strtoupper(trim($data['contract_number'])), 'start_date' => $replacementStart,
+                'end_date' => $data['end_date'] ?? null, 'probation_end_date' => $data['probation_end_date'] ?? null,
+                'signed_date' => $data['signed_date'] ?? null, 'notes' => trim((string) ($data['notes'] ?? '')) ?: null,
+                'status' => 'ACTIVE',
+            ]);
+            $old->update([
+                'status' => 'ENDED', 'end_date' => $replacementStart->copy()->subDay(),
+                'ended_reason' => trim($data['reason']), 'superseded_by_id' => $replacement->id,
+            ]);
+            $this->audit->record(
+                module: 'hr.employee-contracts', event: 'EmployeeContract.superseded', auditable: $old,
+                description: "Superseded contract {$old->contract_number} with {$replacement->contract_number}",
+                oldValues: ['status' => 'ACTIVE'],
+                newValues: ['status' => 'ENDED', 'end_date' => $old->end_date?->toDateString(), 'superseded_by_id' => $replacement->id],
+            );
+
+            return $replacement->refresh();
         });
     }
 }

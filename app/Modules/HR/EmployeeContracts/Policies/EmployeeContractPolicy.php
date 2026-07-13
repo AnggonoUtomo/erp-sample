@@ -30,4 +30,9 @@ class EmployeeContractPolicy
     {
         return $user->hasAnyPermission(['employee-contracts.cancel', 'employee-contracts.manage']);
     }
+
+    public function supersede(User $user): bool
+    {
+        return $user->hasAnyPermission(['employee-contracts.supersede', 'employee-contracts.manage']);
+    }
 }

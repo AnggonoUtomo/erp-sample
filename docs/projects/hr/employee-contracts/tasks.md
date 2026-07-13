@@ -78,7 +78,7 @@ npm run typecheck && npm run build
 
 **Dependencies:** Task 03. **Scope:** M per transition; kerjakan terminate lalu cancel secara incremental.
 
-## Task 05 — Supersede contract secara atomic
+## Task 05 — Supersede contract secara atomic ✅
 
 **Tujuan:** mengakhiri kontrak lama dan membuat/menautkan kontrak pengganti tanpa intermediate invalid state.
 
@@ -86,9 +86,9 @@ npm run typecheck && npm run build
 
 **Acceptance criteria:**
 
-- [ ] Old contract dan replacement terhubung serta tidak overlap.
-- [ ] Kegagalan replacement me-rollback seluruh perubahan.
-- [ ] Self-supersede dan chain circular ditolak.
+- [x] Old contract dan replacement terhubung serta tidak overlap.
+- [x] Kegagalan replacement me-rollback seluruh perubahan.
+- [x] Self-supersede dan chain circular ditolak secara struktural karena replacement selalu record baru buatan server.
 
 **Test:** `php artisan test --filter=EmployeeContractSupersede`
 

@@ -9,6 +9,6 @@ return [
     'providers' => [EmployeeContractsServiceProvider::class],
     'dependencies' => ['Employees', 'EmploymentTypes'],
     'exports' => ['routes' => true, 'permissions' => true, 'navigation' => true],
-    'events' => ['EmployeeContractCreated', 'EmployeeContractActivated', 'EmployeeContractTerminated', 'EmployeeContractCancelled'], 'listeners' => [],
+    'events' => ['EmployeeContractCreated', 'EmployeeContractActivated', 'EmployeeContractTerminated', 'EmployeeContractCancelled', 'EmployeeContractSuperseded'], 'listeners' => [],
     'integrations' => ['upstream_for' => ['Payroll'], 'depends_on' => ['HR.Employees', 'HR.EmploymentTypes']],
 ];
