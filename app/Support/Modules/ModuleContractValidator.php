@@ -104,7 +104,36 @@ class ModuleContractValidator
             }
         }
 
+        if (($manifest['exports']['navigation'] ?? false) === true) {
+            $navigationPath = $module['path'].DIRECTORY_SEPARATOR.'navigation.php';
+            if (File::exists($navigationPath) && ! $this->validNavigation($navigationPath)) {
+                $errors[] = $this->error(
+                    $module['key'],
+                    $navigationPath,
+                    'invalid_navigation',
+                    'Navigation must contain a non-empty group and an items array of title/url entries.',
+                );
+            }
+        }
+
         return $errors;
+    }
+
+    private function validNavigation(string $path): bool
+    {
+        try {
+            $navigation = require $path;
+        } catch (Throwable) {
+            return false;
+        }
+
+        if (! is_array($navigation) || blank($navigation['group'] ?? null) || ! is_array($navigation['items'] ?? null)) {
+            return false;
+        }
+
+        return collect($navigation['items'])->every(fn (mixed $item) => is_array($item)
+            && filled($item['title'] ?? null)
+            && filled($item['url'] ?? null));
     }
 
     private function normalizeDependency(mixed $dependency, string $project): string

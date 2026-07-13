@@ -42,6 +42,19 @@ class ModuleContractValidatorTest extends TestCase
         $this->assertTrue($codes->contains('unknown_dependency'));
     }
 
+    public function test_contract_rejects_navigation_without_group_items_shape(): void
+    {
+        $this->writeModule('HR', 'Contracts');
+        File::put(
+            $this->root.'/HR/Contracts/navigation.php',
+            "<?php return [['group' => 'HR', 'title' => 'Contracts', 'url' => '/hr/contracts']];",
+        );
+
+        $codes = collect(app(ModuleContractValidator::class)->validate())->pluck('code');
+
+        $this->assertTrue($codes->contains('invalid_navigation'));
+    }
+
     private function writeModule(string $project, string $name, bool $navigation = true, array $dependencies = []): void
     {
         $path = $this->root."/{$project}/{$name}";
@@ -57,7 +70,7 @@ class ModuleContractValidatorTest extends TestCase
         File::put($path.'/routes.php', '<?php return [];');
         File::put($path.'/permissions.php', '<?php return [];');
         if ($navigation) {
-            File::put($path.'/navigation.php', '<?php return [];');
+            File::put($path.'/navigation.php', "<?php return ['group' => '{$project}', 'items' => []];");
         }
     }
 }
