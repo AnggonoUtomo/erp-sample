@@ -11,7 +11,7 @@ use ZipArchive;
 
 class FullBackupZipService
 {
-    private const VERSION = 2;
+    private const VERSION = 3;
 
     public function __construct(
         private readonly FullBackupArchiveValidator $archiveValidator,
@@ -43,7 +43,7 @@ class FullBackupZipService
                 'connection' => config('database.default'),
                 'name' => config('database.connections.'.config('database.default').'.database'),
             ],
-            'includes' => ['database.sql', 'storage_public'],
+            'includes' => ['database.sql', 'storage_public', 'storage_dms_private'],
             'integrity' => [
                 'database_sql_sha256' => $entryHashes['database.sql'],
                 'entries_sha256' => $entryHashes,
@@ -124,7 +124,19 @@ class FullBackupZipService
     /** @return array<string, string> */
     private function storageFiles(): array
     {
-        $directory = storage_path('app/public');
+        $files = $this->filesUnder(storage_path('app/public'), 'storage_public');
+        $files += $this->filesUnder(
+            storage_path('app/private/document-management'),
+            'storage_dms_private',
+        );
+        ksort($files, SORT_STRING);
+
+        return $files;
+    }
+
+    /** @return array<string, string> */
+    private function filesUnder(string $directory, string $archivePrefix): array
+    {
         if (! File::isDirectory($directory)) {
             return [];
         }
@@ -132,10 +144,8 @@ class FullBackupZipService
         $files = [];
         foreach (File::allFiles($directory) as $file) {
             $relative = str_replace('\\', '/', $file->getRelativePathname());
-            $files['storage_public/'.$relative] = $file->getRealPath();
+            $files[$archivePrefix.'/'.$relative] = $file->getRealPath();
         }
-
-        ksort($files, SORT_STRING);
 
         return $files;
     }
@@ -174,18 +184,21 @@ class FullBackupZipService
 
     private function extractStorage(ZipArchive $zip): int
     {
-        $target = storage_path('app/public');
-        File::ensureDirectoryExists($target);
+        $targets = [
+            'storage_public/' => storage_path('app/public'),
+            'storage_dms_private/' => storage_path('app/private/document-management'),
+        ];
         $restored = 0;
 
         for ($i = 0; $i < $zip->numFiles; $i++) {
             $name = $zip->getNameIndex($i);
-            if (! str_starts_with($name, 'storage_public/') || str_ends_with($name, '/')) {
+            $prefix = collect(array_keys($targets))->first(fn (string $candidate): bool => str_starts_with($name, $candidate));
+            if ($prefix === null || str_ends_with($name, '/')) {
                 continue;
             }
 
-            $relative = substr($name, strlen('storage_public/'));
-            $destination = $target.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $relative);
+            $relative = substr($name, strlen($prefix));
+            $destination = $targets[$prefix].DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $relative);
             File::ensureDirectoryExists(dirname($destination));
             $contents = $zip->getFromIndex($i);
             if (! is_string($contents) || file_put_contents($destination, $contents, LOCK_EX) === false) {

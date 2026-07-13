@@ -1,5 +1,7 @@
 # 09 — Backup Signature Runbook
 
+Format aktif adalah full-backup v3: database, storage public, dan private Document Management berada dalam exact signed payload. Backup v1/v2 harus dibuat ulang karena tidak menjamin recovery private binary DMS.
+
 ## Provisioning lintas environment
 
 1. Generate secret 32-byte atau lebih pada workstation/secret manager tepercaya:
@@ -18,6 +20,7 @@
 3. Pastikan recovery environment memakai key/key ID trust group yang sama.
 4. Jalankan restore dengan permission `backup-restore.full-restore` dan confirmation text.
 5. Signature, exact entry list, dan seluruh checksum diverifikasi sebelum write.
+6. Setelah restore, verifikasi reference DMS dapat didownload melalui controller terotorisasi; jangan memeriksa file melalui public URL.
 
 Expected failure:
 

@@ -52,6 +52,7 @@ class BackupRestoreService
                 'path' => basename($path),
                 'database' => config('database.default'),
                 'storage_public_size' => $this->directorySize(storage_path('app/public')),
+                'storage_dms_private_size' => $this->directorySize(storage_path('app/private/document-management')),
             ],
         );
 
@@ -65,7 +66,7 @@ class BackupRestoreService
     {
         if (! $restoreDatabase && ! $restoreStoragePublic) {
             throw ValidationException::withMessages([
-                'backup' => 'Pilih minimal database atau storage public untuk full restore.',
+                'backup' => 'Pilih minimal database atau storage file untuk full restore.',
             ]);
         }
 

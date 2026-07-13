@@ -9,6 +9,7 @@ Status: verified 2026-07-12. Scope: mutation route domain aplikasi yang memerluk
 | `access-control.roles.*`, `access-control.permissions.*` | create/update/sync/delete | role policy dan `access-control.manage` | `AccessControlTest` |
 | `activity-center.read` | mark read | `activity-center.read` | `ActivityCenterTest` |
 | `backup-restore.restore`, `backup-restore.full.restore` | destructive restore | backup restore policy/permission | `BackupRestoreTest` |
+| `document-management.*` | ingest/version/archive/restore/delivery issue/consume | DMS request, permission, access authority | `DocumentIngestionTest`, `DocumentVersioningTest`, `DocumentLifecycleTest`, `DocumentDeliveryTest` |
 | `notification-templates.update` | update template | `notification-templates.update` | `NotificationTemplateTest` |
 | `queue-monitor.failed.*` | retry/forget/flush | `queue-monitor.manage` | `QueueMonitorTest` |
 | `scheduler-monitor.run` | run due tasks | `scheduler-monitor.manage` | `SchedulerMonitorTest` |

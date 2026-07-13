@@ -329,7 +329,7 @@ class BackupRestoreTest extends TestCase
         $sql = '-- Laravel 12 Starterkit full database backup'.PHP_EOL.'SELECT 1;';
         $manifest = [
             'schema' => 'laravel12-starterkit.full-backup',
-            'version' => 2,
+            'version' => 3,
             'integrity' => [
                 'database_sql_sha256' => hash('sha256', $sql),
                 'entries_sha256' => ['database.sql' => hash('sha256', $sql)],
@@ -423,6 +423,28 @@ class BackupRestoreTest extends TestCase
         } finally {
             File::delete($path);
             File::delete($storagePath);
+        }
+    }
+
+    public function test_full_backup_round_trip_preserves_private_dms_binary(): void
+    {
+        $dmsPath = storage_path('app/private/document-management/objects/checkpoint-c/document.pdf');
+        File::ensureDirectoryExists(dirname($dmsPath));
+        File::put($dmsPath, 'private-dms-binary');
+        $service = app(FullBackupZipService::class);
+        $path = $service->create('-- Laravel 12 Starterkit full database backup');
+
+        try {
+            File::delete($dmsPath);
+            $file = new UploadedFile($path, 'backup.zip', 'application/zip', null, true);
+
+            $summary = $service->restore($file, false, true);
+
+            $this->assertSame('private-dms-binary', File::get($dmsPath));
+            $this->assertGreaterThanOrEqual(1, $summary['storage_files_restored']);
+        } finally {
+            File::delete($path);
+            File::delete($dmsPath);
         }
     }
 

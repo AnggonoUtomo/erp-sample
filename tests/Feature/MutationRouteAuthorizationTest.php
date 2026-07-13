@@ -32,6 +32,7 @@ class MutationRouteAuthorizationTest extends TestCase
             'access-control.',
             'activity-center.',
             'backup-restore.',
+            'document-management.',
             'hr.',
             'notification-templates.',
             'queue-monitor.',

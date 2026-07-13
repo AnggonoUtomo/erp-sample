@@ -182,9 +182,11 @@ Implementasi wajib berurutan dan berhenti pada setiap checkpoint. Setiap task ad
 
 ## Checkpoint C — Secure DMS foundation
 
-- [ ] Task 07–09 dan global mutation/access denial matrix hijau.
-- [ ] Security review upload/download, dependency audit, backup/restore, dan observability approved.
-- [ ] Full quality gates hijau.
+- [x] Task 07–09 dan global mutation/access denial matrix hijau.
+- [x] Security review upload/download, dependency audit, backup/restore, dan observability approved.
+- [x] Full quality gates hijau.
+
+**Approved:** 2026-07-14 — evidence, residual risks, production gates, serta upgrade signed full-backup v3 yang mencakup private DMS binary dicatat pada [Checkpoint C — Secure DMS foundation](checkpoint-c-secure-dms-foundation.md). Checkpoint membuka Task 10 adapter HR, tetapi tidak mengaktifkan ingestion production.
 
 ## Task 10 — HR attachment adapter
 

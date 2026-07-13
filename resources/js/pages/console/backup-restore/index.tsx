@@ -75,7 +75,7 @@ export default function BackupRestore({ overview, can }: Props) {
                                     </span>
                                     Full Database / Server Backup
                                 </CardTitle>
-                                <CardDescription>Download ZIP berisi dump database dan storage public aplikasi.</CardDescription>
+                                <CardDescription>Download ZIP berisi dump database, storage public, dan private DMS.</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-5 p-5 sm:p-6">
                                 <div className="grid gap-3 sm:grid-cols-3">
@@ -111,7 +111,7 @@ export default function BackupRestore({ overview, can }: Props) {
                                     </span>
                                     Full Restore
                                 </CardTitle>
-                                <CardDescription>Restore database dan storage public dari signed ZIP full backup.</CardDescription>
+                                <CardDescription>Restore database dan storage aplikasi dari signed ZIP full backup.</CardDescription>
                             </CardHeader>
                             <CardContent className="p-5 sm:p-6">
                                 <form onSubmit={submitFullRestore} className="space-y-5">
@@ -151,9 +151,9 @@ export default function BackupRestore({ overview, can }: Props) {
                                                 onCheckedChange={(checked) => fullForm.setData('restore_storage_public', checked === true)}
                                             />
                                             <span>
-                                                <span className="block font-medium">Restore Storage Public</span>
+                                                <span className="block font-medium">Restore Storage Files</span>
                                                 <span className="text-muted-foreground mt-1 block text-xs leading-relaxed">
-                                                    Mengekstrak folder storage_public dari ZIP ke storage/app/public.
+                                                    Memulihkan storage public dan private Document Management.
                                                 </span>
                                             </span>
                                         </label>
