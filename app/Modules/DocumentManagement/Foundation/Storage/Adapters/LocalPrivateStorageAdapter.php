@@ -72,8 +72,19 @@ class LocalPrivateStorageAdapter implements StorageAdapter
         }
 
         $published = new StorageObjectKeyV1(str_replace('staged/', 'objects/', $staged->key->value()));
-        if (! $this->disk()->move($staged->key->value(), $published->value())) {
-            throw new RuntimeException('Unable to promote staged object.');
+        try {
+            if (! $this->disk()->move($staged->key->value(), $published->value())) {
+                throw new RuntimeException('Unable to promote staged object.');
+            }
+        } catch (Throwable $exception) {
+            try {
+                if ($this->disk()->exists($published->value())) {
+                    $this->disk()->delete($published->value());
+                }
+            } catch (Throwable $cleanupException) {
+                report($cleanupException);
+            }
+            throw $exception;
         }
 
         return $published;

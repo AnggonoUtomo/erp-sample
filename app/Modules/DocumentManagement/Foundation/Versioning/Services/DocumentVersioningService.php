@@ -1,11 +1,9 @@
 <?php
 
-namespace App\Modules\DocumentManagement\Foundation\Ingestion\Services;
+namespace App\Modules\DocumentManagement\Foundation\Versioning\Services;
 
 use App\Modules\Console\AuditLogs\Services\AuditLogService;
-use App\Modules\DocumentManagement\Foundation\Ingestion\DTO\IngestDocumentV1;
 use App\Modules\DocumentManagement\Foundation\Ingestion\DTO\IngestionResultV1;
-use App\Modules\DocumentManagement\Foundation\Ingestion\Transactions\DocumentIngestionTransaction;
 use App\Modules\DocumentManagement\Foundation\Integration\DTO\DocumentReferenceV1;
 use App\Modules\DocumentManagement\Foundation\Models\DocumentVersion;
 use App\Modules\DocumentManagement\Foundation\Models\IdempotencyKey;
@@ -16,24 +14,24 @@ use App\Modules\DocumentManagement\Foundation\Storage\DTO\StorageObjectKeyV1;
 use App\Modules\DocumentManagement\Foundation\Upload\DTO\ValidatedUploadV1;
 use App\Modules\DocumentManagement\Foundation\Upload\Policies\DocumentUploadPolicy;
 use App\Modules\DocumentManagement\Foundation\Upload\Services\UploadStreamHasher;
+use App\Modules\DocumentManagement\Foundation\Versioning\DTO\ReplaceDocumentVersionV1;
 use DomainException;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 use RuntimeException;
 use Throwable;
 
-class DocumentIngestionService
+class DocumentVersioningService
 {
-    private const IDEMPOTENCY_SCOPE = 'document-ingestion.v1';
+    private const IDEMPOTENCY_SCOPE = 'document-version-replacement.v1';
 
     public function __construct(
         private DocumentUploadPolicy $policy,
-        private StorageAdapter $storage,
-        private DocumentIngestionTransaction $transaction,
-        private AuditLogService $audit,
         private UploadStreamHasher $hasher,
+        private StorageAdapter $storage,
+        private AuditLogService $audit,
     ) {}
 
-    public function ingest(IngestDocumentV1 $request): IngestionResultV1
+    public function replace(ReplaceDocumentVersionV1 $request): IngestionResultV1
     {
         $validated = $this->policy->validate($request->uploadIntent, $request->stream);
         $checksum = $this->hasher->sha256($request->stream, $validated->byteSize);
@@ -50,9 +48,17 @@ class DocumentIngestionService
         $replayed = false;
 
         try {
-            $result = $this->transaction->run(function () use (
+            $result = DB::transaction(function () use (
                 $request, $validated, $checksum, $keyHash, $fingerprint, $staged, &$published, &$replayed,
             ): IngestionResultV1 {
+                $document = LogicalDocument::query()
+                    ->where('reference', $request->reference->value())
+                    ->lockForUpdate()
+                    ->firstOrFail();
+                if ($document->status !== 'AVAILABLE' || $document->current_version_id === null) {
+                    throw new DomainException('Only an available document can receive a replacement version.');
+                }
+
                 $idempotency = IdempotencyKey::query()
                     ->where('scope', self::IDEMPOTENCY_SCOPE)
                     ->where('key_hash', $keyHash)
@@ -64,19 +70,12 @@ class DocumentIngestionService
                     return $this->resultFromIdempotency($idempotency, $fingerprint);
                 }
 
-                $owner = $request->ownerContext->toArray();
-                $document = LogicalDocument::query()->create([
-                    'reference' => 'dms_'.Str::ulid(),
-                    'owner_schema_version' => $owner['schemaVersion'],
-                    'owner_domain' => $owner['domain'],
-                    'owner_aggregate_type' => $owner['aggregateType'],
-                    'owner_aggregate_id' => $owner['aggregateId'],
-                    'status' => 'PENDING',
-                    'created_by_reference' => $request->actorReference,
-                ]);
+                $nextNumber = ((int) DocumentVersion::query()
+                    ->where('document_id', $document->getKey())
+                    ->max('version_number')) + 1;
                 $version = DocumentVersion::query()->create([
                     'document_id' => $document->getKey(),
-                    'version_number' => 1,
+                    'version_number' => $nextNumber,
                     'storage_object_key' => $staged->key->value(),
                     'original_filename' => $validated->filename,
                     'declared_media_type' => $validated->declaredMediaType,
@@ -96,16 +95,18 @@ class DocumentIngestionService
                     'status' => 'PROCESSING',
                 ]);
 
+                $previousVersionId = $document->current_version_id;
                 $published = $this->storage->promote($staged);
                 $version->update(['storage_object_key' => $published->value(), 'status' => 'AVAILABLE']);
-                $document->update(['current_version_id' => $version->getKey(), 'status' => 'AVAILABLE']);
+                $document->update(['current_version_id' => $version->getKey()]);
                 $idempotency->update(['status' => 'COMPLETED']);
 
                 $this->audit->record(
                     module: 'document-management.foundation',
-                    event: 'DocumentVersion.available',
+                    event: 'DocumentVersion.replaced',
                     auditable: $version,
-                    description: "Published document version #{$version->getKey()}",
+                    description: "Published replacement version #{$version->getKey()}",
+                    oldValues: ['current_version_id' => $previousVersionId],
                     newValues: [
                         'reference' => $document->reference,
                         'version' => $version->version_number,
@@ -123,7 +124,7 @@ class DocumentIngestionService
 
             return $result;
         } catch (Throwable $exception) {
-            $this->cleanupFailedObject($staged, $published);
+            $this->cleanup($staged, $published);
             throw $exception;
         }
     }
@@ -141,10 +142,10 @@ class DocumentIngestionService
     private function resultFromIdempotency(IdempotencyKey $idempotency, string $fingerprint): IngestionResultV1
     {
         if (! hash_equals($idempotency->request_fingerprint, $fingerprint)) {
-            throw new DomainException('Idempotency key was already used for a different ingestion request.');
+            throw new DomainException('Idempotency key was already used for a different replacement request.');
         }
         if ($idempotency->status !== 'COMPLETED' || $idempotency->version_id === null) {
-            throw new RuntimeException('Previous ingestion request is not in a reusable state.');
+            throw new RuntimeException('Previous replacement request is not in a reusable state.');
         }
 
         return $this->result(
@@ -163,10 +164,10 @@ class DocumentIngestionService
         );
     }
 
-    private function fingerprint(IngestDocumentV1 $request, ValidatedUploadV1 $validated, string $checksum): string
+    private function fingerprint(ReplaceDocumentVersionV1 $request, ValidatedUploadV1 $validated, string $checksum): string
     {
         return hash('sha256', json_encode([
-            'ownerContext' => $request->ownerContext->toArray(),
+            'reference' => $request->reference->value(),
             'filename' => $validated->filename,
             'mediaType' => $validated->detectedMediaType,
             'byteSize' => $validated->byteSize,
@@ -175,7 +176,7 @@ class DocumentIngestionService
         ], JSON_THROW_ON_ERROR));
     }
 
-    private function cleanupFailedObject(StagedObjectV1 $staged, ?StorageObjectKeyV1 $published): void
+    private function cleanup(StagedObjectV1 $staged, ?StorageObjectKeyV1 $published): void
     {
         try {
             if ($published !== null) {

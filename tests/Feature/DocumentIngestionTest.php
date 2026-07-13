@@ -39,6 +39,10 @@ class DocumentIngestionTest extends TestCase
             'reference' => $result->reference->value(),
             'status' => 'AVAILABLE',
         ]);
+        $currentVersionId = (int) \DB::table('dm_documents')
+            ->where('reference', $result->reference->value())
+            ->value('current_version_id');
+        $this->assertGreaterThan(0, $currentVersionId);
         $this->assertDatabaseHas('dm_document_versions', [
             'version_number' => 1,
             'original_filename' => 'contract.pdf',

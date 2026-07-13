@@ -108,13 +108,15 @@ Implementasi wajib berurutan dan berhenti pada setiap checkpoint. Setiap task ad
 
 **Acceptance criteria:**
 
-- [ ] Version number monotonik dan current version berganti atomic.
-- [ ] Failure mempertahankan current version lama.
-- [ ] Old version tetap private/readable sesuai policy dan tidak dihapus.
+- [x] Version number monotonik dan current version berganti atomic.
+- [x] Failure mempertahankan current version lama.
+- [x] Old version tetap private/readable sesuai policy dan tidak dihapus.
 
 **Test:** `php artisan test --filter=DocumentVersioning`
 
 **Dependencies:** Task 05. **Scope:** M.
+
+**Completed:** 2026-07-13 — endpoint replacement terautentikasi dengan permission `documents.replace` membuat version berikutnya di bawah document lock tanpa overwrite metadata/blob lama. Current pointer hanya berganti setelah private promotion sukses; retry identik idempotent dan fingerprint berbeda conflict. Guard model melarang perubahan integrity metadata version `AVAILABLE`. Failure sebelum dan sesudah storage move membuktikan transaction rollback, cleanup object baru, serta current version/binary lama tetap utuh. Verifikasi: `DocumentVersioningTest` (5 test), regression ingestion/storage (16 test, 100 assertions), Pint, dan `module:validate` lulus.
 
 ## Checkpoint B — Ingestion integrity
 

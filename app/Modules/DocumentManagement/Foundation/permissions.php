@@ -5,6 +5,7 @@ return [
         'document-management.view',
         'documents.view',
         'documents.upload',
+        'documents.replace',
         'documents.download',
     ],
     'roles' => [
@@ -12,6 +13,7 @@ return [
             'document-management.view',
             'documents.view',
             'documents.upload',
+            'documents.replace',
             'documents.download',
         ],
     ],

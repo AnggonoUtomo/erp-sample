@@ -18,6 +18,7 @@ class LogicalDocument extends Model
         'owner_domain',
         'owner_aggregate_type',
         'owner_aggregate_id',
+        'current_version_id',
         'status',
         'created_by_reference',
     ];

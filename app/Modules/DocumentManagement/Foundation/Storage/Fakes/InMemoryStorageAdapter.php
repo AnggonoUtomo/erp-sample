@@ -15,6 +15,11 @@ class InMemoryStorageAdapter implements StorageAdapter
 
     public function __construct(private ?string $failOperation = null) {}
 
+    public function failOn(?string $operation): void
+    {
+        $this->failOperation = $operation;
+    }
+
     public function stage(mixed $stream): StagedObjectV1
     {
         if ($this->failOperation === 'stage') {
@@ -63,6 +68,10 @@ class InMemoryStorageAdapter implements StorageAdapter
         $published = new StorageObjectKeyV1(str_replace('staged/', 'objects/', $staged->key->value()));
         $this->objects[$published->value()] = $this->objects[$staged->key->value()];
         unset($this->objects[$staged->key->value()]);
+        if ($this->failOperation === 'promote_after_move') {
+            unset($this->objects[$published->value()]);
+            throw new RuntimeException('Injected failure after promote move.');
+        }
 
         return $published;
     }
