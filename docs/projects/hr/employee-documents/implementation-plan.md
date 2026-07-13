@@ -44,6 +44,8 @@ Soft-delete archive/restore dengan invariant revalidation dan tanpa operasi DMS 
 
 Read-only expiring command dengan explicit date/window dan privacy-safe output selesai pada Task 07. ✅
 
+Checkpoint B approved pada 2026-07-13 setelah sensitive-data review dan seluruh quality gate hijau. Metadata lifecycle complete; integrasi DMS tetap berada di phase/approval terpisah. ✅
+
 ### Checkpoint 1
 
 - User berizin dapat membuat dan melihat metadata.

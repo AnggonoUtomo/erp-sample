@@ -136,9 +136,11 @@ Semua task belum dikerjakan. Implementasi harus berurutan dan berhenti di setiap
 
 ## Checkpoint B — Metadata lifecycle complete
 
-- [ ] Task 04–07 hijau dan direview manusia.
-- [ ] Sensitive-data review memastikan masking, encryption, fingerprint, audit redaction benar.
-- [ ] Full quality gates hijau.
+- [x] Task 04–07 hijau dan direview pada 2026-07-13.
+- [x] Sensitive-data review memastikan masking, encryption, keyed fingerprint, dan audit redaction benar.
+- [x] Full quality gates hijau: 251 backend tests/981 assertions, 4 frontend tests, build/lint/format/typecheck/Pint/module validation, serta production dependency audit tanpa advisory.
+
+**Keputusan checkpoint:** approved. Metadata lifecycle dinyatakan complete. Task 08 belum boleh mengaktifkan attachment/storage; pekerjaan berikutnya hanya mendefinisikan DMS reference contract v1 dan tetap memerlukan persetujuan boundary lintas project.
 
 ## Task 08 — DMS reference contract v1
 
