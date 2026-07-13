@@ -10,13 +10,15 @@ Implementasi wajib berurutan dan berhenti pada setiap checkpoint. Setiap task ad
 
 **Acceptance criteria:**
 
-- [ ] Module validator mengenali `DocumentManagement/Foundation` dan dependency contract.
-- [ ] Owner context/reference/result v1 typed, versioned, minimal, dan additive.
-- [ ] Architecture test melarang binary DB field, public URL/path exposure, dan direct consumer model import.
+- [x] Module validator mengenali `DocumentManagement/Foundation` dan dependency contract.
+- [x] Owner context/reference/result v1 typed, versioned, minimal, dan additive.
+- [x] Architecture test melarang binary DB field, public URL/path exposure, dan direct consumer model import.
 
 **Test:** `php artisan test --filter=DocumentManagementContract && php artisan module:validate`
 
 **Dependencies:** specification dan ADR-001 approved. **Scope:** M, 3–5 files per increment.
+
+**Completed:** 2026-07-13 — contract-only module; tidak ada route, migration, model, navigation, atau storage behavior. Verifikasi: `DocumentManagementFoundationContractTest` (5 test, 26 assertions) dan `module:validate` lulus.
 
 ## Task 02 — Logical document metadata
 

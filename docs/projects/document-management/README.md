@@ -4,9 +4,11 @@ Paket ini adalah acuan pembangunan foundation project `DocumentManagement`: satu
 
 ## Status
 
-`Specification dan ADR-001 accepted pada 2026-07-13; siap memulai Task 01`.
+`Specification dan ADR-001 accepted; Task 01 selesai pada 2026-07-13, siap review sebelum Task 02`.
 
 Persetujuan ini mengizinkan pembangunan contract dan metadata foundation. Upload production tetap tertahan sampai keputusan private disk, batas/tipe file, malware/quarantine, delivery, dan retention pada ADR-001 dipenuhi.
+
+Foundation saat ini hanya mengekspor contract v1 dan permission minimum. Route, navigation, database, binary storage, serta UI belum diaktifkan.
 
 ## Urutan baca
 
