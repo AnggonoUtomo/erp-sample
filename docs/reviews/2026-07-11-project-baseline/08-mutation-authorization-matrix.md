@@ -17,6 +17,7 @@ Status: verified 2026-07-12. Scope: mutation route domain aplikasi yang memerluk
 | `users.impersonate` | begin impersonation | `users.impersonate` dan target rules | `UserImpersonationTest` |
 | `hr.departements.*` | create/update/delete | departement policy | `HRDepartementTest` |
 | `hr.employees.*` | create/update/delete/restore/force-delete | employee request/policy | `HREmployeeTest` |
+| `hr.employee-documents.*` | create metadata; mutation berikutnya wajib masuk inventaris | employee document request/policy | `HREmployeeDocumentAuthorizationTest` |
 | `hr.employment-statuses.*` | create/update/delete/restore/force-delete | employment status request/policy | `HREmploymentStatusTest` |
 | `hr.employment-types.*` | create/update/delete/restore/force-delete | employment type request/policy | `HREmploymentTypeTest` |
 | `hr.job-levels.*` | create/update/delete/restore/force-delete | job level policy | `HRJobLevelTest` |

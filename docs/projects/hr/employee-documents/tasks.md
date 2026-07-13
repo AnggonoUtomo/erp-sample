@@ -38,7 +38,7 @@ Semua task belum dikerjakan. Implementasi harus berurutan dan berhenti di setiap
 
 **Hasil:** selesai 2026-07-13. Nomor dokumen memakai encrypted cast, HMAC fingerprint, dan uniqueness key sesuai scope type; UI hanya menerima projection masked. Attachment/file tetap tidak tersedia.
 
-## Task 03 — Mutation authorization matrix
+## Task 03 — Mutation authorization matrix ✅
 
 **Tujuan:** menutup seluruh metadata mutation dengan policy server-side dan audit actor.
 
@@ -46,19 +46,21 @@ Semua task belum dikerjakan. Implementasi harus berurutan dan berhenti di setiap
 
 **Acceptance criteria:**
 
-- [ ] Guest dan user tanpa permission ditolak untuk seluruh mutation.
-- [ ] `hr-officer`, `hr-manager`, dan `hr-viewer` hanya menerima permission yang didokumentasikan.
-- [ ] Frontend controls tidak dianggap security boundary.
+- [x] Guest dan user tanpa permission ditolak untuk seluruh mutation.
+- [x] `hr-officer`, `hr-manager`, dan `hr-viewer` hanya menerima permission yang didokumentasikan.
+- [x] Frontend controls tidak dianggap security boundary.
 
 **Test:** `php artisan test --filter=HREmployeeDocumentAuthorization`
 
 **Dependencies:** Task 02. **Scope:** S/M, 2–4 files.
 
+**Hasil:** selesai 2026-07-13. Matrix menginventaris mutation route aktual, membuktikan middleware auth, denial guest/user tanpa permission, zero write, exact seeded role contract, dan direct POST denial untuk viewer walaupun frontend menyembunyikan form.
+
 ## Checkpoint A — Approve vertical slice pertama
 
-- [ ] Task 01–03 hijau dan direview manusia.
-- [ ] Tidak ada storage path, media collection, blob, atau direct DMS dependency.
-- [ ] Pint, lint, format, typecheck, build, module validation, dan backend suite hijau.
+- [x] Task 01–03 hijau; review manusia menunggu konfirmasi checkpoint.
+- [x] Tidak ada storage path, media collection, blob, atau direct DMS dependency.
+- [x] Pint, lint, format, typecheck, build, module validation, dan backend suite hijau.
 
 ## Task 04 — Deterministic expiry query
 

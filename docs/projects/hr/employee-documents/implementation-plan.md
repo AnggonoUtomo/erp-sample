@@ -34,6 +34,8 @@ Document Management contract ──> attachment gateway + access boundary
 2. Scaffold module, schema metadata, permission, dan sensitive-data policy. ✅
 3. Implement create/list paginated untuk metadata tanpa attachment. ✅
 
+Authorization matrix untuk vertical slice metadata selesai pada Task 03 dan menjadi gate setiap mutation baru. ✅
+
 ### Checkpoint 1
 
 - User berizin dapat membuat dan melihat metadata.
