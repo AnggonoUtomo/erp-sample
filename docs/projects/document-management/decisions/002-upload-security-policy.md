@@ -2,7 +2,9 @@
 
 ## Status
 
-Accepted — 2026-07-13.
+Accepted — 2026-07-13; ketentuan scanner/quarantine diamendemen oleh [ADR-003](003-mvp-single-server-without-malware-scanner.md).
+
+> ADR-003 mengizinkan file structurally valid menjadi `AVAILABLE` dengan `scan_status=NOT_CONFIGURED` pada MVP. Seluruh batas ukuran, allowlist, magic-byte, polyglot rejection, private storage, dan staged cleanup pada ADR ini tetap berlaku.
 
 ## Context
 

@@ -56,4 +56,4 @@ Ingestion memakai staged write, validation, checksum, idempotency, lalu atomic p
 
 ## Approval gates
 
-Keputusan single private storage engine telah diterima. Private-local single-server, upload limits/type allowlist, quarantine, dan authorized-controller delivery ditetapkan oleh [ADR-002](002-upload-security-policy.md). Production availability tetap tertahan sampai scanner dan retention ownership disetujui.
+Keputusan single private storage engine telah diterima. Private-local single-server, upload limits/type allowlist, dan authorized-controller delivery ditetapkan oleh [ADR-002](002-upload-security-policy.md). [ADR-003](003-mvp-single-server-without-malware-scanner.md) mencatat risk acceptance tanpa scanner serta evaluasi wajib untuk scanner dan multi-server setelah MVP.

@@ -4,7 +4,7 @@ Paket ini adalah acuan pembangunan foundation project `DocumentManagement`: satu
 
 ## Status
 
-`Specification, ADR-001, dan ADR-002 accepted; Task 01–03 serta Checkpoint A selesai pada 2026-07-13, siap Task 04`.
+`Specification dan ADR-001–003 accepted; Task 01–03 serta Checkpoint A selesai pada 2026-07-13, siap Task 04`.
 
 Persetujuan ini mengizinkan pembangunan contract dan metadata foundation. Upload production tetap tertahan sampai keputusan private disk, batas/tipe file, malware/quarantine, delivery, dan retention pada ADR-001 dipenuhi.
 
@@ -20,10 +20,11 @@ Foundation saat ini mengekspor contract v1, permission minimum, logical document
 
 1. [Specification](specification.md) — objective, requirement, non-scope, contract, command, acceptance criteria, dan test plan.
 2. [ADR-001: Single private storage engine](decisions/001-single-private-storage-engine.md) — ownership binary dan larangan akses path langsung.
-3. [ADR-002: Upload security policy](decisions/002-upload-security-policy.md) — batas 20 MiB, allowlist PDF/JPEG/PNG, magic-byte, quarantine, dan private-local production disk.
-4. [Implementation plan](implementation-plan.md) — dependency graph, vertical slices, checkpoint, risiko, dan rollback.
-5. [Tasks](tasks.md) — task kecil dengan tujuan, file, acceptance criteria, dependency, dan cara test.
-6. [Roadmap](roadmap.md) — ekspansi setelah foundation: folder, category, tag, share, approval, search, dan retention.
+3. [ADR-002: Upload security policy](decisions/002-upload-security-policy.md) — batas 20 MiB, allowlist PDF/JPEG/PNG, magic-byte, dan private-local production disk; bagian scanner diamendemen ADR-003.
+4. [ADR-003: MVP single-server tanpa scanner](decisions/003-mvp-single-server-without-malware-scanner.md) — risk acceptance, compensating controls, dan trigger evaluasi berikutnya.
+5. [Implementation plan](implementation-plan.md) — dependency graph, vertical slices, checkpoint, risiko, dan rollback.
+6. [Tasks](tasks.md) — task kecil dengan tujuan, file, acceptance criteria, dependency, dan cara test.
+7. [Roadmap](roadmap.md) — ekspansi setelah foundation: folder, category, tag, share, approval, search, dan retention.
 
 ## Relasi lintas dokumen
 
@@ -38,7 +39,7 @@ Foundation saat ini mengekspor contract v1, permission minimum, logical document
 - Foundation berjalan di aplikasi Laravel yang sama tetapi melalui contract, bukan direct model import lintas project.
 - Storage production foundation memakai private local disk untuk deployment single-server.
 - Database menyimpan metadata/reference, bukan binary content.
-- Upload policy mengikuti ADR-002; tanpa scanner, hasil ingestion maksimal `QUARANTINED` dan production availability tetap nonaktif.
+- Upload policy mengikuti ADR-002/ADR-003; MVP tanpa scanner boleh menghasilkan `AVAILABLE` dengan `scan_status=NOT_CONFIGURED` dan compensating controls wajib.
 - HR adalah consumer pertama, bukan pemilik storage atau retention.
 
 ## Output foundation

@@ -62,7 +62,7 @@ Implementasi wajib berurutan dan berhenti pada setiap checkpoint. Setiap task ad
 - [x] Migration/module/storage contract valid; upload route belum ada.
 - [x] Disk production, upload policy, dan malware strategy mendapat keputusan eksplisit sebelum Task 04.
 
-**Decision:** ADR-002 accepted pada 2026-07-13. Scanner ditunda secara fail-closed: Task 04 boleh dimulai, tetapi hasil ingestion maksimal `QUARANTINED` dan production availability tetap nonaktif.
+**Decision:** ADR-002 dan ADR-003 accepted pada 2026-07-13. MVP memakai private-local single-server tanpa scanner. File valid boleh `AVAILABLE` dengan `scan_status=NOT_CONFIGURED`; status `CLEAN` dilarang tanpa scan aktual.
 
 ## Task 04 — Upload policy contract
 
@@ -74,7 +74,7 @@ Implementasi wajib berurutan dan berhenti pada setiap checkpoint. Setiap task ad
 
 - [ ] Size, extension, declared/detected MIME, filename, empty stream, dan allowed types tervalidasi.
 - [ ] Path traversal, double extension, MIME spoof, polyglot policy, dan oversized input memiliki semantics eksplisit.
-- [ ] Malware decision menghasilkan `QUARANTINED`/rejection contract, bukan bypass; tidak ada transisi `AVAILABLE` selama scanner ditunda.
+- [ ] Risk acceptance tanpa scanner menghasilkan `scan_status=NOT_CONFIGURED`, compensating controls, dan larangan memalsukan status `CLEAN`.
 
 **Test:** `php artisan test --filter=DocumentUploadPolicy`
 
@@ -88,7 +88,7 @@ Implementasi wajib berurutan dan berhenti pada setiap checkpoint. Setiap task ad
 
 **Acceptance criteria:**
 
-- [ ] Valid stream menghasilkan satu `QUARANTINED` version dan opaque reference selama scanner ditunda.
+- [ ] Valid stream menghasilkan satu `AVAILABLE` version dengan `scan_status=NOT_CONFIGURED` dan opaque reference pada MVP.
 - [ ] Retry identik mengembalikan result yang sama; key sama dengan fingerprint berbeda ditolak conflict.
 - [ ] Validation/storage/checksum failure tidak meninggalkan active partial document dan staged cleanup/reconciliation tercatat.
 
@@ -115,7 +115,7 @@ Implementasi wajib berurutan dan berhenti pada setiap checkpoint. Setiap task ad
 ## Checkpoint B — Ingestion integrity
 
 - [ ] Task 04–06 hijau, failure injection direview, dan no-orphan evidence tersedia.
-- [ ] Checksum, idempotency, privacy, malware/quarantine, dan private disk review approved.
+- [ ] Checksum, idempotency, privacy, risk acceptance tanpa scanner, dan private disk review approved.
 - [ ] Production ingestion disabled sampai seluruh keputusan deployment terpenuhi.
 
 ## Task 07 — Archive, restore, dan descriptor

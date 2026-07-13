@@ -19,7 +19,7 @@ Keberhasilan berarti domain consumer dapat mengirim owner context minimal dan up
 3. Semua binary berada pada private disk melalui storage adapter; tidak ada public filesystem URL.
 4. Logical document memiliki satu atau lebih immutable versions; replace menghasilkan versi baru, bukan overwrite blob lama.
 5. Checksum adalah integrity control, bukan authenticity signature.
-6. Production foundation memakai private local disk single-server. Upload dibatasi 20 MiB dan PDF/JPEG/PNG sesuai ADR-002; scanner serta retention duration tetap deployment gate sebelum file dapat menjadi `AVAILABLE`.
+6. Production MVP memakai private local disk single-server. Upload dibatasi 20 MiB dan PDF/JPEG/PNG sesuai ADR-002; ADR-003 menerima risiko tanpa scanner dan mewajibkan `scan_status=NOT_CONFIGURED` serta compensating controls.
 
 ## 3. Requirements
 
@@ -38,7 +38,7 @@ Keberhasilan berarti domain consumer dapat mengirim owner context minimal dan up
 - Write memakai staged/private object; metadata version menjadi visible hanya setelah storage write dan checksum sukses.
 - Retry dengan owner context + idempotency key yang sama mengembalikan reference/version yang sama.
 - Kegagalan/timeout tidak meninggalkan reference aktif ke object yang tidak lengkap; staged orphan dapat direconcile terpisah.
-- Tanpa scanner yang disetujui, hasil validasi maksimal `QUARANTINED`; tidak ada fallback ke `AVAILABLE`.
+- Pada MVP tanpa scanner, file structurally valid boleh `AVAILABLE` hanya dengan `scan_status=NOT_CONFIGURED`; status `CLEAN` dilarang tanpa scan aktual.
 
 Upload policy foundation:
 
@@ -49,7 +49,7 @@ Upload policy foundation:
 | MIME | `application/pdf`, `image/jpeg`, `image/png` |
 | Detection | Extension, declared MIME, dan magic-byte wajib cocok |
 | Polyglot/ambiguous | Ditolak |
-| Scanner deferred | Tetap `QUARANTINED`; production availability nonaktif |
+| Scanner MVP | Tidak dikonfigurasi; `AVAILABLE` memakai `scan_status=NOT_CONFIGURED` dan risk acceptance ADR-003 |
 | Staged reconciliation | Setelah 24 jam, bounded dan dry-run default |
 
 ### 3.3 Integrity dan versioning
@@ -127,6 +127,7 @@ Contract harus additive dan versioned. Result menggunakan discriminated state, b
 | `byte_size` | Server-observed size |
 | `sha256` | Server-computed integrity hash |
 | `status` | `STAGED`, `AVAILABLE`, `QUARANTINED`, `FAILED` |
+| `scan_status` | `NOT_CONFIGURED` pada MVP; tidak boleh `CLEAN` tanpa scan aktual |
 | `created_by`, timestamps | Audit actor/time |
 
 ### `dm_idempotency_keys`
@@ -138,7 +139,7 @@ Menyimpan scope, key hash, request fingerprint, result reference/version, status
 - Folder tree, category master, tags, full-text search, OCR, document editor, sharing link, approval workflow, e-signature, comments, favorites, dan bulk import.
 - Automated retention deletion, legal hold engine, records management, permanent deletion, dan cross-region replication.
 - Public API, mobile SDK, WebDAV, S3-compatible API, atau direct database access consumer.
-- Antivirus vendor implementation sebelum strategi scanner disetujui; ingestion production tidak boleh diluncurkan tanpa keputusan ini.
+- Antivirus vendor implementation pada MVP; risk acceptance dan compensating controls mengikuti ADR-003.
 - HR verification/expiry metadata; itu tetap milik Employee Documents.
 
 ## 7. Project structure
@@ -182,7 +183,7 @@ Command mutasi default `--dry-run`, idempotent, bounded, dan tidak menghapus obj
 
 - Ikuti `FormRequest -> DTO -> Service -> Transaction -> Model`, dengan binary I/O melalui `StorageAdapter` interface.
 - Selalu: private storage, server-side policy, streaming I/O, size limit, magic-byte validation, checksum, idempotency, audit, soft delete, dan failure cleanup.
-- Ask first: migration/schema final, disk driver, upload limit, allowlist file, malware scanner, token TTL, queue, retention, encryption key, dan public event.
+- Ask first: migration/schema final, perubahan disk/topology, upload limit/allowlist, penambahan scanner, token TTL, queue, retention, encryption key, dan public event.
 - Never: public disk untuk regulated document, menyimpan binary di database, mempercayai MIME client, mengirim path/object key ke consumer, direct model import lintas project, atau hard delete tanpa retention/legal-hold decision.
 
 ## 10. Acceptance criteria foundation
@@ -219,8 +220,9 @@ git diff --check
 
 ## 12. Remaining deployment questions
 
-- Malware scanner vendor/mode, timeout, retry, signature update, dan release dari quarantine?
+- Evaluasi pasca-MVP: scanner vendor/mode, timeout, retry, signature update, quarantine, dan re-scan existing objects?
 - Detail controller delivery: streaming limits, range request, rate limit, dan timeout?
 - Database production MySQL/PostgreSQL dan strategi locking/idempotency final?
 - Apakah document tanpa consumer attachment boleh direconcile/expire setelah grace period?
 - Retention duration dan ownership legal hold/permanent deletion?
+- Trigger migrasi dari private-local single-server menuju object storage/multi-server?

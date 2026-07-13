@@ -42,7 +42,7 @@ HR adapter -> Employee Documents Task 09 -> Task 10
 
 ## Phase 2 — Vertical slice ingestion
 
-4. Terapkan ADR-002: 20 MiB, PDF/JPEG/PNG, extension/MIME/magic-byte match, polyglot rejection, dan mandatory quarantine selama scanner ditunda.
+4. Terapkan ADR-002/ADR-003: 20 MiB, PDF/JPEG/PNG, extension/MIME/magic-byte match, polyglot rejection, serta explicit `scan_status=NOT_CONFIGURED` untuk MVP tanpa scanner.
 5. Implement staged stream ingestion + SHA-256 + cleanup failure menggunakan fake storage lebih dahulu.
 6. Implement private local adapter integration dan publish version secara atomic/idempotent.
 
@@ -51,7 +51,7 @@ HR adapter -> Employee Documents Task 09 -> Task 10
 - Valid upload menghasilkan satu reference/version; retry tidak duplicate.
 - Spoofed/oversized/interrupted input gagal tanpa active partial record.
 - Storage key dan binary tidak muncul di response/audit.
-- Production availability tetap disabled sampai scanner dan quarantine-release decision approved; ingestion foundation hanya boleh berakhir `QUARANTINED`.
+- MVP single-server boleh menghasilkan `AVAILABLE` dengan `scan_status=NOT_CONFIGURED`; status `CLEAN`, inline preview, parser, dan multi-server tetap nonaktif.
 
 ## Phase 3 — Lifecycle dan secure access
 
@@ -85,7 +85,7 @@ HR adapter -> Employee Documents Task 09 -> Task 10
 | Partial storage write | Broken reference/orphan | Staged status, transaction boundary, cleanup/reconciliation |
 | Retry membuat duplicate | Biaya dan histori salah | Hashed idempotency key + request fingerprint + unique constraint |
 | Public URL bocor | Authorization bypass | Private disk, DMS delivery only, path architecture test |
-| Malware | Compromise endpoint/user | Quarantine; production gate menunggu scanner decision |
+| Malware tanpa scanner MVP | Compromise endpoint/user | Risk acceptance ADR-003, strict format validation, private attachment-only delivery, no inline preview/parser, audit, dan evaluasi wajib |
 | Large stream exhaustion | DoS | Request/body limits, streaming, bounded size/timeouts |
 | Consumer menghapus blob | Data loss lintas domain | Detach != delete; retention ownership DMS |
 | Token replay | Unauthorized download | Short TTL, scope action/reference/actor, optional single-use record |
