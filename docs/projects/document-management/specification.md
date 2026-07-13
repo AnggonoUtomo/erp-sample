@@ -96,8 +96,8 @@ EmployeeDocumentAttachmentGateway
   detach(reference, ownerContext, actorReference): DetachResultV1
 
 DocumentAccessGateway
-  authorize(reference, actorReference, action): AccessDecisionV1
-  issueDelivery(reference, actorReference, action): DeliveryHandoffV1
+  decide(reference, actorReference, action, expectedOwner): AccessDecisionV1
+  issueDelivery(reference, actorReference, action, expectedOwner): DeliveryHandoffV1
 ```
 
 Contract harus additive dan versioned. Result menggunakan discriminated state, bukan campuran `null`, boolean, dan exception. Exception hanya untuk transport/system failure; denial bisnis dikembalikan sebagai state `DENIED`.

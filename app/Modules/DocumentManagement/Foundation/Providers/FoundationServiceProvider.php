@@ -2,6 +2,8 @@
 
 namespace App\Modules\DocumentManagement\Foundation\Providers;
 
+use App\Modules\DocumentManagement\Foundation\Access\Services\DocumentAccessDecisionService;
+use App\Modules\DocumentManagement\Foundation\Integration\Contracts\DocumentAccessGateway;
 use App\Modules\DocumentManagement\Foundation\Integration\Contracts\DocumentReferenceReader;
 use App\Modules\DocumentManagement\Foundation\Lifecycle\Readers\DatabaseDocumentReferenceReader;
 use App\Modules\DocumentManagement\Foundation\Storage\Adapters\LocalPrivateStorageAdapter;
@@ -21,6 +23,7 @@ class FoundationServiceProvider extends ServiceProvider
         ));
         $this->app->bind(FileSignatureDetector::class, BoundedMagicByteDetector::class);
         $this->app->bind(DocumentReferenceReader::class, DatabaseDocumentReferenceReader::class);
+        $this->app->bind(DocumentAccessGateway::class, DocumentAccessDecisionService::class);
     }
 
     public function boot(): void

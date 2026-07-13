@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\DocumentManagement\Foundation\Integration\Contracts\DocumentAccessGateway;
 use App\Modules\DocumentManagement\Foundation\Integration\Contracts\DocumentReferenceReader;
 use App\Modules\DocumentManagement\Foundation\Integration\DTO\DocumentReferenceDescriptorV1;
 use App\Modules\DocumentManagement\Foundation\Providers\FoundationServiceProvider;
@@ -24,12 +25,21 @@ return [
     'events' => [],
     'listeners' => [],
     'integrations' => [
-        'contracts' => [[
-            'name' => 'DocumentReferenceReader',
-            'schema_version' => 1,
-            'reader' => DocumentReferenceReader::class,
-            'schema' => 'Integration/Schemas/document-owner-context-v1.json',
-            'states' => DocumentReferenceDescriptorV1::STATES,
-        ]],
+        'contracts' => [
+            [
+                'name' => 'DocumentReferenceReader',
+                'schema_version' => 1,
+                'reader' => DocumentReferenceReader::class,
+                'schema' => 'Integration/Schemas/document-owner-context-v1.json',
+                'states' => DocumentReferenceDescriptorV1::STATES,
+            ],
+            [
+                'name' => 'DocumentAccessGateway',
+                'schema_version' => 1,
+                'reader' => DocumentAccessGateway::class,
+                'schema' => 'Integration/Schemas/document-access-decision-v1.json',
+                'states' => DocumentReferenceDescriptorV1::STATES,
+            ],
+        ],
     ],
 ];

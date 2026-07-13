@@ -23,10 +23,13 @@ class AuditLogService
         ?array $oldValues = null,
         ?array $newValues = null,
         ?User $actor = null,
+        bool $fallbackToAuthenticatedActor = true,
     ): void {
         try {
             $request = app()->runningInConsole() ? null : request();
-            $actor ??= Auth::user();
+            if ($actor === null && $fallbackToAuthenticatedActor) {
+                $actor = Auth::user();
+            }
 
             AuditLog::query()->create([
                 'actor_id' => $actor?->id,

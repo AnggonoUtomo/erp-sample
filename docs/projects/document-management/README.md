@@ -4,13 +4,15 @@ Paket ini adalah acuan pembangunan foundation project `DocumentManagement`: satu
 
 ## Status
 
-`Specification dan ADR-001–003 accepted; Task 01–07 serta Checkpoint A–B selesai pada 2026-07-13, siap menuju Task 08`.
+`Specification dan ADR-001–003 accepted; Task 01–08 serta Checkpoint A–B selesai pada 2026-07-13, siap menuju Task 09`.
 
 Persetujuan ini mengizinkan pembangunan contract dan metadata foundation. Upload production tetap tertahan sampai keputusan private disk, batas/tipe file, malware/quarantine, delivery, dan retention pada ADR-001 dipenuhi.
 
 Foundation saat ini mengekspor contract v1, permission minimum, logical document metadata yang idempotent, private StorageAdapter, version metadata, serta endpoint ingestion/replacement internal yang dilindungi authentication, permission `documents.upload`/`documents.replace`, dan throttle. Replacement membuat version baru secara atomic; version lama tidak dioverwrite atau dihapus. Navigation dan UI belum diaktifkan.
 
-Lifecycle archive/restore tersedia melalui permission `documents.archive` dan `documents.restore`. Archive adalah soft-delete logical document tanpa menghapus blob/version. Reader descriptor internal menghasilkan state aman `AVAILABLE|MISSING|ARCHIVED|UNAVAILABLE|DENIED`; access-decision matrix actor/action yang lengkap tetap menjadi scope Task 08.
+Lifecycle archive/restore tersedia melalui permission `documents.archive` dan `documents.restore`. Archive adalah soft-delete logical document tanpa menghapus blob/version. Reader descriptor internal menghasilkan state aman `AVAILABLE|MISSING|ARCHIVED|UNAVAILABLE|DENIED`; keputusan authorization binary wajib memakai gateway Task 08.
+
+`DocumentAccessGateway` v1 sekarang menjadi security authority sebelum binary delivery. Keputusan memerlukan actor, action, permission DMS, expected owner exact, lifecycle/version, dan private-object availability. Lihat [access decision matrix](access-decision-matrix.md); status `AVAILABLE` hanya mengizinkan proses dilanjutkan ke Task 09 dan bukan token akses.
 
 Upload policy diterapkan pada staged ingestion: maksimal 20 MiB, PDF/JPEG/PNG, extension–declared MIME–signature wajib cocok, terminal marker wajib valid, trailing payload ditolak, dan hasil menyatakan `scanStatus=NOT_CONFIGURED`. Binary ditulis ke private staging, dipromosikan dengan object key buatan server, dan dibersihkan bila transaction/promotion gagal.
 
@@ -30,7 +32,8 @@ Upload policy diterapkan pada staged ingestion: maksimal 20 MiB, PDF/JPEG/PNG, e
 5. [Implementation plan](implementation-plan.md) — dependency graph, vertical slices, checkpoint, risiko, dan rollback.
 6. [Tasks](tasks.md) — task kecil dengan tujuan, file, acceptance criteria, dependency, dan cara test.
 7. [Checkpoint B: Ingestion integrity](checkpoint-b-ingestion-integrity.md) — bukti no-orphan, security review, accepted risk, dan checklist aktivasi production.
-8. [Roadmap](roadmap.md) — ekspansi setelah foundation: folder, category, tag, share, approval, search, dan retention.
+8. [Access decision matrix](access-decision-matrix.md) — urutan policy, action-permission mapping, IDOR, dan seluruh state fail-closed.
+9. [Roadmap](roadmap.md) — ekspansi setelah foundation: folder, category, tag, share, approval, search, dan retention.
 
 ## Relasi lintas dokumen
 

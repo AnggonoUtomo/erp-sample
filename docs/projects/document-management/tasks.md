@@ -152,13 +152,15 @@ Implementasi wajib berurutan dan berhenti pada setiap checkpoint. Setiap task ad
 
 **Acceptance criteria:**
 
-- [ ] Actor/action/reference/owner/state diperiksa server-side.
-- [ ] Guest, unauthorized, IDOR, missing, archived, unavailable, dan revoked ditolak fail-closed.
-- [ ] Consumer permission tidak dapat menggantikan DMS decision.
+- [x] Actor/action/reference/owner/state diperiksa server-side.
+- [x] Guest, unauthorized, IDOR, missing, archived, unavailable, dan revoked ditolak fail-closed.
+- [x] Consumer permission tidak dapat menggantikan DMS decision.
 
 **Test:** `php artisan test --filter=DocumentAccessDecision`
 
 **Dependencies:** Task 07. **Scope:** M.
+
+**Completed:** 2026-07-13 — `DocumentAccessGateway` v1, request/decision DTO, policy action-permission, dan service authority DMS diterbitkan melalui module manifest. Evaluasi permission dilakukan sebelum lookup reference; expected owner harus exact; lifecycle/version/private-object diperiksa server-side. Unknown action, guest, consumer-only permission, IDOR, permission revoked, missing, archived, unavailable, dan storage error seluruhnya tidak menghasilkan access grant. Grant/denial diaudit tanpa owner/storage secrets dan tanpa fallback actor session yang salah. Matrix normatif: [Document access decision matrix v1](access-decision-matrix.md). Verifikasi: `DocumentAccessDecisionTest` (6 test), contract regression (25 test, 114 assertions), module validation, Pint, dan full backend suite lulus.
 
 ## Task 09 — Secure delivery handoff
 
