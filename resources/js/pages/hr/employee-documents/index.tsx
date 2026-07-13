@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import { usePermission } from '@/hooks/use-permission';
 import AppLayout from '@/layouts/app-layout';
 import { Head, router, useForm } from '@inertiajs/react';
@@ -188,9 +189,8 @@ export default function EmployeeDocumentsIndex({ documents, options, filters }: 
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="employee-document-notes">Catatan internal</Label>
-                                    <textarea
+                                    <Textarea
                                         id="employee-document-notes"
-                                        className="bg-background min-h-20 w-full rounded-md border px-3 py-2 text-sm"
                                         value={form.data.notes}
                                         onChange={(event) => form.setData('notes', event.target.value)}
                                     />
