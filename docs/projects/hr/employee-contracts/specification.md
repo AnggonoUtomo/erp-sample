@@ -101,6 +101,8 @@ Input DTO dan output page contract harus terpisah. Consumer lintas project tidak
 
 Snapshot tidak memuat notes atau attachment. Lihat [Payroll planning](../../../planning/payroll.md).
 
+Implementasi v1 tersedia melalui `EmployeeContractSnapshotReader`, bukan route atau model publik. Caller wajib memberikan `effectiveDate` dan `capturedAt` agar hasil reproducible. Schema normatif berada di `Integration/Schemas/employee-contract-snapshot-v1.json`; keputusan versioning dan exposure field dijelaskan pada [ADR-002](decisions/002-versioned-snapshot-boundary.md).
+
 ## 4. Non-scope
 
 - Penyimpanan file kontrak, versioning file, sharing, retention, OCR, dan e-signature.
@@ -196,4 +198,3 @@ php artisan test
 - Apakah aktivasi wajib `signed_date`? Rilis awal: opsional.
 - Apakah kontrak permanent tanpa end date boleh disupersede langsung atau harus terminate dahulu?
 - Database production final MySQL/PostgreSQL perlu dikonfirmasi untuk strategi exclusion/locking overlap.
-

@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\HR\EmployeeContracts\Integration\Contracts\EmployeeContractSnapshotReader;
 use App\Modules\HR\EmployeeContracts\Providers\EmployeeContractsServiceProvider;
 
 return [
@@ -11,5 +12,14 @@ return [
     'exports' => ['routes' => true, 'permissions' => true, 'navigation' => true],
     'commands' => ['hr:contracts-expiring'],
     'events' => ['EmployeeContractCreated', 'EmployeeContractActivated', 'EmployeeContractTerminated', 'EmployeeContractCancelled', 'EmployeeContractSuperseded', 'EmployeeContractArchived', 'EmployeeContractRestored'], 'listeners' => [],
-    'integrations' => ['upstream_for' => ['Payroll'], 'depends_on' => ['HR.Employees', 'HR.EmploymentTypes']],
+    'integrations' => [
+        'upstream_for' => ['Payroll'],
+        'depends_on' => ['HR.Employees', 'HR.EmploymentTypes'],
+        'contracts' => [[
+            'name' => 'EmployeeContractSnapshot',
+            'schema_version' => 1,
+            'reader' => EmployeeContractSnapshotReader::class,
+            'schema' => 'Integration/Schemas/employee-contract-snapshot-v1.json',
+        ]],
+    ],
 ];

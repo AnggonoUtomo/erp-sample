@@ -4,7 +4,7 @@ Paket dokumen ini mendefinisikan module `HR/EmployeeContracts` sebelum implement
 
 ## Status
 
-`Implementation in progress` — ADR-001 dan Task 01–07 telah selesai. Task 08 snapshot contract v1 menjadi pekerjaan berikutnya.
+`Implementation complete` — ADR-001/002 dan Task 01–08 telah selesai. Module contract, lifecycle, archive/restore, expiry query, dan snapshot integration v1 telah tersedia.
 
 ## Expiry query
 
@@ -20,8 +20,9 @@ php artisan hr:contracts-expiring --date=2026-07-13 --within=30
 
 1. [Specification](specification.md) — tujuan, requirement, non-scope, data contract, acceptance criteria, dan test plan.
 2. [ADR-001: Effective-dated contracts](decisions/001-effective-dated-contracts.md) — alasan kontrak dimodelkan sebagai interval waktu immutable secara historis.
-3. [Implementation plan](implementation-plan.md) — urutan vertical slice, dependency, risiko, dan checkpoint.
-4. [Tasks](tasks.md) — unit kerja kecil lengkap dengan file, acceptance criteria, dan cara test.
+3. [ADR-002: Versioned snapshot boundary](decisions/002-versioned-snapshot-boundary.md) — bentuk snapshot v1 dan larangan akses model HR oleh consumer.
+4. [Implementation plan](implementation-plan.md) — urutan vertical slice, dependency, risiko, dan checkpoint.
+5. [Tasks](tasks.md) — unit kerja kecil lengkap dengan file, acceptance criteria, dan cara test.
 
 ## Dokumen terkait
 

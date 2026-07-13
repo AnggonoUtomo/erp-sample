@@ -126,7 +126,7 @@ npm run typecheck && npm run build
 
 **Dependencies:** Task 02. **Scope:** M.
 
-## Task 08 — Snapshot contract versi 1
+## Task 08 — Snapshot contract versi 1 ✅
 
 **Tujuan:** mendefinisikan contract lintas project tanpa memberi Payroll akses ke model internal HR.
 
@@ -134,9 +134,9 @@ npm run typecheck && npm run build
 
 **Acceptance criteria:**
 
-- [ ] Payload memakai `schemaVersion: 1` dan hanya field minimal dari specification.
-- [ ] Snapshot effective-at-date reproducible dan tidak berubah karena update profile saat ini.
-- [ ] Belum ada listener Payroll atau direct model import.
+- [x] Payload memakai `schemaVersion: 1` dan hanya field minimal dari specification.
+- [x] Snapshot effective-at-date reproducible dan tidak berubah karena update profile saat ini.
+- [x] Belum ada listener Payroll atau direct model import.
 
 **Test:** `php artisan test --filter=EmployeeContractSnapshot`
 
@@ -156,7 +156,7 @@ php artisan test
 git diff --check
 ```
 
-- [ ] Semua command hijau.
-- [ ] Mutation authorization matrix mencakup seluruh route baru.
-- [ ] Diff review memastikan tidak ada secret, hard delete, direct Payroll dependency, atau perubahan di luar scope.
-- [ ] README/spec/plan/tasks/ADR mencerminkan perilaku final.
+- [x] Semua command hijau.
+- [x] Mutation authorization matrix mencakup seluruh route baru; Task 08 tidak menambah mutation route.
+- [x] Diff review memastikan tidak ada secret, hard delete, direct Payroll dependency, atau perubahan di luar scope.
+- [x] README/spec/plan/tasks/ADR mencerminkan perilaku final.
