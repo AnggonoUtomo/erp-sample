@@ -2,6 +2,8 @@
 
 Roadmap ini adalah rencana awal untuk membangun project `DocumentManagement` di atas starterkit modular. Fokusnya adalah mengelola dokumen, folder, versi, akses, approval, dan pencarian dokumen yang dapat dipakai lintas project seperti accounting, CRM, HR, legal, dan operations.
 
+> Urutan implementasi dan acceptance criteria foundation aktif berada di [Document Management Foundation](README.md). Roadmap ini menggambarkan target kapabilitas jangka panjang; fitur di luar scope foundation tidak boleh dianggap sudah disetujui untuk implementasi.
+
 ## Prinsip Utama
 
 - Dokumen harus punya ownership dan permission yang jelas.

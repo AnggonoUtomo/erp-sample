@@ -25,6 +25,7 @@ Roadmap dan panduan spesifik project:
 - `projects/hr/module-guide.md`
 - `projects/accounting/roadmap.md`
 - `projects/crm/roadmap.md`
+- `projects/document-management/README.md`
 - `projects/document-management/roadmap.md`
 - `projects/attendance/roadmap.md`
 - `projects/payroll/roadmap.md`
