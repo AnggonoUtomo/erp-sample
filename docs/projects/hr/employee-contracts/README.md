@@ -4,7 +4,7 @@ Paket dokumen ini mendefinisikan module `HR/EmployeeContracts` sebelum implement
 
 ## Status
 
-`Implementation in progress` — ADR-001 disetujui pada 2026-07-13 dan Task 01 create/list draft telah diimplementasikan. Task 02 interval query menjadi pekerjaan berikutnya.
+`Implementation in progress` — ADR-001 dan Task 01–03 telah selesai. Task 04 terminate/cancel menjadi pekerjaan berikutnya.
 
 ## Urutan baca
 

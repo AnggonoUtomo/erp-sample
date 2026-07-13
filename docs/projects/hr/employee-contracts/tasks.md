@@ -46,7 +46,7 @@ npm run typecheck && npm run build
 
 **Dependencies:** Task 01. **Scope:** M (3–5 files).
 
-## Task 03 — Aktivasi contract
+## Task 03 — Aktivasi contract ✅
 
 **Tujuan:** mengaktifkan draft melalui transition eksplisit yang atomic dan authorized.
 
@@ -54,9 +54,9 @@ npm run typecheck && npm run build
 
 **Acceptance criteria:**
 
-- [ ] Hanya `DRAFT -> ACTIVE` yang diterima dan retry tidak membuat side effect ganda.
-- [ ] Overlap diperiksa kembali di dalam transaction dengan locking.
-- [ ] Generic update tidak dapat mengubah field periode contract aktif.
+- [x] Hanya `DRAFT -> ACTIVE` yang diterima dan retry tidak membuat side effect ganda.
+- [x] Overlap diperiksa kembali di dalam transaction dengan locking.
+- [x] Generic update tidak dapat mengubah field periode contract aktif.
 
 **Test:** `php artisan test --filter=EmployeeContractActivation`
 

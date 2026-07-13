@@ -27,4 +27,12 @@ class EmployeeContractsController extends Controller
 
         return back()->with('success', "Contract {$contract->contract_number} berhasil dibuat.");
     }
+
+    public function activate(EmployeeContract $employeeContract): RedirectResponse
+    {
+        $this->authorize('activate', $employeeContract);
+        $contract = $this->contracts->activate($employeeContract);
+
+        return back()->with('success', "Contract {$contract->contract_number} berhasil diaktifkan.");
+    }
 }

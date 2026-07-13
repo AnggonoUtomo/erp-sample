@@ -54,4 +54,42 @@ class EmployeeContractsService
             return $contract;
         });
     }
+
+    public function activate(EmployeeContract $contract): EmployeeContract
+    {
+        return $this->transaction->run(function () use ($contract) {
+            $locked = EmployeeContract::query()->lockForUpdate()->findOrFail($contract->id);
+
+            if ($locked->status === 'ACTIVE') {
+                return $locked;
+            }
+
+            if ($locked->status !== 'DRAFT') {
+                throw ValidationException::withMessages(['status' => 'Hanya draft contract yang dapat diaktifkan.']);
+            }
+
+            $overlaps = EmployeeContract::query()
+                ->forEmployee($locked->employee_id)
+                ->overlapping($locked->start_date->toDateString(), $locked->end_date?->toDateString())
+                ->whereKeyNot($locked->id)
+                ->lockForUpdate()
+                ->exists();
+
+            if ($overlaps) {
+                throw ValidationException::withMessages(['start_date' => 'Contract tidak dapat diaktifkan karena periodenya overlap.']);
+            }
+
+            $locked->update(['status' => 'ACTIVE']);
+            $this->audit->record(
+                module: 'hr.employee-contracts',
+                event: 'EmployeeContract.activated',
+                auditable: $locked,
+                description: "Activated contract {$locked->contract_number}",
+                oldValues: ['status' => 'DRAFT'],
+                newValues: ['status' => 'ACTIVE'],
+            );
+
+            return $locked->refresh();
+        });
+    }
 }

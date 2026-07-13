@@ -20,7 +20,7 @@ class HREmployeeContractTest extends TestCase
         parent::setUp();
         $this->withoutVite();
 
-        foreach (['hr.view', 'employee-contracts.view', 'employee-contracts.create'] as $permission) {
+        foreach (['hr.view', 'employee-contracts.view', 'employee-contracts.create', 'employee-contracts.activate'] as $permission) {
             Permission::findOrCreate($permission);
         }
     }
@@ -115,6 +115,43 @@ class HREmployeeContractTest extends TestCase
 
         $this->assertTrue(EmployeeContract::query()->forEmployee($employee->id)->overlapping('2030-01-01', '2030-12-31')->exists());
         $this->assertFalse(EmployeeContract::query()->forEmployee($employee->id)->overlapping('2025-01-01', '2025-12-31')->exists());
+    }
+
+    public function test_authorized_user_can_activate_draft_contract_idempotently(): void
+    {
+        $user = User::factory()->create();
+        $user->givePermissionTo('employee-contracts.activate');
+        [$employee, $type] = $this->references();
+        $contract = $this->contract($employee, $type, 'DRAFT-001', '2026-01-01', '2026-12-31', 'DRAFT');
+
+        $this->actingAs($user)->post(route('hr.employee-contracts.activate', $contract))->assertRedirect();
+        $this->assertDatabaseHas('hr_employee_contracts', ['id' => $contract->id, 'status' => 'ACTIVE']);
+        $this->assertDatabaseCount('audit_logs', 1);
+
+        $this->actingAs($user)->post(route('hr.employee-contracts.activate', $contract))->assertRedirect();
+        $this->assertDatabaseCount('audit_logs', 1);
+    }
+
+    public function test_activation_rejects_overlapping_contract(): void
+    {
+        $user = User::factory()->create();
+        $user->givePermissionTo('employee-contracts.activate');
+        [$employee, $type] = $this->references();
+        $this->contract($employee, $type, 'ACTIVE-OVERLAP', '2026-01-01', '2026-12-31');
+        $draft = $this->contract($employee, $type, 'DRAFT-OVERLAP', '2026-06-01', '2027-05-31', 'DRAFT');
+
+        $this->actingAs($user)->post(route('hr.employee-contracts.activate', $draft))
+            ->assertSessionHasErrors('start_date');
+        $this->assertDatabaseHas('hr_employee_contracts', ['id' => $draft->id, 'status' => 'DRAFT']);
+    }
+
+    public function test_user_without_activate_permission_cannot_activate_contract(): void
+    {
+        $user = User::factory()->create();
+        [$employee, $type] = $this->references();
+        $contract = $this->contract($employee, $type, 'DRAFT-DENIED', '2026-01-01', '2026-12-31', 'DRAFT');
+
+        $this->actingAs($user)->post(route('hr.employee-contracts.activate', $contract))->assertForbidden();
     }
 
     /** @return array{Employee, EmploymentType} */

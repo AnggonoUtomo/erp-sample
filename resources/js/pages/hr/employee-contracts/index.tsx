@@ -2,8 +2,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { usePermission } from '@/hooks/use-permission';
 import AppLayout from '@/layouts/app-layout';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import type { FormEvent } from 'react';
 import type { ContractForm, ContractPageProps } from './types';
 
@@ -19,6 +20,8 @@ const emptyForm: ContractForm = {
 };
 
 export default function EmployeeContractsIndex({ contracts, options }: ContractPageProps) {
+    const { canAny } = usePermission();
+    const canActivate = canAny(['employee-contracts.activate', 'employee-contracts.manage']);
     const form = useForm<ContractForm>(emptyForm);
     const submit = (event: FormEvent) => {
         event.preventDefault();
@@ -46,7 +49,7 @@ export default function EmployeeContractsIndex({ contracts, options }: ContractP
                                         <th className="p-3 text-left">Contract</th>
                                         <th className="p-3 text-left">Employee</th>
                                         <th className="p-3 text-left">Period</th>
-                                        <th className="p-3 text-left">Status</th>
+                                        <th className="p-3 text-left">Status / Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -60,7 +63,25 @@ export default function EmployeeContractsIndex({ contracts, options }: ContractP
                                             <td className="p-3">
                                                 {contract.start_date} — {contract.end_date ?? 'Open ended'}
                                             </td>
-                                            <td className="p-3">{contract.status}</td>
+                                            <td className="p-3">
+                                                <span>{contract.status}</span>
+                                                {contract.status === 'DRAFT' && canActivate && (
+                                                    <Button
+                                                        className="ml-2"
+                                                        size="sm"
+                                                        variant="outline"
+                                                        onClick={() =>
+                                                            router.post(
+                                                                route('hr.employee-contracts.activate', contract.id),
+                                                                {},
+                                                                { preserveScroll: true },
+                                                            )
+                                                        }
+                                                    >
+                                                        Activate
+                                                    </Button>
+                                                )}
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>

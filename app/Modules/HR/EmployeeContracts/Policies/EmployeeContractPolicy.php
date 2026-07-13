@@ -15,4 +15,9 @@ class EmployeeContractPolicy
     {
         return $user->hasAnyPermission(['employee-contracts.create', 'employee-contracts.manage']);
     }
+
+    public function activate(User $user): bool
+    {
+        return $user->hasAnyPermission(['employee-contracts.activate', 'employee-contracts.manage']);
+    }
 }
