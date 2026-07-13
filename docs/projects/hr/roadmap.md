@@ -448,12 +448,13 @@ HR sebaiknya terasa rapi, human-centered, dan mudah discan:
 7. `php artisan make:module HRReferenceData --project=HR`
 8. `php artisan make:module OrganizationStructures --project=HR`
 9. `php artisan make:module Employees --project=HR`
-10. `php artisan make:module EmployeeDocuments --project=HR`
-11. `php artisan make:module EmployeeContracts --project=HR`
-12. `php artisan make:module EmployeeMovements --project=HR`
-13. `php artisan make:module Onboardings --project=HR`
-14. `php artisan make:module Offboardings --project=HR`
-15. `php artisan make:module HRReports --project=HR`
+10. Lengkapi core profile `Employees`: personal, alamat, identitas, kontak darurat, dan supervisor. **Selesai 2026-07-12.**
+11. `php artisan make:module EmployeeDocuments --project=HR`
+12. `php artisan make:module EmployeeContracts --project=HR`
+13. `php artisan make:module EmployeeMovements --project=HR`
+14. `php artisan make:module Onboardings --project=HR`
+15. `php artisan make:module Offboardings --project=HR`
+16. `php artisan make:module HRReports --project=HR`
 
 ## Definition of Done Per Module
 

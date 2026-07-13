@@ -331,7 +331,12 @@ Module `Employees` menyimpan data inti employee yang menjadi pusat relasi untuk 
 - `departement_id`, `position_id`, `job_level_id`, `work_location_id`: relasi struktur kerja dan lokasi utama.
 - `employment_status_id`, `employment_type_id`: status kerja dan tipe hubungan kerja.
 - `hired_at`, `ended_at`: tanggal mulai dan akhir kerja.
+- `supervisor_id`: atasan langsung employee untuk reporting line dan approval awal; tidak boleh menunjuk employee yang sama.
+- `date_of_birth`, `place_of_birth`, `national_id`, `address`: profil personal inti. Nomor identitas bersifat sensitif dan unik jika diisi.
+- `emergency_contact_name`, `emergency_contact_phone`, `emergency_contact_relation`: kontak darurat employee.
 - `active`: status operasional employee.
+
+Detail personal tersebut tetap berada di `Employees` karena merupakan satu profile aggregate. Kontrak, dokumen, dan movement tidak dimasukkan ke tabel ini; ketiganya tetap menjadi module terpisah agar histori dan authorization dapat berkembang tanpa memperbesar aggregate Employees.
 
 ## Soft Delete
 
