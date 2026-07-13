@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'group' => 'HR',
+    'group' => 'Employee',
     'sort' => 180,
     'items' => [
         [

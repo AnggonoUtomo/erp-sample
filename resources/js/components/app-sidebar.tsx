@@ -25,6 +25,7 @@ import {
     Building2,
     CalendarClock,
     ChevronRight,
+    FileSignature,
     Layers,
     LayoutGrid,
     ListFilter,
@@ -42,6 +43,7 @@ import {
     UserRound,
     UserRoundCog,
     Users,
+    UsersRound,
 } from 'lucide-react';
 import { type ComponentType, useCallback, useEffect, useRef } from 'react';
 import AppLogo from './app-logo';
@@ -76,6 +78,8 @@ const sidebarIconColors: Record<string, string> = {
     'Employment Types': '!text-pink-500 dark:!text-pink-400',
     'HR Reference Data': '!text-cyan-500 dark:!text-cyan-400',
     'Organization Structures': '!text-emerald-500 dark:!text-emerald-400',
+    Employees: '!text-blue-500 dark:!text-blue-400',
+    'Employee Contracts': '!text-amber-500 dark:!text-amber-400',
     'Pengaturan Akun': '!text-purple-500 dark:!text-purple-400',
     Profil: '!text-indigo-500 dark:!text-indigo-400',
     'Kata Sandi': '!text-rose-500 dark:!text-rose-400',
@@ -104,6 +108,7 @@ const moduleIconMap: Record<string, ComponentType<{ className?: string }>> = {
     BriefcaseBusiness,
     Building2,
     CalendarClock,
+    FileSignature,
     Layers,
     ListFilter,
     LogIn,
@@ -116,6 +121,7 @@ const moduleIconMap: Record<string, ComponentType<{ className?: string }>> = {
     SlidersHorizontal,
     UserRoundCog,
     Users,
+    UsersRound,
 };
 
 function resolveSidebarIcon(icon: SidebarItem['icon']) {
