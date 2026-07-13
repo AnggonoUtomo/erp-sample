@@ -3,7 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Modules\Console\AuditLogs\Models\AuditLog;
 use App\Modules\DocumentManagement\Foundation\Ingestion\DTO\IngestDocumentV1;
+use App\Modules\DocumentManagement\Foundation\Ingestion\Exceptions\DocumentIngestionDisabled;
 use App\Modules\DocumentManagement\Foundation\Ingestion\Services\DocumentIngestionService;
 use App\Modules\DocumentManagement\Foundation\Integration\DTO\DocumentOwnerContextV1;
 use App\Modules\DocumentManagement\Foundation\Storage\Contracts\StorageAdapter;
@@ -58,6 +60,10 @@ class DocumentIngestionTest extends TestCase
             'module' => 'document-management.foundation',
             'event' => 'DocumentVersion.available',
         ]);
+        $auditValues = AuditLog::query()->where('event', 'DocumentVersion.available')->firstOrFail()->new_values;
+        $this->assertArrayNotHasKey('storage_object_key', $auditValues);
+        $this->assertArrayNotHasKey('original_filename', $auditValues);
+        $this->assertArrayNotHasKey('sha256', $auditValues);
     }
 
     public function test_identical_retry_returns_same_result_without_second_object_or_rows(): void
@@ -166,6 +172,36 @@ class DocumentIngestionTest extends TestCase
         $this->actingAs($user)->postJson('/document-management/documents', $base + [
             'file' => UploadedFile::fake()->createWithContent('contract.pdf', "%PDF-1.7\nsecond\n%%EOF\n"),
         ])->assertConflict()->assertJsonPath('error.code', 'IDEMPOTENCY_CONFLICT');
+    }
+
+    public function test_disabled_ingestion_gate_fails_closed_without_database_or_storage_write(): void
+    {
+        config(['document-management.ingestion_enabled' => false]);
+        $storage = new InMemoryStorageAdapter;
+        $this->app->instance(StorageAdapter::class, $storage);
+        $contents = "%PDF-1.7\nbody\n%%EOF\n";
+
+        try {
+            app(DocumentIngestionService::class)->ingest($this->request($contents));
+            $this->fail('Disabled ingestion gate was ignored.');
+        } catch (DocumentIngestionDisabled) {
+            $this->addToAssertionCount(1);
+        }
+
+        $this->assertDatabaseCount('dm_documents', 0);
+        $this->assertDatabaseCount('dm_document_versions', 0);
+        $this->assertSame(0, $storage->objectCount());
+
+        Permission::findOrCreate('documents.upload');
+        $user = User::factory()->create();
+        $user->givePermissionTo('documents.upload');
+        $this->actingAs($user)->postJson('/document-management/documents', [
+            'owner_domain' => 'HR',
+            'owner_aggregate_type' => 'EmployeeDocument',
+            'owner_aggregate_id' => '817',
+            'idempotency_key' => 'disabled-817',
+            'file' => UploadedFile::fake()->createWithContent('contract.pdf', $contents),
+        ])->assertServiceUnavailable()->assertJsonPath('error.code', 'DMS_INGESTION_DISABLED');
     }
 
     private function request(string $contents): IngestDocumentV1

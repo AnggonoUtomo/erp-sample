@@ -44,7 +44,7 @@ HR adapter -> Employee Documents Task 09 -> Task 10
 
 4. Terapkan ADR-002/ADR-003: 20 MiB, PDF/JPEG/PNG, extension/MIME/magic-byte match, polyglot rejection, serta explicit `scan_status=NOT_CONFIGURED` untuk MVP tanpa scanner.
 5. Implement staged stream ingestion + SHA-256 + cleanup failure menggunakan fake storage lebih dahulu.
-6. Implement private local adapter integration dan publish version secara atomic/idempotent.
+6. Implement private local adapter integration, publish version pertama, dan immutable replacement secara atomic/idempotent.
 
 ### Checkpoint B
 

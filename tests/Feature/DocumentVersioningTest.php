@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Modules\DocumentManagement\Foundation\Ingestion\DTO\IngestDocumentV1;
+use App\Modules\DocumentManagement\Foundation\Ingestion\Exceptions\DocumentIngestionDisabled;
 use App\Modules\DocumentManagement\Foundation\Ingestion\Services\DocumentIngestionService;
 use App\Modules\DocumentManagement\Foundation\Integration\DTO\DocumentOwnerContextV1;
 use App\Modules\DocumentManagement\Foundation\Models\DocumentVersion;
@@ -114,6 +115,27 @@ class DocumentVersioningTest extends TestCase
 
         $this->expectException(LogicException::class);
         $version->update(['sha256' => str_repeat('0', 64)]);
+    }
+
+    public function test_disabled_ingestion_gate_preserves_current_version_without_new_object(): void
+    {
+        $storage = new InMemoryStorageAdapter;
+        $document = $this->ingest($storage, "%PDF-1.7\nold\n%%EOF\n");
+        $currentVersionId = $document->current_version_id;
+        config(['document-management.ingestion_enabled' => false]);
+
+        try {
+            app(DocumentVersioningService::class)->replace(
+                $this->replacement($document->reference, "%PDF-1.7\nnew\n%%EOF\n"),
+            );
+            $this->fail('Disabled replacement gate was ignored.');
+        } catch (DocumentIngestionDisabled) {
+            $this->addToAssertionCount(1);
+        }
+
+        $this->assertSame($currentVersionId, $document->fresh()->current_version_id);
+        $this->assertDatabaseCount('dm_document_versions', 1);
+        $this->assertSame(1, $storage->objectCount());
     }
 
     public function test_replacement_route_requires_authentication_permission_and_existing_reference(): void

@@ -4,6 +4,7 @@ namespace App\Modules\DocumentManagement\Foundation\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\DocumentManagement\Foundation\Http\Requests\ReplaceDocumentVersionRequest;
+use App\Modules\DocumentManagement\Foundation\Ingestion\Exceptions\DocumentIngestionDisabled;
 use App\Modules\DocumentManagement\Foundation\Upload\Exceptions\UploadPolicyViolation;
 use App\Modules\DocumentManagement\Foundation\Versioning\Services\DocumentVersioningService;
 use DomainException;
@@ -20,6 +21,13 @@ class DocumentVersionController extends Controller
         try {
             try {
                 $result = $this->versioning->replace($dto);
+            } catch (DocumentIngestionDisabled) {
+                return response()->json([
+                    'error' => [
+                        'code' => 'DMS_INGESTION_DISABLED',
+                        'message' => 'Document ingestion is unavailable.',
+                    ],
+                ], 503);
             } catch (UploadPolicyViolation $exception) {
                 throw ValidationException::withMessages(['file' => $exception->getMessage()]);
             } catch (DomainException $exception) {

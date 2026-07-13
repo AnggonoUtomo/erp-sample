@@ -4,6 +4,7 @@ namespace App\Modules\DocumentManagement\Foundation\Versioning\Services;
 
 use App\Modules\Console\AuditLogs\Services\AuditLogService;
 use App\Modules\DocumentManagement\Foundation\Ingestion\DTO\IngestionResultV1;
+use App\Modules\DocumentManagement\Foundation\Ingestion\Services\DocumentIngestionAvailability;
 use App\Modules\DocumentManagement\Foundation\Integration\DTO\DocumentReferenceV1;
 use App\Modules\DocumentManagement\Foundation\Models\DocumentVersion;
 use App\Modules\DocumentManagement\Foundation\Models\IdempotencyKey;
@@ -29,10 +30,12 @@ class DocumentVersioningService
         private UploadStreamHasher $hasher,
         private StorageAdapter $storage,
         private AuditLogService $audit,
+        private DocumentIngestionAvailability $availability,
     ) {}
 
     public function replace(ReplaceDocumentVersionV1 $request): IngestionResultV1
     {
+        $this->availability->assertEnabled();
         $validated = $this->policy->validate($request->uploadIntent, $request->stream);
         $checksum = $this->hasher->sha256($request->stream, $validated->byteSize);
         $keyHash = hash_hmac('sha256', $request->uploadIntent->idempotencyKey, (string) config('app.key'));

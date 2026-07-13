@@ -116,13 +116,15 @@ Implementasi wajib berurutan dan berhenti pada setiap checkpoint. Setiap task ad
 
 **Dependencies:** Task 05. **Scope:** M.
 
-**Completed:** 2026-07-13 — endpoint replacement terautentikasi dengan permission `documents.replace` membuat version berikutnya di bawah document lock tanpa overwrite metadata/blob lama. Current pointer hanya berganti setelah private promotion sukses; retry identik idempotent dan fingerprint berbeda conflict. Guard model melarang perubahan integrity metadata version `AVAILABLE`. Failure sebelum dan sesudah storage move membuktikan transaction rollback, cleanup object baru, serta current version/binary lama tetap utuh. Verifikasi: `DocumentVersioningTest` (5 test), regression ingestion/storage (16 test, 100 assertions), Pint, dan `module:validate` lulus.
+**Completed:** 2026-07-13 — endpoint replacement terautentikasi dengan permission `documents.replace` membuat version berikutnya di bawah document lock tanpa overwrite metadata/blob lama. Current pointer hanya berganti setelah private promotion sukses; retry identik idempotent dan fingerprint berbeda conflict. Guard model melarang perubahan integrity metadata version `AVAILABLE`. Failure sebelum dan sesudah storage move membuktikan transaction rollback, cleanup object baru, serta current version/binary lama tetap utuh. Verifikasi: `DocumentVersioningTest` (6 test), checkpoint regression (31 test, 170 assertions), Pint, dan `module:validate` lulus.
 
 ## Checkpoint B — Ingestion integrity
 
-- [ ] Task 04–06 hijau, failure injection direview, dan no-orphan evidence tersedia.
-- [ ] Checksum, idempotency, privacy, risk acceptance tanpa scanner, dan private disk review approved.
-- [ ] Production ingestion disabled sampai seluruh keputusan deployment terpenuhi.
+- [x] Task 04–06 hijau, failure injection direview, dan no-orphan evidence tersedia.
+- [x] Checksum, idempotency, privacy, risk acceptance tanpa scanner, dan private disk review approved.
+- [x] Production ingestion disabled sampai seluruh keputusan deployment terpenuhi.
+
+**Approved:** 2026-07-13 — bukti review, residual risk, dan checklist aktivasi tercatat pada [Checkpoint B — Ingestion integrity](checkpoint-b-ingestion-integrity.md). Production default fail-closed melalui `DMS_INGESTION_ENABLED=false`; activation adalah keputusan deployment eksplisit, bukan efek commit ini.
 
 ## Task 07 — Archive, restore, dan descriptor
 

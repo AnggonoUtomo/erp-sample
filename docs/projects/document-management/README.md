@@ -4,7 +4,7 @@ Paket ini adalah acuan pembangunan foundation project `DocumentManagement`: satu
 
 ## Status
 
-`Specification dan ADR-001–003 accepted; Task 01–06 serta Checkpoint A selesai pada 2026-07-13, siap review Checkpoint B`.
+`Specification dan ADR-001–003 accepted; Task 01–06 serta Checkpoint A–B selesai pada 2026-07-13, siap menuju Task 07`.
 
 Persetujuan ini mengizinkan pembangunan contract dan metadata foundation. Upload production tetap tertahan sampai keputusan private disk, batas/tipe file, malware/quarantine, delivery, dan retention pada ADR-001 dipenuhi.
 
@@ -17,6 +17,7 @@ Upload policy diterapkan pada staged ingestion: maksimal 20 MiB, PDF/JPEG/PNG, e
 - Binding default memakai disk `dms-private` pada `storage/app/private/document-management`.
 - Disk wajib local, `serve=false`, visibility `private`, tanpa konfigurasi URL, dan memakai exception fail-closed.
 - Nama disk dapat diubah melalui `DMS_PRIVATE_DISK`, tetapi adapter akan menolak disk public/served. Driver cloud membutuhkan adapter terpisah dan keputusan arsitektur baru.
+- `.env.example` menetapkan `DMS_INGESTION_ENABLED=false`. Developer dapat mengaktifkannya secara eksplisit pada environment lokal; production hanya boleh mengaktifkannya setelah checklist [Checkpoint B](checkpoint-b-ingestion-integrity.md) terpenuhi.
 
 ## Urutan baca
 
@@ -26,7 +27,8 @@ Upload policy diterapkan pada staged ingestion: maksimal 20 MiB, PDF/JPEG/PNG, e
 4. [ADR-003: MVP single-server tanpa scanner](decisions/003-mvp-single-server-without-malware-scanner.md) — risk acceptance, compensating controls, dan trigger evaluasi berikutnya.
 5. [Implementation plan](implementation-plan.md) — dependency graph, vertical slices, checkpoint, risiko, dan rollback.
 6. [Tasks](tasks.md) — task kecil dengan tujuan, file, acceptance criteria, dependency, dan cara test.
-7. [Roadmap](roadmap.md) — ekspansi setelah foundation: folder, category, tag, share, approval, search, dan retention.
+7. [Checkpoint B: Ingestion integrity](checkpoint-b-ingestion-integrity.md) — bukti no-orphan, security review, accepted risk, dan checklist aktivasi production.
+8. [Roadmap](roadmap.md) — ekspansi setelah foundation: folder, category, tag, share, approval, search, dan retention.
 
 ## Relasi lintas dokumen
 

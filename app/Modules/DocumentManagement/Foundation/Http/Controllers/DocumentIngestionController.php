@@ -4,6 +4,7 @@ namespace App\Modules\DocumentManagement\Foundation\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\DocumentManagement\Foundation\Http\Requests\IngestDocumentRequest;
+use App\Modules\DocumentManagement\Foundation\Ingestion\Exceptions\DocumentIngestionDisabled;
 use App\Modules\DocumentManagement\Foundation\Ingestion\Services\DocumentIngestionService;
 use App\Modules\DocumentManagement\Foundation\Upload\Exceptions\UploadPolicyViolation;
 use DomainException;
@@ -20,6 +21,13 @@ class DocumentIngestionController extends Controller
         try {
             try {
                 $result = $this->ingestion->ingest($dto);
+            } catch (DocumentIngestionDisabled) {
+                return response()->json([
+                    'error' => [
+                        'code' => 'DMS_INGESTION_DISABLED',
+                        'message' => 'Document ingestion is unavailable.',
+                    ],
+                ], 503);
             } catch (UploadPolicyViolation $exception) {
                 throw ValidationException::withMessages(['file' => $exception->getMessage()]);
             } catch (DomainException) {

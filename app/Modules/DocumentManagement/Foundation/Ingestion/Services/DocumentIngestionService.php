@@ -31,10 +31,12 @@ class DocumentIngestionService
         private DocumentIngestionTransaction $transaction,
         private AuditLogService $audit,
         private UploadStreamHasher $hasher,
+        private DocumentIngestionAvailability $availability,
     ) {}
 
     public function ingest(IngestDocumentV1 $request): IngestionResultV1
     {
+        $this->availability->assertEnabled();
         $validated = $this->policy->validate($request->uploadIntent, $request->stream);
         $checksum = $this->hasher->sha256($request->stream, $validated->byteSize);
         $keyHash = hash_hmac('sha256', $request->uploadIntent->idempotencyKey, (string) config('app.key'));
