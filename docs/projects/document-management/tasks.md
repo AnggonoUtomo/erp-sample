@@ -72,13 +72,15 @@ Implementasi wajib berurutan dan berhenti pada setiap checkpoint. Setiap task ad
 
 **Acceptance criteria:**
 
-- [ ] Size, extension, declared/detected MIME, filename, empty stream, dan allowed types tervalidasi.
-- [ ] Path traversal, double extension, MIME spoof, polyglot policy, dan oversized input memiliki semantics eksplisit.
-- [ ] Risk acceptance tanpa scanner menghasilkan `scan_status=NOT_CONFIGURED`, compensating controls, dan larangan memalsukan status `CLEAN`.
+- [x] Size, extension, declared/detected MIME, filename, empty stream, dan allowed types tervalidasi.
+- [x] Path traversal, double extension, MIME spoof, polyglot policy, dan oversized input memiliki semantics eksplisit.
+- [x] Risk acceptance tanpa scanner menghasilkan `scan_status=NOT_CONFIGURED`, compensating controls, dan larangan memalsukan status `CLEAN`.
 
 **Test:** `php artisan test --filter=DocumentUploadPolicy`
 
 **Dependencies:** Checkpoint A dan keputusan security. **Scope:** M.
+
+**Completed:** 2026-07-13 — bounded seekable-stream inspection memvalidasi maksimum 20 MiB, safe filename, PDF/JPEG/PNG matrix, exact magic-byte, terminal marker, no trailing payload, actual/declaration size, bounded idempotency key, dan `NOT_CONFIGURED` scan status. Tidak ada route atau storage write. Verifikasi: `DocumentUploadPolicyTest` (5 test, 26 assertions) lulus.
 
 ## Task 05 — Staged ingestion vertical slice
 

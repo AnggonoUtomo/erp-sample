@@ -4,11 +4,13 @@ Paket ini adalah acuan pembangunan foundation project `DocumentManagement`: satu
 
 ## Status
 
-`Specification dan ADR-001–003 accepted; Task 01–03 serta Checkpoint A selesai pada 2026-07-13, siap Task 04`.
+`Specification dan ADR-001–003 accepted; Task 01–04 serta Checkpoint A selesai pada 2026-07-13, siap review sebelum Task 05`.
 
 Persetujuan ini mengizinkan pembangunan contract dan metadata foundation. Upload production tetap tertahan sampai keputusan private disk, batas/tipe file, malware/quarantine, delivery, dan retention pada ADR-001 dipenuhi.
 
 Foundation saat ini mengekspor contract v1, permission minimum, logical document metadata yang idempotent, dan private StorageAdapter. Route, navigation, HTTP upload, version metadata, serta UI belum diaktifkan.
+
+Upload policy sudah tersedia sebagai boundary internal: maksimal 20 MiB, PDF/JPEG/PNG, extension–declared MIME–signature wajib cocok, terminal marker wajib valid, trailing payload ditolak, dan hasil menyatakan `scanStatus=NOT_CONFIGURED`. Policy belum menerima request HTTP dan belum menulis file.
 
 ## Konfigurasi storage foundation
 

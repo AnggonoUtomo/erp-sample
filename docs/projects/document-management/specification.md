@@ -48,7 +48,7 @@ Upload policy foundation:
 | Extensions | `pdf`, `jpg`, `jpeg`, `png` |
 | MIME | `application/pdf`, `image/jpeg`, `image/png` |
 | Detection | Extension, declared MIME, dan magic-byte wajib cocok |
-| Polyglot/ambiguous | Ditolak |
+| Polyglot/ambiguous | Leading signature harus tunggal/dikenal dan terminal marker harus berada di akhir tanpa trailing payload; parser penuh bukan bagian MVP |
 | Scanner MVP | Tidak dikonfigurasi; `AVAILABLE` memakai `scan_status=NOT_CONFIGURED` dan risk acceptance ADR-003 |
 | Staged reconciliation | Setelah 24 jam, bounded dan dry-run default |
 

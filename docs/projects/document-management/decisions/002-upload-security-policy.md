@@ -35,6 +35,8 @@ Malware scanner belum dipilih pada fase ini. Karena itu, scanner tidak boleh dis
 
 Magic-byte detector adalah boundary server-side. Nama file dan MIME dari client hanya input pembanding, bukan sumber kebenaran.
 
+Pada MVP, polyglot/ambiguity control berarti leading signature harus dikenali secara tepat dan terminal marker PDF/JPEG/PNG wajib berada di akhir tanpa trailing payload. Ini adalah structural validation terbatas, bukan parser format penuh dan bukan malware detection.
+
 ## Consequences
 
 ### Positive
