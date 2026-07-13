@@ -4,7 +4,7 @@ Paket ini adalah acuan pembangunan foundation project `DocumentManagement`: satu
 
 ## Status
 
-`Specification dan ADR-001–004 accepted; Task 01–11 serta Checkpoint A–C selesai pada 2026-07-14`.
+`Specification dan ADR-001–004 accepted; Task 01–11, Checkpoint A–C, serta Final Quality Checkpoint selesai pada 2026-07-14`.
 
 Persetujuan ini mengizinkan pembangunan contract dan metadata foundation. Upload production tetap tertahan sampai keputusan private disk, batas/tipe file, malware/quarantine, delivery, dan retention pada ADR-001 dipenuhi.
 
@@ -39,7 +39,8 @@ Upload policy diterapkan pada staged ingestion: maksimal 20 MiB, PDF/JPEG/PNG, e
 8. [Checkpoint B: Ingestion integrity](checkpoint-b-ingestion-integrity.md) — bukti no-orphan, security review, accepted risk, dan checklist aktivasi production.
 9. [Access decision matrix](access-decision-matrix.md) — urutan policy, action-permission mapping, IDOR, dan seluruh state fail-closed.
 10. [Checkpoint C: Secure DMS foundation](checkpoint-c-secure-dms-foundation.md) — evidence authorization, delivery, backup private binary, observability, residual risk, dan production gates.
-11. [Roadmap](roadmap.md) — ekspansi setelah foundation: folder, category, tag, share, approval, search, dan retention.
+11. [Final Quality Checkpoint](final-quality-checkpoint.md) — hasil full quality gates, review acceptance criteria, residual risk, dan batas deployment.
+12. [Roadmap](roadmap.md) — ekspansi setelah foundation: folder, category, tag, share, approval, search, dan retention.
 
 ## Relasi lintas dokumen
 
