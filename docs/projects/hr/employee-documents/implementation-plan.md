@@ -42,6 +42,8 @@ Verification lifecycle verify/reject/resubmit serta material-change reset selesa
 
 Soft-delete archive/restore dengan invariant revalidation dan tanpa operasi DMS selesai pada Task 06. ✅
 
+Read-only expiring command dengan explicit date/window dan privacy-safe output selesai pada Task 07. ✅
+
 ### Checkpoint 1
 
 - User berizin dapat membuat dan melihat metadata.

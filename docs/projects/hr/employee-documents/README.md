@@ -4,7 +4,7 @@ Paket dokumen ini mendefinisikan module `HR/EmployeeDocuments` sebelum implement
 
 ## Status
 
-`Task 01–06 implemented; Task 07 menunggu instruksi`.
+`Task 01–07 implemented; Checkpoint B menunggu review`.
 
 Document type contract telah tersedia melalui HR Reference Data dengan seed KTP, NPWP, passport, contract, certificate, medical, dan other. Metadata type divalidasi, pilihan input hanya memuat type aktif, sedangkan resolver histori tetap dapat membaca type inactive/archived.
 
@@ -17,6 +17,8 @@ Expiry state kini dihitung secara deterministic dari tanggal acuan dan warning w
 Verification lifecycle menyediakan verify, reject dengan reason wajib, dan resubmit. Semua transition memakai authorization server-side, row lock, actor/timestamp, dan audit; perubahan field material otomatis mengembalikan review ke `PENDING`.
 
 Archive/restore memakai soft delete tanpa force delete atau operasi DMS. Archive melepaskan uniqueness claim aktif; restore menghitung ulang dan memvalidasi employee, document type, serta duplicate sebelum metadata dipulihkan.
+
+Expiry report read-only tersedia melalui `php artisan hr:documents-expiring --date=2026-07-13 --within=30`. Output tidak memuat nomor dokumen dan command tidak mengirim notification atau mengubah state.
 
 ## Urutan baca
 

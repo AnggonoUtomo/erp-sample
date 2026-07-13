@@ -2,9 +2,11 @@
 
 namespace App\Modules\HR\EmployeeDocuments\Services;
 
+use App\Modules\HR\EmployeeDocuments\Models\EmployeeDocument;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 class EmployeeDocumentExpiryService
 {
@@ -34,9 +36,19 @@ class EmployeeDocumentExpiryService
         return match ($state) {
             'NOT_APPLICABLE' => $query->whereNull('expires_at'),
             'EXPIRED' => $query->whereDate('expires_at', '<', $date),
-            'EXPIRING' => $query->whereBetween('expires_at', [$date, $warningThrough]),
+            'EXPIRING' => $query->whereDate('expires_at', '>=', $date)->whereDate('expires_at', '<=', $warningThrough),
             'VALID' => $query->whereDate('expires_at', '>', $warningThrough),
             default => $query,
         };
+    }
+
+    /** @return Collection<int, EmployeeDocument> */
+    public function expiring(CarbonImmutable $asOf, int $warningDays): Collection
+    {
+        return $this->applyState(EmployeeDocument::query(), 'EXPIRING', $asOf, $warningDays)
+            ->with(['employee:id,display_name', 'documentType:id,name'])
+            ->orderBy('expires_at')
+            ->orderBy('id')
+            ->get();
     }
 }

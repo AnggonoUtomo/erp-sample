@@ -185,6 +185,8 @@ php artisan hr:documents-expiring --date=2026-07-13 --within=30
 
 Command wajib deterministik, read-only, tidak mengirim notification, dan tidak mengubah verification status.
 
+`--within` menerima integer 0–3650. Match dan empty result memakai exit code `0`; input invalid memakai exit code non-zero. Output hanya menampilkan metadata ID, employee, document type, dan expiry date—bukan nomor dokumen.
+
 ## 9. Boundaries dan code style
 
 - Ikuti `FormRequest → DTO → Service → Transaction → Model`.

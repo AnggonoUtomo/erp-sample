@@ -19,6 +19,7 @@ return [
         'permissions' => true,
         'navigation' => true,
     ],
+    'commands' => ['hr:documents-expiring'],
     'events' => [],
     'listeners' => [],
     'integrations' => [],

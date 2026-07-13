@@ -116,7 +116,7 @@ Semua task belum dikerjakan. Implementasi harus berurutan dan berhenti di setiap
 
 **Hasil:** selesai 2026-07-13. Archive melepaskan active uniqueness claim tetapi mempertahankan encrypted history. Restore memakai row lock, memvalidasi employee/type aktif, menghitung ulang fingerprint/key, menolak duplicate, dan mencatat audit. Filter active/all/archived dan dialog frontend tersedia; force-delete serta operasi DMS tidak ada.
 
-## Task 07 — Expiring read-only command
+## Task 07 — Expiring read-only command ✅
 
 **Tujuan:** menyediakan sumber reminder/report tanpa side effect notification.
 
@@ -124,13 +124,15 @@ Semua task belum dikerjakan. Implementasi harus berurutan dan berhenti di setiap
 
 **Acceptance criteria:**
 
-- [ ] `--date` dan `--within` tervalidasi serta output reproducible.
-- [ ] Command tidak mengubah metadata, verification, audit, atau mengirim notification.
-- [ ] Exit code dan empty result terdokumentasi.
+- [x] `--date` dan `--within` tervalidasi serta output reproducible.
+- [x] Command tidak mengubah metadata, verification, audit, atau mengirim notification.
+- [x] Exit code dan empty result terdokumentasi.
 
 **Test:** `php artisan test --filter=EmployeeDocumentsExpiringCommand`
 
 **Dependencies:** Task 04. **Scope:** M, 3–5 files.
+
+**Hasil:** selesai 2026-07-13. `hr:documents-expiring` menerima tanggal valid `YYYY-MM-DD` dan window 0–3650 hari, memakai inclusive boundary yang sama dengan list, mengecualikan archived metadata, dan mengurutkan expiry/id. Output tidak memuat nomor dokumen. Match maupun empty result menghasilkan exit `0`; input invalid menghasilkan exit non-zero. Command terbukti tidak mengubah record, audit, atau notification.
 
 ## Checkpoint B — Metadata lifecycle complete
 

@@ -2,6 +2,7 @@
 
 namespace App\Modules\HR\EmployeeDocuments\Providers;
 
+use App\Modules\HR\EmployeeDocuments\Console\Commands\DocumentsExpiringCommand;
 use App\Modules\HR\EmployeeDocuments\Models\EmployeeDocument;
 use App\Modules\HR\EmployeeDocuments\Policies\EmployeeDocumentPolicy;
 use Illuminate\Support\Facades\Gate;
@@ -13,5 +14,9 @@ class EmployeeDocumentsServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
         Gate::policy(EmployeeDocument::class, EmployeeDocumentPolicy::class);
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([DocumentsExpiringCommand::class]);
+        }
     }
 }
