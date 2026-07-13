@@ -110,7 +110,7 @@ npm run typecheck && npm run build
 
 **Dependencies:** Task 02. **Scope:** M.
 
-## Task 07 — Expiry query dan read-only command
+## Task 07 — Expiry query dan read-only command ✅
 
 **Tujuan:** menyediakan sumber daftar contract expiring tanpa notification side effect.
 
@@ -118,9 +118,9 @@ npm run typecheck && npm run build
 
 **Acceptance criteria:**
 
-- [ ] `--date` dan `--within` membuat hasil deterministik.
-- [ ] Command read-only, exit code terdokumentasi, dan output merangkum contract yang cocok.
-- [ ] Contract cancelled/archived tidak masuk hasil default.
+- [x] `--date` dan `--within` membuat hasil deterministik.
+- [x] Command read-only, exit code terdokumentasi, dan output merangkum contract yang cocok.
+- [x] Contract cancelled/archived tidak masuk hasil default.
 
 **Test:** `php artisan test --filter=ContractsExpiringCommand`
 

@@ -8,35 +8,47 @@ use App\Modules\HR\EmployeeContracts\Models\EmployeeContract;
 use App\Modules\HR\EmployeeContracts\Transactions\EmployeeContractsTransaction;
 use App\Modules\HR\Employees\Models\Employee;
 use App\Modules\HR\EmploymentTypes\Models\EmploymentType;
+use Carbon\CarbonImmutable;
+use DateTimeImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Validation\ValidationException;
 
 class EmployeeContractsService
 {
-    public function __construct(private EmployeeContractsTransaction $transaction, private AuditLogService $audit) {}
+    public function __construct(
+        private EmployeeContractsTransaction $transaction,
+        private AuditLogService $audit,
+        private EmployeeContractExpiryService $expiry,
+    ) {}
 
-    public function pageData(string $archive = 'active'): array
+    public function pageData(string $archive = 'active', string $expiryDate = '', int $expiryWithin = 30): array
     {
         $archive = in_array($archive, ['active', 'with-trashed', 'only-trashed'], true) ? $archive : 'active';
+        $expiryDate = $this->validDate($expiryDate) ? $expiryDate : '';
+        $expiryWithin = max(0, min($expiryWithin, 3650));
+
+        $contracts = EmployeeContract::query()
+            ->when($archive === 'with-trashed', fn (Builder $query) => $query->withTrashed())
+            ->when($archive === 'only-trashed', fn (Builder $query) => $query->onlyTrashed());
+        if ($expiryDate !== '') {
+            $this->expiry->applyWindow($contracts, CarbonImmutable::createFromFormat('!Y-m-d', $expiryDate), $expiryWithin);
+        }
 
         return [
-            'contracts' => EmployeeContract::query()
-                ->when($archive === 'with-trashed', fn (Builder $query) => $query->withTrashed())
-                ->when($archive === 'only-trashed', fn (Builder $query) => $query->onlyTrashed())
-                ->with(['employee', 'employmentType'])->latest('start_date')->paginate(15)->withQueryString()->through(fn ($contract) => [
-                    'id' => $contract->id, 'employee_id' => $contract->employee_id, 'employment_type_id' => $contract->employment_type_id,
-                    'contract_number' => $contract->contract_number, 'start_date' => $contract->start_date->toDateString(),
-                    'end_date' => $contract->end_date?->toDateString(), 'status' => $contract->status, 'ended_reason' => $contract->ended_reason,
-                    'superseded_by_id' => $contract->superseded_by_id, 'archived' => $contract->trashed(), 'notes' => $contract->notes,
-                    'employee' => ['id' => $contract->employee->id, 'display_name' => $contract->employee->display_name],
-                    'employment_type' => ['id' => $contract->employmentType->id, 'name' => $contract->employmentType->name],
-                ]),
+            'contracts' => $contracts->with(['employee', 'employmentType'])->latest('start_date')->paginate(15)->withQueryString()->through(fn ($contract) => [
+                'id' => $contract->id, 'employee_id' => $contract->employee_id, 'employment_type_id' => $contract->employment_type_id,
+                'contract_number' => $contract->contract_number, 'start_date' => $contract->start_date->toDateString(),
+                'end_date' => $contract->end_date?->toDateString(), 'status' => $contract->status, 'ended_reason' => $contract->ended_reason,
+                'superseded_by_id' => $contract->superseded_by_id, 'archived' => $contract->trashed(), 'notes' => $contract->notes,
+                'employee' => ['id' => $contract->employee->id, 'display_name' => $contract->employee->display_name],
+                'employment_type' => ['id' => $contract->employmentType->id, 'name' => $contract->employmentType->name],
+            ]),
             'options' => [
                 'employees' => Employee::query()->where('active', true)->orderBy('display_name')->get()->map(fn ($item) => ['value' => $item->id, 'label' => "{$item->display_name} ({$item->employee_number})"]),
                 'employmentTypes' => EmploymentType::query()->where('active', true)->orderBy('name')->get()->map(fn ($item) => ['value' => $item->id, 'label' => $item->name]),
             ],
-            'filters' => ['archive' => $archive],
+            'filters' => ['archive' => $archive, 'expiry_date' => $expiryDate, 'expiry_within' => $expiryWithin],
         ];
     }
 
@@ -216,5 +228,12 @@ class EmployeeContractsService
                 newValues: ['deleted_at' => null],
             );
         });
+    }
+
+    private function validDate(string $date): bool
+    {
+        $parsed = DateTimeImmutable::createFromFormat('!Y-m-d', $date);
+
+        return $parsed !== false && $parsed->format('Y-m-d') === $date;
     }
 }

@@ -9,6 +9,7 @@ return [
     'providers' => [EmployeeContractsServiceProvider::class],
     'dependencies' => ['Employees', 'EmploymentTypes'],
     'exports' => ['routes' => true, 'permissions' => true, 'navigation' => true],
+    'commands' => ['hr:contracts-expiring'],
     'events' => ['EmployeeContractCreated', 'EmployeeContractActivated', 'EmployeeContractTerminated', 'EmployeeContractCancelled', 'EmployeeContractSuperseded', 'EmployeeContractArchived', 'EmployeeContractRestored'], 'listeners' => [],
     'integrations' => ['upstream_for' => ['Payroll'], 'depends_on' => ['HR.Employees', 'HR.EmploymentTypes']],
 ];

@@ -44,6 +44,9 @@ export default function EmployeeContractsIndex({ contracts, options, filters }: 
         event.preventDefault();
         form.post(route('hr.employee-contracts.store'), { preserveScroll: true, onSuccess: () => form.reset() });
     };
+    const applyFilters = (next: Partial<ContractPageProps['filters']>) => {
+        router.get(route('hr.employee-contracts.index'), { ...filters, ...next }, { preserveState: true, preserveScroll: true });
+    };
 
     return (
         <AppLayout
@@ -56,23 +59,49 @@ export default function EmployeeContractsIndex({ contracts, options, filters }: 
             <div className="mx-auto grid w-full max-w-7xl gap-6 p-4 sm:p-6 xl:grid-cols-3">
                 <Card className="xl:col-span-2">
                     <CardHeader>
-                        <div className="flex items-center justify-between gap-3">
+                        <div className="flex flex-wrap items-center justify-between gap-3">
                             <CardTitle>Employee Contracts</CardTitle>
-                            <Select
-                                value={filters.archive}
-                                onValueChange={(archive) =>
-                                    router.get(route('hr.employee-contracts.index'), { archive }, { preserveState: true, preserveScroll: true })
-                                }
-                            >
-                                <SelectTrigger className="w-40" aria-label="Archive filter">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="active">Active records</SelectItem>
-                                    <SelectItem value="with-trashed">All records</SelectItem>
-                                    <SelectItem value="only-trashed">Archived records</SelectItem>
-                                </SelectContent>
-                            </Select>
+                            <div className="flex flex-wrap items-center gap-2">
+                                <Input
+                                    className="w-40"
+                                    aria-label="Expiry window start"
+                                    type="date"
+                                    value={filters.expiry_date}
+                                    onChange={(event) => applyFilters({ expiry_date: event.target.value })}
+                                />
+                                <Select
+                                    value={String(filters.expiry_within)}
+                                    onValueChange={(value) => applyFilters({ expiry_within: Number(value) })}
+                                >
+                                    <SelectTrigger className="w-28" aria-label="Expiry window length">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="7">7 days</SelectItem>
+                                        <SelectItem value="30">30 days</SelectItem>
+                                        <SelectItem value="60">60 days</SelectItem>
+                                        <SelectItem value="90">90 days</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                {filters.expiry_date && (
+                                    <Button size="sm" variant="ghost" onClick={() => applyFilters({ expiry_date: '' })}>
+                                        Clear expiry
+                                    </Button>
+                                )}
+                                <Select
+                                    value={filters.archive}
+                                    onValueChange={(archive) => applyFilters({ archive: archive as ContractPageProps['filters']['archive'] })}
+                                >
+                                    <SelectTrigger className="w-40" aria-label="Archive filter">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="active">Active records</SelectItem>
+                                        <SelectItem value="with-trashed">All records</SelectItem>
+                                        <SelectItem value="only-trashed">Archived records</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
                     </CardHeader>
                     <CardContent>

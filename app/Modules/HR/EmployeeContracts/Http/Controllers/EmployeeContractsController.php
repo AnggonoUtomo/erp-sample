@@ -22,7 +22,11 @@ class EmployeeContractsController extends Controller
     {
         $this->authorize('viewAny', EmployeeContract::class);
 
-        return Inertia::render('hr/employee-contracts/index', $this->contracts->pageData($request->string('archive')->toString()));
+        return Inertia::render('hr/employee-contracts/index', $this->contracts->pageData(
+            archive: $request->string('archive')->toString(),
+            expiryDate: $request->string('expiry_date')->toString(),
+            expiryWithin: $request->integer('expiry_within', 30),
+        ));
     }
 
     public function store(StoreEmployeeContractRequest $request): RedirectResponse

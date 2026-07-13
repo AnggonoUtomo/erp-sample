@@ -4,7 +4,17 @@ Paket dokumen ini mendefinisikan module `HR/EmployeeContracts` sebelum implement
 
 ## Status
 
-`Implementation in progress` — ADR-001 dan Task 01–06 telah selesai. Task 07 expiry query/command menjadi pekerjaan berikutnya.
+`Implementation in progress` — ADR-001 dan Task 01–07 telah selesai. Task 08 snapshot contract v1 menjadi pekerjaan berikutnya.
+
+## Expiry query
+
+Gunakan command read-only berikut untuk daftar kontrak aktif yang berakhir dalam window inklusif:
+
+```bash
+php artisan hr:contracts-expiring --date=2026-07-13 --within=30
+```
+
+`--date` harus berformat `YYYY-MM-DD`; jika tidak diberikan, command memakai tanggal hari ini. `--within` adalah jumlah hari non-negatif dan default `30`. Exit code `0` berarti query valid, termasuk ketika hasil kosong; exit code `1` berarti opsi tanggal/window tidak valid. Command tidak mengubah contract, audit log, atau mengirim notification.
 
 ## Urutan baca
 

@@ -29,5 +29,9 @@ export type ContractForm = Record<string, FormDataConvertible> & {
 export type ContractPageProps = {
     contracts: { data: ContractRow[]; current_page: number; last_page: number; total: number };
     options: { employees: Option[]; employmentTypes: Option[] };
-    filters: { archive: 'active' | 'with-trashed' | 'only-trashed' };
+    filters: {
+        archive: 'active' | 'with-trashed' | 'only-trashed';
+        expiry_date: string;
+        expiry_within: number;
+    };
 };
