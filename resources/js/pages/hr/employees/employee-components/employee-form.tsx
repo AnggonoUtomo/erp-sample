@@ -181,6 +181,24 @@ export function EmployeeForm({ form, editing, options, canCreate, canUpdate, onS
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
+                <Select value={selectValue(form.data.supervisor_id)} onValueChange={(value) => selectField('supervisor_id', value)}>
+                    <div className="space-y-2">
+                        <FieldInfoLabel description="Atasan langsung untuk reporting line dan approval.">Supervisor</FieldInfoLabel>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Pilih supervisor" />
+                        </SelectTrigger>
+                    </div>
+                    <SelectContent>
+                        <SelectItem value={noneValue}>Belum dipilih</SelectItem>
+                        {options.supervisors
+                            .filter((option) => option.value !== editing?.id)
+                            .map((option) => (
+                                <SelectItem key={option.value} value={String(option.value)}>
+                                    {option.label}
+                                </SelectItem>
+                            ))}
+                    </SelectContent>
+                </Select>
                 <Select value={selectValue(form.data.user_id)} onValueChange={(value) => selectField('user_id', value)}>
                     <div className="space-y-2">
                         <FieldInfoLabel description="Opsional. Hubungkan employee dengan akun login Console/HR.">User Login</FieldInfoLabel>
@@ -247,6 +265,75 @@ export function EmployeeForm({ form, editing, options, canCreate, canUpdate, onS
                         ))}
                     </SelectContent>
                 </Select>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+                <div className="space-y-2">
+                    <FieldInfoLabel htmlFor="date_of_birth" description="Tanggal lahir employee.">
+                        Date of Birth
+                    </FieldInfoLabel>
+                    <Input
+                        id="date_of_birth"
+                        type="date"
+                        value={form.data.date_of_birth}
+                        onChange={(event) => form.setData('date_of_birth', event.target.value)}
+                    />
+                </div>
+                <div className="space-y-2">
+                    <FieldInfoLabel htmlFor="place_of_birth" description="Kota atau tempat lahir.">
+                        Place of Birth
+                    </FieldInfoLabel>
+                    <Input
+                        id="place_of_birth"
+                        value={form.data.place_of_birth}
+                        onChange={(event) => form.setData('place_of_birth', event.target.value)}
+                    />
+                </div>
+                <div className="space-y-2">
+                    <FieldInfoLabel htmlFor="national_id" description="Nomor identitas nasional; bersifat sensitif dan unik.">
+                        National ID
+                    </FieldInfoLabel>
+                    <Input id="national_id" value={form.data.national_id} onChange={(event) => form.setData('national_id', event.target.value)} />
+                </div>
+                <div className="space-y-2 sm:col-span-2">
+                    <FieldInfoLabel htmlFor="address" description="Alamat domisili employee.">
+                        Address
+                    </FieldInfoLabel>
+                    <textarea
+                        id="address"
+                        rows={2}
+                        value={form.data.address}
+                        onChange={(event) => form.setData('address', event.target.value)}
+                        className="border-input bg-background w-full rounded-md border px-3 py-2 text-sm"
+                    />
+                </div>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-3">
+                <div className="space-y-2">
+                    <FieldInfoLabel htmlFor="emergency_contact_name">Emergency Contact</FieldInfoLabel>
+                    <Input
+                        id="emergency_contact_name"
+                        value={form.data.emergency_contact_name}
+                        onChange={(event) => form.setData('emergency_contact_name', event.target.value)}
+                    />
+                </div>
+                <div className="space-y-2">
+                    <FieldInfoLabel htmlFor="emergency_contact_phone">Emergency Phone</FieldInfoLabel>
+                    <Input
+                        id="emergency_contact_phone"
+                        value={form.data.emergency_contact_phone}
+                        onChange={(event) => form.setData('emergency_contact_phone', event.target.value)}
+                    />
+                </div>
+                <div className="space-y-2">
+                    <FieldInfoLabel htmlFor="emergency_contact_relation">Relation</FieldInfoLabel>
+                    <Input
+                        id="emergency_contact_relation"
+                        value={form.data.emergency_contact_relation}
+                        onChange={(event) => form.setData('emergency_contact_relation', event.target.value)}
+                    />
+                </div>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">

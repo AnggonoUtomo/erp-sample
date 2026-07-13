@@ -22,6 +22,7 @@ class EmployeesService
 {
     private const AUDIT_FIELDS = [
         'user_id',
+        'supervisor_id',
         'departement_id',
         'position_id',
         'job_level_id',
@@ -35,6 +36,13 @@ class EmployeesService
         'work_email',
         'personal_email',
         'phone',
+        'date_of_birth',
+        'place_of_birth',
+        'national_id',
+        'address',
+        'emergency_contact_name',
+        'emergency_contact_phone',
+        'emergency_contact_relation',
         'hired_at',
         'ended_at',
         'notes',
@@ -60,7 +68,7 @@ class EmployeesService
         $perPage = $this->resolvePerPage($filters);
 
         $employees = Employee::query()
-            ->with(['user', 'departement', 'position', 'jobLevel', 'workLocation', 'employmentStatus', 'employmentType', 'media'])
+            ->with(['user', 'supervisor', 'departement', 'position', 'jobLevel', 'workLocation', 'employmentStatus', 'employmentType', 'media'])
             ->when($archive === 'with-trashed', fn (Builder $query) => $query->withTrashed())
             ->when($archive === 'only-trashed', fn (Builder $query) => $query->onlyTrashed())
             ->when($search !== '', function (Builder $query) use ($search) {
@@ -204,6 +212,7 @@ class EmployeesService
     {
         return [
             'user_id' => $data->userId,
+            'supervisor_id' => $data->supervisorId,
             'departement_id' => $data->departementId,
             'position_id' => $data->positionId,
             'job_level_id' => $data->jobLevelId,
@@ -217,6 +226,13 @@ class EmployeesService
             'work_email' => $data->workEmail,
             'personal_email' => $data->personalEmail,
             'phone' => $data->phone,
+            'date_of_birth' => $data->dateOfBirth,
+            'place_of_birth' => $data->placeOfBirth,
+            'national_id' => $data->nationalId,
+            'address' => $data->address,
+            'emergency_contact_name' => $data->emergencyContactName,
+            'emergency_contact_phone' => $data->emergencyContactPhone,
+            'emergency_contact_relation' => $data->emergencyContactRelation,
             'hired_at' => $data->hiredAt,
             'ended_at' => $data->endedAt,
             'notes' => $data->notes,
@@ -255,6 +271,14 @@ class EmployeesService
                 ])
                 ->values()
                 ->all(),
+            'supervisors' => Employee::query()
+                ->where('active', true)
+                ->orderBy('display_name')
+                ->get(['id', 'employee_number', 'display_name'])
+                ->map(fn (Employee $employee) => [
+                    'value' => $employee->id,
+                    'label' => "{$employee->display_name} ({$employee->employee_number})",
+                ])->values()->all(),
             'departements' => $this->modelOptions(Departement::query()->where('active', true)),
             'positions' => $this->modelOptions(Position::query()->where('active', true)),
             'jobLevels' => $this->modelOptions(JobLevel::query()->where('active', true)),
@@ -321,6 +345,7 @@ class EmployeesService
         return [
             'id' => $employee->id,
             'user_id' => $employee->user_id,
+            'supervisor_id' => $employee->supervisor_id,
             'departement_id' => $employee->departement_id,
             'position_id' => $employee->position_id,
             'job_level_id' => $employee->job_level_id,
@@ -334,12 +359,24 @@ class EmployeesService
             'work_email' => $employee->work_email,
             'personal_email' => $employee->personal_email,
             'phone' => $employee->phone,
+            'date_of_birth' => $employee->date_of_birth?->toDateString(),
+            'place_of_birth' => $employee->place_of_birth,
+            'national_id' => $employee->national_id,
+            'address' => $employee->address,
+            'emergency_contact_name' => $employee->emergency_contact_name,
+            'emergency_contact_phone' => $employee->emergency_contact_phone,
+            'emergency_contact_relation' => $employee->emergency_contact_relation,
             'hired_at' => $employee->hired_at?->toDateString(),
             'ended_at' => $employee->ended_at?->toDateString(),
             'notes' => $employee->notes,
             'active' => $employee->active,
             'avatar' => $employee->avatar,
             'user' => $employee->user ? ['id' => $employee->user->id, 'name' => $employee->user->name, 'email' => $employee->user->email] : null,
+            'supervisor' => $employee->supervisor ? [
+                'id' => $employee->supervisor->id,
+                'employee_number' => $employee->supervisor->employee_number,
+                'display_name' => $employee->supervisor->display_name,
+            ] : null,
             'departement' => $this->relatedLabel($employee->departement),
             'position' => $this->relatedLabel($employee->position),
             'job_level' => $this->relatedLabel($employee->jobLevel),

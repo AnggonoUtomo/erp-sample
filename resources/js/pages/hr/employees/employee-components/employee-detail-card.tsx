@@ -84,9 +84,33 @@ export function EmployeeDetailCard({ employee }: Props) {
                         </p>
                     </div>
                     <div>
+                        <p className="text-muted-foreground text-xs">Supervisor</p>
+                        <p className="font-medium">{employee.supervisor?.display_name ?? '-'}</p>
+                    </div>
+                    <div>
                         <p className="text-muted-foreground text-xs">Join - End</p>
                         <p className="font-medium">
                             {value(employee.hired_at)} - {value(employee.ended_at)}
+                        </p>
+                    </div>
+                </div>
+
+                <div className="grid gap-3 rounded-lg border p-3 text-sm">
+                    <div>
+                        <p className="text-muted-foreground text-xs">Birth</p>
+                        <p className="font-medium">
+                            {value(employee.place_of_birth)} / {value(employee.date_of_birth)}
+                        </p>
+                    </div>
+                    <div>
+                        <p className="text-muted-foreground text-xs">Address</p>
+                        <p className="font-medium">{value(employee.address)}</p>
+                    </div>
+                    <div>
+                        <p className="text-muted-foreground text-xs">Emergency Contact</p>
+                        <p className="font-medium">
+                            {value(employee.emergency_contact_name)} · {value(employee.emergency_contact_phone)} ·{' '}
+                            {value(employee.emergency_contact_relation)}
                         </p>
                     </div>
                 </div>

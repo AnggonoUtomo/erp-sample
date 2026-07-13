@@ -15,6 +15,7 @@ export type EmployeeUser = {
 export type EmployeeRow = {
     id: number;
     user_id: number | null;
+    supervisor_id: number | null;
     departement_id: number | null;
     position_id: number | null;
     job_level_id: number | null;
@@ -28,12 +29,20 @@ export type EmployeeRow = {
     work_email: string | null;
     personal_email: string | null;
     phone: string | null;
+    date_of_birth: string | null;
+    place_of_birth: string | null;
+    national_id: string | null;
+    address: string | null;
+    emergency_contact_name: string | null;
+    emergency_contact_phone: string | null;
+    emergency_contact_relation: string | null;
     hired_at: string | null;
     ended_at: string | null;
     notes: string | null;
     active: boolean;
     avatar: string | null;
     user: EmployeeUser | null;
+    supervisor: { id: number; employee_number: string; display_name: string } | null;
     departement: RelatedLabel | null;
     position: RelatedLabel | null;
     job_level: RelatedLabel | null;
@@ -78,6 +87,7 @@ export type EmployeeOption = {
 
 export type EmployeeOptions = {
     users: EmployeeOption[];
+    supervisors: EmployeeOption[];
     departements: EmployeeOption[];
     positions: EmployeeOption[];
     jobLevels: EmployeeOption[];
@@ -88,6 +98,7 @@ export type EmployeeOptions = {
 
 export interface EmployeeForm extends Record<string, FormDataConvertible> {
     user_id: string;
+    supervisor_id: string;
     departement_id: string;
     position_id: string;
     job_level_id: string;
@@ -101,6 +112,13 @@ export interface EmployeeForm extends Record<string, FormDataConvertible> {
     work_email: string;
     personal_email: string;
     phone: string;
+    date_of_birth: string;
+    place_of_birth: string;
+    national_id: string;
+    address: string;
+    emergency_contact_name: string;
+    emergency_contact_phone: string;
+    emergency_contact_relation: string;
     hired_at: string;
     ended_at: string;
     notes: string;

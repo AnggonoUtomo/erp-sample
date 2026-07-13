@@ -20,6 +20,7 @@ class StoreEmployeeRequest extends FormRequest
     {
         return [
             'user_id' => ['nullable', 'integer', 'exists:users,id', 'unique:hr_employees,user_id'],
+            'supervisor_id' => ['nullable', 'integer', Rule::exists('hr_employees', 'id')->whereNull('deleted_at')],
             'departement_id' => ['nullable', 'integer', Rule::exists('hr_departements', 'id')->where('active', true)->whereNull('deleted_at')],
             'position_id' => ['nullable', 'integer', Rule::exists('hr_positions', 'id')->where('active', true)->whereNull('deleted_at')],
             'job_level_id' => ['nullable', 'integer', Rule::exists('hr_job_levels', 'id')->where('active', true)->whereNull('deleted_at')],
@@ -33,6 +34,13 @@ class StoreEmployeeRequest extends FormRequest
             'work_email' => ['nullable', 'email', 'max:255', 'unique:hr_employees,work_email'],
             'personal_email' => ['nullable', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:40'],
+            'date_of_birth' => ['nullable', 'date', 'before_or_equal:today'],
+            'place_of_birth' => ['nullable', 'string', 'max:120'],
+            'national_id' => ['nullable', 'string', 'max:64', 'unique:hr_employees,national_id'],
+            'address' => ['nullable', 'string', 'max:2000'],
+            'emergency_contact_name' => ['nullable', 'string', 'max:160'],
+            'emergency_contact_phone' => ['nullable', 'string', 'max:40'],
+            'emergency_contact_relation' => ['nullable', 'string', 'max:80'],
             'hired_at' => ['nullable', 'date'],
             'ended_at' => ['nullable', 'date', 'after_or_equal:hired_at'],
             'notes' => ['nullable', 'string', 'max:2000'],

@@ -27,6 +27,7 @@ class Employee extends Model implements HasMedia
      */
     protected $fillable = [
         'user_id',
+        'supervisor_id',
         'departement_id',
         'position_id',
         'job_level_id',
@@ -40,6 +41,13 @@ class Employee extends Model implements HasMedia
         'work_email',
         'personal_email',
         'phone',
+        'date_of_birth',
+        'place_of_birth',
+        'national_id',
+        'address',
+        'emergency_contact_name',
+        'emergency_contact_phone',
+        'emergency_contact_relation',
         'hired_at',
         'ended_at',
         'notes',
@@ -57,6 +65,7 @@ class Employee extends Model implements HasMedia
     {
         return [
             'hired_at' => 'date',
+            'date_of_birth' => 'date',
             'ended_at' => 'date',
             'active' => 'boolean',
         ];
@@ -78,6 +87,12 @@ class Employee extends Model implements HasMedia
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /** @return BelongsTo<Employee, Employee> */
+    public function supervisor(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'supervisor_id');
     }
 
     /**

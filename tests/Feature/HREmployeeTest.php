@@ -79,6 +79,13 @@ class HREmployeeTest extends TestCase
                 'last_name' => 'Wijaya',
                 'display_name' => 'Raka Wijaya',
                 'work_email' => 'raka.wijaya@company.test',
+                'date_of_birth' => '1995-05-20',
+                'place_of_birth' => 'Bandung',
+                'national_id' => '3273012005950001',
+                'address' => 'Jl. Merdeka No. 1',
+                'emergency_contact_name' => 'Dewi Wijaya',
+                'emergency_contact_phone' => '+628123456789',
+                'emergency_contact_relation' => 'Spouse',
                 'active' => true,
             ])
             ->assertRedirect();
@@ -87,8 +94,29 @@ class HREmployeeTest extends TestCase
             'employee_number' => 'EMP-1001',
             'display_name' => 'Raka Wijaya',
             'departement_id' => $refs['departement']->id,
+            'date_of_birth' => '1995-05-20 00:00:00',
+            'emergency_contact_name' => 'Dewi Wijaya',
             'active' => true,
         ]);
+    }
+
+    public function test_employee_cannot_be_own_supervisor(): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole('admin');
+        $employee = $this->employee();
+        $status = EmploymentStatus::query()->firstOrFail();
+
+        $this->actingAs($user)
+            ->post(route('hr.employees.update', $employee), [
+                'supervisor_id' => $employee->id,
+                'employment_status_id' => $status->id,
+                'employee_number' => $employee->employee_number,
+                'first_name' => $employee->first_name,
+                'display_name' => $employee->display_name,
+                'active' => true,
+            ])
+            ->assertSessionHasErrors('supervisor_id');
     }
 
     public function test_authorized_users_can_update_employee(): void

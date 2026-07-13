@@ -8,6 +8,7 @@ final readonly class EmployeeData
 {
     public function __construct(
         public ?int $userId,
+        public ?int $supervisorId,
         public ?int $departementId,
         public ?int $positionId,
         public ?int $jobLevelId,
@@ -21,6 +22,13 @@ final readonly class EmployeeData
         public ?string $workEmail,
         public ?string $personalEmail,
         public ?string $phone,
+        public ?string $dateOfBirth,
+        public ?string $placeOfBirth,
+        public ?string $nationalId,
+        public ?string $address,
+        public ?string $emergencyContactName,
+        public ?string $emergencyContactPhone,
+        public ?string $emergencyContactRelation,
         public ?string $hiredAt,
         public ?string $endedAt,
         public ?string $notes,
@@ -40,6 +48,7 @@ final readonly class EmployeeData
 
         return new self(
             userId: isset($data['user_id']) ? (int) $data['user_id'] : null,
+            supervisorId: isset($data['supervisor_id']) ? (int) $data['supervisor_id'] : null,
             departementId: isset($data['departement_id']) ? (int) $data['departement_id'] : null,
             positionId: isset($data['position_id']) ? (int) $data['position_id'] : null,
             jobLevelId: isset($data['job_level_id']) ? (int) $data['job_level_id'] : null,
@@ -53,6 +62,13 @@ final readonly class EmployeeData
             workEmail: trim((string) ($data['work_email'] ?? '')) ?: null,
             personalEmail: trim((string) ($data['personal_email'] ?? '')) ?: null,
             phone: trim((string) ($data['phone'] ?? '')) ?: null,
+            dateOfBirth: $data['date_of_birth'] ?? null,
+            placeOfBirth: trim((string) ($data['place_of_birth'] ?? '')) ?: null,
+            nationalId: trim((string) ($data['national_id'] ?? '')) ?: null,
+            address: trim((string) ($data['address'] ?? '')) ?: null,
+            emergencyContactName: trim((string) ($data['emergency_contact_name'] ?? '')) ?: null,
+            emergencyContactPhone: trim((string) ($data['emergency_contact_phone'] ?? '')) ?: null,
+            emergencyContactRelation: trim((string) ($data['emergency_contact_relation'] ?? '')) ?: null,
             hiredAt: $data['hired_at'] ?? null,
             endedAt: $data['ended_at'] ?? null,
             notes: trim((string) ($data['notes'] ?? '')) ?: null,
