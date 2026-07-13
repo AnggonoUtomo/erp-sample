@@ -554,6 +554,8 @@ Setelah itu baru masuk ke data employee:
 6. `EmployeeContracts`
 7. `EmployeeMovements`
 
+`EmployeeMovements` vertical slice pertama tersedia untuk transfer efektif hari ini. Module menyimpan snapshot assignment sebelum/sesudah dan menjadi satu-satunya jalur pada slice ini yang menerapkan perubahan department, position, work location, dan supervisor ke profile Employees. Lihat [spesifikasi Employee Movements](employee-movements/specification.md) dan [ADR effective-dated movement](employee-movements/decisions/001-effective-dated-movements.md).
+
 ## Contract Wajib Per Module HR
 
 Setiap module HR wajib punya:

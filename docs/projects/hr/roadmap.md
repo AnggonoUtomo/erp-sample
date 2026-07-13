@@ -217,6 +217,8 @@ Validasi penting:
 
 Target: perubahan organisasi karyawan tercatat historis.
 
+Status 2026-07-13: vertical slice transfer DRAFT → before/after history → atomic apply efektif hari ini telah tersedia. Promotion, demotion, status change, future scheduling, dan approval tetap menjadi pekerjaan lanjutan. Lihat [Employee Movements](employee-movements/README.md).
+
 Module:
 
 - `EmployeeMovements`
