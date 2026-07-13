@@ -2,7 +2,7 @@
 
 Roadmap ini adalah rencana awal untuk membangun project `HR` di atas starterkit modular. Fokusnya adalah menjadi sumber kebenaran untuk data karyawan, struktur organisasi, status kerja, dokumen karyawan, dan lifecycle employee. Project ini sebaiknya dibangun sebelum `Attendance` dan `Payroll`, karena keduanya membutuhkan data employee yang stabil.
 
-Panduan teknis module HR tersedia di `docs/projects/hr/module-guide.md`.
+Panduan teknis module HR tersedia di `docs/projects/hr/module-guide.md`. Untuk pengguna pemula, baca [Ebook Panduan Penggunaan Modul HR](user-guide/panduan-penggunaan-modul-hr.pdf) atau [sumber HTML-nya](user-guide/panduan-penggunaan-modul-hr.html).
 
 ## Status Implementasi
 
