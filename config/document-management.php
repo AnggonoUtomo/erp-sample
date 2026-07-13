@@ -6,6 +6,9 @@ return [
         'DMS_INGESTION_ENABLED',
         in_array(strtolower((string) env('APP_ENV', 'production')), ['local', 'testing'], true),
     ),
+    'delivery' => [
+        'ttl_seconds' => 300,
+    ],
     'upload' => [
         'max_bytes' => 20 * 1024 * 1024,
         'allowed_types' => [

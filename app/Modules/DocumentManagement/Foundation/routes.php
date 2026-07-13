@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\DocumentManagement\Foundation\Http\Controllers\DocumentDeliveryController;
 use App\Modules\DocumentManagement\Foundation\Http\Controllers\DocumentIngestionController;
 use App\Modules\DocumentManagement\Foundation\Http\Controllers\DocumentLifecycleController;
 use App\Modules\DocumentManagement\Foundation\Http\Controllers\DocumentVersionController;
@@ -13,4 +14,8 @@ Route::middleware(['auth', 'throttle:20,1'])->prefix('document-management')->nam
         ->name('documents.archive');
     Route::patch('documents/{reference}/restore', [DocumentLifecycleController::class, 'restore'])
         ->name('documents.restore');
+    Route::post('documents/{reference}/delivery', [DocumentDeliveryController::class, 'issue'])
+        ->name('documents.delivery.issue');
+    Route::post('deliveries/consume', [DocumentDeliveryController::class, 'consume'])
+        ->name('deliveries.consume');
 });

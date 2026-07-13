@@ -170,13 +170,15 @@ Implementasi wajib berurutan dan berhenti pada setiap checkpoint. Setiap task ad
 
 **Acceptance criteria:**
 
-- [ ] Delivery scoped ke actor/reference/action, short-lived, dan tidak reusable di luar contract.
-- [ ] Expired/revoked/replayed/wrong-action token ditolak.
-- [ ] Token, object key, dan storage URL tidak masuk audit/log/consumer database.
+- [x] Delivery scoped ke actor/reference/action, short-lived, dan tidak reusable di luar contract.
+- [x] Expired/revoked/replayed/wrong-action token ditolak.
+- [x] Token, object key, dan storage URL tidak masuk audit/log/consumer database.
 
 **Test:** `php artisan test --filter=DocumentDelivery`
 
 **Dependencies:** Task 08 dan keputusan streaming/presigned URL. **Scope:** M/L, split wajib.
+
+**Completed:** 2026-07-14 — `DocumentDeliveryGateway` v1 menerbitkan handoff satu kali ber-TTL 300 detik untuk action `DOWNLOAD`. Raw token hanya dikembalikan saat issue; database DMS menyimpan HMAC token dan owner fingerprint, sedangkan audit tidak memuat token/object key/URL. Consume melalui authenticated POST body, row lock, revalidasi permission/owner/current version, lalu private stream dengan attachment dan header anti-sniff/no-store. Expired, revoked, replayed, wrong actor/action, permission revoked, dan version berubah seluruhnya fail-closed. Keputusan: [ADR-004](decisions/004-one-time-secure-delivery.md). Verifikasi: `DocumentDeliveryTest` (5 test, 36 assertions), contract/module regression, Pint, dan quality gates backend lulus.
 
 ## Checkpoint C — Secure DMS foundation
 

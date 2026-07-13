@@ -1,6 +1,7 @@
 <?php
 
 use App\Modules\DocumentManagement\Foundation\Integration\Contracts\DocumentAccessGateway;
+use App\Modules\DocumentManagement\Foundation\Integration\Contracts\DocumentDeliveryGateway;
 use App\Modules\DocumentManagement\Foundation\Integration\Contracts\DocumentReferenceReader;
 use App\Modules\DocumentManagement\Foundation\Integration\DTO\DocumentReferenceDescriptorV1;
 use App\Modules\DocumentManagement\Foundation\Providers\FoundationServiceProvider;
@@ -39,6 +40,12 @@ return [
                 'reader' => DocumentAccessGateway::class,
                 'schema' => 'Integration/Schemas/document-access-decision-v1.json',
                 'states' => DocumentReferenceDescriptorV1::STATES,
+            ],
+            [
+                'name' => 'DocumentDeliveryGateway',
+                'schema_version' => 1,
+                'reader' => DocumentDeliveryGateway::class,
+                'schema' => 'Integration/Schemas/document-delivery-handoff-v1.json',
             ],
         ],
     ],

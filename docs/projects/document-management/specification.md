@@ -97,7 +97,9 @@ EmployeeDocumentAttachmentGateway
 
 DocumentAccessGateway
   decide(reference, actorReference, action, expectedOwner): AccessDecisionV1
-  issueDelivery(reference, actorReference, action, expectedOwner): DeliveryHandoffV1
+
+DocumentDeliveryGateway
+  issue(request): DeliveryHandoffV1
 ```
 
 Contract harus additive dan versioned. Result menggunakan discriminated state, bukan campuran `null`, boolean, dan exception. Exception hanya untuk transport/system failure; denial bisnis dikembalikan sebagai state `DENIED`.
@@ -164,6 +166,7 @@ Route internal DMS baru diaktifkan setelah security checkpoint:
 POST /document-management/documents
 POST /document-management/documents/{reference}/versions
 POST /document-management/documents/{reference}/delivery
+POST /document-management/deliveries/consume
 DELETE /document-management/documents/{reference}
 PATCH /document-management/documents/{reference}/restore
 ```
@@ -183,7 +186,7 @@ Command mutasi default `--dry-run`, idempotent, bounded, dan tidak menghapus obj
 
 - Ikuti `FormRequest -> DTO -> Service -> Transaction -> Model`, dengan binary I/O melalui `StorageAdapter` interface.
 - Selalu: private storage, server-side policy, streaming I/O, size limit, magic-byte validation, checksum, idempotency, audit, soft delete, dan failure cleanup.
-- Ask first: migration/schema final, perubahan disk/topology, upload limit/allowlist, penambahan scanner, token TTL, queue, retention, encryption key, dan public event.
+- Ask first: migration/schema final, perubahan disk/topology, upload limit/allowlist, penambahan scanner, perubahan token TTL dari keputusan ADR-004, queue, retention, encryption key, dan public event.
 - Never: public disk untuk regulated document, menyimpan binary di database, mempercayai MIME client, mengirim path/object key ke consumer, direct model import lintas project, atau hard delete tanpa retention/legal-hold decision.
 
 ## 10. Acceptance criteria foundation
@@ -221,7 +224,7 @@ git diff --check
 ## 12. Remaining deployment questions
 
 - Evaluasi pasca-MVP: scanner vendor/mode, timeout, retry, signature update, quarantine, dan re-scan existing objects?
-- Detail controller delivery: streaming limits, range request, rate limit, dan timeout?
+- Evaluasi pasca-MVP controller delivery: streaming concurrency/timeout, range request, resume, serta migrasi object storage?
 - Database production MySQL/PostgreSQL dan strategi locking/idempotency final?
 - Apakah document tanpa consumer attachment boleh direconcile/expire setelah grace period?
 - Retention duration dan ownership legal hold/permanent deletion?

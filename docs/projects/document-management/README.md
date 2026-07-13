@@ -4,7 +4,7 @@ Paket ini adalah acuan pembangunan foundation project `DocumentManagement`: satu
 
 ## Status
 
-`Specification dan ADR-001–003 accepted; Task 01–08 serta Checkpoint A–B selesai pada 2026-07-13, siap menuju Task 09`.
+`Specification dan ADR-001–004 accepted; Task 01–09 serta Checkpoint A–B selesai pada 2026-07-14, siap mengevaluasi Checkpoint C`.
 
 Persetujuan ini mengizinkan pembangunan contract dan metadata foundation. Upload production tetap tertahan sampai keputusan private disk, batas/tipe file, malware/quarantine, delivery, dan retention pada ADR-001 dipenuhi.
 
@@ -13,6 +13,8 @@ Foundation saat ini mengekspor contract v1, permission minimum, logical document
 Lifecycle archive/restore tersedia melalui permission `documents.archive` dan `documents.restore`. Archive adalah soft-delete logical document tanpa menghapus blob/version. Reader descriptor internal menghasilkan state aman `AVAILABLE|MISSING|ARCHIVED|UNAVAILABLE|DENIED`; keputusan authorization binary wajib memakai gateway Task 08.
 
 `DocumentAccessGateway` v1 sekarang menjadi security authority sebelum binary delivery. Keputusan memerlukan actor, action, permission DMS, expected owner exact, lifecycle/version, dan private-object availability. Lihat [access decision matrix](access-decision-matrix.md); status `AVAILABLE` hanya mengizinkan proses dilanjutkan ke Task 09 dan bukan token akses.
+
+`DocumentDeliveryGateway` v1 menerbitkan token one-time ber-TTL 300 detik yang hanya disimpan sebagai HMAC di DMS. Consume mengulang access decision dan streaming dilakukan oleh controller DMS sebagai attachment; consumer tidak menerima path, object key, credential, atau URL storage. Lihat [ADR-004](decisions/004-one-time-secure-delivery.md).
 
 Upload policy diterapkan pada staged ingestion: maksimal 20 MiB, PDF/JPEG/PNG, extension–declared MIME–signature wajib cocok, terminal marker wajib valid, trailing payload ditolak, dan hasil menyatakan `scanStatus=NOT_CONFIGURED`. Binary ditulis ke private staging, dipromosikan dengan object key buatan server, dan dibersihkan bila transaction/promotion gagal.
 
@@ -29,11 +31,12 @@ Upload policy diterapkan pada staged ingestion: maksimal 20 MiB, PDF/JPEG/PNG, e
 2. [ADR-001: Single private storage engine](decisions/001-single-private-storage-engine.md) — ownership binary dan larangan akses path langsung.
 3. [ADR-002: Upload security policy](decisions/002-upload-security-policy.md) — batas 20 MiB, allowlist PDF/JPEG/PNG, magic-byte, dan private-local production disk; bagian scanner diamendemen ADR-003.
 4. [ADR-003: MVP single-server tanpa scanner](decisions/003-mvp-single-server-without-malware-scanner.md) — risk acceptance, compensating controls, dan trigger evaluasi berikutnya.
-5. [Implementation plan](implementation-plan.md) — dependency graph, vertical slices, checkpoint, risiko, dan rollback.
-6. [Tasks](tasks.md) — task kecil dengan tujuan, file, acceptance criteria, dependency, dan cara test.
-7. [Checkpoint B: Ingestion integrity](checkpoint-b-ingestion-integrity.md) — bukti no-orphan, security review, accepted risk, dan checklist aktivasi production.
-8. [Access decision matrix](access-decision-matrix.md) — urutan policy, action-permission mapping, IDOR, dan seluruh state fail-closed.
-9. [Roadmap](roadmap.md) — ekspansi setelah foundation: folder, category, tag, share, approval, search, dan retention.
+5. [ADR-004: One-time secure delivery](decisions/004-one-time-secure-delivery.md) — TTL, token scope, consume semantics, dan header delivery aman.
+6. [Implementation plan](implementation-plan.md) — dependency graph, vertical slices, checkpoint, risiko, dan rollback.
+7. [Tasks](tasks.md) — task kecil dengan tujuan, file, acceptance criteria, dependency, dan cara test.
+8. [Checkpoint B: Ingestion integrity](checkpoint-b-ingestion-integrity.md) — bukti no-orphan, security review, accepted risk, dan checklist aktivasi production.
+9. [Access decision matrix](access-decision-matrix.md) — urutan policy, action-permission mapping, IDOR, dan seluruh state fail-closed.
+10. [Roadmap](roadmap.md) — ekspansi setelah foundation: folder, category, tag, share, approval, search, dan retention.
 
 ## Relasi lintas dokumen
 
