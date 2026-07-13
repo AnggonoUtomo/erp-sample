@@ -1,5 +1,11 @@
 # Specification: Document Management Foundation
 
+## Status
+
+Accepted — 2026-07-13.
+
+Implementasi dimulai berurutan dari Task 01. Acceptance ini tidak mengaktifkan ingestion production sebelum seluruh security dan deployment gate pada ADR-001 disetujui.
+
 ## 1. Objective
 
 Membangun foundation `DocumentManagement` sebagai owner tunggal logical document, binary version, private storage, integrity, dan authorization file untuk seluruh project ERP. Consumer pertama adalah `HR/EmployeeDocuments`, tetapi contract tidak boleh khusus HR.

@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed — 2026-07-13.
+Accepted — 2026-07-13.
 
 ## Context
 
@@ -56,4 +56,4 @@ Ingestion memakai staged write, validation, checksum, idempotency, lalu atomic p
 
 ## Approval gates
 
-ADR dapat menjadi `Accepted` setelah owner teknis menyetujui private disk strategy, upload limits/type allowlist, malware/quarantine approach, delivery mechanism/TTL, dan retention ownership.
+Keputusan single private storage engine telah diterima. Sebelum ingestion production diaktifkan, owner teknis tetap wajib menyetujui private disk strategy, upload limits/type allowlist, malware/quarantine approach, delivery mechanism/TTL, dan retention ownership.
