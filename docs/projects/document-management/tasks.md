@@ -60,7 +60,9 @@ Implementasi wajib berurutan dan berhenti pada setiap checkpoint. Setiap task ad
 
 - [x] Task 01–03 hijau dan direview.
 - [x] Migration/module/storage contract valid; upload route belum ada.
-- [ ] Disk production, upload policy, dan malware strategy mendapat keputusan eksplisit sebelum Task 04.
+- [x] Disk production, upload policy, dan malware strategy mendapat keputusan eksplisit sebelum Task 04.
+
+**Decision:** ADR-002 accepted pada 2026-07-13. Scanner ditunda secara fail-closed: Task 04 boleh dimulai, tetapi hasil ingestion maksimal `QUARANTINED` dan production availability tetap nonaktif.
 
 ## Task 04 — Upload policy contract
 
@@ -72,7 +74,7 @@ Implementasi wajib berurutan dan berhenti pada setiap checkpoint. Setiap task ad
 
 - [ ] Size, extension, declared/detected MIME, filename, empty stream, dan allowed types tervalidasi.
 - [ ] Path traversal, double extension, MIME spoof, polyglot policy, dan oversized input memiliki semantics eksplisit.
-- [ ] Malware decision menghasilkan `QUARANTINED`/rejection contract, bukan bypass.
+- [ ] Malware decision menghasilkan `QUARANTINED`/rejection contract, bukan bypass; tidak ada transisi `AVAILABLE` selama scanner ditunda.
 
 **Test:** `php artisan test --filter=DocumentUploadPolicy`
 
@@ -86,7 +88,7 @@ Implementasi wajib berurutan dan berhenti pada setiap checkpoint. Setiap task ad
 
 **Acceptance criteria:**
 
-- [ ] Valid stream menghasilkan satu `AVAILABLE` version dan opaque reference.
+- [ ] Valid stream menghasilkan satu `QUARANTINED` version dan opaque reference selama scanner ditunda.
 - [ ] Retry identik mengembalikan result yang sama; key sama dengan fingerprint berbeda ditolak conflict.
 - [ ] Validation/storage/checksum failure tidak meninggalkan active partial document dan staged cleanup/reconciliation tercatat.
 

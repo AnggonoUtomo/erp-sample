@@ -56,4 +56,4 @@ Ingestion memakai staged write, validation, checksum, idempotency, lalu atomic p
 
 ## Approval gates
 
-Keputusan single private storage engine telah diterima. Sebelum ingestion production diaktifkan, owner teknis tetap wajib menyetujui private disk strategy, upload limits/type allowlist, malware/quarantine approach, delivery mechanism/TTL, dan retention ownership.
+Keputusan single private storage engine telah diterima. Private-local single-server, upload limits/type allowlist, quarantine, dan authorized-controller delivery ditetapkan oleh [ADR-002](002-upload-security-policy.md). Production availability tetap tertahan sampai scanner dan retention ownership disetujui.

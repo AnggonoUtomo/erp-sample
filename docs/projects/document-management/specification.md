@@ -19,7 +19,7 @@ Keberhasilan berarti domain consumer dapat mengirim owner context minimal dan up
 3. Semua binary berada pada private disk melalui storage adapter; tidak ada public filesystem URL.
 4. Logical document memiliki satu atau lebih immutable versions; replace menghasilkan versi baru, bukan overwrite blob lama.
 5. Checksum adalah integrity control, bukan authenticity signature.
-6. Production disk, maximum upload size, MIME allowlist, malware scanner, dan retention duration adalah keputusan deployment yang wajib disetujui sebelum ingestion diaktifkan.
+6. Production foundation memakai private local disk single-server. Upload dibatasi 20 MiB dan PDF/JPEG/PNG sesuai ADR-002; scanner serta retention duration tetap deployment gate sebelum file dapat menjadi `AVAILABLE`.
 
 ## 3. Requirements
 
@@ -38,6 +38,19 @@ Keberhasilan berarti domain consumer dapat mengirim owner context minimal dan up
 - Write memakai staged/private object; metadata version menjadi visible hanya setelah storage write dan checksum sukses.
 - Retry dengan owner context + idempotency key yang sama mengembalikan reference/version yang sama.
 - Kegagalan/timeout tidak meninggalkan reference aktif ke object yang tidak lengkap; staged orphan dapat direconcile terpisah.
+- Tanpa scanner yang disetujui, hasil validasi maksimal `QUARANTINED`; tidak ada fallback ke `AVAILABLE`.
+
+Upload policy foundation:
+
+| Control | Decision |
+|---|---|
+| Maximum size | 20 MiB (`20,971,520` byte) |
+| Extensions | `pdf`, `jpg`, `jpeg`, `png` |
+| MIME | `application/pdf`, `image/jpeg`, `image/png` |
+| Detection | Extension, declared MIME, dan magic-byte wajib cocok |
+| Polyglot/ambiguous | Ditolak |
+| Scanner deferred | Tetap `QUARANTINED`; production availability nonaktif |
+| Staged reconciliation | Setelah 24 jam, bounded dan dry-run default |
 
 ### 3.3 Integrity dan versioning
 
@@ -204,11 +217,10 @@ php artisan test
 git diff --check
 ```
 
-## 12. Open questions sebelum Task 03 ingestion
+## 12. Remaining deployment questions
 
-- Production storage: private local, S3-compatible, atau cloud provider lain?
-- Maximum upload size dan allowlist tipe untuk HR slice pertama?
-- Malware scanner synchronous, asynchronous quarantine, atau external gateway?
-- Apakah delivery memakai controller streaming atau pre-signed URL DMS dengan TTL berapa?
+- Malware scanner vendor/mode, timeout, retry, signature update, dan release dari quarantine?
+- Detail controller delivery: streaming limits, range request, rate limit, dan timeout?
 - Database production MySQL/PostgreSQL dan strategi locking/idempotency final?
 - Apakah document tanpa consumer attachment boleh direconcile/expire setelah grace period?
+- Retention duration dan ownership legal hold/permanent deletion?
