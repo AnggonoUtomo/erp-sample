@@ -55,7 +55,7 @@ HR adapter -> Employee Documents Task 09 -> Task 10
 
 ## Phase 3 — Lifecycle dan secure access
 
-7. Implement immutable replacement version, archive/restore, dan read-only descriptor.
+7. Implement archive/restore dan read-only descriptor di atas immutable version yang telah diselesaikan pada Phase 2.
 8. Implement access decision policy dengan global denial matrix.
 9. Implement delivery handoff scoped, short-lived, non-replay sesuai keputusan deployment.
 

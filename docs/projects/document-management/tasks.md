@@ -134,13 +134,15 @@ Implementasi wajib berurutan dan berhenti pada setiap checkpoint. Setiap task ad
 
 **Acceptance criteria:**
 
-- [ ] Archive soft-delete/state transition; restore revalidasi owner/version.
-- [ ] Tidak ada force delete/permanent blob deletion route.
-- [ ] Reader mengembalikan `AVAILABLE|MISSING|ARCHIVED|UNAVAILABLE|DENIED` deterministik.
+- [x] Archive soft-delete/state transition; restore revalidasi owner/version.
+- [x] Tidak ada force delete/permanent blob deletion route.
+- [x] Reader mengembalikan `AVAILABLE|MISSING|ARCHIVED|UNAVAILABLE|DENIED` deterministik.
 
 **Test:** `php artisan test --filter=DocumentLifecycle`
 
 **Dependencies:** Task 05. **Scope:** M.
+
+**Completed:** 2026-07-13 — archive dan restore memakai row lock, permission terpisah, actor/reason tervalidasi, audit aman, serta transition idempotent. Archive hanya soft-delete logical metadata dan tidak mengubah/menghapus version atau private object. Restore memvalidasi ulang owner context schema, current version ownership/status, dan keberadaan object; kegagalan mempertahankan state `ARCHIVED`. `DatabaseDocumentReferenceReader` mengembalikan descriptor v1 deterministik tanpa storage detail dan fail-closed menjadi `UNAVAILABLE`/`DENIED`. Tidak ada force-delete route. Verifikasi: `DocumentLifecycleTest` (6 test), regression contract/storage/consumer (37 test, 201 assertions), Pint, dan `module:validate` lulus.
 
 ## Task 08 — Access decision matrix
 

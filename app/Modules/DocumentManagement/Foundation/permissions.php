@@ -6,6 +6,8 @@ return [
         'documents.view',
         'documents.upload',
         'documents.replace',
+        'documents.archive',
+        'documents.restore',
         'documents.download',
     ],
     'roles' => [
@@ -14,6 +16,8 @@ return [
             'documents.view',
             'documents.upload',
             'documents.replace',
+            'documents.archive',
+            'documents.restore',
             'documents.download',
         ],
     ],
