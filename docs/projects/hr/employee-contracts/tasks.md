@@ -94,7 +94,7 @@ npm run typecheck && npm run build
 
 **Dependencies:** Task 04. **Scope:** M per backend/UI increment.
 
-## Task 06 — Archive dan restore aman
+## Task 06 — Archive dan restore aman ✅
 
 **Tujuan:** mendukung lifecycle data tanpa hard delete.
 
@@ -102,9 +102,9 @@ npm run typecheck && npm run build
 
 **Acceptance criteria:**
 
-- [ ] Delete memakai soft delete dan force-delete route tidak tersedia.
-- [ ] Restore ditolak jika menciptakan overlap atau melanggar unique contract number.
-- [ ] Archive filter dan audit tersedia sesuai permission.
+- [x] Delete memakai soft delete dan force-delete route tidak tersedia.
+- [x] Restore ditolak jika menciptakan overlap atau melanggar unique contract number.
+- [x] Archive filter dan audit tersedia sesuai permission.
 
 **Test:** `php artisan test --filter=EmployeeContractArchive`
 

@@ -35,4 +35,14 @@ class EmployeeContractPolicy
     {
         return $user->hasAnyPermission(['employee-contracts.supersede', 'employee-contracts.manage']);
     }
+
+    public function delete(User $user): bool
+    {
+        return $user->hasAnyPermission(['employee-contracts.delete', 'employee-contracts.manage']);
+    }
+
+    public function restore(User $user): bool
+    {
+        return $user->hasAnyPermission(['employee-contracts.restore', 'employee-contracts.manage']);
+    }
 }

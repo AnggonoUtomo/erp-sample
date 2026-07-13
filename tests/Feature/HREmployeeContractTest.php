@@ -8,6 +8,7 @@ use App\Modules\HR\Employees\Models\Employee;
 use App\Modules\HR\EmploymentStatuses\Models\EmploymentStatus;
 use App\Modules\HR\EmploymentTypes\Models\EmploymentType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 
@@ -20,7 +21,7 @@ class HREmployeeContractTest extends TestCase
         parent::setUp();
         $this->withoutVite();
 
-        foreach (['hr.view', 'employee-contracts.view', 'employee-contracts.create', 'employee-contracts.activate', 'employee-contracts.terminate', 'employee-contracts.cancel', 'employee-contracts.supersede'] as $permission) {
+        foreach (['hr.view', 'employee-contracts.view', 'employee-contracts.create', 'employee-contracts.activate', 'employee-contracts.terminate', 'employee-contracts.cancel', 'employee-contracts.supersede', 'employee-contracts.delete', 'employee-contracts.restore'] as $permission) {
             Permission::findOrCreate($permission);
         }
     }
@@ -259,6 +260,56 @@ class HREmployeeContractTest extends TestCase
         $this->actingAs($authorized)->post(route('hr.employee-contracts.supersede', $draft), $payload)->assertSessionHasErrors('status');
 
         $this->actingAs(User::factory()->create())->post(route('hr.employee-contracts.supersede', $draft), $payload)->assertForbidden();
+    }
+
+    public function test_authorized_user_can_archive_filter_and_restore_contract_with_audit(): void
+    {
+        $user = User::factory()->create();
+        $user->givePermissionTo(['employee-contracts.view', 'employee-contracts.delete', 'employee-contracts.restore']);
+        [$employee, $type] = $this->references();
+        $contract = $this->contract($employee, $type, 'ARCHIVE-LIFECYCLE', '2026-01-01', '2026-12-31');
+
+        $this->actingAs($user)->delete(route('hr.employee-contracts.destroy', $contract))->assertRedirect();
+        $this->assertSoftDeleted('hr_employee_contracts', ['id' => $contract->id]);
+        $this->assertDatabaseHas('audit_logs', ['event' => 'EmployeeContract.archived', 'auditable_id' => $contract->id]);
+
+        $this->actingAs($user)->get(route('hr.employee-contracts.index', ['archive' => 'only-trashed']))
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('filters.archive', 'only-trashed')
+                ->has('contracts.data', 1)
+                ->where('contracts.data.0.contract_number', 'ARCHIVE-LIFECYCLE')
+                ->where('contracts.data.0.archived', true));
+
+        $this->actingAs($user)->patch(route('hr.employee-contracts.restore', $contract->id))->assertRedirect();
+        $this->assertNotSoftDeleted('hr_employee_contracts', ['id' => $contract->id]);
+        $this->assertDatabaseHas('audit_logs', ['event' => 'EmployeeContract.restored', 'auditable_id' => $contract->id]);
+    }
+
+    public function test_restore_rejects_overlap_and_keeps_contract_archived(): void
+    {
+        $user = User::factory()->create();
+        $user->givePermissionTo('employee-contracts.restore');
+        [$employee, $type] = $this->references();
+        $archived = $this->contract($employee, $type, 'ARCHIVED-OVERLAP', '2026-01-01', '2026-12-31');
+        $archived->delete();
+        $this->contract($employee, $type, 'ACTIVE-RESTORE-BLOCKER', '2026-06-01', '2027-05-31');
+
+        $this->actingAs($user)->patch(route('hr.employee-contracts.restore', $archived->id))
+            ->assertSessionHasErrors('start_date');
+
+        $this->assertSoftDeleted('hr_employee_contracts', ['id' => $archived->id]);
+        $this->assertDatabaseMissing('audit_logs', ['event' => 'EmployeeContract.restored', 'auditable_id' => $archived->id]);
+    }
+
+    public function test_user_without_archive_permissions_cannot_archive_or_restore_contract(): void
+    {
+        [$employee, $type] = $this->references();
+        $contract = $this->contract($employee, $type, 'ARCHIVE-DENIED', '2026-01-01', '2026-12-31');
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->delete(route('hr.employee-contracts.destroy', $contract))->assertForbidden();
+        $contract->delete();
+        $this->actingAs($user)->patch(route('hr.employee-contracts.restore', $contract->id))->assertForbidden();
     }
 
     /** @return array{Employee, EmploymentType} */

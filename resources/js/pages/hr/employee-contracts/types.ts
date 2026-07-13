@@ -11,6 +11,7 @@ export type ContractRow = {
     status: 'DRAFT' | 'ACTIVE' | 'ENDED' | 'CANCELLED';
     ended_reason: string | null;
     superseded_by_id: number | null;
+    archived: boolean;
     notes: string | null;
     employee: { id: number; display_name: string };
     employment_type: { id: number; name: string };
@@ -28,4 +29,5 @@ export type ContractForm = Record<string, FormDataConvertible> & {
 export type ContractPageProps = {
     contracts: { data: ContractRow[]; current_page: number; last_page: number; total: number };
     options: { employees: Option[]; employmentTypes: Option[] };
+    filters: { archive: 'active' | 'with-trashed' | 'only-trashed' };
 };

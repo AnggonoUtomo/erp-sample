@@ -10,6 +10,7 @@ use App\Modules\HR\EmployeeContracts\Http\Requests\TerminateEmployeeContractRequ
 use App\Modules\HR\EmployeeContracts\Models\EmployeeContract;
 use App\Modules\HR\EmployeeContracts\Services\EmployeeContractsService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -17,11 +18,11 @@ class EmployeeContractsController extends Controller
 {
     public function __construct(private EmployeeContractsService $contracts) {}
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $this->authorize('viewAny', EmployeeContract::class);
 
-        return Inertia::render('hr/employee-contracts/index', $this->contracts->pageData());
+        return Inertia::render('hr/employee-contracts/index', $this->contracts->pageData($request->string('archive')->toString()));
     }
 
     public function store(StoreEmployeeContractRequest $request): RedirectResponse
@@ -58,5 +59,21 @@ class EmployeeContractsController extends Controller
         $replacement = $this->contracts->supersede($employeeContract, $request->validated());
 
         return back()->with('success', "Contract {$employeeContract->contract_number} digantikan oleh {$replacement->contract_number}.");
+    }
+
+    public function destroy(EmployeeContract $employeeContract): RedirectResponse
+    {
+        $this->authorize('delete', $employeeContract);
+        $this->contracts->archive($employeeContract);
+
+        return back()->with('success', "Contract {$employeeContract->contract_number} berhasil diarsipkan.");
+    }
+
+    public function restore(EmployeeContract $employeeContract): RedirectResponse
+    {
+        $this->authorize('restore', $employeeContract);
+        $this->contracts->restore($employeeContract);
+
+        return back()->with('success', "Contract {$employeeContract->contract_number} berhasil dipulihkan.");
     }
 }

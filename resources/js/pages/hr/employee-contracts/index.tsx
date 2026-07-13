@@ -7,6 +7,7 @@ import AppLayout from '@/layouts/app-layout';
 import { Head, router, useForm } from '@inertiajs/react';
 import type { FormEvent } from 'react';
 import { useState } from 'react';
+import { ArchiveContractDialog } from './employee-contract-components/archive-contract-dialog';
 import { ContractLifecycleDialog, type LifecycleAction } from './employee-contract-components/contract-lifecycle-dialog';
 import { SupersedeContractDialog } from './employee-contract-components/supersede-contract-dialog';
 import type { ContractForm, ContractPageProps, ContractRow } from './types';
@@ -22,15 +23,18 @@ const emptyForm: ContractForm = {
     notes: '',
 };
 
-export default function EmployeeContractsIndex({ contracts, options }: ContractPageProps) {
+export default function EmployeeContractsIndex({ contracts, options, filters }: ContractPageProps) {
     const { canAny } = usePermission();
     const canActivate = canAny(['employee-contracts.activate', 'employee-contracts.manage']);
     const canTerminate = canAny(['employee-contracts.terminate', 'employee-contracts.manage']);
     const canCancel = canAny(['employee-contracts.cancel', 'employee-contracts.manage']);
     const canSupersede = canAny(['employee-contracts.supersede', 'employee-contracts.manage']);
+    const canArchive = canAny(['employee-contracts.delete', 'employee-contracts.manage']);
+    const canRestore = canAny(['employee-contracts.restore', 'employee-contracts.manage']);
     const [lifecycleTarget, setLifecycleTarget] = useState<ContractRow | null>(null);
     const [lifecycleAction, setLifecycleAction] = useState<LifecycleAction | null>(null);
     const [supersedeTarget, setSupersedeTarget] = useState<ContractRow | null>(null);
+    const [archiveTarget, setArchiveTarget] = useState<ContractRow | null>(null);
     const openLifecycle = (contract: ContractRow, action: LifecycleAction) => {
         setLifecycleTarget(contract);
         setLifecycleAction(action);
@@ -52,7 +56,24 @@ export default function EmployeeContractsIndex({ contracts, options }: ContractP
             <div className="mx-auto grid w-full max-w-7xl gap-6 p-4 sm:p-6 xl:grid-cols-3">
                 <Card className="xl:col-span-2">
                     <CardHeader>
-                        <CardTitle>Employee Contracts</CardTitle>
+                        <div className="flex items-center justify-between gap-3">
+                            <CardTitle>Employee Contracts</CardTitle>
+                            <Select
+                                value={filters.archive}
+                                onValueChange={(archive) =>
+                                    router.get(route('hr.employee-contracts.index'), { archive }, { preserveState: true, preserveScroll: true })
+                                }
+                            >
+                                <SelectTrigger className="w-40" aria-label="Archive filter">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="active">Active records</SelectItem>
+                                    <SelectItem value="with-trashed">All records</SelectItem>
+                                    <SelectItem value="only-trashed">Archived records</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </CardHeader>
                     <CardContent>
                         <div className="overflow-x-auto rounded-md border">
@@ -77,8 +98,8 @@ export default function EmployeeContractsIndex({ contracts, options }: ContractP
                                                 {contract.start_date} — {contract.end_date ?? 'Open ended'}
                                             </td>
                                             <td className="p-3">
-                                                <span>{contract.status}</span>
-                                                {contract.status === 'DRAFT' && canActivate && (
+                                                <span>{contract.archived ? 'ARCHIVED' : contract.status}</span>
+                                                {!contract.archived && contract.status === 'DRAFT' && canActivate && (
                                                     <Button
                                                         className="ml-2"
                                                         size="sm"
@@ -94,7 +115,7 @@ export default function EmployeeContractsIndex({ contracts, options }: ContractP
                                                         Activate
                                                     </Button>
                                                 )}
-                                                {contract.status === 'ACTIVE' && canTerminate && (
+                                                {!contract.archived && contract.status === 'ACTIVE' && canTerminate && (
                                                     <Button
                                                         className="ml-2"
                                                         size="sm"
@@ -104,12 +125,12 @@ export default function EmployeeContractsIndex({ contracts, options }: ContractP
                                                         Terminate
                                                     </Button>
                                                 )}
-                                                {contract.status === 'ACTIVE' && canSupersede && (
+                                                {!contract.archived && contract.status === 'ACTIVE' && canSupersede && (
                                                     <Button className="ml-2" size="sm" variant="outline" onClick={() => setSupersedeTarget(contract)}>
                                                         Supersede
                                                     </Button>
                                                 )}
-                                                {['DRAFT', 'ACTIVE'].includes(contract.status) && canCancel && (
+                                                {!contract.archived && ['DRAFT', 'ACTIVE'].includes(contract.status) && canCancel && (
                                                     <Button
                                                         className="ml-2"
                                                         size="sm"
@@ -117,6 +138,21 @@ export default function EmployeeContractsIndex({ contracts, options }: ContractP
                                                         onClick={() => openLifecycle(contract, 'cancel')}
                                                     >
                                                         Cancel
+                                                    </Button>
+                                                )}
+                                                {!contract.archived && canArchive && (
+                                                    <Button
+                                                        className="ml-2"
+                                                        size="sm"
+                                                        variant="destructive"
+                                                        onClick={() => setArchiveTarget(contract)}
+                                                    >
+                                                        Archive
+                                                    </Button>
+                                                )}
+                                                {contract.archived && canRestore && (
+                                                    <Button className="ml-2" size="sm" variant="outline" onClick={() => setArchiveTarget(contract)}>
+                                                        Restore
                                                     </Button>
                                                 )}
                                             </td>
@@ -203,6 +239,7 @@ export default function EmployeeContractsIndex({ contracts, options }: ContractP
                 }}
             />
             <SupersedeContractDialog contract={supersedeTarget} employmentTypes={options.employmentTypes} onClose={() => setSupersedeTarget(null)} />
+            <ArchiveContractDialog contract={archiveTarget} onClose={() => setArchiveTarget(null)} />
         </AppLayout>
     );
 }

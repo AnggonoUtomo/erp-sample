@@ -8,6 +8,7 @@ use App\Modules\HR\EmployeeContracts\Models\EmployeeContract;
 use App\Modules\HR\EmployeeContracts\Transactions\EmployeeContractsTransaction;
 use App\Modules\HR\Employees\Models\Employee;
 use App\Modules\HR\EmploymentTypes\Models\EmploymentType;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Validation\ValidationException;
 
@@ -15,21 +16,27 @@ class EmployeeContractsService
 {
     public function __construct(private EmployeeContractsTransaction $transaction, private AuditLogService $audit) {}
 
-    public function pageData(): array
+    public function pageData(string $archive = 'active'): array
     {
+        $archive = in_array($archive, ['active', 'with-trashed', 'only-trashed'], true) ? $archive : 'active';
+
         return [
-            'contracts' => EmployeeContract::query()->with(['employee', 'employmentType'])->latest('start_date')->paginate(15)->through(fn ($contract) => [
-                'id' => $contract->id, 'employee_id' => $contract->employee_id, 'employment_type_id' => $contract->employment_type_id,
-                'contract_number' => $contract->contract_number, 'start_date' => $contract->start_date->toDateString(),
-                'end_date' => $contract->end_date?->toDateString(), 'status' => $contract->status, 'ended_reason' => $contract->ended_reason,
-                'superseded_by_id' => $contract->superseded_by_id, 'notes' => $contract->notes,
-                'employee' => ['id' => $contract->employee->id, 'display_name' => $contract->employee->display_name],
-                'employment_type' => ['id' => $contract->employmentType->id, 'name' => $contract->employmentType->name],
-            ]),
+            'contracts' => EmployeeContract::query()
+                ->when($archive === 'with-trashed', fn (Builder $query) => $query->withTrashed())
+                ->when($archive === 'only-trashed', fn (Builder $query) => $query->onlyTrashed())
+                ->with(['employee', 'employmentType'])->latest('start_date')->paginate(15)->withQueryString()->through(fn ($contract) => [
+                    'id' => $contract->id, 'employee_id' => $contract->employee_id, 'employment_type_id' => $contract->employment_type_id,
+                    'contract_number' => $contract->contract_number, 'start_date' => $contract->start_date->toDateString(),
+                    'end_date' => $contract->end_date?->toDateString(), 'status' => $contract->status, 'ended_reason' => $contract->ended_reason,
+                    'superseded_by_id' => $contract->superseded_by_id, 'archived' => $contract->trashed(), 'notes' => $contract->notes,
+                    'employee' => ['id' => $contract->employee->id, 'display_name' => $contract->employee->display_name],
+                    'employment_type' => ['id' => $contract->employmentType->id, 'name' => $contract->employmentType->name],
+                ]),
             'options' => [
                 'employees' => Employee::query()->where('active', true)->orderBy('display_name')->get()->map(fn ($item) => ['value' => $item->id, 'label' => "{$item->display_name} ({$item->employee_number})"]),
                 'employmentTypes' => EmploymentType::query()->where('active', true)->orderBy('name')->get()->map(fn ($item) => ['value' => $item->id, 'label' => $item->name]),
             ],
+            'filters' => ['archive' => $archive],
         ];
     }
 
@@ -164,6 +171,50 @@ class EmployeeContractsService
             );
 
             return $replacement->refresh();
+        });
+    }
+
+    public function archive(EmployeeContract $contract): void
+    {
+        $this->transaction->run(function () use ($contract): void {
+            $locked = EmployeeContract::query()->lockForUpdate()->findOrFail($contract->id);
+            $locked->delete();
+            $this->audit->record(
+                module: 'hr.employee-contracts', event: 'EmployeeContract.archived', auditable: $locked,
+                description: "Archived contract {$locked->contract_number}", oldValues: ['deleted_at' => null],
+                newValues: ['deleted_at' => $locked->deleted_at?->toISOString()],
+            );
+        });
+    }
+
+    public function restore(EmployeeContract $contract): void
+    {
+        $this->transaction->run(function () use ($contract): void {
+            $locked = EmployeeContract::withTrashed()->lockForUpdate()->findOrFail($contract->id);
+            if (! $locked->trashed()) {
+                return;
+            }
+
+            $duplicateNumber = EmployeeContract::withTrashed()->where('contract_number', $locked->contract_number)
+                ->whereKeyNot($locked->id)->lockForUpdate()->exists();
+            if ($duplicateNumber) {
+                throw ValidationException::withMessages(['contract_number' => 'Nomor contract sudah digunakan.']);
+            }
+
+            $overlaps = EmployeeContract::query()->forEmployee($locked->employee_id)
+                ->overlapping($locked->start_date->toDateString(), $locked->end_date?->toDateString())
+                ->whereKeyNot($locked->id)->lockForUpdate()->exists();
+            if ($overlaps) {
+                throw ValidationException::withMessages(['start_date' => 'Contract tidak dapat dipulihkan karena periodenya overlap.']);
+            }
+
+            $archivedAt = $locked->deleted_at?->toISOString();
+            $locked->restore();
+            $this->audit->record(
+                module: 'hr.employee-contracts', event: 'EmployeeContract.restored', auditable: $locked,
+                description: "Restored contract {$locked->contract_number}", oldValues: ['deleted_at' => $archivedAt],
+                newValues: ['deleted_at' => null],
+            );
         });
     }
 }
