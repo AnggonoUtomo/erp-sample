@@ -22,6 +22,11 @@ class EmployeeDocumentPolicy
         return $user->hasAnyPermission(['employee-documents.verify', 'employee-documents.manage']);
     }
 
+    public function attach(User $user, EmployeeDocument $document): bool
+    {
+        return $user->hasAnyPermission(['employee-documents.attach', 'employee-documents.manage']);
+    }
+
     public function delete(User $user, EmployeeDocument $document): bool
     {
         return $user->hasAnyPermission(['employee-documents.archive', 'employee-documents.manage']);

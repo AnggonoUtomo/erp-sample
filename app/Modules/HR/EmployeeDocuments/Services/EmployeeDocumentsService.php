@@ -70,6 +70,11 @@ class EmployeeDocumentsService
                 'expires_at' => $document->expires_at?->toDateString(),
                 'expiry_state' => $this->expiry->state($document->expires_at, $asOf, $warningDays),
                 'verification_status' => $document->verification_status,
+                'attachment_state' => match (true) {
+                    $document->document_reference !== null => 'ATTACHED',
+                    $document->attachment_idempotency_key_hash !== null => 'PENDING',
+                    default => 'NONE',
+                },
                 'archived' => $document->trashed(),
                 'notes' => $document->notes,
                 'created_at' => $document->created_at?->toISOString(),

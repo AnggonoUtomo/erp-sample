@@ -24,10 +24,13 @@ class EmployeeDocument extends Model
         'employee_id', 'document_type_id', 'document_number', 'document_number_fingerprint',
         'document_number_uniqueness_key', 'issuer', 'issued_at', 'expires_at', 'verification_status',
         'verified_by', 'verified_at', 'verification_reason', 'document_reference',
-        'document_reference_version', 'notes',
+        'document_reference_version', 'attachment_idempotency_key_hash', 'notes',
     ];
 
-    protected $hidden = ['document_number', 'document_number_fingerprint', 'document_number_uniqueness_key'];
+    protected $hidden = [
+        'document_number', 'document_number_fingerprint', 'document_number_uniqueness_key',
+        'attachment_idempotency_key_hash',
+    ];
 
     protected function casts(): array
     {

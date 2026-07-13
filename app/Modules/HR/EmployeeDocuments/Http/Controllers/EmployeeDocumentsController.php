@@ -3,9 +3,11 @@
 namespace App\Modules\HR\EmployeeDocuments\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Modules\HR\EmployeeDocuments\Http\Requests\EmployeeDocumentAttachmentRequest;
 use App\Modules\HR\EmployeeDocuments\Http\Requests\EmployeeDocumentVerificationRequest;
 use App\Modules\HR\EmployeeDocuments\Http\Requests\StoreEmployeeDocumentRequest;
 use App\Modules\HR\EmployeeDocuments\Models\EmployeeDocument;
+use App\Modules\HR\EmployeeDocuments\Services\EmployeeDocumentAttachmentService;
 use App\Modules\HR\EmployeeDocuments\Services\EmployeeDocumentsService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,7 +16,10 @@ use Inertia\Response;
 
 class EmployeeDocumentsController extends Controller
 {
-    public function __construct(private EmployeeDocumentsService $documents) {}
+    public function __construct(
+        private EmployeeDocumentsService $documents,
+        private EmployeeDocumentAttachmentService $attachments,
+    ) {}
 
     public function index(Request $request): Response
     {
@@ -67,5 +72,20 @@ class EmployeeDocumentsController extends Controller
         $this->documents->restore($employeeDocument, $request->user());
 
         return back()->with('success', 'Metadata dokumen berhasil dipulihkan.');
+    }
+
+    public function attach(EmployeeDocumentAttachmentRequest $request, EmployeeDocument $employeeDocument): RedirectResponse
+    {
+        $this->attachments->attach($employeeDocument, $request->toDto($employeeDocument), $request->user());
+
+        return back()->with('success', 'File berhasil dihubungkan ke metadata employee.');
+    }
+
+    public function detach(Request $request, EmployeeDocument $employeeDocument): RedirectResponse
+    {
+        $this->authorize('attach', $employeeDocument);
+        $this->attachments->detach($employeeDocument, $request->user());
+
+        return back()->with('success', 'Reference file berhasil dilepas tanpa menghapus file DMS.');
     }
 }
