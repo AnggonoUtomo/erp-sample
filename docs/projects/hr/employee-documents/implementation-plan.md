@@ -38,6 +38,8 @@ Authorization matrix untuk vertical slice metadata selesai pada Task 03 dan menj
 
 Deterministic expiry query dan list filter selesai pada Task 04 tanpa menyimpan expiry sebagai lifecycle status. ✅
 
+Verification lifecycle verify/reject/resubmit serta material-change reset selesai pada Task 05. ✅
+
 ### Checkpoint 1
 
 - User berizin dapat membuat dan melihat metadata.

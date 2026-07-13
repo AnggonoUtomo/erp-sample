@@ -13,6 +13,11 @@ class EmployeeDocument extends Model
 {
     use SoftDeletes;
 
+    private const MATERIAL_FIELDS = [
+        'employee_id', 'document_type_id', 'document_number', 'issuer', 'issued_at', 'expires_at',
+        'document_reference', 'document_reference_version',
+    ];
+
     protected $table = 'hr_employee_documents';
 
     protected $fillable = [
@@ -30,6 +35,20 @@ class EmployeeDocument extends Model
             'document_number' => 'encrypted', 'issued_at' => 'date', 'expires_at' => 'date',
             'verified_at' => 'datetime', 'document_reference_version' => 'integer',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::updating(function (EmployeeDocument $document): void {
+            if (! $document->isDirty(self::MATERIAL_FIELDS)) {
+                return;
+            }
+
+            $document->verification_status = 'PENDING';
+            $document->verified_by = null;
+            $document->verified_at = null;
+            $document->verification_reason = null;
+        });
     }
 
     public function employee(): BelongsTo

@@ -3,6 +3,7 @@
 namespace App\Modules\HR\EmployeeDocuments\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Modules\HR\EmployeeDocuments\Http\Requests\EmployeeDocumentVerificationRequest;
 use App\Modules\HR\EmployeeDocuments\Http\Requests\StoreEmployeeDocumentRequest;
 use App\Modules\HR\EmployeeDocuments\Models\EmployeeDocument;
 use App\Modules\HR\EmployeeDocuments\Services\EmployeeDocumentsService;
@@ -29,5 +30,26 @@ class EmployeeDocumentsController extends Controller
         $this->documents->create($request->toDto());
 
         return back()->with('success', 'Metadata dokumen employee berhasil dibuat.');
+    }
+
+    public function verify(EmployeeDocumentVerificationRequest $request, EmployeeDocument $employeeDocument): RedirectResponse
+    {
+        $this->documents->verify($employeeDocument, $request->user(), $request->reason());
+
+        return back()->with('success', 'Metadata dokumen berhasil diverifikasi.');
+    }
+
+    public function reject(EmployeeDocumentVerificationRequest $request, EmployeeDocument $employeeDocument): RedirectResponse
+    {
+        $this->documents->reject($employeeDocument, $request->user(), $request->reason());
+
+        return back()->with('success', 'Metadata dokumen berhasil ditolak.');
+    }
+
+    public function resubmit(EmployeeDocumentVerificationRequest $request, EmployeeDocument $employeeDocument): RedirectResponse
+    {
+        $this->documents->resubmit($employeeDocument, $request->user());
+
+        return back()->with('success', 'Metadata dokumen dikembalikan ke status pending.');
     }
 }

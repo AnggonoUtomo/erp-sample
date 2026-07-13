@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Modules\HR\EmployeeDocuments\Models\EmployeeDocument;
 use App\Modules\HR\Employees\Models\Employee;
 use App\Modules\HR\EmploymentStatuses\Models\EmploymentStatus;
 use App\Modules\HR\EmploymentTypes\Models\EmploymentType;
@@ -36,7 +37,12 @@ class HREmployeeDocumentAuthorizationTest extends TestCase
             ->filter(fn (Route $route) => array_diff($route->methods(), ['GET', 'HEAD', 'OPTIONS']) !== [])
             ->values();
 
-        $this->assertSame(['hr.employee-documents.store'], $routes->pluck('action.as')->all());
+        $this->assertSame([
+            'hr.employee-documents.store',
+            'hr.employee-documents.verify',
+            'hr.employee-documents.reject',
+            'hr.employee-documents.resubmit',
+        ], $routes->pluck('action.as')->all());
         foreach ($routes as $route) {
             $this->assertContains('auth', $route->gatherMiddleware());
         }
@@ -77,6 +83,10 @@ class HREmployeeDocumentAuthorizationTest extends TestCase
         $this->actingAs($officer)->post(route('hr.employee-documents.store'), $this->validPayload('AUTH-OFFICER'))->assertRedirect();
         $this->actingAs($viewer)->get(route('hr.employee-documents.index'))->assertOk();
         $this->actingAs($viewer)->post(route('hr.employee-documents.store'), $this->validPayload('AUTH-VIEWER'))->assertForbidden();
+        $document = EmployeeDocument::query()->firstOrFail();
+        $this->actingAs($viewer)->post(route('hr.employee-documents.verify', $document))->assertForbidden();
+        $this->actingAs($viewer)->post(route('hr.employee-documents.reject', $document), ['reason' => 'Denied'])->assertForbidden();
+        $this->actingAs($viewer)->post(route('hr.employee-documents.resubmit', $document))->assertForbidden();
         $this->assertDatabaseCount('hr_employee_documents', 2);
     }
 

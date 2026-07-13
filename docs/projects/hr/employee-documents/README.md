@@ -4,7 +4,7 @@ Paket dokumen ini mendefinisikan module `HR/EmployeeDocuments` sebelum implement
 
 ## Status
 
-`Task 01–04 implemented; Task 05 menunggu instruksi`.
+`Task 01–05 implemented; Task 06 menunggu instruksi`.
 
 Document type contract telah tersedia melalui HR Reference Data dengan seed KTP, NPWP, passport, contract, certificate, medical, dan other. Metadata type divalidasi, pilihan input hanya memuat type aktif, sedangkan resolver histori tetap dapat membaca type inactive/archived.
 
@@ -13,6 +13,8 @@ Vertical slice metadata-only kini menyediakan create dan list paginated dengan f
 Mutation authorization matrix membuktikan route mutation aktual memakai authentication, guest/user tanpa permission tidak dapat menulis, dan seeded role HR menerima permission Employee Documents sesuai contract. Direct request tetap ditolak walaupun kontrol frontend dapat dimanipulasi.
 
 Expiry state kini dihitung secara deterministic dari tanggal acuan dan warning window eksplisit. List dapat memfilter `NOT_APPLICABLE`, `VALID`, `EXPIRING`, atau `EXPIRED`; metadata archived dikecualikan secara default.
+
+Verification lifecycle menyediakan verify, reject dengan reason wajib, dan resubmit. Semua transition memakai authorization server-side, row lock, actor/timestamp, dan audit; perubahan field material otomatis mengembalikan review ke `PENDING`.
 
 ## Urutan baca
 

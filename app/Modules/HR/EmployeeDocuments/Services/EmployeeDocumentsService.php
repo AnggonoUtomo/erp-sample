@@ -2,6 +2,7 @@
 
 namespace App\Modules\HR\EmployeeDocuments\Services;
 
+use App\Models\User;
 use App\Modules\Console\AuditLogs\Services\AuditLogService;
 use App\Modules\HR\EmployeeDocuments\DTO\EmployeeDocumentData;
 use App\Modules\HR\EmployeeDocuments\Models\EmployeeDocument;
@@ -125,6 +126,62 @@ class EmployeeDocumentsService
             }
             throw $exception;
         }
+    }
+
+    public function verify(EmployeeDocument $document, User $actor, ?string $reason): EmployeeDocument
+    {
+        return $this->transitionVerification($document, $actor, ['PENDING'], 'VERIFIED', $reason, 'verified');
+    }
+
+    public function reject(EmployeeDocument $document, User $actor, ?string $reason): EmployeeDocument
+    {
+        return $this->transitionVerification($document, $actor, ['PENDING'], 'REJECTED', $reason, 'rejected');
+    }
+
+    public function resubmit(EmployeeDocument $document, User $actor): EmployeeDocument
+    {
+        return $this->transitionVerification($document, $actor, ['VERIFIED', 'REJECTED'], 'PENDING', null, 'resubmitted');
+    }
+
+    private function transitionVerification(
+        EmployeeDocument $document,
+        User $actor,
+        array $allowedFrom,
+        string $status,
+        ?string $reason,
+        string $event,
+    ): EmployeeDocument {
+        return $this->transaction->run(function () use ($document, $actor, $allowedFrom, $status, $reason, $event): EmployeeDocument {
+            $locked = EmployeeDocument::query()->lockForUpdate()->findOrFail($document->id);
+            if (! in_array($locked->verification_status, $allowedFrom, true)) {
+                throw ValidationException::withMessages([
+                    'status' => "Dokumen berstatus {$locked->verification_status} tidak dapat {$event}.",
+                ]);
+            }
+
+            $oldStatus = $locked->verification_status;
+            $reviewed = $status !== 'PENDING';
+            $locked->update([
+                'verification_status' => $status,
+                'verified_by' => $reviewed ? $actor->id : null,
+                'verified_at' => $reviewed ? now() : null,
+                'verification_reason' => $reviewed ? $reason : null,
+            ]);
+            $this->audit->record(
+                module: 'hr.employee-documents', event: "EmployeeDocument.{$event}", auditable: $locked,
+                description: ucfirst($event)." employee document #{$locked->id}",
+                oldValues: ['verification_status' => $oldStatus],
+                newValues: [
+                    'verification_status' => $status,
+                    'verified_by' => $locked->verified_by,
+                    'verified_at' => $locked->verified_at?->toISOString(),
+                    'verification_reason' => $locked->verification_reason,
+                ],
+                actor: $actor,
+            );
+
+            return $locked->refresh();
+        });
     }
 
     private function fingerprint(string $number): string

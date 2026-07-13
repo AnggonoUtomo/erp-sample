@@ -10,11 +10,15 @@ import AppLayout from '@/layouts/app-layout';
 import { Head, router, useForm } from '@inertiajs/react';
 import { ScrollText } from 'lucide-react';
 import type { FormEvent } from 'react';
-import type { DocumentForm, EmployeeDocumentPageProps } from './types';
+import { useState } from 'react';
+import { VerificationDialog, type VerificationAction } from './employee-document-components/verification-dialog';
+import type { DocumentForm, EmployeeDocumentPageProps, EmployeeDocumentRow } from './types';
 
 export default function EmployeeDocumentsIndex({ documents, options, filters }: EmployeeDocumentPageProps) {
     const { canAny } = usePermission();
     const canCreate = canAny(['employee-documents.create', 'employee-documents.manage']);
+    const canVerify = canAny(['employee-documents.verify', 'employee-documents.manage']);
+    const [review, setReview] = useState<{ document: EmployeeDocumentRow; action: VerificationAction } | null>(null);
     const form = useForm<DocumentForm>({
         employee_id: '',
         document_type_id: '',
@@ -151,6 +155,36 @@ export default function EmployeeDocumentsIndex({ documents, options, filters }: 
                                                     <span className="bg-muted rounded-full px-2.5 py-1 text-xs font-medium">
                                                         {document.verification_status}
                                                     </span>
+                                                    {canVerify && (
+                                                        <div className="mt-3 flex flex-wrap gap-2">
+                                                            {document.verification_status === 'PENDING' ? (
+                                                                <>
+                                                                    <Button
+                                                                        size="sm"
+                                                                        variant="outline"
+                                                                        onClick={() => setReview({ document, action: 'verify' })}
+                                                                    >
+                                                                        Verify
+                                                                    </Button>
+                                                                    <Button
+                                                                        size="sm"
+                                                                        variant="destructive"
+                                                                        onClick={() => setReview({ document, action: 'reject' })}
+                                                                    >
+                                                                        Reject
+                                                                    </Button>
+                                                                </>
+                                                            ) : (
+                                                                <Button
+                                                                    size="sm"
+                                                                    variant="outline"
+                                                                    onClick={() => setReview({ document, action: 'resubmit' })}
+                                                                >
+                                                                    Resubmit
+                                                                </Button>
+                                                            )}
+                                                        </div>
+                                                    )}
                                                 </td>
                                             </tr>
                                         ))}
@@ -244,6 +278,7 @@ export default function EmployeeDocumentsIndex({ documents, options, filters }: 
                     </Card>
                 )}
             </div>
+            <VerificationDialog document={review?.document ?? null} action={review?.action ?? null} onClose={() => setReview(null)} />
         </AppLayout>
     );
 }

@@ -80,7 +80,7 @@ Semua task belum dikerjakan. Implementasi harus berurutan dan berhenti di setiap
 
 **Hasil:** selesai 2026-07-13. List menerima `as_of`, `warning_days`, dan `expiry_state`; tanggal acuan yang telah di-resolve dikembalikan ke frontend. Classifier dan SQL filter memakai boundary yang sama, sedangkan soft-deleted metadata tidak ikut query default.
 
-## Task 05 — Verification lifecycle
+## Task 05 — Verification lifecycle ✅
 
 **Tujuan:** menyediakan verify, reject, dan resubmit sebagai transition eksplisit dan atomic.
 
@@ -88,13 +88,15 @@ Semua task belum dikerjakan. Implementasi harus berurutan dan berhenti di setiap
 
 **Acceptance criteria:**
 
-- [ ] Transition matrix valid berhasil dengan actor/timestamp; reject mewajibkan reason.
-- [ ] Invalid/repeated transition tidak mengubah record atau membuat audit ganda.
-- [ ] Perubahan field material mengembalikan status ke `PENDING` dalam transaksi yang sama.
+- [x] Transition matrix valid berhasil dengan actor/timestamp; reject mewajibkan reason.
+- [x] Invalid/repeated transition tidak mengubah record atau membuat audit ganda.
+- [x] Perubahan field material mengembalikan status ke `PENDING` dalam update yang sama.
 
 **Test:** `php artisan test --filter=EmployeeDocumentVerification && npm run typecheck`
 
 **Dependencies:** Task 03. **Scope:** pecah backend M dan frontend S.
+
+**Hasil:** selesai 2026-07-13. Route verify/reject/resubmit memakai FormRequest authorization, transition allowlist, row lock, actor/timestamp, reason maksimal 1000 karakter, dan audit. Material identity/reference fields memiliki model invariant yang mereset review ke `PENDING`; dialog frontend hanya ditampilkan untuk permission verify/manage.
 
 ## Task 06 — Archive dan restore metadata
 

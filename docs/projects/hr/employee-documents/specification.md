@@ -41,6 +41,7 @@ VERIFIED ──resubmit──> PENDING
 - `REJECTED`: tidak sesuai; reason wajib.
 - Verify/reject menyimpan actor, timestamp, dan reason/catatan tanpa mengubah file DMS.
 - Penggantian reference atau field identitas penting mengembalikan verification ke `PENDING` secara atomic.
+- Field material adalah employee, document type, document number, issuer, issued/expiry date, dan DMS reference/version; perubahan notes saja tidak mereset verification.
 
 ### 3.3 Expiry state
 
