@@ -46,18 +46,20 @@ Implementasi wajib berurutan dan berhenti pada setiap checkpoint. Setiap task ad
 
 **Acceptance criteria:**
 
-- [ ] Adapter mendukung staged write/read/exists/promote/delete-staged tanpa menghasilkan public URL.
-- [ ] Object key selalu server-generated dan tidak berasal dari filename/path input.
-- [ ] Fake dan local adapter lulus contract test yang sama.
+- [x] Adapter mendukung staged write/read/exists/promote/delete-staged tanpa menghasilkan public URL.
+- [x] Object key selalu server-generated dan tidak berasal dari filename/path input.
+- [x] Fake dan local adapter lulus contract test yang sama.
 
 **Test:** `php artisan test --filter=DocumentStorageAdapter`
 
 **Dependencies:** Task 01. **Scope:** M; belum ada HTTP upload.
 
+**Completed:** 2026-07-13 — fake dan private-local adapter memakai server-generated staged/object ULID key, readable stream, promote, read, exists, dan idempotent staged cleanup. Konfigurasi public/served fail-closed. Verifikasi: `DocumentStorageAdapterTest` (5 test, 34 assertions) lulus.
+
 ## Checkpoint A — Safe metadata foundation
 
-- [ ] Task 01–03 hijau dan direview.
-- [ ] Migration/module/storage contract valid; upload route belum ada.
+- [x] Task 01–03 hijau dan direview.
+- [x] Migration/module/storage contract valid; upload route belum ada.
 - [ ] Disk production, upload policy, dan malware strategy mendapat keputusan eksplisit sebelum Task 04.
 
 ## Task 04 — Upload policy contract

@@ -4,11 +4,17 @@ Paket ini adalah acuan pembangunan foundation project `DocumentManagement`: satu
 
 ## Status
 
-`Specification dan ADR-001 accepted; Task 01–02 selesai pada 2026-07-13, siap review sebelum Task 03`.
+`Specification dan ADR-001 accepted; Task 01–03 selesai pada 2026-07-13, Checkpoint A menunggu keputusan security sebelum Task 04`.
 
 Persetujuan ini mengizinkan pembangunan contract dan metadata foundation. Upload production tetap tertahan sampai keputusan private disk, batas/tipe file, malware/quarantine, delivery, dan retention pada ADR-001 dipenuhi.
 
-Foundation saat ini mengekspor contract v1, permission minimum, serta logical document metadata yang idempotent. Route, navigation, binary storage, version content, serta UI belum diaktifkan.
+Foundation saat ini mengekspor contract v1, permission minimum, logical document metadata yang idempotent, dan private StorageAdapter. Route, navigation, HTTP upload, version metadata, serta UI belum diaktifkan.
+
+## Konfigurasi storage foundation
+
+- Binding default memakai disk `dms-private` pada `storage/app/private/document-management`.
+- Disk wajib local, `serve=false`, visibility `private`, tanpa konfigurasi URL, dan memakai exception fail-closed.
+- Nama disk dapat diubah melalui `DMS_PRIVATE_DISK`, tetapi adapter akan menolak disk public/served. Driver cloud membutuhkan adapter terpisah dan keputusan arsitektur baru.
 
 ## Urutan baca
 
