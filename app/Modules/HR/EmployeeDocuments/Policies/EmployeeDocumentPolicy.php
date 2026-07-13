@@ -21,4 +21,14 @@ class EmployeeDocumentPolicy
     {
         return $user->hasAnyPermission(['employee-documents.verify', 'employee-documents.manage']);
     }
+
+    public function delete(User $user, EmployeeDocument $document): bool
+    {
+        return $user->hasAnyPermission(['employee-documents.archive', 'employee-documents.manage']);
+    }
+
+    public function restore(User $user, EmployeeDocument $document): bool
+    {
+        return $user->hasAnyPermission(['employee-documents.restore', 'employee-documents.manage']);
+    }
 }

@@ -42,6 +42,8 @@ class HREmployeeDocumentAuthorizationTest extends TestCase
             'hr.employee-documents.verify',
             'hr.employee-documents.reject',
             'hr.employee-documents.resubmit',
+            'hr.employee-documents.destroy',
+            'hr.employee-documents.restore',
         ], $routes->pluck('action.as')->all());
         foreach ($routes as $route) {
             $this->assertContains('auth', $route->gatherMiddleware());
@@ -87,6 +89,8 @@ class HREmployeeDocumentAuthorizationTest extends TestCase
         $this->actingAs($viewer)->post(route('hr.employee-documents.verify', $document))->assertForbidden();
         $this->actingAs($viewer)->post(route('hr.employee-documents.reject', $document), ['reason' => 'Denied'])->assertForbidden();
         $this->actingAs($viewer)->post(route('hr.employee-documents.resubmit', $document))->assertForbidden();
+        $this->actingAs($viewer)->delete(route('hr.employee-documents.destroy', $document))->assertForbidden();
+        $this->actingAs($viewer)->patch(route('hr.employee-documents.restore', $document))->assertForbidden();
         $this->assertDatabaseCount('hr_employee_documents', 2);
     }
 

@@ -11,6 +11,7 @@ import { Head, router, useForm } from '@inertiajs/react';
 import { ScrollText } from 'lucide-react';
 import type { FormEvent } from 'react';
 import { useState } from 'react';
+import { ArchiveDocumentDialog } from './employee-document-components/archive-document-dialog';
 import { VerificationDialog, type VerificationAction } from './employee-document-components/verification-dialog';
 import type { DocumentForm, EmployeeDocumentPageProps, EmployeeDocumentRow } from './types';
 
@@ -18,7 +19,10 @@ export default function EmployeeDocumentsIndex({ documents, options, filters }: 
     const { canAny } = usePermission();
     const canCreate = canAny(['employee-documents.create', 'employee-documents.manage']);
     const canVerify = canAny(['employee-documents.verify', 'employee-documents.manage']);
+    const canArchive = canAny(['employee-documents.archive', 'employee-documents.manage']);
+    const canRestore = canAny(['employee-documents.restore', 'employee-documents.manage']);
     const [review, setReview] = useState<{ document: EmployeeDocumentRow; action: VerificationAction } | null>(null);
+    const [archiveTarget, setArchiveTarget] = useState<EmployeeDocumentRow | null>(null);
     const form = useForm<DocumentForm>({
         employee_id: '',
         document_type_id: '',
@@ -114,6 +118,17 @@ export default function EmployeeDocumentsIndex({ documents, options, filters }: 
                                 ]}
                                 onChange={(value) => filter('expiry_state', value)}
                             />
+                            <FilterSelect
+                                label="Filter arsip"
+                                value={filters.archive}
+                                includeAll={false}
+                                options={[
+                                    { value: 'active', label: 'Aktif' },
+                                    { value: 'with-trashed', label: 'Semua' },
+                                    { value: 'only-trashed', label: 'Arsip' },
+                                ]}
+                                onChange={(value) => filter('archive', value)}
+                            />
                         </div>
                     </CardHeader>
                     <CardContent className="space-y-4">
@@ -155,7 +170,7 @@ export default function EmployeeDocumentsIndex({ documents, options, filters }: 
                                                     <span className="bg-muted rounded-full px-2.5 py-1 text-xs font-medium">
                                                         {document.verification_status}
                                                     </span>
-                                                    {canVerify && (
+                                                    {!document.archived && canVerify && (
                                                         <div className="mt-3 flex flex-wrap gap-2">
                                                             {document.verification_status === 'PENDING' ? (
                                                                 <>
@@ -185,6 +200,26 @@ export default function EmployeeDocumentsIndex({ documents, options, filters }: 
                                                             )}
                                                         </div>
                                                     )}
+                                                    {!document.archived && canArchive && (
+                                                        <Button
+                                                            className="mt-2"
+                                                            size="sm"
+                                                            variant="destructive"
+                                                            onClick={() => setArchiveTarget(document)}
+                                                        >
+                                                            Archive
+                                                        </Button>
+                                                    )}
+                                                    {document.archived && canRestore && (
+                                                        <Button
+                                                            className="mt-2"
+                                                            size="sm"
+                                                            variant="outline"
+                                                            onClick={() => setArchiveTarget(document)}
+                                                        >
+                                                            Restore
+                                                        </Button>
+                                                    )}
                                                 </td>
                                             </tr>
                                         ))}
@@ -202,6 +237,7 @@ export default function EmployeeDocumentsIndex({ documents, options, filters }: 
                                 as_of: filters.as_of,
                                 warning_days: filters.warning_days,
                                 expiry_state: filters.expiry_state || undefined,
+                                archive: filters.archive,
                             }}
                             idPrefix="employee-documents"
                         />
@@ -279,6 +315,7 @@ export default function EmployeeDocumentsIndex({ documents, options, filters }: 
                 )}
             </div>
             <VerificationDialog document={review?.document ?? null} action={review?.action ?? null} onClose={() => setReview(null)} />
+            <ArchiveDocumentDialog document={archiveTarget} onClose={() => setArchiveTarget(null)} />
         </AppLayout>
     );
 }

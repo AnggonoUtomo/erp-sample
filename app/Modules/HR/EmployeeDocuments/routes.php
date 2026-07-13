@@ -9,4 +9,6 @@ Route::middleware(['auth'])->prefix('hr/employee-documents')->name('hr.employee-
     Route::post('{employeeDocument}/verify', [EmployeeDocumentsController::class, 'verify'])->name('verify');
     Route::post('{employeeDocument}/reject', [EmployeeDocumentsController::class, 'reject'])->name('reject');
     Route::post('{employeeDocument}/resubmit', [EmployeeDocumentsController::class, 'resubmit'])->name('resubmit');
+    Route::delete('{employeeDocument}', [EmployeeDocumentsController::class, 'destroy'])->name('destroy');
+    Route::patch('{employeeDocument}/restore', [EmployeeDocumentsController::class, 'restore'])->withTrashed()->name('restore');
 });

@@ -4,7 +4,7 @@ Paket dokumen ini mendefinisikan module `HR/EmployeeDocuments` sebelum implement
 
 ## Status
 
-`Task 01–05 implemented; Task 06 menunggu instruksi`.
+`Task 01–06 implemented; Task 07 menunggu instruksi`.
 
 Document type contract telah tersedia melalui HR Reference Data dengan seed KTP, NPWP, passport, contract, certificate, medical, dan other. Metadata type divalidasi, pilihan input hanya memuat type aktif, sedangkan resolver histori tetap dapat membaca type inactive/archived.
 
@@ -16,12 +16,15 @@ Expiry state kini dihitung secara deterministic dari tanggal acuan dan warning w
 
 Verification lifecycle menyediakan verify, reject dengan reason wajib, dan resubmit. Semua transition memakai authorization server-side, row lock, actor/timestamp, dan audit; perubahan field material otomatis mengembalikan review ke `PENDING`.
 
+Archive/restore memakai soft delete tanpa force delete atau operasi DMS. Archive melepaskan uniqueness claim aktif; restore menghitung ulang dan memvalidasi employee, document type, serta duplicate sebelum metadata dipulihkan.
+
 ## Urutan baca
 
 1. [Specification](specification.md) — requirement, non-scope, data contract, route, acceptance criteria, dan test plan.
 2. [ADR-001: Pisahkan metadata HR dari storage dokumen](decisions/001-hr-metadata-dms-storage-boundary.md) — ownership data dan kontrak integrasi.
-3. [Implementation plan](implementation-plan.md) — urutan vertical slice, dependency, risiko, dan checkpoint.
-4. [Tasks](tasks.md) — unit kerja kecil dengan tujuan, file, acceptance criteria, dependency, dan cara test.
+3. [ADR-002: Archive melepaskan uniqueness claim](decisions/002-archive-releases-uniqueness-claim.md) — invariant archive/restore dan duplicate revival.
+4. [Implementation plan](implementation-plan.md) — urutan vertical slice, dependency, risiko, dan checkpoint.
+5. [Tasks](tasks.md) — unit kerja kecil dengan tujuan, file, acceptance criteria, dependency, dan cara test.
 
 ## Relasi lintas dokumen
 

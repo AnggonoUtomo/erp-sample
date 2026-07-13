@@ -24,6 +24,7 @@ Keberhasilan berarti HR dapat menjawab: dokumen apa yang dimiliki employee, mana
 - Tipe dokumen menentukan `requires_expiry`; tanggal kedaluwarsa wajib bila aturan tersebut aktif.
 - Menormalisasi nomor dokumen untuk duplicate check tanpa mengubah tampilan yang dibutuhkan HR.
 - Mengarsipkan dan memulihkan record metadata dengan soft delete; tidak menyediakan force delete pada rilis awal.
+- Archive melepaskan uniqueness claim aktif tanpa menghapus encrypted history; restore menghitung ulang claim dan memvalidasi duplicate, employee, serta type aktif.
 - Mencatat audit create, update draft metadata, verify, reject, archive, restore, attach, dan detach reference.
 
 ### 3.2 Verification state

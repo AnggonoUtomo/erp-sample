@@ -40,6 +40,8 @@ Deterministic expiry query dan list filter selesai pada Task 04 tanpa menyimpan 
 
 Verification lifecycle verify/reject/resubmit serta material-change reset selesai pada Task 05. ✅
 
+Soft-delete archive/restore dengan invariant revalidation dan tanpa operasi DMS selesai pada Task 06. ✅
+
 ### Checkpoint 1
 
 - User berizin dapat membuat dan melihat metadata.

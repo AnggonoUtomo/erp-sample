@@ -98,7 +98,7 @@ Semua task belum dikerjakan. Implementasi harus berurutan dan berhenti di setiap
 
 **Hasil:** selesai 2026-07-13. Route verify/reject/resubmit memakai FormRequest authorization, transition allowlist, row lock, actor/timestamp, reason maksimal 1000 karakter, dan audit. Material identity/reference fields memiliki model invariant yang mereset review ke `PENDING`; dialog frontend hanya ditampilkan untuk permission verify/manage.
 
-## Task 06 — Archive dan restore metadata
+## Task 06 — Archive dan restore metadata ✅
 
 **Tujuan:** menjaga histori metadata tanpa menyentuh file atau retention DMS.
 
@@ -106,13 +106,15 @@ Semua task belum dikerjakan. Implementasi harus berurutan dan berhenti di setiap
 
 **Acceptance criteria:**
 
-- [ ] Archive memakai soft delete dan tidak ada force-delete route.
-- [ ] Archive/restore tidak memanggil delete DMS.
-- [ ] Restore menjalankan invariant duplicate/type kembali dan tercatat di audit.
+- [x] Archive memakai soft delete dan tidak ada force-delete route.
+- [x] Archive/restore tidak memanggil delete DMS.
+- [x] Restore menjalankan invariant duplicate/type kembali dan tercatat di audit.
 
 **Test:** `php artisan test --filter=EmployeeDocumentArchive`
 
 **Dependencies:** Task 02. **Scope:** M, pecah UI bila perlu.
+
+**Hasil:** selesai 2026-07-13. Archive melepaskan active uniqueness claim tetapi mempertahankan encrypted history. Restore memakai row lock, memvalidasi employee/type aktif, menghitung ulang fingerprint/key, menolak duplicate, dan mencatat audit. Filter active/all/archived dan dialog frontend tersedia; force-delete serta operasi DMS tidak ada.
 
 ## Task 07 — Expiring read-only command
 

@@ -12,6 +12,7 @@ export type EmployeeDocumentRow = {
     expires_at: string | null;
     expiry_state: 'NOT_APPLICABLE' | 'VALID' | 'EXPIRING' | 'EXPIRED';
     verification_status: 'PENDING' | 'VERIFIED' | 'REJECTED';
+    archived: boolean;
     notes: string | null;
     created_at: string;
 };
@@ -40,5 +41,6 @@ export type EmployeeDocumentPageProps = {
         as_of: string;
         warning_days: number;
         expiry_state: string;
+        archive: 'active' | 'with-trashed' | 'only-trashed';
     };
 };

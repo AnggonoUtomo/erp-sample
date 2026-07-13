@@ -41,8 +41,13 @@ class EmployeeDocumentsService
         $warningDays = max(0, min((int) ($filters['warning_days'] ?? 30), 3650));
         $expiryState = in_array(($filters['expiry_state'] ?? ''), EmployeeDocumentExpiryService::STATES, true)
             ? $filters['expiry_state'] : '';
+        $archiveFilter = (string) ($filters['archive'] ?? 'active');
+        $archive = in_array($archiveFilter, ['active', 'with-trashed', 'only-trashed'], true)
+            ? $archiveFilter : 'active';
 
         $query = EmployeeDocument::query()
+            ->when($archive === 'with-trashed', fn (Builder $query) => $query->withTrashed())
+            ->when($archive === 'only-trashed', fn (Builder $query) => $query->onlyTrashed())
             ->with(['employee:id,employee_number,display_name', 'documentType:id,code,name'])
             ->when($employee > 0, fn (Builder $query) => $query->where('employee_id', $employee))
             ->when($documentType > 0, fn (Builder $query) => $query->where('document_type_id', $documentType))
@@ -65,6 +70,7 @@ class EmployeeDocumentsService
                 'expires_at' => $document->expires_at?->toDateString(),
                 'expiry_state' => $this->expiry->state($document->expires_at, $asOf, $warningDays),
                 'verification_status' => $document->verification_status,
+                'archived' => $document->trashed(),
                 'notes' => $document->notes,
                 'created_at' => $document->created_at?->toISOString(),
             ]);
@@ -84,6 +90,7 @@ class EmployeeDocumentsService
             'filters' => [
                 'employee' => $employee ?: '', 'document_type' => $documentType ?: '', 'status' => $status,
                 'as_of' => $asOf->toDateString(), 'warning_days' => $warningDays, 'expiry_state' => $expiryState,
+                'archive' => $archive,
             ],
         ];
     }
@@ -141,6 +148,63 @@ class EmployeeDocumentsService
     public function resubmit(EmployeeDocument $document, User $actor): EmployeeDocument
     {
         return $this->transitionVerification($document, $actor, ['VERIFIED', 'REJECTED'], 'PENDING', null, 'resubmitted');
+    }
+
+    public function archive(EmployeeDocument $document, User $actor): void
+    {
+        $this->transaction->run(function () use ($document, $actor): void {
+            $locked = EmployeeDocument::query()->lockForUpdate()->findOrFail($document->id);
+            $locked->document_number_uniqueness_key = null;
+            $locked->save();
+            $locked->delete();
+            $this->audit->record(
+                module: 'hr.employee-documents', event: 'EmployeeDocument.archived', auditable: $locked,
+                description: "Archived employee document #{$locked->id}",
+                oldValues: ['deleted_at' => null], newValues: ['deleted_at' => $locked->deleted_at?->toISOString()], actor: $actor,
+            );
+        });
+    }
+
+    public function restore(EmployeeDocument $document, User $actor): void
+    {
+        try {
+            $this->transaction->run(function () use ($document, $actor): void {
+                $locked = EmployeeDocument::withTrashed()->lockForUpdate()->findOrFail($document->id);
+                if (! $locked->trashed()) {
+                    throw ValidationException::withMessages(['archive' => 'Metadata dokumen tidak sedang diarsipkan.']);
+                }
+                if (! $locked->employee()->where('active', true)->exists()) {
+                    throw ValidationException::withMessages(['employee_id' => 'Employee tidak aktif atau tidak tersedia.']);
+                }
+                $type = ReferenceData::query()->whereKey($locked->document_type_id)
+                    ->where('category', EmployeeDocumentTypeCatalog::CATEGORY)->where('active', true)->first();
+                if (! $type) {
+                    throw ValidationException::withMessages(['document_type_id' => 'Tipe dokumen tidak aktif atau tidak tersedia.']);
+                }
+
+                $fingerprint = $locked->document_number ? $this->fingerprint($locked->document_number) : null;
+                $uniquenessKey = $fingerprint ? $this->uniquenessKey($type, $locked->employee_id, $fingerprint) : null;
+                if ($uniquenessKey && EmployeeDocument::query()->whereKeyNot($locked->id)
+                    ->where('document_number_uniqueness_key', $uniquenessKey)->lockForUpdate()->exists()) {
+                    throw ValidationException::withMessages(['document_number' => 'Nomor dokumen sudah digunakan sesuai aturan tipe dokumen.']);
+                }
+
+                $archivedAt = $locked->deleted_at?->toISOString();
+                $locked->document_number_fingerprint = $fingerprint;
+                $locked->document_number_uniqueness_key = $uniquenessKey;
+                $locked->restore();
+                $this->audit->record(
+                    module: 'hr.employee-documents', event: 'EmployeeDocument.restored', auditable: $locked,
+                    description: "Restored employee document #{$locked->id}",
+                    oldValues: ['deleted_at' => $archivedAt], newValues: ['deleted_at' => null], actor: $actor,
+                );
+            });
+        } catch (QueryException $exception) {
+            if (in_array((string) $exception->getCode(), ['19', '23000'], true)) {
+                throw ValidationException::withMessages(['document_number' => 'Nomor dokumen sudah digunakan sesuai aturan tipe dokumen.']);
+            }
+            throw $exception;
+        }
     }
 
     private function transitionVerification(

@@ -21,7 +21,7 @@ class EmployeeDocumentsController extends Controller
         $this->authorize('viewAny', EmployeeDocument::class);
 
         return Inertia::render('hr/employee-documents/index', $this->documents->pageData($request->only([
-            'employee', 'document_type', 'status', 'per_page', 'as_of', 'warning_days', 'expiry_state',
+            'employee', 'document_type', 'status', 'per_page', 'as_of', 'warning_days', 'expiry_state', 'archive',
         ])));
     }
 
@@ -51,5 +51,21 @@ class EmployeeDocumentsController extends Controller
         $this->documents->resubmit($employeeDocument, $request->user());
 
         return back()->with('success', 'Metadata dokumen dikembalikan ke status pending.');
+    }
+
+    public function destroy(Request $request, EmployeeDocument $employeeDocument): RedirectResponse
+    {
+        $this->authorize('delete', $employeeDocument);
+        $this->documents->archive($employeeDocument, $request->user());
+
+        return back()->with('success', 'Metadata dokumen berhasil diarsipkan.');
+    }
+
+    public function restore(Request $request, EmployeeDocument $employeeDocument): RedirectResponse
+    {
+        $this->authorize('restore', $employeeDocument);
+        $this->documents->restore($employeeDocument, $request->user());
+
+        return back()->with('success', 'Metadata dokumen berhasil dipulihkan.');
     }
 }
