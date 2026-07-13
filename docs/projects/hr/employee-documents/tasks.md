@@ -20,7 +20,7 @@ Semua task belum dikerjakan. Implementasi harus berurutan dan berhenti di setiap
 
 **Hasil:** selesai 2026-07-13. Seeder idempotent menyediakan KTP, NPWP, passport, contract, certificate, medical, dan other. Catalog memisahkan pilihan input aktif dari resolver histori termasuk archived.
 
-## Task 02 — Metadata-only create dan list
+## Task 02 — Metadata-only create dan list ✅
 
 **Tujuan:** memberi HR vertical path pertama untuk membuat dan melihat metadata dokumen tanpa upload.
 
@@ -28,13 +28,15 @@ Semua task belum dikerjakan. Implementasi harus berurutan dan berhenti di setiap
 
 **Acceptance criteria:**
 
-- [ ] Authorized HR dapat membuat metadata berstatus `PENDING` dan melihat list paginated/filter employee/type/status.
-- [ ] Required-expiry, date order, duplicate policy, normalization, dan archived employee/type rules tervalidasi.
-- [ ] Nomor sensitif masked di list dan tidak muncul plaintext di audit; tidak ada media/file write.
+- [x] Authorized HR dapat membuat metadata berstatus `PENDING` dan melihat list paginated/filter employee/type/status.
+- [x] Required-expiry, date order, duplicate policy, normalization, dan archived employee/type rules tervalidasi.
+- [x] Nomor sensitif masked di list dan tidak muncul plaintext di audit; tidak ada media/file write.
 
 **Test:** `php artisan test --filter=HREmployeeDocument && npm run typecheck && npm run build`
 
 **Dependencies:** Task 01. **Scope:** L outcome; implement sebagai backend M lalu frontend M.
+
+**Hasil:** selesai 2026-07-13. Nomor dokumen memakai encrypted cast, HMAC fingerprint, dan uniqueness key sesuai scope type; UI hanya menerima projection masked. Attachment/file tetap tidak tersedia.
 
 ## Task 03 — Mutation authorization matrix
 

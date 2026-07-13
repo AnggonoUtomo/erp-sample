@@ -31,8 +31,8 @@ Document Management contract ──> attachment gateway + access boundary
 ## Phase 1 — Foundation dan vertical slice metadata
 
 1. Formalisasi document type metadata pada HR Reference Data. ✅
-2. Scaffold module, schema metadata, permission, dan sensitive-data policy.
-3. Implement create/list paginated untuk metadata tanpa attachment.
+2. Scaffold module, schema metadata, permission, dan sensitive-data policy. ✅
+3. Implement create/list paginated untuk metadata tanpa attachment. ✅
 
 ### Checkpoint 1
 

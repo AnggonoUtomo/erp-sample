@@ -85,6 +85,7 @@ Rancangan tabel `hr_employee_documents`:
 | `document_type_id` | Required FK internal ke HR Reference Data |
 | `document_number` | Nullable, encrypted/masked policy diputuskan sebelum coding |
 | `document_number_fingerprint` | Nullable keyed hash untuk duplicate lookup tanpa plaintext comparison |
+| `document_number_uniqueness_key` | Nullable keyed hash unik berisi scope context untuk race-safe duplicate guard |
 | `issuer` | Nullable, max 255 |
 | `issued_at` | Nullable business date |
 | `expires_at` | Nullable; required menurut type metadata |

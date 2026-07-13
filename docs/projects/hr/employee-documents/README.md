@@ -4,9 +4,11 @@ Paket dokumen ini mendefinisikan module `HR/EmployeeDocuments` sebelum implement
 
 ## Status
 
-`Task 01 implemented; Task 02 menunggu instruksi`.
+`Task 01–02 implemented; Task 03 menunggu instruksi`.
 
 Document type contract telah tersedia melalui HR Reference Data dengan seed KTP, NPWP, passport, contract, certificate, medical, dan other. Metadata type divalidasi, pilihan input hanya memuat type aktif, sedangkan resolver histori tetap dapat membaca type inactive/archived.
+
+Vertical slice metadata-only kini menyediakan create dan list paginated dengan filter employee/type/status. Nomor dokumen disimpan terenkripsi, duplicate lookup memakai keyed fingerprint/uniqueness key, projection UI selalu masked, dan audit tidak memuat nomor atau fingerprint.
 
 ## Urutan baca
 
