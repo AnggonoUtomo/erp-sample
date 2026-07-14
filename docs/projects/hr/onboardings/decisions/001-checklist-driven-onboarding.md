@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Accepted
 
 ## Date
 
@@ -85,14 +85,12 @@ Perubahan template setelah itu hanya berlaku untuk onboarding baru. Task existin
 - Completion selalu membaca task snapshot, bukan current template.
 - Binary evidence tetap melalui Employee Documents/DMS.
 
-## Validation required
+## Acceptance record
 
-Sebelum status menjadi `Accepted`:
+Keputusan snapshot checklist dan pelaksanaan Task 01 disetujui pada 2026-07-15. Keputusan berikut tetap menjadi gate untuk task runtime terkait dan tidak menghalangi foundation contract:
 
-- stakeholder menyetujui bahwa perubahan template hanya berlaku ke onboarding baru;
-- keputusan employment period identity disetujui;
-- required task skip policy dan assignee type diputuskan;
-- Task 01 mendapat approval eksplisit.
+- employment period identity harus diputuskan sebelum Task 04;
+- required task skip policy dan assignee type harus diputuskan sebelum Task 08–09.
 
 ## Related documents
 

@@ -1,6 +1,6 @@
 # Project HR — Onboardings
 
-Paket ini menjadi acuan implementasi module `Onboardings`: HR membuat onboarding dari template checklist, menugaskan task, memantau progres, dan menyelesaikan proses masuk employee secara terkontrol. Dokumen ini adalah spesifikasi dan rencana; belum menandakan module sudah diimplementasikan.
+Paket ini menjadi acuan implementasi module `Onboardings`: HR membuat onboarding dari template checklist, menugaskan task, memantau progres, dan menyelesaikan proses masuk employee secara terkontrol. Foundation contract sudah tersedia, sedangkan workflow bisnis akan dibangun bertahap sesuai daftar task.
 
 ## Urutan baca
 
@@ -50,4 +50,4 @@ MVP memakai onboarding berbasis checklist:
 
 ## Status
 
-`PROPOSED` — specification dan ADR memerlukan persetujuan sebelum Task 01 dijalankan.
+`IN PROGRESS` — Task 01 dan Task 02 selesai pada 2026-07-15. Runtime saat ini terbatas pada list/create template checklist; belum ada update, archive/restore, onboarding case, atau task lifecycle. Langkah berikutnya adalah Task 03 archive dan restore template.

@@ -1,8 +1,8 @@
 # Tasks: HR Onboardings
 
-Semua task belum dikerjakan. Jalankan berurutan dan revisi specification/ADR terlebih dahulu bila implementasi membutuhkan perubahan semantics.
+Task dijalankan berurutan dan specification/ADR direvisi terlebih dahulu bila implementasi membutuhkan perubahan semantics.
 
-## Task 01 — Module dan state contract
+## ✅ Task 01 — Module dan state contract
 
 **Tujuan:** membuat boundary module formal tanpa UI atau CRUD bisnis.
 
@@ -10,15 +10,17 @@ Semua task belum dikerjakan. Jalankan berurutan dan revisi specification/ADR ter
 
 **Acceptance criteria:**
 
-- [ ] Manifest dependency hanya menunjuk Employees, optional EmployeeContracts contract, dan Console Users boundary.
-- [ ] Permission dan transition state terdokumentasi serta tervalidasi.
-- [ ] Belum ada mutation route yang dapat dipanggil tanpa policy.
+- [x] Manifest dependency hanya menunjuk Employees, optional EmployeeContracts contract, dan Console Users boundary.
+- [x] Permission dan transition state terdokumentasi serta tervalidasi.
+- [x] Belum ada mutation route yang dapat dipanggil tanpa policy.
+
+**Hasil:** selesai 2026-07-15. Foundation mengekspor permission contract, tetapi route dan navigation runtime tetap dinonaktifkan sampai vertical slice yang dilindungi policy tersedia.
 
 **Test:** `php artisan module:validate && php artisan test --filter=OnboardingFoundation`
 
 **Dependencies:** specification dan ADR-001 accepted. **Scope:** M; pecah scaffold dan state jika lebih dari lima file per increment.
 
-## Task 02 — Template checklist vertical slice
+## ✅ Task 02 — Template checklist vertical slice
 
 **Tujuan:** HR dapat membuat dan melihat template dengan ordered items.
 
@@ -26,9 +28,11 @@ Semua task belum dikerjakan. Jalankan berurutan dan revisi specification/ADR ter
 
 **Acceptance criteria:**
 
-- [ ] Code unik, item order, required flag, category, dan due offset tersimpan tepat.
-- [ ] Input invalid/duplicate ditolak tanpa partial items.
-- [ ] Authorized list/create bekerja; guest dan unauthorized ditolak.
+- [x] Code unik, item order, required flag, category, dan due offset tersimpan tepat.
+- [x] Input invalid/duplicate ditolak tanpa partial items.
+- [x] Authorized list/create bekerja; guest dan unauthorized ditolak.
+
+**Hasil:** selesai 2026-07-15. Template dan ordered item dibuat dalam satu transaction, mutation diaudit, serta halaman list/create hanya tersedia melalui route yang dilindungi authentication dan policy.
 
 **Test:** `php artisan test --filter=OnboardingTemplate && npm run typecheck && npm run build`
 
