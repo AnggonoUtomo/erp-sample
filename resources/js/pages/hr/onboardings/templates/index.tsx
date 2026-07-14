@@ -8,10 +8,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { usePermission } from '@/hooks/use-permission';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
-import { ArrowDown, ArrowUp, ListChecks, Plus, Trash2 } from 'lucide-react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Archive, ArrowDown, ArrowUp, ListChecks, Plus, RotateCcw, Trash2 } from 'lucide-react';
 import type { FormEvent } from 'react';
-import type { OnboardingTemplate, TemplateForm, TemplateItemForm } from './types';
+import type { TemplateForm, TemplateItemForm, TemplatePaginator } from './types';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'HR', href: '/hr/dashboard' },
@@ -29,9 +29,10 @@ const emptyItem = (): TemplateItemForm => ({
 
 const emptyForm = (): TemplateForm => ({ code: '', name: '', description: '', active: true, items: [emptyItem()] });
 
-export default function OnboardingTemplatesIndex({ templates }: { templates: OnboardingTemplate[] }) {
+export default function OnboardingTemplatesIndex({ templates, showArchived }: { templates: TemplatePaginator; showArchived: boolean }) {
     const { canAny } = usePermission();
     const canCreate = canAny(['onboardings.template-manage', 'onboardings.manage']);
+    const canManageLifecycle = canCreate;
     const form = useForm<TemplateForm>(emptyForm());
 
     const updateItem = <K extends keyof TemplateItemForm>(index: number, field: K, value: TemplateItemForm[K]) => {
@@ -62,22 +63,31 @@ export default function OnboardingTemplatesIndex({ templates }: { templates: Onb
             <Head title="Onboarding Templates" />
             <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 p-4 sm:p-6">
                 <div>
-                    <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
-                        <ListChecks className="size-6" /> Onboarding Templates
-                    </h1>
-                    <p className="text-muted-foreground mt-1 text-sm">
-                        Susun checklist standar. Urutan yang disimpan akan menjadi dasar snapshot onboarding.
-                    </p>
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                            <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
+                                <ListChecks className="size-6" /> Onboarding Templates
+                            </h1>
+                            <p className="text-muted-foreground mt-1 text-sm">
+                                Susun checklist standar. Urutan yang disimpan akan menjadi dasar snapshot onboarding.
+                            </p>
+                        </div>
+                        <Button asChild variant="outline" size="sm">
+                            <Link href={showArchived ? '/hr/onboardings/templates' : '/hr/onboardings/templates?archived=1'} preserveScroll>
+                                <Archive className="mr-2 size-4" /> {showArchived ? 'Sembunyikan arsip' : 'Tampilkan arsip'}
+                            </Link>
+                        </Button>
+                    </div>
                 </div>
 
                 <div className={`grid gap-6 ${canCreate ? 'xl:grid-cols-[minmax(0,1fr)_minmax(360px,0.8fr)]' : ''}`}>
                     <div className="space-y-4">
-                        {templates.length === 0 && (
+                        {templates.data.length === 0 && (
                             <Card>
                                 <CardContent className="text-muted-foreground p-8 text-center">Belum ada template onboarding.</CardContent>
                             </Card>
                         )}
-                        {templates.map((template) => (
+                        {templates.data.map((template) => (
                             <Card key={template.id}>
                                 <CardHeader className="pb-3">
                                     <div className="flex items-start justify-between gap-3">
@@ -85,7 +95,36 @@ export default function OnboardingTemplatesIndex({ templates }: { templates: Onb
                                             <CardTitle className="text-base">{template.name}</CardTitle>
                                             <p className="text-muted-foreground mt-1 text-xs">{template.code}</p>
                                         </div>
-                                        <Badge variant={template.active ? 'default' : 'secondary'}>{template.active ? 'Aktif' : 'Nonaktif'}</Badge>
+                                        <div className="flex items-center gap-2">
+                                            <Badge variant={template.archived ? 'outline' : template.active ? 'default' : 'secondary'}>
+                                                {template.archived ? 'Diarsipkan' : template.active ? 'Aktif' : 'Nonaktif'}
+                                            </Badge>
+                                            {canManageLifecycle && (
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    aria-label={template.archived ? `Restore ${template.name}` : `Arsipkan ${template.name}`}
+                                                    onClick={() => {
+                                                        if (template.archived) {
+                                                            router.patch(
+                                                                route('hr.onboardings.templates.restore', template.id),
+                                                                {},
+                                                                { preserveScroll: true },
+                                                            );
+                                                            return;
+                                                        }
+                                                        if (window.confirm(`Arsipkan template ${template.name}?`)) {
+                                                            router.delete(route('hr.onboardings.templates.archive', template.id), {
+                                                                preserveScroll: true,
+                                                            });
+                                                        }
+                                                    }}
+                                                >
+                                                    {template.archived ? <RotateCcw className="size-4" /> : <Archive className="size-4" />}
+                                                </Button>
+                                            )}
+                                        </div>
                                     </div>
                                 </CardHeader>
                                 <CardContent>
@@ -107,6 +146,31 @@ export default function OnboardingTemplatesIndex({ templates }: { templates: Onb
                                 </CardContent>
                             </Card>
                         ))}
+                        {templates.last_page > 1 && (
+                            <div className="flex items-center justify-between gap-3">
+                                <Button asChild={Boolean(templates.prev_page_url)} variant="outline" size="sm" disabled={!templates.prev_page_url}>
+                                    {templates.prev_page_url ? (
+                                        <Link href={templates.prev_page_url} preserveScroll>
+                                            Previous
+                                        </Link>
+                                    ) : (
+                                        <span>Previous</span>
+                                    )}
+                                </Button>
+                                <span className="text-muted-foreground text-xs">
+                                    Halaman {templates.current_page} dari {templates.last_page}
+                                </span>
+                                <Button asChild={Boolean(templates.next_page_url)} variant="outline" size="sm" disabled={!templates.next_page_url}>
+                                    {templates.next_page_url ? (
+                                        <Link href={templates.next_page_url} preserveScroll>
+                                            Next
+                                        </Link>
+                                    ) : (
+                                        <span>Next</span>
+                                    )}
+                                </Button>
+                            </div>
+                        )}
                     </div>
 
                     {canCreate && (

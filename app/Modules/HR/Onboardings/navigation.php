@@ -5,6 +5,12 @@ return [
     'sort' => 200,
     'items' => [
         [
+            'title' => 'Employee Onboardings',
+            'url' => '/hr/onboardings',
+            'icon' => 'ClipboardCheck',
+            'permissions' => ['onboardings.view', 'onboardings.create', 'onboardings.manage'],
+        ],
+        [
             'title' => 'Onboarding Templates',
             'url' => '/hr/onboardings/templates',
             'icon' => 'ListChecks',

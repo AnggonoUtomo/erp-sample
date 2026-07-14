@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use App\Modules\HR\Onboardings\Models\OnboardingTemplate;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 
@@ -71,5 +72,27 @@ class OnboardingTemplateTest extends TestCase
         $this->actingAs($unauthorized)->post(route('hr.onboardings.templates.store'))->assertForbidden();
         auth()->logout();
         $this->post(route('hr.onboardings.templates.store'))->assertRedirect(route('hr.login'));
+    }
+
+    public function test_template_list_is_paginated(): void
+    {
+        $viewer = User::factory()->create();
+        $viewer->givePermissionTo('onboardings.view');
+
+        foreach (range(1, 21) as $number) {
+            OnboardingTemplate::query()->create([
+                'code' => "TPL-{$number}",
+                'name' => "Template {$number}",
+                'active' => true,
+            ]);
+        }
+
+        $this->actingAs($viewer)
+            ->get(route('hr.onboardings.templates.index'))
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('hr/onboardings/templates/index')
+                ->has('templates.data', 20)
+                ->where('templates.total', 21)
+                ->where('templates.last_page', 2));
     }
 }

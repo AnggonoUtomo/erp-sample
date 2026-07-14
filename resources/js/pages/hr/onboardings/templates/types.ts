@@ -17,7 +17,17 @@ export type OnboardingTemplate = {
     name: string;
     description: string | null;
     active: boolean;
+    archived: boolean;
     items: TemplateItem[];
+};
+
+export type TemplatePaginator = {
+    data: OnboardingTemplate[];
+    current_page: number;
+    last_page: number;
+    prev_page_url: string | null;
+    next_page_url: string | null;
+    total: number;
 };
 
 export type TemplateItemForm = {

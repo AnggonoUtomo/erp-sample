@@ -38,7 +38,7 @@ Task dijalankan berurutan dan specification/ADR direvisi terlebih dahulu bila im
 
 **Dependencies:** Task 01. **Scope:** pecah backend dan UI menjadi increment M terpisah.
 
-## Task 03 — Archive dan restore template
+## ✅ Task 03 — Archive dan restore template
 
 **Tujuan:** menjaga histori template tanpa hard delete.
 
@@ -46,20 +46,26 @@ Task dijalankan berurutan dan specification/ADR direvisi terlebih dahulu bila im
 
 **Acceptance criteria:**
 
-- [ ] Archive mengeluarkan template dari pilihan onboarding baru.
-- [ ] Restore menjaga uniqueness.
-- [ ] Force-delete route tidak tersedia dan template terpakai tetap dapat dibaca.
+- [x] Archive mengeluarkan template dari pilihan onboarding baru.
+- [x] Restore menjaga uniqueness.
+- [x] Force-delete route tidak tersedia dan template terpakai tetap dapat dibaca.
+
+**Hasil:** selesai 2026-07-15. Archive memakai soft delete, item checklist tetap tersimpan, restore hanya menerima template terarsip, dan code tetap direservasi oleh unique constraint selama lifecycle template.
 
 **Test:** `php artisan test --filter=OnboardingTemplateArchive`
 
 **Dependencies:** Task 02. **Scope:** M.
 
-## Checkpoint A — Template contract
+## ✅ Checkpoint A — Template contract
 
-- [ ] Module validation, Pint, targeted backend test, typecheck, dan build hijau.
-- [ ] Review memastikan template tidak menjadi live source untuk onboarding existing.
+- [x] Module validation, Pint, targeted backend test, typecheck, dan build hijau.
+- [x] Review memastikan template tidak menjadi live source untuk onboarding existing.
 
-## Task 04 — Draft onboarding dan task snapshot
+**Evidence 2026-07-15:** `module:validate`, Pint, ESLint, Prettier, TypeScript, production build, dan 10 targeted test dengan 73 assertions lulus. Review correctness/security/architecture memastikan tidak ada hard delete atau route tanpa policy; list juga dipaginate 20 item untuk menghindari query tanpa batas.
+
+**Gate Task 04:** onboarding task wajib menyimpan snapshot title, description, category, required flag, sort order, dan due-offset context dalam transaction yang sama. Test Task 04 harus membuktikan edit atau archive template setelah create tidak mengubah task existing; onboarding tidak boleh membaca template item sebagai live source.
+
+## ✅ Task 04 — Draft onboarding dan task snapshot
 
 **Tujuan:** membuat vertical slice pertama: create/list draft onboarding dengan task hasil salinan template.
 
@@ -67,15 +73,17 @@ Task dijalankan berurutan dan specification/ADR direvisi terlebih dahulu bila im
 
 **Acceptance criteria:**
 
-- [ ] Employee, optional contract, template, start date, dan owner tervalidasi.
-- [ ] Onboarding dan seluruh task snapshot dibuat atomic.
-- [ ] Edit template setelah create tidak mengubah task existing.
+- [x] Employee, optional contract, template, start date, dan owner tervalidasi.
+- [x] Onboarding dan seluruh task snapshot dibuat atomic.
+- [x] Edit template setelah create tidak mengubah task existing.
+
+**Hasil:** selesai 2026-07-15. Draft dan tasks dibuat dalam satu transaction; fault injection pada audit membuktikan rollback menyeluruh. Snapshot menyimpan source id, content, required flag, category, sort order, due offset, calendar due date, default role, dan initial status tanpa membaca template secara live.
 
 **Test:** `php artisan test --filter=OnboardingDraftSnapshot && npm run typecheck && npm run build`
 
 **Dependencies:** Task 03 dan keputusan employment-period fallback. **Scope:** L secara outcome; wajib dipecah backend contract, UI, dan tests per increment.
 
-## Task 05 — Duplicate active dan idempotency guard
+## ✅ Task 05 — Duplicate active dan idempotency guard
 
 **Tujuan:** mencegah case ganda untuk employment period yang sama.
 
@@ -83,15 +91,17 @@ Task dijalankan berurutan dan specification/ADR direvisi terlebih dahulu bila im
 
 **Acceptance criteria:**
 
-- [ ] Retry identik tidak membuat case/task kedua.
-- [ ] Request berbeda untuk period aktif yang sama ditolak.
-- [ ] Concurrent create tidak menghasilkan dua onboarding aktif.
+- [x] Retry identik tidak membuat case/task kedua.
+- [x] Request berbeda untuk period aktif yang sama ditolak.
+- [x] Concurrent create tidak menghasilkan dua onboarding aktif.
+
+**Hasil:** selesai 2026-07-15. Server membentuk active identity dan SHA-256 request fingerprint secara deterministik. Guard dilakukan sebelum transaction, diulang dengan row lock, dan dipertahankan oleh unique database constraint; recovery unique-race membedakan retry identik dari conflict tanpa audit ganda.
 
 **Test:** `php artisan test --filter=OnboardingDuplicateGuard`
 
 **Dependencies:** Task 04. **Scope:** M.
 
-## Task 06 — Detail dan progress read model
+## ✅ Task 06 — Detail dan progress read model
 
 **Tujuan:** menyajikan detail case dan progress deterministic tanpa mutation tambahan.
 
@@ -99,18 +109,24 @@ Task dijalankan berurutan dan specification/ADR direvisi terlebih dahulu bila im
 
 **Acceptance criteria:**
 
-- [ ] Ordered task, required incomplete, optional incomplete, overdue, dan completed count benar.
-- [ ] Empty state dan archived history jelas.
-- [ ] Detail tidak mengekspos PII atau internal storage reference.
+- [x] Ordered task, required incomplete, optional incomplete, overdue, dan completed count benar.
+- [x] Empty state dan archived history jelas.
+- [x] Detail tidak mengekspos PII atau internal storage reference.
+
+**Hasil:** selesai 2026-07-15. Detail memakai `business_date` eksplisit dan read service khusus. Progress membedakan task terminal untuk persentase dari count `COMPLETED`, menghitung incomplete/overdue tanpa mutation, membaca snapshot sesuai `sort_order`, dan mendukung histori soft-deleted melalui route berizin. Props hanya membawa identitas operasional minimum dan tidak membawa active identity, request fingerprint, atau source template item id.
 
 **Test:** `php artisan test --filter=OnboardingProgress && npm run test:frontend`
 
 **Dependencies:** Task 04. **Scope:** M per backend/frontend increment.
 
-## Checkpoint B — Draft snapshot
+## ✅ Checkpoint B — Draft snapshot
 
-- [ ] Create/list/detail draft bekerja end-to-end.
-- [ ] Atomic rollback, idempotency, authorization, audit, dan snapshot invariance terbukti.
+- [x] Create/list/detail draft bekerja end-to-end.
+- [x] Atomic rollback, idempotency, authorization, audit, dan snapshot invariance terbukti.
+
+**Evidence 2026-07-15:** 20 targeted onboarding tests dengan 168 assertions lulus. Create membentuk aggregate dan task snapshot, list menyediakan tautan detail dengan business date eksplisit, dan detail menghitung progress dari snapshot. Fault-injected audit membuktikan rollback penuh; identical retry tidak menambah onboarding/task/audit; request conflict ditolak; route list/create/detail dilindungi policy; edit/archive template tidak mengubah task existing. Module validation, Pint, ESLint, Prettier, TypeScript, frontend tests, production build, dan `git diff --check` juga hijau.
+
+**Gate Task 07:** activation hanya boleh mengubah `DRAFT -> IN_PROGRESS` dalam transaction, mempertahankan active identity guard, menolak state selain draft, serta tidak membuat audit ganda pada retry.
 
 ## Task 07 — Activate onboarding
 

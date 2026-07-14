@@ -48,12 +48,20 @@ class OnboardingFoundationTest extends TestCase
         $this->assertFalse(OnboardingTaskStatus::Completed->canTransitionTo(OnboardingTaskStatus::Skipped));
     }
 
-    public function test_runtime_routes_are_limited_to_policy_protected_template_slice(): void
+    public function test_runtime_routes_are_limited_to_policy_protected_implemented_slices(): void
     {
         $routes = collect(Route::getRoutes()->getRoutes())
             ->filter(fn ($route) => str_starts_with((string) $route->getName(), 'hr.onboardings.'));
 
-        $this->assertSame(['hr.onboardings.templates.index', 'hr.onboardings.templates.store'], $routes->pluck('action.as')->sort()->values()->all());
+        $this->assertSame([
+            'hr.onboardings.index',
+            'hr.onboardings.show',
+            'hr.onboardings.store',
+            'hr.onboardings.templates.archive',
+            'hr.onboardings.templates.index',
+            'hr.onboardings.templates.restore',
+            'hr.onboardings.templates.store',
+        ], $routes->pluck('action.as')->sort()->values()->all());
 
         $routes->each(function ($route) {
             $middleware = $route->gatherMiddleware();

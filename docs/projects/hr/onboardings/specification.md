@@ -30,7 +30,7 @@ Pilihan: opsi 3. Lihat [ADR-001](decisions/001-checklist-driven-onboarding.md).
 ### Assumptions
 
 - Employee sudah tersedia sebelum onboarding dimulai.
-- Employment period diwakili contract bila contract tersedia; fallback awal memakai employee + start date eksplisit.
+- Employment period diwakili contract bila contract tersedia; fallback MVP memakai employee + start date eksplisit sesuai [ADR-002](decisions/002-employment-fallback-and-calendar-due-date.md).
 - HR Manager bertanggung jawab atas lifecycle case.
 - Completion evidence MVP berupa catatan ringkas, actor, dan timestamp; file tetap melalui Employee Documents/DMS.
 
@@ -49,6 +49,7 @@ Pilihan: opsi 3. Lihat [ADR-001](decisions/001-checklist-driven-onboarding.md).
 - Sistem memvalidasi employee aktif/tidak diarsipkan dan contract milik employee tersebut.
 - Sistem membuat onboarding `DRAFT`, lalu menyalin item template menjadi task snapshot secara atomic.
 - Idempotency/retry tidak boleh membuat case atau task duplikat.
+- Retry identik dikenali dari fingerprint server-side; request berbeda untuk active employment identity yang sama ditolak.
 
 ### FR-03 — Activate onboarding
 
@@ -68,6 +69,7 @@ Pilihan: opsi 3. Lihat [ADR-001](decisions/001-checklist-driven-onboarding.md).
 
 - Progress dihitung dari jumlah task terminal (`COMPLETED` atau valid `SKIPPED`) dibagi total task.
 - Summary memisahkan required incomplete, optional incomplete, overdue, dan completed.
+- Persentase memakai seluruh task terminal (`COMPLETED` atau valid `SKIPPED`), sedangkan completed count hanya menghitung status `COMPLETED`.
 - Query tanggal memakai business date eksplisit untuk hasil deterministik.
 
 ### FR-06 — Complete/cancel onboarding
@@ -272,8 +274,8 @@ git diff --check
 
 ## 13. Open questions
 
-- Apakah employment period wajib selalu memiliki Employee Contract, atau fallback start date diterima permanen?
+- Employment fallback sudah diputuskan untuk MVP pada ADR-002; evaluasi ulang setelah contract diwajibkan oleh proses operasional.
 - Siapa yang boleh menjadi assignee MVP: hanya Console User atau juga team/role virtual?
 - Apakah optional task yang belum selesai boleh otomatis di-skip saat onboarding completed?
-- Apakah due date dihitung sebagai calendar day atau working day?
+- Due date MVP memakai calendar day sesuai ADR-002; working-day calendar adalah evaluasi lanjutan.
 - Apakah completion memerlukan approval HR Manager terpisah?
