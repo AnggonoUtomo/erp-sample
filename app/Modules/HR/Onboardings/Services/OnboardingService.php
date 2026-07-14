@@ -21,9 +21,24 @@ class OnboardingService
     public function __construct(private readonly OnboardingTransaction $transaction, private readonly AuditLogService $audit) {}
 
     /** @return array<string, mixed> */
-    public function getPageData(): array
+    public function getPageData(array $filters = []): array
     {
-        $onboardings = Onboarding::query()
+        $businessDate = $filters['business_date'] ?? now()->toDateString();
+        $query = Onboarding::query()
+            ->when($filters['archived'] ?? false, fn ($query) => $query->onlyTrashed())
+            ->when($filters['employee_id'] ?? null, fn ($query, $value) => $query->where('employee_id', $value))
+            ->when($filters['owner_user_id'] ?? null, fn ($query, $value) => $query->where('owner_user_id', $value))
+            ->when($filters['template_id'] ?? null, fn ($query, $value) => $query->where('onboarding_template_id', $value))
+            ->when($filters['status'] ?? null, fn ($query, $value) => $query->where('status', $value))
+            ->when($filters['start_from'] ?? null, fn ($query, $value) => $query->whereDate('start_date', '>=', $value))
+            ->when($filters['start_to'] ?? null, fn ($query, $value) => $query->whereDate('start_date', '<=', $value))
+            ->when($filters['overdue'] ?? false, fn ($query) => $query
+                ->whereIn('status', [OnboardingStatus::Draft->value, OnboardingStatus::InProgress->value])
+                ->whereHas('tasks', fn ($tasks) => $tasks
+                    ->whereIn('status', [OnboardingTaskStatus::Pending->value, OnboardingTaskStatus::InProgress->value])
+                    ->whereDate('due_date', '<', $businessDate)));
+
+        $onboardings = $query
             ->with(['employee:id,employee_number,display_name', 'template:id,code,name', 'owner:id,name'])
             ->withCount('tasks')
             ->latest('id')
@@ -36,17 +51,46 @@ class OnboardingService
                 'owner' => $onboarding->owner?->only(['id', 'name']),
                 'start_date' => $onboarding->start_date?->format('Y-m-d'),
                 'status' => $onboarding->status->value,
+                'archived' => $onboarding->trashed(),
                 'tasks_count' => $onboarding->tasks_count,
             ]);
 
         return [
-            'businessDate' => now()->toDateString(),
+            'businessDate' => $businessDate,
+            'filters' => $filters,
             'onboardings' => $onboardings,
             'employeeOptions' => Employee::query()->where('active', true)->orderBy('display_name')->get(['id', 'employee_number', 'display_name']),
             'contractOptions' => EmployeeContract::query()->where('status', '!=', 'CANCELLED')->orderByDesc('start_date')->get(['id', 'employee_id', 'contract_number', 'start_date']),
             'templateOptions' => OnboardingTemplate::availableForOnboarding()->orderBy('name')->get(['id', 'code', 'name']),
             'ownerOptions' => User::query()->orderBy('name')->get(['id', 'name']),
         ];
+    }
+
+    public function archive(Onboarding $onboarding): void
+    {
+        $this->transaction->run(function () use ($onboarding) {
+            $locked = Onboarding::query()->lockForUpdate()->findOrFail($onboarding->id);
+            if (! $locked->status->isTerminal()) {
+                throw ValidationException::withMessages(['status' => 'Hanya onboarding terminal yang dapat diarsipkan.']);
+            }
+
+            $locked->delete();
+            $this->audit->record(module: 'hr.onboardings', event: 'Onboarding.archived', auditable: $locked, description: "Archived onboarding {$locked->id}", oldValues: ['deleted_at' => null], newValues: ['deleted_at' => $locked->deleted_at?->toIso8601String()]);
+        });
+    }
+
+    public function restore(Onboarding $onboarding): void
+    {
+        $this->transaction->run(function () use ($onboarding) {
+            $locked = Onboarding::query()->withTrashed()->lockForUpdate()->findOrFail($onboarding->id);
+            if (! $locked->trashed() || ! $locked->status->isTerminal() || $locked->active_identity_key !== null) {
+                throw ValidationException::withMessages(['status' => 'Hanya histori onboarding terminal yang valid dapat direstore.']);
+            }
+
+            $archivedAt = $locked->deleted_at?->toIso8601String();
+            $locked->restore();
+            $this->audit->record(module: 'hr.onboardings', event: 'Onboarding.restored', auditable: $locked, description: "Restored onboarding {$locked->id}", oldValues: ['deleted_at' => $archivedAt], newValues: ['deleted_at' => null]);
+        });
     }
 
     public function createDraft(OnboardingDraftData $data): Onboarding

@@ -35,4 +35,14 @@ class OnboardingPolicy
     {
         return $user->hasAnyPermission(['onboardings.cancel', 'onboardings.manage']);
     }
+
+    public function delete(User $user, mixed $onboarding): bool
+    {
+        return $user->hasAnyPermission(['onboardings.archive', 'onboardings.manage']);
+    }
+
+    public function restore(User $user, mixed $onboarding): bool
+    {
+        return $user->hasAnyPermission(['onboardings.restore', 'onboardings.manage']);
+    }
 }

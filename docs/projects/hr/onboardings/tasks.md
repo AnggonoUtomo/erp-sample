@@ -207,7 +207,7 @@ Task dijalankan berurutan dan specification/ADR direvisi terlebih dahulu bila im
 
 **Evidence 2026-07-15:** seluruh mutation onboarding diinventarisasi melalui `OnboardingAuthorizationMatrixTest`; transition, terminal immutability, required completion invariant, lock order, dan audit diverifikasi oleh suite onboarding. Semantics yang diterima mempertahankan optional incomplete tanpa auto-skip, menghitung `COMPLETED/SKIPPED` sebagai terminal progress, dan tidak menyediakan reopen onboarding terminal pada MVP. Lihat [laporan Checkpoint C](06-lifecycle-checkpoint-c.md).
 
-## Task 11 — Filters, archive/restore, dan overdue command
+## ✅ Task 11 — Filters, archive/restore, dan overdue command
 
 **Tujuan:** menyiapkan operasional harian dan histori read-only.
 
@@ -215,9 +215,11 @@ Task dijalankan berurutan dan specification/ADR direvisi terlebih dahulu bila im
 
 **Acceptance criteria:**
 
-- [ ] Filter employee/state/template/owner/date/overdue deterministic dan paginated.
-- [ ] Archive/restore menjaga uniqueness dan tidak menyediakan force delete.
-- [ ] `hr:onboardings:overdue --date` read-only, deterministic, dan memiliki exit code jelas.
+- [x] Filter employee/state/template/owner/date/overdue deterministic dan paginated.
+- [x] Archive/restore menjaga uniqueness dan tidak menyediakan force delete.
+- [x] `hr:onboardings:overdue --date` read-only, deterministic, dan memiliki exit code jelas.
+
+**Hasil:** selesai 2026-07-15. List menerima filter tervalidasi untuk employee, status, template, owner, start-date range, archived, dan overdue terhadap business date eksplisit serta tetap dipaginate 20 item. Hanya onboarding terminal dapat diarsipkan dan direstore sebagai histori tanpa mengaktifkan identity atau menyediakan force delete. Command `hr:onboardings:overdue --date=YYYY-MM-DD` mengembalikan onboarding operasional dengan task nonterminal yang lewat jatuh tempo, berurutan deterministik, read-only, serta gagal jelas untuk tanggal kosong/invalid. Lihat [ADR-006](decisions/006-terminal-history-and-overdue-date.md).
 
 **Test:** `php artisan test --filter=OnboardingArchive && php artisan test --filter=OnboardingsOverdueCommand`
 

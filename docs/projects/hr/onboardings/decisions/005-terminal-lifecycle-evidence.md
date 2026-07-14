@@ -1,6 +1,6 @@
 # ADR-005 — Terminal lifecycle dan evidence
 
-**Status:** Accepted  
+**Status:** Accepted
 **Tanggal:** 2026-07-15
 
 ## Konteks

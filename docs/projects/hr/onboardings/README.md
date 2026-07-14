@@ -11,9 +11,10 @@ Paket ini menjadi acuan implementasi module `Onboardings`: HR membuat onboarding
 5. [ADR-003](decisions/003-console-user-assignment-and-completion-evidence.md) — assignee Console User dan evidence completion MVP.
 6. [ADR-004](decisions/004-required-skip-and-controlled-reopen.md) — permission required-skip dan semantics controlled reopen.
 7. [ADR-005](decisions/005-terminal-lifecycle-evidence.md) — completion invariant, cancellation evidence, dan terminal immutability.
-8. [Implementation plan](implementation-plan.md) — fase, dependency graph, risiko, dan checkpoint.
-9. [Tasks](tasks.md) — task kecil yang dapat dieksekusi satu per satu.
-10. [Checkpoint C](06-lifecycle-checkpoint-c.md) — evidence transition, denial, concurrency guard, audit, dan semantics lifecycle.
+8. [ADR-006](decisions/006-terminal-history-and-overdue-date.md) — archive terminal dan overdue berdasarkan business date eksplisit.
+9. [Implementation plan](implementation-plan.md) — fase, dependency graph, risiko, dan checkpoint.
+10. [Tasks](tasks.md) — task kecil yang dapat dieksekusi satu per satu.
+11. [Checkpoint C](06-lifecycle-checkpoint-c.md) — evidence transition, denial, concurrency guard, audit, dan semantics lifecycle.
 
 Dokumen konteks terkait:
 
@@ -55,4 +56,4 @@ MVP memakai onboarding berbasis checklist:
 
 ## Status
 
-`IN PROGRESS` — Task 01–10 serta Checkpoint A–C selesai pada 2026-07-15. Lifecycle onboarding telah melewati review transition, authorization, concurrency-sensitive invariant, audit, serta semantics progress/completion. Langkah berikutnya adalah Task 11.
+`IN PROGRESS` — Task 01–11 serta Checkpoint A–C selesai pada 2026-07-15. Operasional list kini memiliki filter deterministik, histori terminal dapat diarsipkan/restored, dan overdue dapat dibaca melalui command tanpa mutation. Langkah berikutnya adalah Task 12.

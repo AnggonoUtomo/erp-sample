@@ -7,10 +7,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { usePermission } from '@/hooks/use-permission';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import { ClipboardCheck, Plus } from 'lucide-react';
 import type { FormEvent, ReactNode } from 'react';
-import type { ContractOption, EmployeeOption, IdName, OnboardingDraftForm, OnboardingPaginator, TemplateOption } from './types';
+import { OnboardingArchiveDialog } from './onboarding-components/onboarding-archive-dialog';
+import type { ContractOption, EmployeeOption, IdName, OnboardingDraftForm, OnboardingFilterForm, OnboardingPaginator, TemplateOption } from './types';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'HR', href: '/hr/dashboard' },
@@ -24,11 +25,33 @@ type Props = {
     contractOptions: ContractOption[];
     templateOptions: TemplateOption[];
     ownerOptions: IdName[];
+    filters: Partial<OnboardingFilterForm>;
 };
 
-export default function OnboardingsIndex({ businessDate, onboardings, employeeOptions, contractOptions, templateOptions, ownerOptions }: Props) {
+export default function OnboardingsIndex({
+    businessDate,
+    onboardings,
+    employeeOptions,
+    contractOptions,
+    templateOptions,
+    ownerOptions,
+    filters,
+}: Props) {
     const { canAny } = usePermission();
     const canCreate = canAny(['onboardings.create', 'onboardings.manage']);
+    const canArchive = canAny(['onboardings.archive', 'onboardings.manage']);
+    const canRestore = canAny(['onboardings.restore', 'onboardings.manage']);
+    const filterForm = useForm<OnboardingFilterForm>({
+        employee_id: String(filters.employee_id ?? ''),
+        owner_user_id: String(filters.owner_user_id ?? ''),
+        template_id: String(filters.template_id ?? ''),
+        status: String(filters.status ?? ''),
+        start_from: String(filters.start_from ?? ''),
+        start_to: String(filters.start_to ?? ''),
+        overdue: Boolean(filters.overdue),
+        archived: Boolean(filters.archived),
+        business_date: businessDate,
+    });
     const form = useForm<OnboardingDraftForm>({
         employee_id: '',
         employee_contract_id: '',
@@ -41,6 +64,10 @@ export default function OnboardingsIndex({ businessDate, onboardings, employeeOp
     const submit = (event: FormEvent) => {
         event.preventDefault();
         form.post(route('hr.onboardings.store'), { preserveScroll: true, onSuccess: () => form.reset() });
+    };
+    const applyFilters = (event: FormEvent) => {
+        event.preventDefault();
+        filterForm.get(route('hr.onboardings.index'), { preserveState: true, preserveScroll: true });
     };
 
     return (
@@ -58,6 +85,78 @@ export default function OnboardingsIndex({ businessDate, onboardings, employeeOp
 
                 <div className={`grid gap-6 ${canCreate ? 'xl:grid-cols-[minmax(0,1fr)_380px]' : ''}`}>
                     <div className="space-y-4">
+                        <Card>
+                            <CardContent className="p-4">
+                                <form onSubmit={applyFilters} className="grid gap-3 md:grid-cols-3 xl:grid-cols-5">
+                                    <FilterSelect
+                                        value={filterForm.data.employee_id}
+                                        onChange={(value) => filterForm.setData('employee_id', value)}
+                                        placeholder="Semua employee"
+                                        options={employeeOptions.map((item) => ({ value: String(item.id), label: item.display_name }))}
+                                    />
+                                    <FilterSelect
+                                        value={filterForm.data.status}
+                                        onChange={(value) => filterForm.setData('status', value)}
+                                        placeholder="Semua status"
+                                        options={['DRAFT', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'].map((value) => ({ value, label: value }))}
+                                    />
+                                    <FilterSelect
+                                        value={filterForm.data.template_id}
+                                        onChange={(value) => filterForm.setData('template_id', value)}
+                                        placeholder="Semua template"
+                                        options={templateOptions.map((item) => ({ value: String(item.id), label: item.name }))}
+                                    />
+                                    <FilterSelect
+                                        value={filterForm.data.owner_user_id}
+                                        onChange={(value) => filterForm.setData('owner_user_id', value)}
+                                        placeholder="Semua owner"
+                                        options={ownerOptions.map((item) => ({ value: String(item.id), label: item.name }))}
+                                    />
+                                    <Input
+                                        type="date"
+                                        aria-label="Business date"
+                                        value={filterForm.data.business_date}
+                                        onChange={(event) => filterForm.setData('business_date', event.target.value)}
+                                    />
+                                    <Input
+                                        type="date"
+                                        aria-label="Start date dari"
+                                        value={filterForm.data.start_from}
+                                        onChange={(event) => filterForm.setData('start_from', event.target.value)}
+                                    />
+                                    <Input
+                                        type="date"
+                                        aria-label="Start date sampai"
+                                        value={filterForm.data.start_to}
+                                        onChange={(event) => filterForm.setData('start_to', event.target.value)}
+                                    />
+                                    <label className="flex items-center gap-2 text-sm">
+                                        <input
+                                            type="checkbox"
+                                            checked={filterForm.data.overdue}
+                                            onChange={(event) => filterForm.setData('overdue', event.target.checked)}
+                                        />{' '}
+                                        Hanya overdue
+                                    </label>
+                                    <label className="flex items-center gap-2 text-sm">
+                                        <input
+                                            type="checkbox"
+                                            checked={filterForm.data.archived}
+                                            onChange={(event) => filterForm.setData('archived', event.target.checked)}
+                                        />{' '}
+                                        Histori arsip
+                                    </label>
+                                    <div className="flex gap-2">
+                                        <Button type="submit" size="sm">
+                                            Terapkan
+                                        </Button>
+                                        <Button type="button" size="sm" variant="outline" onClick={() => router.get(route('hr.onboardings.index'))}>
+                                            Reset
+                                        </Button>
+                                    </div>
+                                </form>
+                            </CardContent>
+                        </Card>
                         {onboardings.data.length === 0 && (
                             <Card>
                                 <CardContent className="text-muted-foreground p-8 text-center">Belum ada onboarding.</CardContent>
@@ -80,7 +179,13 @@ export default function OnboardingsIndex({ businessDate, onboardings, employeeOp
                                             </Link>
                                         </Button>
                                     </div>
-                                    <Badge variant="secondary">{onboarding.status}</Badge>
+                                    <div className="flex items-center gap-2">
+                                        <Badge variant="secondary">{onboarding.status}</Badge>
+                                        {((onboarding.archived && canRestore) ||
+                                            (!onboarding.archived && canArchive && ['COMPLETED', 'CANCELLED'].includes(onboarding.status))) && (
+                                            <OnboardingArchiveDialog onboardingId={onboarding.id} archived={onboarding.archived} />
+                                        )}
+                                    </div>
                                 </CardContent>
                             </Card>
                         ))}
@@ -190,6 +295,34 @@ export default function OnboardingsIndex({ businessDate, onboardings, employeeOp
                 </div>
             </div>
         </AppLayout>
+    );
+}
+
+function FilterSelect({
+    value,
+    onChange,
+    placeholder,
+    options,
+}: {
+    value: string;
+    onChange: (value: string) => void;
+    placeholder: string;
+    options: { value: string; label: string }[];
+}) {
+    return (
+        <Select value={value || 'all'} onValueChange={(next) => onChange(next === 'all' ? '' : next)}>
+            <SelectTrigger>
+                <SelectValue placeholder={placeholder} />
+            </SelectTrigger>
+            <SelectContent>
+                <SelectItem value="all">{placeholder}</SelectItem>
+                {options.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                    </SelectItem>
+                ))}
+            </SelectContent>
+        </Select>
     );
 }
 

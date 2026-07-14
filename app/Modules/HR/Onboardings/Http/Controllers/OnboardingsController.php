@@ -5,6 +5,7 @@ namespace App\Modules\HR\Onboardings\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Modules\HR\Onboardings\Http\Requests\CancelOnboardingRequest;
+use App\Modules\HR\Onboardings\Http\Requests\IndexOnboardingsRequest;
 use App\Modules\HR\Onboardings\Http\Requests\ShowOnboardingRequest;
 use App\Modules\HR\Onboardings\Http\Requests\StoreOnboardingDraftRequest;
 use App\Modules\HR\Onboardings\Models\Onboarding;
@@ -33,12 +34,14 @@ class OnboardingsController extends Controller implements HasMiddleware
             new Middleware('can:activate,onboarding', only: ['activate']),
             new Middleware('can:complete,onboarding', only: ['complete']),
             new Middleware('can:cancel,onboarding', only: ['cancel']),
+            new Middleware('can:delete,onboarding', only: ['archive']),
+            new Middleware('can:restore,onboarding', only: ['restore']),
         ];
     }
 
-    public function index(): Response
+    public function index(IndexOnboardingsRequest $request): Response
     {
-        return Inertia::render('hr/onboardings/index', $this->onboardings->getPageData());
+        return Inertia::render('hr/onboardings/index', $this->onboardings->getPageData($request->filters()));
     }
 
     public function store(StoreOnboardingDraftRequest $request): RedirectResponse
@@ -83,6 +86,20 @@ class OnboardingsController extends Controller implements HasMiddleware
         $this->lifecycle->cancel($onboarding, $request->toDto());
 
         return $this->redirectToDetail($onboarding, 'Onboarding berhasil dibatalkan.');
+    }
+
+    public function archive(Onboarding $onboarding): RedirectResponse
+    {
+        $this->onboardings->archive($onboarding);
+
+        return redirect()->route('hr.onboardings.index')->with('success', 'Onboarding berhasil diarsipkan.');
+    }
+
+    public function restore(Onboarding $onboarding): RedirectResponse
+    {
+        $this->onboardings->restore($onboarding);
+
+        return redirect()->route('hr.onboardings.index', ['archived' => 1])->with('success', 'Onboarding berhasil direstore.');
     }
 
     private function redirectToDetail(Onboarding $onboarding, string $message): RedirectResponse

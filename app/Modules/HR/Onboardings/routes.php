@@ -18,6 +18,8 @@ Route::middleware('auth')->prefix('hr/onboardings')->name('hr.onboardings.')->gr
     Route::patch('{onboarding}/activate', [OnboardingsController::class, 'activate'])->name('activate');
     Route::patch('{onboarding}/complete', [OnboardingsController::class, 'complete'])->name('complete');
     Route::patch('{onboarding}/cancel', [OnboardingsController::class, 'cancel'])->name('cancel');
+    Route::delete('{onboarding}', [OnboardingsController::class, 'archive'])->name('archive');
+    Route::patch('{onboarding}/restore', [OnboardingsController::class, 'restore'])->withTrashed()->name('restore');
     Route::patch('{onboarding}/tasks/{task}/assignment', [OnboardingTasksController::class, 'assignment'])->scopeBindings()->name('tasks.assignment');
     Route::patch('{onboarding}/tasks/{task}/start', [OnboardingTasksController::class, 'start'])->scopeBindings()->name('tasks.start');
     Route::patch('{onboarding}/tasks/{task}/complete', [OnboardingTasksController::class, 'complete'])->scopeBindings()->name('tasks.complete');

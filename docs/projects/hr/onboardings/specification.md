@@ -234,7 +234,7 @@ git diff --check
 - [ ] Task assignment, complete, skip khusus, dan reopen menjaga audit serta progress.
 - [x] Completion ditolak selama required task belum terminal secara sah.
 - [x] Cancel membutuhkan reason dan tidak menghapus history.
-- [ ] List/filter/detail deterministic, paginated, dan permission-aware.
+- [x] List/filter/detail deterministic, paginated, dan permission-aware.
 - [ ] Guest dan role tanpa permission ditolak pada seluruh mutation.
 - [ ] Tidak ada storage engine, direct Payroll/Attendance dependency, atau hard delete.
 

@@ -11,8 +11,20 @@ export type OnboardingRow = {
     owner: IdName | null;
     start_date: string;
     status: string;
+    archived: boolean;
     tasks_count: number;
 };
+export interface OnboardingFilterForm extends Record<string, FormDataConvertible> {
+    employee_id: string;
+    owner_user_id: string;
+    template_id: string;
+    status: string;
+    start_from: string;
+    start_to: string;
+    overdue: boolean;
+    archived: boolean;
+    business_date: string;
+}
 export type OnboardingPaginator = {
     data: OnboardingRow[];
     current_page: number;

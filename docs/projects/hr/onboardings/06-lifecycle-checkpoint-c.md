@@ -1,6 +1,6 @@
 # Checkpoint C — Lifecycle complete
 
-**Status:** PASS  
+**Status:** PASS
 **Tanggal:** 2026-07-15
 
 ## Tujuan pemeriksaan

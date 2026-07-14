@@ -16,8 +16,10 @@ class OnboardingAuthorizationMatrixTest extends TestCase
 
         $expectedPolicies = [
             'hr.onboardings.activate' => 'can:activate,onboarding',
+            'hr.onboardings.archive' => 'can:delete,onboarding',
             'hr.onboardings.cancel' => 'can:cancel,onboarding',
             'hr.onboardings.complete' => 'can:complete,onboarding',
+            'hr.onboardings.restore' => 'can:restore,onboarding',
             'hr.onboardings.store' => 'can:create,App\Modules\HR\Onboardings\Models\Onboarding',
             'hr.onboardings.tasks.assignment' => 'can:update,task',
             'hr.onboardings.tasks.complete' => 'can:update,task',
