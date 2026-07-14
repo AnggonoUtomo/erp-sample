@@ -18,7 +18,10 @@ class OnboardingProgressReadService
             'contract:id,contract_number,start_date,end_date,status',
             'template:id,code,name',
             'owner:id,name',
-            'tasks',
+            'tasks.assignee:id,name',
+            'tasks.completedBy:id,name',
+            'tasks.skippedBy:id,name',
+            'tasks.reopenedBy:id,name',
         ]);
 
         $tasks = $onboarding->tasks;
@@ -61,6 +64,16 @@ class OnboardingProgressReadService
                 'sort_order' => $task->sort_order,
                 'status' => $task->status->value,
                 'overdue' => ! $task->status->isTerminal() && $task->due_date->lt($date),
+                'assignee' => $task->assignee?->only(['id', 'name']),
+                'completed_by' => $task->completedBy?->only(['id', 'name']),
+                'completed_at' => $task->completed_at?->toIso8601String(),
+                'completion_note' => $task->completion_note,
+                'skipped_by' => $task->skippedBy?->only(['id', 'name']),
+                'skipped_at' => $task->skipped_at?->toIso8601String(),
+                'skip_reason' => $task->skip_reason,
+                'reopened_by' => $task->reopenedBy?->only(['id', 'name']),
+                'reopened_at' => $task->reopened_at?->toIso8601String(),
+                'reopen_reason' => $task->reopen_reason,
             ])->values(),
         ];
     }

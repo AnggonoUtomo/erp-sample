@@ -52,6 +52,7 @@ class OnboardingProgressTest extends TestCase
                 ->where('onboarding.tasks.1.title', 'Required terlambat')
                 ->where('onboarding.tasks.2.title', 'Optional mendatang')
                 ->where('onboarding.tasks.3.title', 'Optional selesai')
+                ->has('assigneeOptions', 0)
                 ->missing('onboarding.active_identity_key')
                 ->missing('onboarding.request_fingerprint')
                 ->missing('onboarding.tasks.0.source_template_item_id'));

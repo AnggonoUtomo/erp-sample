@@ -1,16 +1,23 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { usePermission } from '@/hooks/use-permission';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { Archive, ArrowLeft, CalendarDays, CheckCircle2, ClipboardList, Clock3 } from 'lucide-react';
+import { canActivateOnboarding, OnboardingActivationDialog } from './onboarding-components/onboarding-activation-dialog';
 import { OnboardingSummaryCards } from './onboarding-components/onboarding-summary-cards';
+import { OnboardingTaskControls } from './onboarding-components/onboarding-task-controls';
 import type { OnboardingDetail } from './types';
 
-type Props = { onboarding: OnboardingDetail; businessDate: string };
+type Props = { onboarding: OnboardingDetail; businessDate: string; assigneeOptions: { id: number; name: string }[] };
 
-export default function OnboardingShow({ onboarding, businessDate }: Props) {
+export default function OnboardingShow({ onboarding, businessDate, assigneeOptions }: Props) {
+    const { canAny } = usePermission();
+    const showActivation = canActivateOnboarding(onboarding.status, onboarding.archived, canAny(['onboardings.activate', 'onboardings.manage']));
+    const canUpdateTasks = canAny(['onboardings.task-update', 'onboardings.manage']);
+    const canSkipRequired = canAny(['onboardings.task-skip-required', 'onboardings.manage']);
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'HR', href: '/hr/dashboard' },
         { title: 'Employee Onboardings', href: '/hr/onboardings' },
@@ -44,8 +51,11 @@ export default function OnboardingShow({ onboarding, businessDate }: Props) {
                             {onboarding.template?.name ?? 'Template tidak tersedia'}
                         </p>
                     </div>
-                    <div className="text-muted-foreground flex items-center gap-2 text-sm">
-                        <CalendarDays className="size-4" /> Business date: {businessDate}
+                    <div className="flex flex-col items-end gap-3">
+                        <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                            <CalendarDays className="size-4" /> Business date: {businessDate}
+                        </div>
+                        {showActivation && <OnboardingActivationDialog onboardingId={onboarding.id} />}
                     </div>
                 </div>
 
@@ -82,6 +92,37 @@ export default function OnboardingShow({ onboarding, businessDate }: Props) {
                                         <p className="text-muted-foreground mt-2 text-xs">
                                             {task.category} · Jatuh tempo {task.due_date}
                                         </p>
+                                        <p className="text-muted-foreground mt-1 text-xs">Assignee: {task.assignee?.name ?? 'Belum ditugaskan'}</p>
+                                        {task.completed_by && (
+                                            <div className="mt-2 rounded-md bg-emerald-50 p-2 text-xs text-emerald-900 dark:bg-emerald-950/30 dark:text-emerald-200">
+                                                Diselesaikan oleh {task.completed_by.name}
+                                                {task.completed_at ? ` · ${new Date(task.completed_at).toLocaleString('id-ID')}` : ''}
+                                                {task.completion_note && <p className="mt-1">{task.completion_note}</p>}
+                                            </div>
+                                        )}
+                                        {task.skipped_by && (
+                                            <div className="mt-2 rounded-md bg-amber-50 p-2 text-xs text-amber-900 dark:bg-amber-950/30 dark:text-amber-200">
+                                                Di-skip oleh {task.skipped_by.name}
+                                                {task.skipped_at ? ` · ${new Date(task.skipped_at).toLocaleString('id-ID')}` : ''}
+                                                {task.skip_reason && <p className="mt-1">{task.skip_reason}</p>}
+                                            </div>
+                                        )}
+                                        {task.reopened_by && (
+                                            <div className="text-muted-foreground bg-muted mt-2 rounded-md p-2 text-xs">
+                                                Dibuka kembali oleh {task.reopened_by.name}
+                                                {task.reopened_at ? ` · ${new Date(task.reopened_at).toLocaleString('id-ID')}` : ''}
+                                                {task.reopen_reason && <p className="mt-1">{task.reopen_reason}</p>}
+                                            </div>
+                                        )}
+                                        <OnboardingTaskControls
+                                            onboardingId={onboarding.id}
+                                            onboardingStatus={onboarding.status}
+                                            archived={onboarding.archived}
+                                            task={task}
+                                            assigneeOptions={assigneeOptions}
+                                            hasPermission={canUpdateTasks}
+                                            canSkipRequired={canSkipRequired}
+                                        />
                                     </div>
                                 </div>
                             ))}

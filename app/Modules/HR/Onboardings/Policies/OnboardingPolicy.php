@@ -20,4 +20,9 @@ class OnboardingPolicy
     {
         return $this->viewAny($user);
     }
+
+    public function activate(User $user, mixed $onboarding): bool
+    {
+        return $user->hasAnyPermission(['onboardings.activate', 'onboardings.manage']);
+    }
 }

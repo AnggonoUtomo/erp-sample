@@ -8,8 +8,10 @@ Paket ini menjadi acuan implementasi module `Onboardings`: HR membuat onboarding
 2. [Specification](specification.md) — requirement, non-scope, state, struktur, command, acceptance criteria, dan test plan.
 3. [ADR-001](decisions/001-checklist-driven-onboarding.md) — alasan template disalin menjadi snapshot task per onboarding.
 4. [ADR-002](decisions/002-employment-fallback-and-calendar-due-date.md) — fallback employment period dan perhitungan due date MVP.
-5. [Implementation plan](implementation-plan.md) — fase, dependency graph, risiko, dan checkpoint.
-6. [Tasks](tasks.md) — task kecil yang dapat dieksekusi satu per satu.
+5. [ADR-003](decisions/003-console-user-assignment-and-completion-evidence.md) — assignee Console User dan evidence completion MVP.
+6. [ADR-004](decisions/004-required-skip-and-controlled-reopen.md) — permission required-skip dan semantics controlled reopen.
+7. [Implementation plan](implementation-plan.md) — fase, dependency graph, risiko, dan checkpoint.
+8. [Tasks](tasks.md) — task kecil yang dapat dieksekusi satu per satu.
 
 Dokumen konteks terkait:
 
@@ -51,4 +53,4 @@ MVP memakai onboarding berbasis checklist:
 
 ## Status
 
-`IN PROGRESS` — Task 01–06 serta Checkpoint A–B selesai pada 2026-07-15. HR dapat membuat/list/detail draft dengan immutable snapshot, duplicate/idempotency guard, serta progress deterministik. Langkah berikutnya adalah Task 07 untuk activation `DRAFT -> IN_PROGRESS`.
+`IN PROGRESS` — Task 01–09 serta Checkpoint A–B selesai pada 2026-07-15. HR dapat membuat dan mengaktifkan onboarding, menugaskan serta menyelesaikan task, melakukan controlled skip, dan membuka kembali task dengan audit. Langkah berikutnya adalah Task 10 untuk complete dan cancel onboarding.

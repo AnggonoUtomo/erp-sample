@@ -54,9 +54,15 @@ class OnboardingFoundationTest extends TestCase
             ->filter(fn ($route) => str_starts_with((string) $route->getName(), 'hr.onboardings.'));
 
         $this->assertSame([
+            'hr.onboardings.activate',
             'hr.onboardings.index',
             'hr.onboardings.show',
             'hr.onboardings.store',
+            'hr.onboardings.tasks.assignment',
+            'hr.onboardings.tasks.complete',
+            'hr.onboardings.tasks.reopen',
+            'hr.onboardings.tasks.skip',
+            'hr.onboardings.tasks.start',
             'hr.onboardings.templates.archive',
             'hr.onboardings.templates.index',
             'hr.onboardings.templates.restore',

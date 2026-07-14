@@ -128,7 +128,7 @@ Task dijalankan berurutan dan specification/ADR direvisi terlebih dahulu bila im
 
 **Gate Task 07:** activation hanya boleh mengubah `DRAFT -> IN_PROGRESS` dalam transaction, mempertahankan active identity guard, menolak state selain draft, serta tidak membuat audit ganda pada retry.
 
-## Task 07 — Activate onboarding
+## ✅ Task 07 — Activate onboarding
 
 **Tujuan:** menerapkan transition `DRAFT -> IN_PROGRESS` secara atomic.
 
@@ -136,15 +136,17 @@ Task dijalankan berurutan dan specification/ADR direvisi terlebih dahulu bila im
 
 **Acceptance criteria:**
 
-- [ ] Hanya draft valid yang dapat diaktifkan.
-- [ ] Duplicate active guard diperiksa ulang di transaction.
-- [ ] Repeated activation tidak membuat audit/side effect ganda.
+- [x] Hanya draft valid yang dapat diaktifkan.
+- [x] Duplicate active guard diperiksa ulang di transaction.
+- [x] Repeated activation tidak membuat audit/side effect ganda.
+
+**Hasil:** selesai 2026-07-15. Activation mengunci aggregate, menolak archive/terminal/missing identity, memeriksa ulang conflict untuk active identity, lalu mengubah `DRAFT -> IN_PROGRESS` dan mencatat audit dalam transaction. Retry pada `IN_PROGRESS` bersifat idempotent tanpa audit kedua. Route dilindungi policy dan UI hanya menampilkan dialog activation untuk draft non-arsip kepada user berizin.
 
 **Test:** `php artisan test --filter=OnboardingActivation`
 
 **Dependencies:** Task 05. **Scope:** M.
 
-## Task 08 — Assignment dan task completion
+## ✅ Task 08 — Assignment dan task completion
 
 **Tujuan:** mengelola assignee serta `PENDING -> IN_PROGRESS -> COMPLETED` dengan evidence ringkas.
 
@@ -152,15 +154,17 @@ Task dijalankan berurutan dan specification/ADR direvisi terlebih dahulu bila im
 
 **Acceptance criteria:**
 
-- [ ] Assignee valid dan authorized dapat memperbarui task sesuai policy.
-- [ ] Completion menyimpan actor/time/note dan menghitung ulang progress.
-- [ ] Completed/cancelled onboarding menolak task mutation.
+- [x] Assignee valid dan authorized dapat memperbarui task sesuai policy.
+- [x] Completion menyimpan actor/time/note dan menghitung ulang progress.
+- [x] Completed/cancelled onboarding menolak task mutation.
+
+**Hasil:** selesai 2026-07-15. Assignment menerima Console User non-deleted atau unassigned dan dapat dilakukan pada draft/in-progress. Task aktif mengikuti transition berurutan `PENDING -> IN_PROGRESS -> COMPLETED`; completion menyimpan actor, timestamp, note opsional, memperbarui progress read model, dan diaudit tanpa menduplikasi note. Nested scoped binding, policy, row lock, serta state guard menolak cross-onboarding task, unauthorized mutation, dan onboarding terminal/arsip. Lihat [ADR-003](decisions/003-console-user-assignment-and-completion-evidence.md).
 
 **Test:** `php artisan test --filter=OnboardingTaskCompletion && npm run typecheck`
 
 **Dependencies:** Task 07. **Scope:** M; assignment dan completion dapat menjadi dua increment.
 
-## Task 09 — Controlled skip dan reopen task
+## ✅ Task 09 — Controlled skip dan reopen task
 
 **Tujuan:** menangani pengecualian tanpa menghilangkan audit.
 
@@ -168,9 +172,11 @@ Task dijalankan berurutan dan specification/ADR direvisi terlebih dahulu bila im
 
 **Acceptance criteria:**
 
-- [ ] Required task skip memerlukan permission dan reason khusus.
-- [ ] Reopen memerlukan reason, menghapus terminal completion secara terkontrol, dan menurunkan progress.
-- [ ] Invalid/repeated transition tidak mengubah state.
+- [x] Required task skip memerlukan permission dan reason khusus.
+- [x] Reopen memerlukan reason, menghapus terminal completion secara terkontrol, dan menurunkan progress.
+- [x] Invalid/repeated transition tidak mengubah state.
+
+**Hasil:** selesai 2026-07-15. Optional skip tersedia untuk task-update, sedangkan required skip memerlukan permission `onboardings.task-skip-required` milik admin/HR manager. Skip dan reopen mewajibkan reason, menyimpan actor/timestamp, memakai row lock dan audit, serta hanya berlaku ketika onboarding `IN_PROGRESS`. Reopen mengembalikan task terminal ke `PENDING`, membersihkan evidence terminal aktif, dan menurunkan progress. Invalid/repeated transition serta unauthorized/terminal onboarding tidak menghasilkan perubahan. Lihat [ADR-004](decisions/004-required-skip-and-controlled-reopen.md).
 
 **Test:** `php artisan test --filter=OnboardingTaskLifecycle`
 

@@ -60,8 +60,10 @@ Pilihan: opsi 3. Lihat [ADR-001](decisions/001-checklist-driven-onboarding.md).
 ### FR-04 — Task assignment dan completion
 
 - Task dapat memiliki assignee user atau tetap unassigned.
+- Assignee MVP adalah satu Console User non-deleted sesuai [ADR-003](decisions/003-console-user-assignment-and-completion-evidence.md); team/role virtual belum menjadi actor runtime.
 - Task memiliki state `PENDING`, `IN_PROGRESS`, `COMPLETED`, atau `SKIPPED`.
 - Task required tidak boleh di-skip tanpa permission dan reason khusus.
+- Required-skip dan controlled reopen mengikuti [ADR-004](decisions/004-required-skip-and-controlled-reopen.md).
 - Completion menyimpan actor, timestamp, dan note opsional.
 - Reopen task menyimpan reason dan menghitung ulang progress.
 
@@ -275,7 +277,7 @@ git diff --check
 ## 13. Open questions
 
 - Employment fallback sudah diputuskan untuk MVP pada ADR-002; evaluasi ulang setelah contract diwajibkan oleh proses operasional.
-- Siapa yang boleh menjadi assignee MVP: hanya Console User atau juga team/role virtual?
-- Apakah optional task yang belum selesai boleh otomatis di-skip saat onboarding completed?
+- Assignee MVP sudah diputuskan hanya Console User pada ADR-003; team/role virtual dievaluasi setelah owner runtime tersedia.
+- Optional task tidak di-skip otomatis saat onboarding completed; keputusan completion final tetap ditangani Task 10.
 - Due date MVP memakai calendar day sesuai ADR-002; working-day calendar adalah evaluasi lanjutan.
 - Apakah completion memerlukan approval HR Manager terpisah?
