@@ -182,7 +182,7 @@ Task dijalankan berurutan dan specification/ADR direvisi terlebih dahulu bila im
 
 **Dependencies:** Task 08 dan persetujuan required-skip policy. **Scope:** M per transition.
 
-## Task 10 — Complete dan cancel onboarding
+## ✅ Task 10 — Complete dan cancel onboarding
 
 **Tujuan:** menutup lifecycle case dengan invariant dan reason yang jelas.
 
@@ -190,18 +190,22 @@ Task dijalankan berurutan dan specification/ADR direvisi terlebih dahulu bila im
 
 **Acceptance criteria:**
 
-- [ ] Completion ditolak bila required task belum terminal valid.
-- [ ] Cancel draft/in-progress membutuhkan reason.
-- [ ] Terminal onboarding immutable terhadap generic update dan seluruh transition diaudit.
+- [x] Completion ditolak bila required task belum terminal valid.
+- [x] Cancel draft/in-progress membutuhkan reason.
+- [x] Terminal onboarding immutable terhadap generic update dan seluruh transition diaudit.
+
+**Hasil:** selesai 2026-07-15. Completion mengunci aggregate dan task set, lalu hanya menerima `IN_PROGRESS -> COMPLETED` ketika seluruh task wajib terminal sah; task opsional tidak diubah otomatis. Cancel menerima `DRAFT/IN_PROGRESS -> CANCELLED` dengan reason wajib. Kedua transition menyimpan actor/timestamp, melepaskan active identity, diaudit, serta membuat seluruh lifecycle dan task mutation berikutnya fail-closed. UI hanya menawarkan aksi sesuai state dan permission. Lihat [ADR-005](decisions/005-terminal-lifecycle-evidence.md).
 
 **Test:** `php artisan test --filter=OnboardingLifecycle`
 
 **Dependencies:** Task 09. **Scope:** M per transition.
 
-## Checkpoint C — Lifecycle complete
+## ✅ Checkpoint C — Lifecycle complete
 
-- [ ] Transition matrix, denial matrix, concurrency-sensitive invariant, dan audit hijau.
-- [ ] Human review menyetujui progress/completion semantics sebelum operasional query.
+- [x] Transition matrix, denial matrix, concurrency-sensitive invariant, dan audit hijau.
+- [x] Human review menyetujui progress/completion semantics sebelum operasional query.
+
+**Evidence 2026-07-15:** seluruh mutation onboarding diinventarisasi melalui `OnboardingAuthorizationMatrixTest`; transition, terminal immutability, required completion invariant, lock order, dan audit diverifikasi oleh suite onboarding. Semantics yang diterima mempertahankan optional incomplete tanpa auto-skip, menghitung `COMPLETED/SKIPPED` sebagai terminal progress, dan tidak menyediakan reopen onboarding terminal pada MVP. Lihat [laporan Checkpoint C](06-lifecycle-checkpoint-c.md).
 
 ## Task 11 — Filters, archive/restore, dan overdue command
 

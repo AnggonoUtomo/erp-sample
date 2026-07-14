@@ -25,4 +25,14 @@ class OnboardingPolicy
     {
         return $user->hasAnyPermission(['onboardings.activate', 'onboardings.manage']);
     }
+
+    public function complete(User $user, mixed $onboarding): bool
+    {
+        return $user->hasAnyPermission(['onboardings.complete', 'onboardings.manage']);
+    }
+
+    public function cancel(User $user, mixed $onboarding): bool
+    {
+        return $user->hasAnyPermission(['onboardings.cancel', 'onboardings.manage']);
+    }
 }

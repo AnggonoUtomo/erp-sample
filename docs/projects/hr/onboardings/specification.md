@@ -232,8 +232,8 @@ git diff --check
 - [ ] Duplicate active onboarding untuk employment period yang sama ditolak.
 - [ ] Edit template tidak mengubah task onboarding existing.
 - [ ] Task assignment, complete, skip khusus, dan reopen menjaga audit serta progress.
-- [ ] Completion ditolak selama required task belum selesai.
-- [ ] Cancel membutuhkan reason dan tidak menghapus history.
+- [x] Completion ditolak selama required task belum terminal secara sah.
+- [x] Cancel membutuhkan reason dan tidak menghapus history.
 - [ ] List/filter/detail deterministic, paginated, dan permission-aware.
 - [ ] Guest dan role tanpa permission ditolak pada seluruh mutation.
 - [ ] Tidak ada storage engine, direct Payroll/Attendance dependency, atau hard delete.
@@ -278,6 +278,6 @@ git diff --check
 
 - Employment fallback sudah diputuskan untuk MVP pada ADR-002; evaluasi ulang setelah contract diwajibkan oleh proses operasional.
 - Assignee MVP sudah diputuskan hanya Console User pada ADR-003; team/role virtual dievaluasi setelah owner runtime tersedia.
-- Optional task tidak di-skip otomatis saat onboarding completed; keputusan completion final tetap ditangani Task 10.
+- Optional task tidak di-skip otomatis saat onboarding completed; semantics terminal ditetapkan pada [ADR-005](decisions/005-terminal-lifecycle-evidence.md).
 - Due date MVP memakai calendar day sesuai ADR-002; working-day calendar adalah evaluasi lanjutan.
-- Apakah completion memerlukan approval HR Manager terpisah?
+- Approval completion MVP diwakili permission `onboardings.complete`; approval dua tahap dievaluasi setelah kebutuhan operasional nyata tersedia.

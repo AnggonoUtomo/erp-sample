@@ -55,6 +55,8 @@ class OnboardingFoundationTest extends TestCase
 
         $this->assertSame([
             'hr.onboardings.activate',
+            'hr.onboardings.cancel',
+            'hr.onboardings.complete',
             'hr.onboardings.index',
             'hr.onboardings.show',
             'hr.onboardings.store',

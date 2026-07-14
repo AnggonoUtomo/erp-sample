@@ -10,8 +10,10 @@ Paket ini menjadi acuan implementasi module `Onboardings`: HR membuat onboarding
 4. [ADR-002](decisions/002-employment-fallback-and-calendar-due-date.md) — fallback employment period dan perhitungan due date MVP.
 5. [ADR-003](decisions/003-console-user-assignment-and-completion-evidence.md) — assignee Console User dan evidence completion MVP.
 6. [ADR-004](decisions/004-required-skip-and-controlled-reopen.md) — permission required-skip dan semantics controlled reopen.
-7. [Implementation plan](implementation-plan.md) — fase, dependency graph, risiko, dan checkpoint.
-8. [Tasks](tasks.md) — task kecil yang dapat dieksekusi satu per satu.
+7. [ADR-005](decisions/005-terminal-lifecycle-evidence.md) — completion invariant, cancellation evidence, dan terminal immutability.
+8. [Implementation plan](implementation-plan.md) — fase, dependency graph, risiko, dan checkpoint.
+9. [Tasks](tasks.md) — task kecil yang dapat dieksekusi satu per satu.
+10. [Checkpoint C](06-lifecycle-checkpoint-c.md) — evidence transition, denial, concurrency guard, audit, dan semantics lifecycle.
 
 Dokumen konteks terkait:
 
@@ -53,4 +55,4 @@ MVP memakai onboarding berbasis checklist:
 
 ## Status
 
-`IN PROGRESS` — Task 01–09 serta Checkpoint A–B selesai pada 2026-07-15. HR dapat membuat dan mengaktifkan onboarding, menugaskan serta menyelesaikan task, melakukan controlled skip, dan membuka kembali task dengan audit. Langkah berikutnya adalah Task 10 untuk complete dan cancel onboarding.
+`IN PROGRESS` — Task 01–10 serta Checkpoint A–C selesai pada 2026-07-15. Lifecycle onboarding telah melewati review transition, authorization, concurrency-sensitive invariant, audit, serta semantics progress/completion. Langkah berikutnya adalah Task 11.

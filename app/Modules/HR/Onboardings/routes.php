@@ -16,6 +16,8 @@ Route::middleware('auth')->prefix('hr/onboardings')->name('hr.onboardings.')->gr
     Route::get('/', [OnboardingsController::class, 'index'])->name('index');
     Route::post('/', [OnboardingsController::class, 'store'])->name('store');
     Route::patch('{onboarding}/activate', [OnboardingsController::class, 'activate'])->name('activate');
+    Route::patch('{onboarding}/complete', [OnboardingsController::class, 'complete'])->name('complete');
+    Route::patch('{onboarding}/cancel', [OnboardingsController::class, 'cancel'])->name('cancel');
     Route::patch('{onboarding}/tasks/{task}/assignment', [OnboardingTasksController::class, 'assignment'])->scopeBindings()->name('tasks.assignment');
     Route::patch('{onboarding}/tasks/{task}/start', [OnboardingTasksController::class, 'start'])->scopeBindings()->name('tasks.start');
     Route::patch('{onboarding}/tasks/{task}/complete', [OnboardingTasksController::class, 'complete'])->scopeBindings()->name('tasks.complete');

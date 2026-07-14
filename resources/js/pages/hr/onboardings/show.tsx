@@ -7,6 +7,12 @@ import type { BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { Archive, ArrowLeft, CalendarDays, CheckCircle2, ClipboardList, Clock3 } from 'lucide-react';
 import { canActivateOnboarding, OnboardingActivationDialog } from './onboarding-components/onboarding-activation-dialog';
+import {
+    canCancelOnboarding,
+    CancelOnboardingDialog,
+    canCompleteOnboarding,
+    CompleteOnboardingDialog,
+} from './onboarding-components/onboarding-lifecycle-dialogs';
 import { OnboardingSummaryCards } from './onboarding-components/onboarding-summary-cards';
 import { OnboardingTaskControls } from './onboarding-components/onboarding-task-controls';
 import type { OnboardingDetail } from './types';
@@ -18,6 +24,13 @@ export default function OnboardingShow({ onboarding, businessDate, assigneeOptio
     const showActivation = canActivateOnboarding(onboarding.status, onboarding.archived, canAny(['onboardings.activate', 'onboardings.manage']));
     const canUpdateTasks = canAny(['onboardings.task-update', 'onboardings.manage']);
     const canSkipRequired = canAny(['onboardings.task-skip-required', 'onboardings.manage']);
+    const showComplete = canCompleteOnboarding(
+        onboarding.status,
+        onboarding.archived,
+        onboarding.progress.required_incomplete,
+        canAny(['onboardings.complete', 'onboardings.manage']),
+    );
+    const showCancel = canCancelOnboarding(onboarding.status, onboarding.archived, canAny(['onboardings.cancel', 'onboardings.manage']));
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'HR', href: '/hr/dashboard' },
         { title: 'Employee Onboardings', href: '/hr/onboardings' },
@@ -55,7 +68,11 @@ export default function OnboardingShow({ onboarding, businessDate, assigneeOptio
                         <div className="text-muted-foreground flex items-center gap-2 text-sm">
                             <CalendarDays className="size-4" /> Business date: {businessDate}
                         </div>
-                        {showActivation && <OnboardingActivationDialog onboardingId={onboarding.id} />}
+                        <div className="flex flex-wrap justify-end gap-2">
+                            {showActivation && <OnboardingActivationDialog onboardingId={onboarding.id} />}
+                            {showComplete && <CompleteOnboardingDialog onboardingId={onboarding.id} />}
+                            {showCancel && <CancelOnboardingDialog onboardingId={onboarding.id} />}
+                        </div>
                     </div>
                 </div>
 
@@ -138,6 +155,19 @@ export default function OnboardingShow({ onboarding, businessDate, assigneeOptio
                             <Detail label="Owner" value={onboarding.owner?.name ?? 'Tidak tersedia'} />
                             <Detail label="Kontrak" value={onboarding.contract?.contract_number ?? 'Tanpa kontrak'} />
                             <Detail label="Template snapshot" value={onboarding.template?.name ?? 'Tidak tersedia'} />
+                            {onboarding.completed_by && (
+                                <Detail
+                                    label="Diselesaikan oleh"
+                                    value={`${onboarding.completed_by.name}${onboarding.completed_at ? ` · ${new Date(onboarding.completed_at).toLocaleString('id-ID')}` : ''}`}
+                                />
+                            )}
+                            {onboarding.cancelled_by && (
+                                <Detail
+                                    label="Dibatalkan oleh"
+                                    value={`${onboarding.cancelled_by.name}${onboarding.cancelled_at ? ` · ${new Date(onboarding.cancelled_at).toLocaleString('id-ID')}` : ''}`}
+                                />
+                            )}
+                            {onboarding.cancel_reason && <Detail label="Alasan pembatalan" value={onboarding.cancel_reason} />}
                         </CardContent>
                     </Card>
                 </div>

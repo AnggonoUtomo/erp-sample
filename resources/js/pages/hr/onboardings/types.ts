@@ -61,6 +61,11 @@ export type OnboardingDetail = {
     status: string;
     archived: boolean;
     created_at: string;
+    completed_by: IdName | null;
+    completed_at: string | null;
+    cancelled_by: IdName | null;
+    cancelled_at: string | null;
+    cancel_reason: string | null;
     progress: OnboardingProgress;
     tasks: OnboardingTaskRow[];
 };
