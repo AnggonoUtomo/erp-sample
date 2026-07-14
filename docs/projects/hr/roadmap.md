@@ -257,9 +257,11 @@ Event awal:
 
 Target: lifecycle masuk dan keluar karyawan bisa dikontrol.
 
+Status 2026-07-15: paket specification Onboardings telah disusun dan masih `PROPOSED`; belum ada implementasi module. Baca [paket project Onboardings](onboardings/README.md) dan [ADR checklist snapshot](onboardings/decisions/001-checklist-driven-onboarding.md) sebelum menjalankan Task 01.
+
 Module:
 
-- `Onboardings`
+- `Onboardings` **Status: specification proposed.**
 - `Offboardings`
 - `ChecklistTemplates`
 - `ChecklistTasks`

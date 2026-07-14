@@ -1,0 +1,245 @@
+# Tasks: HR Onboardings
+
+Semua task belum dikerjakan. Jalankan berurutan dan revisi specification/ADR terlebih dahulu bila implementasi membutuhkan perubahan semantics.
+
+## Task 01 — Module dan state contract
+
+**Tujuan:** membuat boundary module formal tanpa UI atau CRUD bisnis.
+
+**Files yang disentuh:** `app/Modules/HR/Onboardings/{module.php,routes.php,permissions.php,navigation.php}`, provider, enums/state contract, module contract test.
+
+**Acceptance criteria:**
+
+- [ ] Manifest dependency hanya menunjuk Employees, optional EmployeeContracts contract, dan Console Users boundary.
+- [ ] Permission dan transition state terdokumentasi serta tervalidasi.
+- [ ] Belum ada mutation route yang dapat dipanggil tanpa policy.
+
+**Test:** `php artisan module:validate && php artisan test --filter=OnboardingFoundation`
+
+**Dependencies:** specification dan ADR-001 accepted. **Scope:** M; pecah scaffold dan state jika lebih dari lima file per increment.
+
+## Task 02 — Template checklist vertical slice
+
+**Tujuan:** HR dapat membuat dan melihat template dengan ordered items.
+
+**Files yang disentuh:** migrations/models template, request/DTO/service/transaction, controller/routes/policy, template feature test, UI template components.
+
+**Acceptance criteria:**
+
+- [ ] Code unik, item order, required flag, category, dan due offset tersimpan tepat.
+- [ ] Input invalid/duplicate ditolak tanpa partial items.
+- [ ] Authorized list/create bekerja; guest dan unauthorized ditolak.
+
+**Test:** `php artisan test --filter=OnboardingTemplate && npm run typecheck && npm run build`
+
+**Dependencies:** Task 01. **Scope:** pecah backend dan UI menjadi increment M terpisah.
+
+## Task 03 — Archive dan restore template
+
+**Tujuan:** menjaga histori template tanpa hard delete.
+
+**Files yang disentuh:** template policy/service/routes, archive UI/filter, feature test.
+
+**Acceptance criteria:**
+
+- [ ] Archive mengeluarkan template dari pilihan onboarding baru.
+- [ ] Restore menjaga uniqueness.
+- [ ] Force-delete route tidak tersedia dan template terpakai tetap dapat dibaca.
+
+**Test:** `php artisan test --filter=OnboardingTemplateArchive`
+
+**Dependencies:** Task 02. **Scope:** M.
+
+## Checkpoint A — Template contract
+
+- [ ] Module validation, Pint, targeted backend test, typecheck, dan build hijau.
+- [ ] Review memastikan template tidak menjadi live source untuk onboarding existing.
+
+## Task 04 — Draft onboarding dan task snapshot
+
+**Tujuan:** membuat vertical slice pertama: create/list draft onboarding dengan task hasil salinan template.
+
+**Files yang disentuh:** onboarding/task migrations/models, create request/DTO, service/transaction, controller/routes/policy, feature test, basic form/list UI.
+
+**Acceptance criteria:**
+
+- [ ] Employee, optional contract, template, start date, dan owner tervalidasi.
+- [ ] Onboarding dan seluruh task snapshot dibuat atomic.
+- [ ] Edit template setelah create tidak mengubah task existing.
+
+**Test:** `php artisan test --filter=OnboardingDraftSnapshot && npm run typecheck && npm run build`
+
+**Dependencies:** Task 03 dan keputusan employment-period fallback. **Scope:** L secara outcome; wajib dipecah backend contract, UI, dan tests per increment.
+
+## Task 05 — Duplicate active dan idempotency guard
+
+**Tujuan:** mencegah case ganda untuk employment period yang sama.
+
+**Files yang disentuh:** service/query guard, transaction/locking, request idempotency handling, feature/concurrency tests.
+
+**Acceptance criteria:**
+
+- [ ] Retry identik tidak membuat case/task kedua.
+- [ ] Request berbeda untuk period aktif yang sama ditolak.
+- [ ] Concurrent create tidak menghasilkan dua onboarding aktif.
+
+**Test:** `php artisan test --filter=OnboardingDuplicateGuard`
+
+**Dependencies:** Task 04. **Scope:** M.
+
+## Task 06 — Detail dan progress read model
+
+**Tujuan:** menyajikan detail case dan progress deterministic tanpa mutation tambahan.
+
+**Files yang disentuh:** query/read service, controller props/types, detail/progress components, backend/frontend tests.
+
+**Acceptance criteria:**
+
+- [ ] Ordered task, required incomplete, optional incomplete, overdue, dan completed count benar.
+- [ ] Empty state dan archived history jelas.
+- [ ] Detail tidak mengekspos PII atau internal storage reference.
+
+**Test:** `php artisan test --filter=OnboardingProgress && npm run test:frontend`
+
+**Dependencies:** Task 04. **Scope:** M per backend/frontend increment.
+
+## Checkpoint B — Draft snapshot
+
+- [ ] Create/list/detail draft bekerja end-to-end.
+- [ ] Atomic rollback, idempotency, authorization, audit, dan snapshot invariance terbukti.
+
+## Task 07 — Activate onboarding
+
+**Tujuan:** menerapkan transition `DRAFT -> IN_PROGRESS` secara atomic.
+
+**Files yang disentuh:** activation request/service/route, lifecycle UI, feature test, audit.
+
+**Acceptance criteria:**
+
+- [ ] Hanya draft valid yang dapat diaktifkan.
+- [ ] Duplicate active guard diperiksa ulang di transaction.
+- [ ] Repeated activation tidak membuat audit/side effect ganda.
+
+**Test:** `php artisan test --filter=OnboardingActivation`
+
+**Dependencies:** Task 05. **Scope:** M.
+
+## Task 08 — Assignment dan task completion
+
+**Tujuan:** mengelola assignee serta `PENDING -> IN_PROGRESS -> COMPLETED` dengan evidence ringkas.
+
+**Files yang disentuh:** task requests/DTO/service/routes/policy, task controls UI, feature tests.
+
+**Acceptance criteria:**
+
+- [ ] Assignee valid dan authorized dapat memperbarui task sesuai policy.
+- [ ] Completion menyimpan actor/time/note dan menghitung ulang progress.
+- [ ] Completed/cancelled onboarding menolak task mutation.
+
+**Test:** `php artisan test --filter=OnboardingTaskCompletion && npm run typecheck`
+
+**Dependencies:** Task 07. **Scope:** M; assignment dan completion dapat menjadi dua increment.
+
+## Task 09 — Controlled skip dan reopen task
+
+**Tujuan:** menangani pengecualian tanpa menghilangkan audit.
+
+**Files yang disentuh:** skip/reopen requests, lifecycle service, UI dialogs, feature tests.
+
+**Acceptance criteria:**
+
+- [ ] Required task skip memerlukan permission dan reason khusus.
+- [ ] Reopen memerlukan reason, menghapus terminal completion secara terkontrol, dan menurunkan progress.
+- [ ] Invalid/repeated transition tidak mengubah state.
+
+**Test:** `php artisan test --filter=OnboardingTaskLifecycle`
+
+**Dependencies:** Task 08 dan persetujuan required-skip policy. **Scope:** M per transition.
+
+## Task 10 — Complete dan cancel onboarding
+
+**Tujuan:** menutup lifecycle case dengan invariant dan reason yang jelas.
+
+**Files yang disentuh:** completion/cancel requests, service/transaction/routes, UI dialogs, feature tests.
+
+**Acceptance criteria:**
+
+- [ ] Completion ditolak bila required task belum terminal valid.
+- [ ] Cancel draft/in-progress membutuhkan reason.
+- [ ] Terminal onboarding immutable terhadap generic update dan seluruh transition diaudit.
+
+**Test:** `php artisan test --filter=OnboardingLifecycle`
+
+**Dependencies:** Task 09. **Scope:** M per transition.
+
+## Checkpoint C — Lifecycle complete
+
+- [ ] Transition matrix, denial matrix, concurrency-sensitive invariant, dan audit hijau.
+- [ ] Human review menyetujui progress/completion semantics sebelum operasional query.
+
+## Task 11 — Filters, archive/restore, dan overdue command
+
+**Tujuan:** menyiapkan operasional harian dan histori read-only.
+
+**Files yang disentuh:** list query/filter, archive/restore services/routes, overdue command, UI filters, feature/command tests.
+
+**Acceptance criteria:**
+
+- [ ] Filter employee/state/template/owner/date/overdue deterministic dan paginated.
+- [ ] Archive/restore menjaga uniqueness dan tidak menyediakan force delete.
+- [ ] `hr:onboardings:overdue --date` read-only, deterministic, dan memiliki exit code jelas.
+
+**Test:** `php artisan test --filter=OnboardingArchive && php artisan test --filter=OnboardingsOverdueCommand`
+
+**Dependencies:** Task 10. **Scope:** pecah filter, archive, dan command menjadi increment M.
+
+## Task 12 — Frontend completion dan quality gates
+
+**Tujuan:** menyelesaikan UX, accessibility, responsive behavior, dan dokumentasi aktual.
+
+**Files yang disentuh:** onboarding page/components/types/tests, module docs/roadmap.
+
+**Acceptance criteria:**
+
+- [ ] Semua state memiliki label, empty/error state, dan aksi hanya tampil sesuai permission/state.
+- [ ] Keyboard/focus dialog, mobile layout, lint, format, typecheck, frontend test, dan build hijau.
+- [ ] Docs tidak mengklaim fitur non-MVP atau integration event yang belum tersedia.
+
+**Test:** full quality checkpoint di bawah.
+
+**Dependencies:** Task 11. **Scope:** M per UI/refinement increment.
+
+## Task 13 — Integration contract v1 (deferred gate)
+
+**Tujuan:** mempublikasikan snapshot/event minimal hanya setelah Attendance atau consumer nyata disetujui.
+
+**Files yang disentuh:** Contracts/DTO/schema, manifest integrations/events, contract tests, ADR/spec update.
+
+**Acceptance criteria:**
+
+- [ ] Schema versioned dan hanya membawa identifier/status/date/progress minimal.
+- [ ] Tidak ada direct import model internal antar project.
+- [ ] Jika belum ada consumer yang disetujui, task tetap deferred dan tidak membuat speculative event.
+
+**Test:** `php artisan test --filter=OnboardingIntegrationContract`
+
+**Dependencies:** Task 12 dan approval consumer interface. **Scope:** M.
+
+## Final quality checkpoint
+
+```bash
+php artisan module:validate
+vendor/bin/pint --test
+npm run lint:check
+npm run format:check
+npm run typecheck
+npm run test:frontend
+npm run build
+php artisan test
+git diff --check
+```
+
+- [ ] Semua command hijau.
+- [ ] Mutation authorization matrix mencakup seluruh route baru.
+- [ ] Security review memastikan tidak ada hard delete, binary storage, PII/secret leak, atau frontend-only authorization.
+- [ ] README/spec/plan/tasks/ADR dan HR roadmap mencerminkan perilaku final.
