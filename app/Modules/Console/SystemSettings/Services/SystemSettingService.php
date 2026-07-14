@@ -99,6 +99,7 @@ class SystemSettingService
         'require_email_verification' => false,
         'audit_sensitive_actions' => true,
         'single_session_per_user' => false,
+        'allow_account_deletion' => true,
         'session_lifetime_minutes' => 120,
         'login_max_attempts' => 5,
         'login_decay_minutes' => 1,
@@ -436,6 +437,7 @@ class SystemSettingService
             $this->put(self::SECURITY_POLICY_GROUP, 'require_email_verification', $data->requireEmailVerification);
             $this->put(self::SECURITY_POLICY_GROUP, 'audit_sensitive_actions', $data->auditSensitiveActions);
             $this->put(self::SECURITY_POLICY_GROUP, 'single_session_per_user', $data->singleSessionPerUser);
+            $this->put(self::SECURITY_POLICY_GROUP, 'allow_account_deletion', $data->allowAccountDeletion);
             $this->put(self::SECURITY_POLICY_GROUP, 'session_lifetime_minutes', $data->sessionLifetimeMinutes);
             $this->put(self::SECURITY_POLICY_GROUP, 'login_max_attempts', $data->loginMaxAttempts);
             $this->put(self::SECURITY_POLICY_GROUP, 'login_decay_minutes', $data->loginDecayMinutes);
@@ -459,6 +461,11 @@ class SystemSettingService
             'session.lifetime' => $settings['session_lifetime_minutes'],
             'auth.password_timeout' => $settings['password_confirmation_timeout_seconds'],
         ]);
+    }
+
+    public function accountDeletionEnabled(): bool
+    {
+        return (bool) $this->securityPolicySettings()['allow_account_deletion'];
     }
 
     /**
@@ -825,7 +832,7 @@ class SystemSettingService
         }
 
         return match (true) {
-            in_array($setting->key, ['enabled', 'send_credentials_on_create', 'send_credentials_on_password_update', 'require_email_verification', 'audit_sensitive_actions', 'single_session_per_user', 'require_uppercase', 'require_lowercase', 'require_numbers', 'require_symbols', 'uncompromised'], true) => filter_var($setting->value, FILTER_VALIDATE_BOOL),
+            in_array($setting->key, ['enabled', 'send_credentials_on_create', 'send_credentials_on_password_update', 'require_email_verification', 'audit_sensitive_actions', 'single_session_per_user', 'allow_account_deletion', 'require_uppercase', 'require_lowercase', 'require_numbers', 'require_symbols', 'uncompromised'], true) => filter_var($setting->value, FILTER_VALIDATE_BOOL),
             in_array($setting->key, ['default_per_page', 'session_lifetime_minutes', 'login_max_attempts', 'login_decay_minutes', 'password_confirmation_timeout_seconds', 'min_length', 'expiry_days', 'history_count', 'retry_seconds', 'refresh_seconds'], true) => filled($setting->value) ? (int) $setting->value : null,
             $setting->key === 'per_page_options' => collect(explode(',', (string) $setting->value))
                 ->map(fn (string $option) => (int) trim($option))

@@ -102,6 +102,7 @@ export default function SystemSettings({
         require_email_verification: securityPolicy.require_email_verification,
         audit_sensitive_actions: securityPolicy.audit_sensitive_actions,
         single_session_per_user: securityPolicy.single_session_per_user,
+        allow_account_deletion: securityPolicy.allow_account_deletion,
         session_lifetime_minutes: String(securityPolicy.session_lifetime_minutes),
         login_max_attempts: String(securityPolicy.login_max_attempts),
         login_decay_minutes: String(securityPolicy.login_decay_minutes),

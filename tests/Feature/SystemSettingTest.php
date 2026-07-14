@@ -206,6 +206,7 @@ class SystemSettingTest extends TestCase
                 'require_email_verification' => true,
                 'audit_sensitive_actions' => true,
                 'single_session_per_user' => false,
+                'allow_account_deletion' => false,
                 'session_lifetime_minutes' => 60,
                 'login_max_attempts' => 7,
                 'login_decay_minutes' => 10,
@@ -218,6 +219,13 @@ class SystemSettingTest extends TestCase
             'group' => 'security_policy',
             'key' => 'login_max_attempts',
             'value' => '7',
+            'encrypted' => false,
+        ]);
+
+        $this->assertDatabaseHas('system_settings', [
+            'group' => 'security_policy',
+            'key' => 'allow_account_deletion',
+            'value' => '0',
             'encrypted' => false,
         ]);
 

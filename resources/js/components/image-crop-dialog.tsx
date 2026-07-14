@@ -250,7 +250,7 @@ export function ImageCropDialog({ file, open, onOpenChange, onApply }: Props) {
                             <Crop className="size-5" />
                         </div>
                         <div>
-                            <DialogTitle>Crop Avatar</DialogTitle>
+                            <DialogTitle>Crop avatar</DialogTitle>
                             <DialogDescription className="mt-1">Geser kotak crop dan tarik sudutnya menggunakan cursor.</DialogDescription>
                         </div>
                     </div>

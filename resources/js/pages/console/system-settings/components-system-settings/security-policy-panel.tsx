@@ -32,6 +32,11 @@ const securityToggles: { key: keyof SecurityPolicyForm; label: string; descripti
         label: 'Single session per user',
         description: 'Disiapkan untuk membatasi satu sesi aktif per user.',
     },
+    {
+        key: 'allow_account_deletion',
+        label: 'Izinkan hapus akun mandiri',
+        description: 'Tampilkan area delete account pada profil dan izinkan user menghapus akunnya.',
+    },
 ];
 
 export function SecurityPolicyPanel({ can, securityPolicy, form, submit }: Props) {

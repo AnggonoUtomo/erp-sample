@@ -1,4 +1,5 @@
 import { FieldInfoLabel } from '@/components/field-info-label';
+import { ImageCropDialog } from '@/components/image-crop-dialog';
 import InputError from '@/components/input-error';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -9,7 +10,6 @@ import type { PermissionGroup, RoleOption, UserRow } from '@/pages/console/users
 import { useForm } from '@inertiajs/react';
 import { Crop, Send, Upload, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { ImageCropDialog } from './image-crop-dialog';
 
 type Props = {
     user?: UserRow | null;

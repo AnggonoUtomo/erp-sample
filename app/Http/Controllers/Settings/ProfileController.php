@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
+use App\Modules\Console\SystemSettings\Services\SystemSettingService;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,6 +14,10 @@ use Inertia\Response;
 
 class ProfileController extends Controller
 {
+    public function __construct(
+        private readonly SystemSettingService $settings,
+    ) {}
+
     /**
      * Show the user's profile settings page.
      */
@@ -21,6 +26,7 @@ class ProfileController extends Controller
         return Inertia::render('settings/profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
+            'accountDeletionEnabled' => $this->settings->accountDeletionEnabled(),
         ]);
     }
 
@@ -29,13 +35,25 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
+        $user->fill($request->safe()->only(['name', 'email']));
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        $user->save();
+
+        if ($request->boolean('remove_avatar')) {
+            $user->clearMediaCollection('avatar');
+        }
+
+        if ($request->hasFile('avatar')) {
+            $user
+                ->addMediaFromRequest('avatar')
+                ->usingName($user->name)
+                ->toMediaCollection('avatar');
+        }
 
         return to_route('profile.edit');
     }
@@ -45,6 +63,8 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        abort_unless($this->settings->accountDeletionEnabled(), 403);
+
         $request->validate([
             'password' => ['required', 'current_password'],
         ]);

@@ -54,6 +54,7 @@ export type SecurityPolicy = {
     require_email_verification: boolean;
     audit_sensitive_actions: boolean;
     single_session_per_user: boolean;
+    allow_account_deletion: boolean;
     session_lifetime_minutes: number;
     login_max_attempts: number;
     login_decay_minutes: number;
@@ -191,6 +192,7 @@ export type SecurityPolicyForm = {
     require_email_verification: boolean;
     audit_sensitive_actions: boolean;
     single_session_per_user: boolean;
+    allow_account_deletion: boolean;
     session_lifetime_minutes: string;
     login_max_attempts: string;
     login_decay_minutes: string;
