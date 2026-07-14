@@ -1,5 +1,14 @@
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 import { router } from '@inertiajs/react';
 import { Archive, ArchiveRestore } from 'lucide-react';
 import { useState } from 'react';
@@ -32,9 +41,9 @@ export function OnboardingArchiveDialog({ onboardingId, archived }: { onboarding
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
-                    <Button variant="outline" onClick={() => setOpen(false)}>
-                        Kembali
-                    </Button>
+                    <DialogClose asChild>
+                        <Button variant="outline">Kembali</Button>
+                    </DialogClose>
                     <Button onClick={submit} disabled={processing}>
                         Konfirmasi
                     </Button>

@@ -15,6 +15,9 @@ Paket ini menjadi acuan implementasi module `Onboardings`: HR membuat onboarding
 9. [Implementation plan](implementation-plan.md) — fase, dependency graph, risiko, dan checkpoint.
 10. [Tasks](tasks.md) — task kecil yang dapat dieksekusi satu per satu.
 11. [Checkpoint C](06-lifecycle-checkpoint-c.md) — evidence transition, denial, concurrency guard, audit, dan semantics lifecycle.
+12. [Task 12 frontend review](07-frontend-quality-task12.md) — state labels, empty/error UX, accessibility, responsive behavior, dan verification evidence.
+13. [Task 13 deferred gate](08-integration-contract-deferred-gate.md) — bukti consumer belum tersedia dan syarat membuka integration contract.
+14. [ADR-007](decisions/007-defer-integration-contract-v1.md) — keputusan tidak mempublikasikan event/schema spekulatif.
 
 Dokumen konteks terkait:
 
@@ -56,4 +59,4 @@ MVP memakai onboarding berbasis checklist:
 
 ## Status
 
-`IN PROGRESS` — Task 01–11 serta Checkpoint A–C selesai pada 2026-07-15. Operasional list kini memiliki filter deterministik, histori terminal dapat diarsipkan/restored, dan overdue dapat dibaca melalui command tanpa mutation. Langkah berikutnya adalah Task 12.
+`MVP IMPLEMENTED` — Task 01–12 serta Checkpoint A–C selesai pada 2026-07-15. Task 13 telah dievaluasi dan tetap deferred karena belum ada consumer integration yang disetujui; manifest tidak mempublikasikan event spekulatif.

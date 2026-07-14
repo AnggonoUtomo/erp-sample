@@ -13,6 +13,7 @@ import {
     canCompleteOnboarding,
     CompleteOnboardingDialog,
 } from './onboarding-components/onboarding-lifecycle-dialogs';
+import { onboardingStatusLabel, onboardingTaskStatusLabel } from './onboarding-components/onboarding-presenters';
 import { OnboardingSummaryCards } from './onboarding-components/onboarding-summary-cards';
 import { OnboardingTaskControls } from './onboarding-components/onboarding-task-controls';
 import type { OnboardingDetail } from './types';
@@ -52,7 +53,7 @@ export default function OnboardingShow({ onboarding, businessDate, assigneeOptio
                             <h1 className="text-2xl font-semibold tracking-tight">
                                 {onboarding.employee?.display_name ?? 'Employee tidak tersedia'}
                             </h1>
-                            <Badge variant="secondary">{onboarding.status}</Badge>
+                            <Badge variant="secondary">{onboardingStatusLabel(onboarding.status)}</Badge>
                             {onboarding.archived && (
                                 <Badge variant="outline">
                                     <Archive className="mr-1 size-3" /> Diarsipkan
@@ -64,11 +65,11 @@ export default function OnboardingShow({ onboarding, businessDate, assigneeOptio
                             {onboarding.template?.name ?? 'Template tidak tersedia'}
                         </p>
                     </div>
-                    <div className="flex flex-col items-end gap-3">
+                    <div className="flex w-full flex-col items-start gap-3 sm:w-auto sm:items-end">
                         <div className="text-muted-foreground flex items-center gap-2 text-sm">
                             <CalendarDays className="size-4" /> Business date: {businessDate}
                         </div>
-                        <div className="flex flex-wrap justify-end gap-2">
+                        <div className="flex w-full flex-wrap gap-2 sm:w-auto sm:justify-end">
                             {showActivation && <OnboardingActivationDialog onboardingId={onboarding.id} />}
                             {showComplete && <CompleteOnboardingDialog onboardingId={onboarding.id} />}
                             {showCancel && <CancelOnboardingDialog onboardingId={onboarding.id} />}
@@ -102,7 +103,7 @@ export default function OnboardingShow({ onboarding, businessDate, assigneeOptio
                                         <div className="flex flex-wrap items-center gap-2">
                                             <span className="font-medium">{task.title}</span>
                                             <Badge variant={task.required ? 'default' : 'outline'}>{task.required ? 'Wajib' : 'Opsional'}</Badge>
-                                            <Badge variant="secondary">{task.status}</Badge>
+                                            <Badge variant="secondary">{onboardingTaskStatusLabel(task.status)}</Badge>
                                             {task.overdue && <Badge variant="destructive">Terlambat</Badge>}
                                         </div>
                                         {task.description && <p className="text-muted-foreground mt-1 text-sm">{task.description}</p>}

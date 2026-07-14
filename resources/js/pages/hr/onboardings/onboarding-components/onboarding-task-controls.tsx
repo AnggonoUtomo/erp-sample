@@ -9,6 +9,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { router } from '@inertiajs/react';
@@ -114,12 +115,16 @@ export function OnboardingTaskControls({
                             <DialogTitle>Selesaikan task?</DialogTitle>
                             <DialogDescription>Completion akan menyimpan actor, waktu, dan catatan ringkas sebagai evidence.</DialogDescription>
                         </DialogHeader>
-                        <Textarea
-                            value={completionNote}
-                            onChange={(event) => setCompletionNote(event.target.value)}
-                            maxLength={2000}
-                            placeholder="Catatan completion (opsional)"
-                        />
+                        <div className="space-y-2">
+                            <Label htmlFor={`completion-note-${task.id}`}>Catatan completion (opsional)</Label>
+                            <Textarea
+                                id={`completion-note-${task.id}`}
+                                value={completionNote}
+                                onChange={(event) => setCompletionNote(event.target.value)}
+                                maxLength={2000}
+                                autoFocus
+                            />
+                        </div>
                         <DialogFooter>
                             <DialogClose asChild>
                                 <Button type="button" variant="outline" disabled={processing}>

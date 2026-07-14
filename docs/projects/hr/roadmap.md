@@ -257,11 +257,11 @@ Event awal:
 
 Target: lifecycle masuk dan keluar karyawan bisa dikontrol.
 
-Status 2026-07-15: paket specification Onboardings telah disusun dan masih `PROPOSED`; belum ada implementasi module. Baca [paket project Onboardings](onboardings/README.md) dan [ADR checklist snapshot](onboardings/decisions/001-checklist-driven-onboarding.md) sebelum menjalankan Task 01.
+Status 2026-07-15: MVP `Onboardings` telah tersedia dari template snapshot, draft/activation, task lifecycle, completion/cancellation, filter operasional, archive/restore, hingga overdue command. Baca [paket project Onboardings](onboardings/README.md) dan [frontend quality review](onboardings/07-frontend-quality-task12.md). Integration contract tetap deferred sampai ada consumer nyata.
 
 Module:
 
-- `Onboardings` **Status: specification proposed.**
+- `Onboardings` **Status: MVP tersedia.**
 - `Offboardings`
 - `ChecklistTemplates`
 - `ChecklistTasks`
@@ -283,7 +283,7 @@ Validasi penting:
 - Employee terminated tidak boleh dipakai untuk attendance/payroll period setelah effective date.
 - Offboarding completion harus tercatat.
 
-Event awal:
+Event kandidat berikut belum dipublikasikan dan menunggu approval consumer:
 
 - `EmployeeOnboardingStarted`
 - `EmployeeOnboardingCompleted`

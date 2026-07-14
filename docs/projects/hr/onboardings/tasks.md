@@ -225,7 +225,7 @@ Task dijalankan berurutan dan specification/ADR direvisi terlebih dahulu bila im
 
 **Dependencies:** Task 10. **Scope:** pecah filter, archive, dan command menjadi increment M.
 
-## Task 12 — Frontend completion dan quality gates
+## ✅ Task 12 — Frontend completion dan quality gates
 
 **Tujuan:** menyelesaikan UX, accessibility, responsive behavior, dan dokumentasi aktual.
 
@@ -233,15 +233,17 @@ Task dijalankan berurutan dan specification/ADR direvisi terlebih dahulu bila im
 
 **Acceptance criteria:**
 
-- [ ] Semua state memiliki label, empty/error state, dan aksi hanya tampil sesuai permission/state.
-- [ ] Keyboard/focus dialog, mobile layout, lint, format, typecheck, frontend test, dan build hijau.
-- [ ] Docs tidak mengklaim fitur non-MVP atau integration event yang belum tersedia.
+- [x] Semua state memiliki label, empty/error state, dan aksi hanya tampil sesuai permission/state.
+- [x] Keyboard/focus dialog, mobile layout, lint, format, typecheck, frontend test, dan build hijau.
+- [x] Docs tidak mengklaim fitur non-MVP atau integration event yang belum tersedia.
+
+**Hasil:** selesai 2026-07-15. Enum state ditampilkan sebagai label Bahasa Indonesia; empty state membedakan module/filter/arsip dan filter error diumumkan aksesibel. Dialog memiliki label, focus entry/return, processing guard, serta action layout responsif. Predicate presenter dan action visibility memiliki regression test. Dokumentasi dan HR roadmap dikoreksi sesuai implementasi aktual tanpa mengaktifkan integration event spekulatif. Lihat [frontend quality review](07-frontend-quality-task12.md).
 
 **Test:** full quality checkpoint di bawah.
 
 **Dependencies:** Task 11. **Scope:** M per UI/refinement increment.
 
-## Task 13 — Integration contract v1 (deferred gate)
+## ⏸️ Task 13 — Integration contract v1 (DEFERRED)
 
 **Tujuan:** mempublikasikan snapshot/event minimal hanya setelah Attendance atau consumer nyata disetujui.
 
@@ -256,6 +258,8 @@ Task dijalankan berurutan dan specification/ADR direvisi terlebih dahulu bila im
 **Test:** `php artisan test --filter=OnboardingIntegrationContract`
 
 **Dependencies:** Task 12 dan approval consumer interface. **Scope:** M.
+
+**Gate result 2026-07-15:** DEFERRED. Attendance masih berupa planning/roadmap dan belum menyediakan consumer runtime, use case owner, schema, delivery semantics, atau approval interface. Karena syarat dependency belum terpenuhi, tidak dibuat event, DTO, schema, adapter, listener, maupun dependency lintas project. Manifest tetap `events: []`/`listeners: []` dan kondisi ini dijaga oleh `OnboardingIntegrationContractTest`. Lihat [laporan deferred gate](08-integration-contract-deferred-gate.md) dan [ADR-007](decisions/007-defer-integration-contract-v1.md).
 
 ## Final quality checkpoint
 

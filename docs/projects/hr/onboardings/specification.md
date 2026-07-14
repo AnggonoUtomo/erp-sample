@@ -281,3 +281,4 @@ git diff --check
 - Optional task tidak di-skip otomatis saat onboarding completed; semantics terminal ditetapkan pada [ADR-005](decisions/005-terminal-lifecycle-evidence.md).
 - Due date MVP memakai calendar day sesuai ADR-002; working-day calendar adalah evaluasi lanjutan.
 - Approval completion MVP diwakili permission `onboardings.complete`; approval dua tahap dievaluasi setelah kebutuhan operasional nyata tersedia.
+- Integration contract v1 tetap deferred menurut [ADR-007](decisions/007-defer-integration-contract-v1.md) sampai consumer nyata menyetujui schema dan delivery semantics.

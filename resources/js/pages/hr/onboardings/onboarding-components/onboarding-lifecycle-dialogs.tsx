@@ -1,5 +1,14 @@
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { router } from '@inertiajs/react';
@@ -40,9 +49,9 @@ export function CompleteOnboardingDialog({ onboardingId }: { onboardingId: numbe
                     <DialogDescription>Semua task wajib sudah terminal. Setelah selesai, checklist tidak dapat diubah lagi.</DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
-                    <Button variant="outline" onClick={() => setOpen(false)}>
-                        Kembali
-                    </Button>
+                    <DialogClose asChild>
+                        <Button variant="outline">Kembali</Button>
+                    </DialogClose>
                     <Button onClick={submit} disabled={processing}>
                         Konfirmasi selesai
                     </Button>
@@ -81,12 +90,12 @@ export function CancelOnboardingDialog({ onboardingId }: { onboardingId: number 
                 </DialogHeader>
                 <div className="space-y-2">
                     <Label htmlFor="cancel-reason">Alasan pembatalan</Label>
-                    <Textarea id="cancel-reason" value={reason} maxLength={2000} onChange={(event) => setReason(event.target.value)} />
+                    <Textarea id="cancel-reason" value={reason} maxLength={2000} onChange={(event) => setReason(event.target.value)} autoFocus />
                 </div>
                 <DialogFooter>
-                    <Button variant="outline" onClick={() => setOpen(false)}>
-                        Kembali
-                    </Button>
+                    <DialogClose asChild>
+                        <Button variant="outline">Kembali</Button>
+                    </DialogClose>
                     <Button variant="destructive" onClick={submit} disabled={processing || !reason.trim()}>
                         Konfirmasi batal
                     </Button>

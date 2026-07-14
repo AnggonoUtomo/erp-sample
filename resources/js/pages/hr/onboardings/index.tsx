@@ -11,6 +11,7 @@ import { Head, Link, router, useForm } from '@inertiajs/react';
 import { ClipboardCheck, Plus } from 'lucide-react';
 import type { FormEvent, ReactNode } from 'react';
 import { OnboardingArchiveDialog } from './onboarding-components/onboarding-archive-dialog';
+import { emptyOnboardingMessage, hasActiveOnboardingFilters, onboardingStatusLabel } from './onboarding-components/onboarding-presenters';
 import type { ContractOption, EmployeeOption, IdName, OnboardingDraftForm, OnboardingFilterForm, OnboardingPaginator, TemplateOption } from './types';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -60,6 +61,8 @@ export default function OnboardingsIndex({
         start_date: '',
     });
     const employeeContracts = contractOptions.filter((contract) => String(contract.employee_id) === form.data.employee_id);
+    const filterErrors = Object.values(filterForm.errors);
+    const hasFilters = hasActiveOnboardingFilters(filters as Record<string, unknown>);
 
     const submit = (event: FormEvent) => {
         event.preventDefault();
@@ -98,7 +101,10 @@ export default function OnboardingsIndex({
                                         value={filterForm.data.status}
                                         onChange={(value) => filterForm.setData('status', value)}
                                         placeholder="Semua status"
-                                        options={['DRAFT', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'].map((value) => ({ value, label: value }))}
+                                        options={['DRAFT', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'].map((value) => ({
+                                            value,
+                                            label: onboardingStatusLabel(value),
+                                        }))}
                                     />
                                     <FilterSelect
                                         value={filterForm.data.template_id}
@@ -155,11 +161,18 @@ export default function OnboardingsIndex({
                                         </Button>
                                     </div>
                                 </form>
+                                {filterErrors.length > 0 && (
+                                    <div role="alert" className="text-destructive mt-3 text-sm">
+                                        Filter belum dapat diterapkan: {filterErrors.join(' ')}
+                                    </div>
+                                )}
                             </CardContent>
                         </Card>
                         {onboardings.data.length === 0 && (
                             <Card>
-                                <CardContent className="text-muted-foreground p-8 text-center">Belum ada onboarding.</CardContent>
+                                <CardContent className="text-muted-foreground p-8 text-center" aria-live="polite">
+                                    {emptyOnboardingMessage(hasFilters, Boolean(filters.archived))}
+                                </CardContent>
                             </Card>
                         )}
                         {onboardings.data.map((onboarding) => (
@@ -180,7 +193,7 @@ export default function OnboardingsIndex({
                                         </Button>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <Badge variant="secondary">{onboarding.status}</Badge>
+                                        <Badge variant="secondary">{onboardingStatusLabel(onboarding.status)}</Badge>
                                         {((onboarding.archived && canRestore) ||
                                             (!onboarding.archived && canArchive && ['COMPLETED', 'CANCELLED'].includes(onboarding.status))) && (
                                             <OnboardingArchiveDialog onboardingId={onboarding.id} archived={onboarding.archived} />
@@ -311,7 +324,7 @@ function FilterSelect({
 }) {
     return (
         <Select value={value || 'all'} onValueChange={(next) => onChange(next === 'all' ? '' : next)}>
-            <SelectTrigger>
+            <SelectTrigger aria-label={placeholder}>
                 <SelectValue placeholder={placeholder} />
             </SelectTrigger>
             <SelectContent>

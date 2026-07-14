@@ -9,6 +9,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { router } from '@inertiajs/react';
 import { RotateCcw, SkipForward } from 'lucide-react';
@@ -19,6 +20,7 @@ export function OnboardingTaskReasonDialog({ action, onboardingId, taskId }: { a
     const [reason, setReason] = useState('');
     const [processing, setProcessing] = useState(false);
     const isSkip = action === 'skip';
+    const reasonId = `${action}-reason-${taskId}`;
 
     const submit = () => {
         const field = isSkip ? 'skip_reason' : 'reopen_reason';
@@ -54,7 +56,17 @@ export function OnboardingTaskReasonDialog({ action, onboardingId, taskId }: { a
                             : 'Task kembali ke PENDING dan evidence terminal aktif akan dibersihkan secara terkontrol.'}
                     </DialogDescription>
                 </DialogHeader>
-                <Textarea value={reason} onChange={(event) => setReason(event.target.value)} maxLength={2000} placeholder="Alasan wajib" />
+                <div className="space-y-2">
+                    <Label htmlFor={reasonId}>Alasan</Label>
+                    <Textarea
+                        id={reasonId}
+                        value={reason}
+                        onChange={(event) => setReason(event.target.value)}
+                        maxLength={2000}
+                        placeholder="Alasan wajib"
+                        autoFocus
+                    />
+                </div>
                 <DialogFooter>
                     <DialogClose asChild>
                         <Button type="button" variant="outline" disabled={processing}>
