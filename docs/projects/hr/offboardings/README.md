@@ -60,4 +60,4 @@ Proses resign, termination, end-of-contract, retirement, dan separation lain ser
 
 ## Status
 
-`FOUNDATION IMPLEMENTED` — specification dan ADR disetujui melalui instruksi implementasi 2026-07-16. Task 01 menyediakan manifest, permission, state contract, dan provider tanpa membuka route/navigation prematur. Implementasi berikutnya dimulai dari Task 02; integration event downstream tetap deferred.
+`TEMPLATE SLICE IMPLEMENTED` — Task 01–02 selesai pada 2026-07-16. Authorized HR dapat membuat dan melihat template ordered checklist dengan signed due offset, pagination, transaction, audit, serta policy protection. Archive/restore baru dibuka pada Task 03; integration event downstream tetap deferred.

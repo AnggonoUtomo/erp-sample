@@ -30,7 +30,7 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Dependencies:** specification, ADR-001, ADR-002 accepted. **Scope:** M.
 
-## Task 02 — Template checklist vertical slice
+## ✅ Task 02 — Template checklist vertical slice
 
 **Tujuan:** HR dapat membuat dan melihat template beserta ordered items.
 
@@ -38,9 +38,11 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Acceptance criteria:**
 
-- [ ] Code unik dan items tersimpan atomic sesuai urutan.
-- [ ] Signed due offset terhadap exit date tervalidasi.
-- [ ] Authorized create/list bekerja; guest/unauthorized ditolak.
+- [x] Code unik dan items tersimpan atomic sesuai urutan.
+- [x] Signed due offset terhadap exit date tervalidasi.
+- [x] Authorized create/list bekerja; guest/unauthorized ditolak.
+
+**Hasil:** selesai 2026-07-16. Template dan maksimal 100 ordered items dibuat dalam satu transaction, code/category dinormalisasi, due offset dibatasi `-365..365`, list dipaginate 20 item, dan audit hanya membawa metadata aman. Runtime hanya membuka route create/list dengan authentication serta policy; UI menyediakan empty state, reordering keyboard-accessible controls, signed offset, dan permission-aware form. Archive/restore belum tersedia sesuai scope Task 03.
 
 **Test:** `php artisan test --filter=OffboardingTemplate && npm run typecheck && npm run build`
 
