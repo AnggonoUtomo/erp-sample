@@ -1,49 +1,57 @@
-# ADR-004 — Defer integration event v1
+# ADR-004 — Publish minimal offboarding completed event v1
 
-**Status:** Accepted — Deferred  
+**Status:** Accepted
 **Tanggal:** 2026-07-17
 
 ## Konteks
 
 Offboardings sudah memiliki finalisasi effective-dated yang mengubah Offboarding, Employee, dan optional Employee Contract secara atomic melalui gateway resmi pemilik domain. Setelah itu, domain lain seperti Attendance, Payroll, Accounting, Document Management, atau Console access control kemungkinan membutuhkan sinyal perubahan.
 
-Namun saat evaluasi Task 16, belum ada consumer runtime dan belum ada persetujuan schema. Mempublikasikan event sekarang berarti producer menebak kebutuhan downstream. Itu berisiko membekukan public API yang salah, terlalu luas, membawa PII, atau sulit dimigrasikan.
+Gate awal menunda event sampai consumer approval tersedia. Setelah gate disetujui, delivery, retry, dan ordering semantics untuk MVP disepakati sebagai event signal minimal tanpa listener downstream.
 
 ## Keputusan
 
-- Integration event v1 tetap deferred.
-- Manifest Offboardings mempertahankan `events: []` dan `listeners: []`.
-- Offboardings tidak menambah dependency langsung maupun optional dependency ke Attendance, Payroll, Accounting, Document Management, atau consumer downstream lain.
-- Tidak dibuat DTO, schema, event class, dispatcher, listener, outbox, adapter, atau projector spekulatif.
-- Candidate event pada roadmap hanya bahan diskusi, bukan kontrak normatif.
+- Offboardings mempublikasikan `EmployeeOffboardingCompletedV1`.
+- Manifest Offboardings mendaftarkan event pada `events` dan tetap mempertahankan `listeners: []`.
+- Event dikirim setelah transaksi finalization berhasil.
+- Payload hanya membawa identifier, status/type, effective date, business date, dan actor id minimum.
+- Schema JSON versioned menjadi public contract.
+- Tidak ada dependency langsung ke Attendance, Payroll, Accounting, Document Management, atau consumer downstream lain.
+- Tidak dibuat listener, outbox, adapter, projector, atau mutation downstream pada MVP.
 
-## Syarat membuka kembali gate
+## Delivery/retry/ordering semantics
 
-Gate hanya boleh dibuka jika seluruh bukti berikut tersedia:
+- **Delivery:** synchronous Laravel domain event setelah finalization transaction sukses.
+- **Retry:** producer tidak melakukan retry otomatis pada MVP. Consumer wajib idempotent berdasarkan `event_id`; finalize retry yang sudah completed tidak mengirim event kedua.
+- **Ordering:** ordering hanya per Offboarding aggregate berdasarkan `finalized_at`/`occurred_at`; tidak ada global ordering lintas employee.
+- **Failure:** event bukan sumber konsistensi HR internal. Employee, Contract, dan Offboarding sudah commit atomic sebelum event dikirim.
 
-1. Consumer module dan owner teknis telah ditentukan.
-2. Consumer menjelaskan use case: keputusan apa yang dibuat setelah menerima event.
-3. Field minimum, versi schema, compatibility, idempotency, ordering, retry, dan failure semantics disetujui producer dan consumer.
-4. PII classification, audit/logging boundary, dan authorization handoff disetujui.
-5. Contract test producer-consumer serta strategi rollout/rollback disiapkan.
+## Payload contract
 
-## Kandidat payload untuk diskusi, bukan kontrak
+Field yang dipublikasikan:
 
-Jika Payroll atau Attendance kelak membutuhkan sinyal exit, diskusi sebaiknya dimulai dari data minimal:
+- `schema_version`;
+- `offboarding_id`;
+- `employee_id`;
+- `employee_contract_id`;
+- `target_employment_status_id`;
+- `exit_type`;
+- `effective_date`;
+- `business_date`;
+- `finalized_by_user_id`.
 
-- schema version;
-- offboarding identifier;
-- employee identifier;
-- effective exit date;
-- final status identifier;
-- occurred-at timestamp;
-- idempotency/event id.
+Tidak dipublikasikan:
 
-Nama event, field final, delivery channel, dan ordering belum disetujui dan tidak boleh diimplementasikan berdasarkan ADR ini saja.
+- nama employee;
+- employee number;
+- exit reason;
+- notes;
+- file/document reference;
+- storage path;
+- active identity atau request fingerprint.
 
 ## Konsekuensi
 
-- MVP Offboardings tetap mandiri dan tidak memiliki side effect downstream.
-- Domain downstream dapat merancang kebutuhan berdasarkan use case nyata sebelum schema dibekukan.
-- Perubahan status gate memerlukan ADR pengganti dan approval eksplisit consumer.
-
+- Downstream dapat mulai membuat consumer contract test terhadap event v1.
+- Perubahan field breaking membutuhkan ADR pengganti dan schema version baru.
+- Kebutuhan retry durable/outbox dapat dievaluasi pada fase integration hardening berikutnya.

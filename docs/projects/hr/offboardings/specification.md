@@ -219,7 +219,7 @@ git diff --check
 - Cross-module mutation memakai interface/adapter resmi, bukan import service/model internal.
 - Lock order finalization tetap: Offboarding -> Employee -> Contract -> Tasks.
 - Frontend typed props bukan security boundary.
-- Event/listener/integration public kosong sampai consumer disetujui.
+- Event public hanya `EmployeeOffboardingCompletedV1` setelah gate disetujui; listener downstream tetap kosong sampai consumer mengimplementasikan handler sendiri.
 
 ## 10. Acceptance criteria
 
@@ -279,5 +279,5 @@ git diff --check
 
 - Bila terdapat lebih dari satu Employment Status final aktif, finalization harus meminta pilihan eksplisit dan tidak menebak.
 - Account disable/revoke memerlukan kebijakan Console terpisah.
-- Event `EmployeeOffboardingStarted`, `EmployeeOffboardingCompleted`, atau `EmploymentTerminated` tetap deferred sampai consumer menyetujui schema/delivery. Lihat [ADR-004](decisions/004-defer-integration-event-v1.md).
+- Event `EmployeeOffboardingCompletedV1` telah dipublikasikan setelah consumer gate dan delivery/retry/ordering semantics disetujui. Event lain seperti `EmployeeOffboardingStarted` atau `EmploymentTerminated` tetap deferred sampai ada approval terpisah. Lihat [ADR-004](decisions/004-defer-integration-event-v1.md).
 - Attendance dan Payroll baru boleh bereaksi melalui integration contract yang disetujui.

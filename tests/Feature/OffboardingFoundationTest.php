@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Modules\HR\Offboardings\Enums\OffboardingStatus;
 use App\Modules\HR\Offboardings\Enums\OffboardingTaskStatus;
+use App\Modules\HR\Offboardings\Integration\Events\EmployeeOffboardingCompletedV1;
 use App\Support\Modules\ModuleContractValidator;
 use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
@@ -28,7 +29,7 @@ class OffboardingFoundationTest extends TestCase
         $this->assertTrue($module['exports']['routes']);
         $this->assertTrue($module['exports']['permissions']);
         $this->assertTrue($module['exports']['navigation']);
-        $this->assertSame([], $module['events']);
+        $this->assertSame([EmployeeOffboardingCompletedV1::class], $module['events']);
         $this->assertSame([], $module['listeners']);
         $this->assertSame([], app(ModuleContractValidator::class)->validate('HR.Offboardings'));
     }

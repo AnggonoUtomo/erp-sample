@@ -10,7 +10,7 @@ Paket ini menjadi acuan pengembangan module `Offboardings`: HR merencanakan kelu
 4. [ADR-001](decisions/001-checklist-snapshot-and-exit-readiness.md) — snapshot checklist dan pemisahan readiness dari final employment exit.
 5. [ADR-002](decisions/002-effective-dated-termination-boundary.md) — ownership perubahan Employee/Contract dan batas integrasi downstream.
 6. [ADR-003](decisions/003-active-identity-and-idempotency.md) — identity aktif, fingerprint request, dan concurrency guard.
-7. [ADR-004](decisions/004-defer-integration-event-v1.md) — keputusan menunda integration event sampai consumer disetujui.
+7. [ADR-004](decisions/004-defer-integration-event-v1.md) — keputusan mempublikasikan event minimal setelah gate disetujui.
 8. [Implementation plan](implementation-plan.md) — dependency graph, fase, risiko, dan rollback.
 9. [Tasks](tasks.md) — task kecil berurutan dengan file, acceptance criteria, dan cara test.
 10. [Checkpoint A](01-template-checkpoint-a.md) — evidence template contract dan gate snapshot untuk Task 04.
@@ -18,7 +18,8 @@ Paket ini menjadi acuan pengembangan module `Offboardings`: HR merencanakan kelu
 12. [Checkpoint C](03-operational-lifecycle-checkpoint-c.md) — evidence activation, task lifecycle, readiness, cancellation, dan gate employment termination boundary.
 13. [Finalization security review](04-finalization-security-review.md) — threat model, denial matrix, generic error contract, dan route policy inventory.
 14. [Checkpoint D](05-effective-exit-checkpoint-d.md) — evidence effective exit, owner-module mutation, atomicity, denial, dan downstream boundary.
-15. [Task 16 deferred gate](06-integration-event-deferred-gate.md) — bukti consumer belum tersedia dan event tidak dipublikasikan spekulatif.
+15. [Task 16 integration event gate](06-integration-event-deferred-gate.md) — contract event v1, payload minimal, dan semantics delivery/retry/ordering.
+16. [Final quality checkpoint](07-final-quality-checkpoint.md) — hasil seluruh gate, security review, dan residual follow-up.
 
 Dokumen terkait:
 
@@ -68,4 +69,4 @@ Proses resign, termination, end-of-contract, retirement, dan separation lain ser
 
 ## Status
 
-`TASK 16 DEFERRED` — Integration event v1 telah dievaluasi pada 2026-07-17 dan tetap deferred karena belum ada consumer runtime/schema/delivery semantics yang disetujui. Manifest Offboardings tetap tidak mempublikasikan event/listener dan dijaga oleh contract test.
+`MVP VERIFIED` — Task 01–16, Checkpoint A–D, integration event v1, dan final automated quality checkpoint selesai pada 2026-07-17. Offboardings mempublikasikan `EmployeeOffboardingCompletedV1` dengan schema versioned dan payload minimal tanpa PII bebas; listeners downstream tetap kosong sampai consumer mengimplementasikan handler sendiri.

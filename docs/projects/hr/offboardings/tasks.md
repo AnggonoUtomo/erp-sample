@@ -317,21 +317,21 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Hasil:** selesai 2026-07-17. Index Offboardings dipoles dengan filter card terpisah, empty-state presenter, action visibility archive/restore berbasis permission dan terminal/archive state, serta dialog archive/restore yang memakai komponen dialog standar. Presenter tests menutup label, finalization visibility, active filter detection, dan empty-state message. Dokumentasi tetap menegaskan integration event downstream masih deferred sampai consumer disetujui.
 
-## ⏸️ Task 16 — Integration event v1 (DEFERRED)
+## ✅ Task 16 — Integration event v1
 
 **Tujuan:** mempublikasikan event minimal hanya setelah consumer disetujui.
 
 **Acceptance criteria:**
 
-- [ ] Schema versioned dan tidak membawa PII.
-- [ ] Delivery/retry/ordering semantics disetujui consumer.
-- [x] Tanpa consumer, task tetap deferred dan manifest event kosong.
+- [x] Schema versioned dan tidak membawa PII.
+- [x] Delivery/retry/ordering semantics disetujui consumer.
+- [x] Event dipublikasikan tanpa listener/mutation downstream spekulatif.
 
 **Test:** `php artisan test --filter=OffboardingIntegrationContract`
 
 **Dependencies:** Task 15 + consumer approval. **Scope:** M.
 
-**Gate result 2026-07-17:** DEFERRED. Belum ada consumer runtime/owner approval dari Attendance, Payroll, Accounting, DMS, atau module downstream lain; belum ada schema, delivery semantics, idempotency, ordering, retry, failure handling, maupun contract test producer-consumer yang disetujui. Karena itu tidak dibuat event, schema, adapter, listener, outbox, atau dependency downstream spekulatif. Manifest tetap `events: []`/`listeners: []` dan kondisi ini dijaga oleh `OffboardingIntegrationContractTest`. Lihat [laporan deferred gate](06-integration-event-deferred-gate.md) dan [ADR-004](decisions/004-defer-integration-event-v1.md).
+**Hasil:** selesai 2026-07-17 setelah integration gate dan delivery/retry/ordering semantics disetujui. Offboardings mempublikasikan `EmployeeOffboardingCompletedV1` dengan schema JSON versioned, payload identifier/date/status minimal, tanpa nama employee, reason, notes, document reference, storage path, active identity, atau request fingerprint. Event dikirim satu kali setelah finalization transaction sukses; finalize retry yang sudah `COMPLETED` tidak mengirim event kedua. Delivery MVP adalah synchronous Laravel domain event setelah commit; retry producer tidak otomatis dan consumer wajib idempotent berdasarkan `event_id`; ordering hanya per aggregate Offboarding berdasarkan `finalized_at`/`occurred_at`. Tidak ada listener/mutation downstream pada MVP. Lihat [laporan gate](06-integration-event-deferred-gate.md) dan [ADR-004](decisions/004-defer-integration-event-v1.md).
 
 ## Final quality checkpoint
 
@@ -347,7 +347,9 @@ php artisan test
 git diff --check
 ```
 
-- [ ] Semua command hijau.
-- [ ] Mutation authorization matrix lengkap.
-- [ ] Security review tidak menemukan hard delete, PII/secret leak, partial finalization, atau frontend-only authorization.
-- [ ] README/spec/plan/tasks/ADR dan HR roadmap sesuai implementasi.
+- [x] Semua command hijau.
+- [x] Mutation authorization matrix lengkap.
+- [x] Security review tidak menemukan hard delete, PII/secret leak, partial finalization, atau frontend-only authorization.
+- [x] README/spec/plan/tasks/ADR dan HR roadmap sesuai implementasi.
+
+**Hasil:** selesai 2026-07-17. Full quality checkpoint lulus: module validation, Pint, ESLint, Prettier, TypeScript, frontend tests, production build, full backend tests, dan diff whitespace check hijau. Offboarding regression lulus 72 tests / 763 assertions; full backend lulus 443 tests / 2641 assertions. Lihat [final quality checkpoint](07-final-quality-checkpoint.md).

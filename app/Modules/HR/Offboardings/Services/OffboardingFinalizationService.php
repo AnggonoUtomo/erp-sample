@@ -12,9 +12,11 @@ use App\Modules\HR\Employees\Integration\DTO\EmployeeTerminationCommandV1;
 use App\Modules\HR\Employees\Integration\Exceptions\EmployeeTerminationRejected;
 use App\Modules\HR\Offboardings\DTO\OffboardingFinalizationData;
 use App\Modules\HR\Offboardings\Enums\OffboardingStatus;
+use App\Modules\HR\Offboardings\Integration\Events\EmployeeOffboardingCompletedV1;
 use App\Modules\HR\Offboardings\Models\Offboarding;
 use App\Modules\HR\Offboardings\Models\OffboardingTask;
 use App\Modules\HR\Offboardings\Transactions\OffboardingTransaction;
+use App\Shared\Contracts\DomainEventDispatcher;
 use Carbon\CarbonImmutable;
 use Illuminate\Validation\ValidationException;
 
@@ -27,11 +29,14 @@ final class OffboardingFinalizationService
         private readonly EmployeeTerminationGateway $employees,
         private readonly EmployeeContractTerminationGateway $contracts,
         private readonly AuditLogService $audit,
+        private readonly DomainEventDispatcher $events,
     ) {}
 
     public function finalize(Offboarding $offboarding, OffboardingFinalizationData $data): Offboarding
     {
-        return $this->transaction->run(function () use ($offboarding, $data): Offboarding {
+        $shouldPublishCompletedEvent = false;
+
+        $finalized = $this->transaction->run(function () use ($offboarding, $data, &$shouldPublishCompletedEvent): Offboarding {
             $locked = Offboarding::query()
                 ->withTrashed()
                 ->lockForUpdate()
@@ -112,8 +117,16 @@ final class OffboardingFinalizationService
                 throwOnFailure: true,
             );
 
+            $shouldPublishCompletedEvent = true;
+
             return $locked->refresh();
         });
+
+        if ($shouldPublishCompletedEvent) {
+            $this->events->dispatch(EmployeeOffboardingCompletedV1::fromOffboarding($finalized));
+        }
+
+        return $finalized;
     }
 
     private function reject(): never

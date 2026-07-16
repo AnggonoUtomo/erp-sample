@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\HR\Offboardings\Integration\Events\EmployeeOffboardingCompletedV1;
 use App\Modules\HR\Offboardings\Providers\OffboardingsServiceProvider;
 
 return [
@@ -23,7 +24,9 @@ return [
         'permissions' => true,
         'navigation' => true,
     ],
-    'events' => [],
+    'events' => [
+        EmployeeOffboardingCompletedV1::class,
+    ],
     'listeners' => [],
     'integrations' => [
         'optional_dependencies' => [

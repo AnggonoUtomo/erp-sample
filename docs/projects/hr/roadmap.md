@@ -259,12 +259,12 @@ Target: lifecycle masuk dan keluar karyawan bisa dikontrol.
 
 Status 2026-07-15: MVP `Onboardings` telah tersedia dari template snapshot, draft/activation, task lifecycle, completion/cancellation, filter operasional, archive/restore, hingga overdue command. Baca [paket project Onboardings](onboardings/README.md) dan [frontend quality review](onboardings/07-frontend-quality-task12.md). Integration contract tetap deferred sampai ada consumer nyata.
 
-Status 2026-07-16: paket specification dan ADR `Offboardings` telah diterima. Task 01–03 dan Checkpoint A menyediakan module/state/permission contract serta lifecycle template ordered checklist create/list/archive/restore yang policy-protected tanpa hard delete. Snapshot gate untuk Task 04 sudah formal. Baca [paket project Offboardings](offboardings/README.md).
+Status 2026-07-17: MVP `Offboardings` telah terverifikasi dari template checklist, draft snapshot, duplicate guard, activation, task lifecycle, readiness, cancellation, effective exit atomic, filters/archive/restore, due command, frontend completion, sampai integration event v1 `EmployeeOffboardingCompletedV1`. Baca [paket project Offboardings](offboardings/README.md) dan [final quality checkpoint](offboardings/07-final-quality-checkpoint.md).
 
 Module:
 
 - `Onboardings` **Status: MVP tersedia.**
-- `Offboardings` **Status: Checkpoint A lulus; berikutnya draft dan task snapshot pada Task 04.**
+- `Offboardings` **Status: MVP verified dengan integration event v1.**
 - `ChecklistTemplates`
 - `ChecklistTasks`
 
@@ -291,6 +291,10 @@ Event kandidat berikut belum dipublikasikan dan menunggu approval consumer:
 - `EmployeeOnboardingCompleted`
 - `EmployeeOffboardingStarted`
 - `EmploymentTerminated`
+
+Event Offboardings yang sudah dipublikasikan:
+
+- `EmployeeOffboardingCompletedV1`
 
 ## Phase 6: HR Reports
 
