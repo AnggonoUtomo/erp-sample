@@ -273,11 +273,13 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Hasil:** selesai 2026-07-16. Denial matrix membuktikan authentication dan permission dijalankan server-side; unknown ID menghasilkan `404`; archived, stale Employee/Contract, dan invalid target status ditolak dengan satu generic invariant message tanpa PII, nama table, class, atau lock detail. Payload tambahan tidak dapat menimpa employee, contract, target status, effective date, reason, maupun actor karena service hanya memakai snapshot Offboarding terkunci dan actor session. Route inventory memaksa seluruh mutation `hr.offboardings.*` memiliki `auth` dan policy middleware. Lihat [finalization security review](04-finalization-security-review.md).
 
-## Checkpoint D — Effective exit
+## ✅ Checkpoint D — Effective exit
 
-- [ ] Atomicity, retry, concurrency, audit, dan denial terbukti.
-- [ ] Employees/Contracts konsisten pada exit date.
-- [ ] Tidak ada direct Attendance/Payroll mutation.
+- [x] Atomicity, retry, concurrency, audit, dan denial terbukti.
+- [x] Employees/Contracts konsisten pada exit date.
+- [x] Tidak ada direct Attendance/Payroll mutation.
+
+**Evidence 2026-07-16:** owner-module termination contract, atomic finalization, authorization matrix, route inventory, dan full Offboarding regression lulus. Employee dan optional Contract hanya berubah lewat gateway resmi dalam transaksi yang sama dengan Offboarding evidence/audit; retry completed menjadi no-op; concurrent request diserialisasi row lock; stale/archived/invalid/input override ditolak fail-closed. Lihat [laporan Checkpoint D](05-effective-exit-checkpoint-d.md).
 
 ## Task 14 — Filters, archive/restore, dan due command
 
