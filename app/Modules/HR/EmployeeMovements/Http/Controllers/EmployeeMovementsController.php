@@ -37,10 +37,34 @@ class EmployeeMovementsController extends Controller
         return back()->with('success', 'Movement berhasil diterapkan ke profile employee.');
     }
 
+    public function approve(EmployeeMovement $employeeMovement): RedirectResponse
+    {
+        $this->authorize('approve', $employeeMovement);
+        $this->movements->approve($employeeMovement);
+
+        return back()->with('success', 'Movement berhasil di-approve.');
+    }
+
     public function cancel(CancelEmployeeMovementRequest $request, EmployeeMovement $employeeMovement): RedirectResponse
     {
         $this->movements->cancel($employeeMovement, (string) $request->validated('reason'));
 
         return back()->with('success', 'Movement berhasil dibatalkan.');
+    }
+
+    public function destroy(EmployeeMovement $employeeMovement): RedirectResponse
+    {
+        $this->authorize('delete', $employeeMovement);
+        $this->movements->archive($employeeMovement);
+
+        return back()->with('success', 'Movement berhasil di-archive.');
+    }
+
+    public function restore(int $employeeMovement): RedirectResponse
+    {
+        $this->authorize('restore', EmployeeMovement::class);
+        $this->movements->restore($employeeMovement);
+
+        return back()->with('success', 'Movement berhasil dipulihkan.');
     }
 }

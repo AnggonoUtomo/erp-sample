@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use App\Modules\HR\Departements\Models\Departement;
 use App\Modules\HR\EmployeeContracts\Models\EmployeeContract;
+use App\Modules\HR\EmployeeMovements\Integration\Events\EmployeeMovementAppliedV1;
 use App\Modules\HR\EmployeeMovements\Models\EmployeeMovement;
 use App\Modules\HR\Employees\Models\Employee;
 use App\Modules\HR\EmploymentStatuses\Models\EmploymentStatus;
@@ -13,6 +14,7 @@ use App\Modules\HR\JobLevels\Models\JobLevel;
 use App\Modules\HR\Positions\Models\Position;
 use App\Modules\HR\WorkLocations\Models\WorkLocation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 
@@ -24,7 +26,7 @@ class HREmployeeMovementTest extends TestCase
     {
         parent::setUp();
         $this->withoutVite();
-        foreach (['employee-movements.view', 'employee-movements.create', 'employee-movements.apply', 'employee-movements.cancel'] as $permission) {
+        foreach (['employee-movements.view', 'employee-movements.create', 'employee-movements.approve', 'employee-movements.apply', 'employee-movements.cancel', 'employee-movements.archive', 'employee-movements.restore'] as $permission) {
             Permission::findOrCreate($permission);
         }
     }
@@ -60,8 +62,9 @@ class HREmployeeMovementTest extends TestCase
         ]);
         $movement = EmployeeMovement::query()->firstOrFail();
         $approver = User::factory()->create();
-        $approver->givePermissionTo('employee-movements.apply');
+        $approver->givePermissionTo(['employee-movements.approve', 'employee-movements.apply']);
 
+        $this->actingAs($approver)->post(route('hr.employee-movements.approve', $movement))->assertRedirect();
         $this->actingAs($approver)->post(route('hr.employee-movements.apply', $movement))->assertRedirect();
 
         $this->assertDatabaseHas('hr_employees', [
@@ -77,7 +80,7 @@ class HREmployeeMovementTest extends TestCase
     {
         [$employee, , , , $targetJobLevel] = $this->references();
         $creator = User::factory()->create();
-        $creator->givePermissionTo(['employee-movements.create', 'employee-movements.apply']);
+        $creator->givePermissionTo(['employee-movements.create', 'employee-movements.approve', 'employee-movements.apply']);
 
         $this->actingAs($creator)->post(route('hr.employee-movements.store'), [
             'employee_id' => $employee->id,
@@ -92,6 +95,7 @@ class HREmployeeMovementTest extends TestCase
         $this->assertSame($employee->job_level_id, $movement->before_values['job_level_id']);
         $this->assertSame($targetJobLevel->id, $movement->after_values['job_level_id']);
 
+        $this->actingAs($creator)->post(route('hr.employee-movements.approve', $movement))->assertRedirect();
         $this->actingAs($creator)->post(route('hr.employee-movements.apply', $movement))->assertRedirect();
 
         $this->assertDatabaseHas('hr_employees', [
@@ -129,7 +133,7 @@ class HREmployeeMovementTest extends TestCase
     {
         [$employee, , , , , $targetStatus, $targetType] = $this->references();
         $creator = User::factory()->create();
-        $creator->givePermissionTo(['employee-movements.create', 'employee-movements.apply']);
+        $creator->givePermissionTo(['employee-movements.create', 'employee-movements.approve', 'employee-movements.apply']);
         EmployeeContract::query()->create([
             'employee_id' => $employee->id,
             'employment_type_id' => $targetType->id,
@@ -154,6 +158,7 @@ class HREmployeeMovementTest extends TestCase
         $this->assertSame($employee->employment_type_id, $movement->before_values['employment_type_id']);
         $this->assertSame($targetType->id, $movement->after_values['employment_type_id']);
 
+        $this->actingAs($creator)->post(route('hr.employee-movements.approve', $movement))->assertRedirect();
         $this->actingAs($creator)->post(route('hr.employee-movements.apply', $movement))->assertRedirect();
 
         $this->assertDatabaseHas('hr_employees', [
@@ -186,7 +191,7 @@ class HREmployeeMovementTest extends TestCase
     {
         [$employee, $targetDepartment, $targetPosition, $targetLocation] = $this->references();
         $user = User::factory()->create();
-        $user->givePermissionTo(['employee-movements.create', 'employee-movements.apply']);
+        $user->givePermissionTo(['employee-movements.create', 'employee-movements.approve', 'employee-movements.apply']);
         $this->actingAs($user)->post(route('hr.employee-movements.store'), [
             'employee_id' => $employee->id, 'effective_date' => now()->toDateString(),
             'departement_id' => $targetDepartment->id, 'position_id' => $targetPosition->id,
@@ -195,7 +200,7 @@ class HREmployeeMovementTest extends TestCase
         $movement = EmployeeMovement::query()->firstOrFail();
         $employee->update(['work_location_id' => $targetLocation->id]);
 
-        $this->actingAs($user)->post(route('hr.employee-movements.apply', $movement))->assertSessionHasErrors('profile');
+        $this->actingAs($user)->post(route('hr.employee-movements.approve', $movement))->assertSessionHasErrors('profile');
         $this->assertDatabaseHas('hr_employee_movements', ['id' => $movement->id, 'status' => 'DRAFT', 'applied_at' => null]);
     }
 
@@ -203,7 +208,7 @@ class HREmployeeMovementTest extends TestCase
     {
         [$employee, $targetDepartment, $targetPosition, $targetLocation] = $this->references();
         $user = User::factory()->create();
-        $user->givePermissionTo(['employee-movements.create', 'employee-movements.apply', 'employee-movements.cancel']);
+        $user->givePermissionTo(['employee-movements.create', 'employee-movements.approve', 'employee-movements.apply', 'employee-movements.cancel']);
 
         $this->actingAs($user)->post(route('hr.employee-movements.store'), [
             'employee_id' => $employee->id,
@@ -215,6 +220,7 @@ class HREmployeeMovementTest extends TestCase
         ])->assertRedirect();
 
         $movement = EmployeeMovement::query()->firstOrFail();
+        $this->actingAs($user)->post(route('hr.employee-movements.approve', $movement))->assertRedirect();
         $this->actingAs($user)->post(route('hr.employee-movements.apply', $movement))->assertSessionHasErrors('effective_date');
 
         $this->actingAs($user)->post(route('hr.employee-movements.cancel', $movement), [
@@ -234,7 +240,7 @@ class HREmployeeMovementTest extends TestCase
     {
         [$employee, $targetDepartment, $targetPosition, $targetLocation] = $this->references();
         $creator = User::factory()->create();
-        $creator->givePermissionTo('employee-movements.create');
+        $creator->givePermissionTo(['employee-movements.create', 'employee-movements.approve']);
 
         $this->actingAs($creator)->post(route('hr.employee-movements.store'), [
             'employee_id' => $employee->id,
@@ -246,9 +252,10 @@ class HREmployeeMovementTest extends TestCase
         ])->assertRedirect();
 
         $dueMovement = EmployeeMovement::query()->firstOrFail();
+        $this->actingAs($creator)->post(route('hr.employee-movements.approve', $dueMovement))->assertRedirect();
         $this->artisan('hr:employee-movements:apply-due', ['--date' => now()->toDateString(), '--dry-run' => true])
             ->assertSuccessful();
-        $this->assertDatabaseHas('hr_employee_movements', ['id' => $dueMovement->id, 'status' => 'DRAFT']);
+        $this->assertDatabaseHas('hr_employee_movements', ['id' => $dueMovement->id, 'status' => 'APPROVED']);
 
         $this->artisan('hr:employee-movements:apply-due', ['--date' => now()->toDateString()])
             ->assertSuccessful();
@@ -260,6 +267,56 @@ class HREmployeeMovementTest extends TestCase
             'position_id' => $targetPosition->id,
             'work_location_id' => $targetLocation->id,
         ]);
+    }
+
+    public function test_approval_archive_restore_and_applied_event_contract(): void
+    {
+        Event::fake([EmployeeMovementAppliedV1::class]);
+        [$employee, $targetDepartment, $targetPosition, $targetLocation] = $this->references();
+        $user = User::factory()->create();
+        $user->givePermissionTo(['employee-movements.create', 'employee-movements.approve', 'employee-movements.apply', 'employee-movements.cancel', 'employee-movements.archive', 'employee-movements.restore']);
+
+        $this->actingAs($user)->post(route('hr.employee-movements.store'), [
+            'employee_id' => $employee->id,
+            'effective_date' => now()->toDateString(),
+            'departement_id' => $targetDepartment->id,
+            'position_id' => $targetPosition->id,
+            'work_location_id' => $targetLocation->id,
+            'reason' => 'Approved movement',
+        ])->assertRedirect();
+        $movement = EmployeeMovement::query()->firstOrFail();
+        $this->actingAs($user)->post(route('hr.employee-movements.apply', $movement))->assertSessionHasErrors('status');
+        $this->actingAs($user)->post(route('hr.employee-movements.approve', $movement))->assertRedirect();
+        $this->assertDatabaseHas('hr_employee_movements', ['id' => $movement->id, 'status' => 'APPROVED', 'approved_by' => $user->id]);
+        $this->actingAs($user)->post(route('hr.employee-movements.apply', $movement))->assertRedirect();
+
+        Event::assertDispatched(EmployeeMovementAppliedV1::class, function (EmployeeMovementAppliedV1 $event) use ($movement, $employee): bool {
+            $payload = $event->toArray();
+
+            return $payload['schemaVersion'] === 1
+                && $payload['movementId'] === $movement->id
+                && $payload['employeeId'] === $employee->id
+                && $payload['movementType'] === 'TRANSFER'
+                && in_array('departement_id', $payload['changedFields'], true)
+                && ! array_key_exists('employeeName', $payload)
+                && ! array_key_exists('reason', $payload);
+        });
+
+        $archiveLocation = WorkLocation::query()->create(['code' => 'ARC-L', 'name' => 'Archive Location', 'timezone' => 'Asia/Jakarta', 'active' => true]);
+        $this->actingAs($user)->post(route('hr.employee-movements.store'), [
+            'employee_id' => $employee->id,
+            'effective_date' => now()->toDateString(),
+            'departement_id' => $employee->departement_id,
+            'position_id' => $employee->position_id,
+            'work_location_id' => $archiveLocation->id,
+            'reason' => 'Cancelled movement',
+        ])->assertRedirect();
+        $cancelled = EmployeeMovement::query()->where('status', 'DRAFT')->latest('id')->firstOrFail();
+        $this->actingAs($user)->post(route('hr.employee-movements.cancel', $cancelled), ['reason' => 'No longer needed'])->assertRedirect();
+        $this->actingAs($user)->delete(route('hr.employee-movements.destroy', $cancelled))->assertRedirect();
+        $this->assertSoftDeleted('hr_employee_movements', ['id' => $cancelled->id]);
+        $this->actingAs($user)->patch(route('hr.employee-movements.restore', $cancelled->id))->assertRedirect();
+        $this->assertDatabaseHas('hr_employee_movements', ['id' => $cancelled->id, 'deleted_at' => null, 'archived_by' => null]);
     }
 
     public function test_invalid_transfer_and_unauthorized_mutations_are_rejected(): void

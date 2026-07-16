@@ -6,6 +6,7 @@ use App\Modules\Console\AuditLogs\Services\AuditLogService;
 use App\Modules\HR\Departements\Models\Departement;
 use App\Modules\HR\EmployeeContracts\Integration\Contracts\EmployeeContractEmploymentTypeGuard;
 use App\Modules\HR\EmployeeMovements\DTO\EmployeeMovementData;
+use App\Modules\HR\EmployeeMovements\Integration\Events\EmployeeMovementAppliedV1;
 use App\Modules\HR\EmployeeMovements\Models\EmployeeMovement;
 use App\Modules\HR\EmployeeMovements\Transactions\EmployeeMovementsTransaction;
 use App\Modules\HR\Employees\Models\Employee;
@@ -47,7 +48,7 @@ class EmployeeMovementsService
         ];
 
         return [
-            'movements' => EmployeeMovement::query()->with(['employee:id,display_name,employee_number', 'creator:id,name', 'applier:id,name'])
+            'movements' => EmployeeMovement::query()->with(['employee:id,display_name,employee_number', 'creator:id,name', 'approver:id,name', 'applier:id,name'])
                 ->latest()->paginate(15)->through(function (EmployeeMovement $movement) use ($labels): array {
                     return [
                         'id' => $movement->id, 'type' => $movement->type, 'effective_date' => $movement->effective_date->toDateString(),
@@ -56,7 +57,9 @@ class EmployeeMovementsService
                         'before' => $this->labelSnapshot($movement->before_values, $labels),
                         'after' => $this->labelSnapshot($movement->after_values, $labels),
                         'creator' => $movement->creator?->only(['id', 'name']),
+                        'approver' => $movement->approver?->only(['id', 'name']),
                         'applier' => $movement->applier?->only(['id', 'name']),
+                        'approved_at' => $movement->approved_at?->toISOString(),
                         'applied_at' => $movement->applied_at?->toISOString(),
                         'cancelled_at' => $movement->cancelled_at?->toISOString(),
                         'cancel_reason' => $movement->cancel_reason,
@@ -115,14 +118,45 @@ class EmployeeMovementsService
         return $this->applyForBusinessDate($movement, now()->toDateString());
     }
 
+    public function approve(EmployeeMovement $movement): EmployeeMovement
+    {
+        return $this->transaction->run(function () use ($movement): EmployeeMovement {
+            $locked = EmployeeMovement::query()->lockForUpdate()->findOrFail($movement->id);
+            if ($locked->status !== 'DRAFT') {
+                throw ValidationException::withMessages(['status' => 'Hanya movement DRAFT yang dapat di-approve.']);
+            }
+
+            $employee = Employee::query()->lockForUpdate()->findOrFail($locked->employee_id);
+            if ($this->snapshot($employee) !== $this->normalizeSnapshot($locked->before_values)) {
+                throw ValidationException::withMessages(['profile' => 'Profile employee telah berubah. Buat movement baru dari data terkini.']);
+            }
+            $after = $this->normalizeSnapshot($locked->after_values);
+            $this->validateTarget($employee, $after, $locked->effective_date->toDateString());
+            $this->validateMovementType($employee, $locked->type, $this->normalizeSnapshot($locked->before_values), $after);
+
+            $locked->update(['status' => 'APPROVED', 'approved_by' => auth()->id(), 'approved_at' => now()]);
+            $this->audit->record(
+                module: 'hr.employee-movements',
+                event: 'EmployeeMovement.approved',
+                auditable: $locked,
+                description: "Approved {$locked->type} movement for employee #{$locked->employee_id}",
+                oldValues: ['status' => 'DRAFT'],
+                newValues: ['status' => 'APPROVED'],
+            );
+
+            return $locked->refresh();
+        });
+    }
+
     public function cancel(EmployeeMovement $movement, string $reason): EmployeeMovement
     {
         return $this->transaction->run(function () use ($movement, $reason): EmployeeMovement {
             $locked = EmployeeMovement::query()->lockForUpdate()->findOrFail($movement->id);
-            if ($locked->status !== 'DRAFT') {
+            if (! in_array($locked->status, ['DRAFT', 'APPROVED'], true)) {
                 throw ValidationException::withMessages(['status' => 'Hanya movement DRAFT yang dapat dibatalkan.']);
             }
 
+            $oldStatus = $locked->status;
             $locked->update([
                 'status' => 'CANCELLED',
                 'cancelled_by' => auth()->id(),
@@ -134,7 +168,7 @@ class EmployeeMovementsService
                 event: 'EmployeeMovement.cancelled',
                 auditable: $locked,
                 description: "Cancelled {$locked->type} movement for employee #{$locked->employee_id}",
-                oldValues: ['status' => 'DRAFT'],
+                oldValues: ['status' => $oldStatus],
                 newValues: ['status' => 'CANCELLED', 'reason' => trim($reason)],
             );
 
@@ -148,7 +182,7 @@ class EmployeeMovementsService
     public function applyDue(string $businessDate, bool $dryRun = false): array
     {
         $due = EmployeeMovement::query()
-            ->where('status', 'DRAFT')
+            ->where('status', 'APPROVED')
             ->whereDate('effective_date', '<=', $businessDate)
             ->orderBy('effective_date')
             ->orderBy('id')
@@ -176,8 +210,8 @@ class EmployeeMovementsService
     {
         return $this->transaction->run(function () use ($movement, $businessDate): EmployeeMovement {
             $locked = EmployeeMovement::query()->lockForUpdate()->findOrFail($movement->id);
-            if ($locked->status !== 'DRAFT') {
-                throw ValidationException::withMessages(['status' => 'Hanya movement DRAFT yang dapat diterapkan.']);
+            if ($locked->status !== 'APPROVED') {
+                throw ValidationException::withMessages(['status' => 'Hanya movement APPROVED yang dapat diterapkan.']);
             }
             if ($locked->effective_date->toDateString() > $businessDate) {
                 throw ValidationException::withMessages(['effective_date' => 'Movement hanya dapat diterapkan saat sudah mencapai effective date.']);
@@ -192,13 +226,56 @@ class EmployeeMovementsService
             $this->validateMovementType($employee, $locked->type, $this->normalizeSnapshot($locked->before_values), $after);
             $employee->update($after);
             $locked->update(['status' => 'APPLIED', 'applied_by' => auth()->id(), 'applied_at' => now()]);
+            $locked->refresh();
             $this->audit->record(
                 module: 'hr.employee-movements', event: 'EmployeeMovement.applied', auditable: $locked,
                 description: "Applied {$locked->type} for {$employee->display_name}",
                 oldValues: $locked->before_values, newValues: $after,
             );
+            event(EmployeeMovementAppliedV1::fromMovement($locked));
 
-            return $locked->refresh();
+            return $locked;
+        });
+    }
+
+    public function archive(EmployeeMovement $movement): void
+    {
+        $this->transaction->run(function () use ($movement): void {
+            $locked = EmployeeMovement::query()->lockForUpdate()->findOrFail($movement->id);
+            if (! in_array($locked->status, ['CANCELLED'], true)) {
+                throw ValidationException::withMessages(['status' => 'Hanya movement CANCELLED yang dapat di-archive.']);
+            }
+            $locked->update(['archived_by' => auth()->id(), 'archived_at' => now()]);
+            $locked->delete();
+            $this->audit->record(
+                module: 'hr.employee-movements',
+                event: 'EmployeeMovement.archived',
+                auditable: $locked,
+                description: "Archived {$locked->type} movement #{$locked->id}",
+                oldValues: ['deleted_at' => null],
+                newValues: ['deleted_at' => $locked->deleted_at?->toISOString()],
+            );
+        });
+    }
+
+    public function restore(int $movementId): void
+    {
+        $this->transaction->run(function () use ($movementId): void {
+            $locked = EmployeeMovement::withTrashed()->lockForUpdate()->findOrFail($movementId);
+            if (! $locked->trashed()) {
+                return;
+            }
+            $archivedAt = $locked->deleted_at?->toISOString();
+            $locked->restore();
+            $locked->update(['archived_by' => null, 'archived_at' => null]);
+            $this->audit->record(
+                module: 'hr.employee-movements',
+                event: 'EmployeeMovement.restored',
+                auditable: $locked,
+                description: "Restored {$locked->type} movement #{$locked->id}",
+                oldValues: ['deleted_at' => $archivedAt],
+                newValues: ['deleted_at' => null],
+            );
         });
     }
 

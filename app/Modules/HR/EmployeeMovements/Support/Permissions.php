@@ -12,8 +12,11 @@ class Permissions
         return [
             'employee-movements.view',
             'employee-movements.create',
+            'employee-movements.approve',
             'employee-movements.apply',
             'employee-movements.cancel',
+            'employee-movements.archive',
+            'employee-movements.restore',
             'employee-movements.manage',
         ];
     }
@@ -24,7 +27,7 @@ class Permissions
     public static function defaultRolePermissions(): array
     {
         return [
-            'admin' => ['employee-movements.view', 'employee-movements.create', 'employee-movements.apply', 'employee-movements.cancel', 'employee-movements.manage'],
+            'admin' => ['employee-movements.view', 'employee-movements.create', 'employee-movements.approve', 'employee-movements.apply', 'employee-movements.cancel', 'employee-movements.archive', 'employee-movements.restore', 'employee-movements.manage'],
             'staff' => [],
         ];
     }

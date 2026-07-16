@@ -18,6 +18,8 @@ Task 03 memperluas snapshot ke `employment_status_id` dan `employment_type_id`. 
 
 Task 04 mengizinkan effective date masa depan. Draft tidak mengubah profile sampai manual apply atau command scheduler menerapkannya setelah due date.
 
+Task 05 menambahkan approval gate sehingga apply hanya menerima movement yang sudah `APPROVED`.
+
 ## Consequences
 
 - Histori transfer dapat diaudit dan current profile tetap cepat dibaca.
@@ -25,4 +27,5 @@ Task 04 mengizinkan effective date masa depan. Draft tidak mengubah profile samp
 - Promotion/demotion memiliki histori before/after yang sama kuatnya dengan transfer.
 - Employment status/type memiliki histori before/after tanpa mengubah kontrak secara diam-diam.
 - Future scheduling tersedia melalui command due-date; backdate tetap non-scope.
+- Approval menjadi checkpoint eksplisit sebelum profile Employees berubah.
 - Contract tidak berubah otomatis pada transfer.

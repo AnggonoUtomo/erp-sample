@@ -30,8 +30,10 @@ const movementTypes = [
 export default function EmployeeMovementsIndex({ movements, options }: MovementPageProps) {
     const { canAny } = usePermission();
     const canCreate = canAny(['employee-movements.create', 'employee-movements.manage']);
+    const canApprove = canAny(['employee-movements.approve', 'employee-movements.manage']);
     const canApply = canAny(['employee-movements.apply', 'employee-movements.manage']);
     const canCancel = canAny(['employee-movements.cancel', 'employee-movements.manage']);
+    const canArchive = canAny(['employee-movements.archive', 'employee-movements.manage']);
     const form = useForm<MovementForm>({
         employee_id: '',
         type: 'TRANSFER',
@@ -127,6 +129,25 @@ export default function EmployeeMovementsIndex({ movements, options }: MovementP
                                     </p>
                                     {movement.status === 'DRAFT' && (
                                         <div className="flex flex-wrap gap-2">
+                                            {canApprove && (
+                                                <Button
+                                                    size="sm"
+                                                    onClick={() =>
+                                                        router.post(route('hr.employee-movements.approve', movement.id), {}, { preserveScroll: true })
+                                                    }
+                                                >
+                                                    Approve
+                                                </Button>
+                                            )}
+                                            {canCancel && (
+                                                <Button size="sm" variant="outline" onClick={() => cancelMovement(movement.id)}>
+                                                    Batalkan
+                                                </Button>
+                                            )}
+                                        </div>
+                                    )}
+                                    {movement.status === 'APPROVED' && (
+                                        <div className="flex flex-wrap gap-2">
                                             {canCancel && (
                                                 <Button size="sm" variant="outline" onClick={() => cancelMovement(movement.id)}>
                                                     Batalkan
@@ -143,6 +164,17 @@ export default function EmployeeMovementsIndex({ movements, options }: MovementP
                                                 </Button>
                                             )}
                                         </div>
+                                    )}
+                                    {movement.status === 'CANCELLED' && canArchive && (
+                                        <Button
+                                            size="sm"
+                                            variant="outline"
+                                            onClick={() =>
+                                                router.delete(route('hr.employee-movements.destroy', movement.id), { preserveScroll: true })
+                                            }
+                                        >
+                                            Archive
+                                        </Button>
                                     )}
                                 </div>
                                 {movement.status === 'CANCELLED' && movement.cancel_reason && (

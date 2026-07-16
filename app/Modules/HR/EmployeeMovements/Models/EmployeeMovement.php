@@ -16,15 +16,17 @@ class EmployeeMovement extends Model
 
     protected $fillable = [
         'employee_id', 'type', 'effective_date', 'status', 'reason', 'notes',
-        'before_values', 'after_values', 'created_by', 'applied_by', 'applied_at',
-        'cancelled_by', 'cancelled_at', 'cancel_reason',
+        'before_values', 'after_values', 'created_by', 'approved_by', 'approved_at',
+        'applied_by', 'applied_at', 'cancelled_by', 'cancelled_at', 'cancel_reason',
+        'archived_by', 'archived_at',
     ];
 
     protected function casts(): array
     {
         return [
             'effective_date' => 'date', 'before_values' => 'array', 'after_values' => 'array',
-            'applied_at' => 'datetime', 'cancelled_at' => 'datetime',
+            'approved_at' => 'datetime', 'applied_at' => 'datetime',
+            'cancelled_at' => 'datetime', 'archived_at' => 'datetime',
         ];
     }
 
@@ -43,8 +45,18 @@ class EmployeeMovement extends Model
         return $this->belongsTo(User::class, 'applied_by');
     }
 
+    public function approver(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+
     public function canceller(): BelongsTo
     {
         return $this->belongsTo(User::class, 'cancelled_by');
+    }
+
+    public function archiver(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'archived_by');
     }
 }

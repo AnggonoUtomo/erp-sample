@@ -14,14 +14,16 @@ export type MovementRow = {
     id: number;
     type: 'TRANSFER' | 'PROMOTION' | 'DEMOTION' | 'EMPLOYMENT_CHANGE';
     effective_date: string;
-    status: 'DRAFT' | 'APPLIED' | 'CANCELLED';
+    status: 'DRAFT' | 'APPROVED' | 'APPLIED' | 'CANCELLED';
     reason: string;
     notes: string | null;
     employee: { id: number; display_name: string; employee_number: string };
     before: MovementSnapshot;
     after: MovementSnapshot;
     creator: { id: number; name: string } | null;
+    approver: { id: number; name: string } | null;
     applier: { id: number; name: string } | null;
+    approved_at: string | null;
     applied_at: string | null;
     cancelled_at: string | null;
     cancel_reason: string | null;

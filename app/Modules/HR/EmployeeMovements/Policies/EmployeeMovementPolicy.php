@@ -21,8 +21,23 @@ class EmployeeMovementPolicy
         return $user->hasAnyPermission(['employee-movements.apply', 'employee-movements.manage']);
     }
 
+    public function approve(User $user): bool
+    {
+        return $user->hasAnyPermission(['employee-movements.approve', 'employee-movements.manage']);
+    }
+
     public function cancel(User $user): bool
     {
         return $user->hasAnyPermission(['employee-movements.cancel', 'employee-movements.manage']);
+    }
+
+    public function delete(User $user): bool
+    {
+        return $user->hasAnyPermission(['employee-movements.archive', 'employee-movements.manage']);
+    }
+
+    public function restore(User $user): bool
+    {
+        return $user->hasAnyPermission(['employee-movements.restore', 'employee-movements.manage']);
     }
 }

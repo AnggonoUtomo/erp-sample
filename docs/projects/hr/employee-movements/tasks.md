@@ -69,6 +69,25 @@
 
 **Test:** `php artisan test --filter=HREmployeeMovement`
 
-## Next tasks
+## Task 05 — Archive/restore, approval, dan integration snapshot/event
 
-5. Archive/restore, approval, dan integration snapshot/event.
+**Tujuan:** menutup lifecycle Employee Movements dengan approval gate sebelum apply, archive/restore untuk cancelled movement, dan event integration v1 saat movement diterapkan.
+
+**Files:** migration approval/archive metadata, model/service/controller/policy/routes/permissions, event/schema integration, page typed, feature test, specification, implementation plan, ADR, README.
+
+**Acceptance criteria:**
+
+- [x] Movement harus `APPROVED` sebelum dapat di-apply manual atau scheduler.
+- [x] Approval mengulang stale/profile guard agar draft lama tidak disetujui setelah profile berubah.
+- [x] Cancelled movement dapat di-archive dan restore tanpa hard delete.
+- [x] Apply menerbitkan `EmployeeMovementAppliedV1` dengan payload minimal dan tanpa PII bebas/alasan internal.
+- [x] Manifest module mencatat event/schema integration v1.
+
+**Hasil implementasi:** selesai 2026-07-17. Lifecycle saat ini: `DRAFT -> APPROVED -> APPLIED`, dengan cabang `DRAFT/APPROVED -> CANCELLED -> archived/restored`.
+
+**Test:** `php artisan test --filter=HREmployeeMovement`
+
+## Final quality checkpoint
+
+- [x] Pint, module validate, frontend typecheck/lint/format/build, focused backend test, dan full backend suite lulus.
+- [x] Diff direview untuk memastikan lifecycle dan integration payload tidak membawa PII bebas.
