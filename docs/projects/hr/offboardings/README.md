@@ -62,4 +62,4 @@ Proses resign, termination, end-of-contract, retirement, dan separation lain ser
 
 ## Status
 
-`TASK 05 COMPLETE` — Task 01–05 selesai pada 2026-07-16. Authorized HR dapat mengelola template serta membuat draft offboarding dengan ordered task snapshot atomic. Retry identik mengembalikan aggregate existing tanpa audit ganda, sedangkan payload berbeda dan competing insert untuk employee aktif yang sama ditolak. Integration event downstream tetap deferred.
+`TASK 06 COMPLETE` — Task 01–06 selesai pada 2026-07-16. Authorized HR dapat mengelola template, membuat draft idempotent dengan ordered task snapshot atomic, serta membaca detail dan progress deterministic menggunakan business date eksplisit. Internal identity/fingerprint dan source template item tidak diekspos. Checkpoint B belum ditutup; integration event downstream tetap deferred.

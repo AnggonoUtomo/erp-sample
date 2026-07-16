@@ -23,6 +23,46 @@ export type OffboardingPaginator = {
     next_page_url: string | null;
     total: number;
 };
+export type OffboardingProgress = {
+    total: number;
+    terminal: number;
+    completed: number;
+    skipped: number;
+    required_incomplete: number;
+    optional_incomplete: number;
+    overdue: number;
+    percentage: number;
+};
+export type OffboardingTaskRow = {
+    id: number;
+    title: string;
+    description: string | null;
+    category: string;
+    required: boolean;
+    due_offset_days: number;
+    due_date: string;
+    default_assignee_role: string | null;
+    sort_order: number;
+    status: string;
+    overdue: boolean;
+};
+export type OffboardingDetail = {
+    id: number;
+    employee: EmployeeOption | null;
+    contract: { id: number; contract_number: string; start_date: string; end_date: string | null; status: string } | null;
+    template: CodeName | null;
+    target_status: CodeName | null;
+    owner: IdName | null;
+    exit_date: string;
+    exit_type: string;
+    exit_reason: string;
+    notes: string | null;
+    status: string;
+    archived: boolean;
+    created_at: string;
+    progress: OffboardingProgress;
+    tasks: OffboardingTaskRow[];
+};
 export interface OffboardingDraftForm extends Record<string, FormDataConvertible> {
     employee_id: string;
     employee_contract_id: string;

@@ -111,7 +111,7 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Dependencies:** Task 04. **Scope:** M.
 
-## Task 06 — Detail dan progress read model
+## ✅ Task 06 — Detail dan progress read model
 
 **Tujuan:** menampilkan ordered tasks dan progress deterministic.
 
@@ -119,9 +119,11 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Acceptance criteria:**
 
-- [ ] Required/optional incomplete, completed, skipped, dan overdue benar.
-- [ ] Business date eksplisit.
-- [ ] Props tidak mengekspos PII/internal identity/fingerprint.
+- [x] Required/optional incomplete, completed, skipped, dan overdue benar.
+- [x] Business date eksplisit.
+- [x] Props tidak mengekspos PII/internal identity/fingerprint.
+
+**Hasil:** selesai 2026-07-16. Viewer berizin dapat membuka detail active maupun archived Offboarding dengan konteks employee minimum, optional contract, template, target final status, owner, exit date/type/reason/notes, dan ordered task snapshot. Progress menghitung terminal/completed/skipped, required dan optional incomplete, overdue, serta percentage terhadap `business_date` wajib yang eksplisit. Response memakai field allowlist dan menyembunyikan active identity, request fingerprint, serta source template item id. UI memisahkan page composer, summary cards, task list, dan presenter agar tetap mudah dirawat.
 
 **Test:** `php artisan test --filter=OffboardingProgress && npm run test:frontend`
 

@@ -22,4 +22,7 @@ Route::middleware('auth')
     ->group(function () {
         Route::get('/', [OffboardingsController::class, 'index'])->name('index');
         Route::post('/', [OffboardingsController::class, 'store'])->name('store');
+        Route::get('{offboarding}', [OffboardingsController::class, 'show'])
+            ->withTrashed()
+            ->name('show');
     });

@@ -15,4 +15,9 @@ class OffboardingPolicy
     {
         return $user->hasAnyPermission(['offboardings.create', 'offboardings.manage']);
     }
+
+    public function view(User $user, mixed $offboarding): bool
+    {
+        return $this->viewAny($user);
+    }
 }

@@ -27,6 +27,7 @@ const exitTypes = [
 ];
 
 type Props = {
+    businessDate: string;
     offboardings: OffboardingPaginator;
     employeeOptions: EmployeeOption[];
     contractOptions: ContractOption[];
@@ -36,6 +37,7 @@ type Props = {
 };
 
 export default function OffboardingsIndex({
+    businessDate,
     offboardings,
     employeeOptions,
     contractOptions,
@@ -98,6 +100,16 @@ export default function OffboardingsIndex({
                                             Target: {offboarding.target_status?.name ?? '—'} · Owner: {offboarding.owner?.name ?? '—'} ·{' '}
                                             {offboarding.tasks_count} task
                                         </div>
+                                        <Button asChild variant="link" size="sm" className="mt-2 h-auto p-0">
+                                            <Link
+                                                href={route('hr.offboardings.show', {
+                                                    offboarding: offboarding.id,
+                                                    business_date: businessDate,
+                                                })}
+                                            >
+                                                Lihat detail
+                                            </Link>
+                                        </Button>
                                     </div>
                                     <Badge variant="secondary">{offboarding.status}</Badge>
                                 </CardContent>

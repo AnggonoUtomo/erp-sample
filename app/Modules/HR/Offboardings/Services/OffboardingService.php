@@ -50,6 +50,7 @@ class OffboardingService
             ]);
 
         return [
+            'businessDate' => now()->toDateString(),
             'offboardings' => $offboardings,
             'employeeOptions' => Employee::query()->where('active', true)->orderBy('display_name')->get(['id', 'employee_number', 'display_name']),
             'contractOptions' => EmployeeContract::query()->where('status', 'ACTIVE')->orderByDesc('start_date')->get(['id', 'employee_id', 'contract_number', 'start_date']),
