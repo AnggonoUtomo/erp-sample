@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Modules\HR\Offboardings\Policies;
+
+use App\Models\User;
+
+class OffboardingPolicy
+{
+    public function viewAny(User $user): bool
+    {
+        return $user->hasAnyPermission(['offboardings.view', 'offboardings.manage']);
+    }
+
+    public function create(User $user): bool
+    {
+        return $user->hasAnyPermission(['offboardings.create', 'offboardings.manage']);
+    }
+}

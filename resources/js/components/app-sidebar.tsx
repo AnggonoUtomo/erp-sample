@@ -34,6 +34,7 @@ import {
     ListRestart,
     LockKeyhole,
     LogIn,
+    LogOut,
     MailCheck,
     MapPin,
     Network,
@@ -54,9 +55,8 @@ type SidebarItem = NavItem & { badge?: string; permissions?: string[] };
 
 type SidebarDropdownGroup = {
     title: string;
-    icon: ComponentType<{ className?: string }>;
+    icon: SidebarItem['icon'];
     items: SidebarItem[];
-    permissions?: string[];
 };
 
 const SIDEBAR_SCROLL_KEY = 'laravel12-starterkit:sidebar-scroll-top';
@@ -84,6 +84,8 @@ const sidebarIconColors: Record<string, string> = {
     'Employee Contracts': '!text-amber-500 dark:!text-amber-400',
     'Onboarding Templates': '!text-violet-500 dark:!text-violet-400',
     'Employee Onboardings': '!text-emerald-500 dark:!text-emerald-400',
+    'Offboarding Templates': '!text-orange-500 dark:!text-orange-400',
+    'Employee Offboardings': '!text-rose-500 dark:!text-rose-400',
     'Pengaturan Akun': '!text-purple-500 dark:!text-purple-400',
     Profil: '!text-indigo-500 dark:!text-indigo-400',
     'Kata Sandi': '!text-rose-500 dark:!text-rose-400',
@@ -95,6 +97,10 @@ function sidebarIconColor(title: string) {
 }
 
 function isItemActive(item: SidebarItem, currentUrl: string) {
+    if (item.exact) {
+        return currentUrl === item.url;
+    }
+
     if (item.url === '/dashboard') {
         return item.title === 'Dasbor' && (currentUrl === item.url || currentUrl === '/');
     }
@@ -118,6 +124,7 @@ const moduleIconMap: Record<string, ComponentType<{ className?: string }>> = {
     ListFilter,
     ListChecks,
     LogIn,
+    LogOut,
     ListRestart,
     MailCheck,
     MapPin,
@@ -183,6 +190,10 @@ function SidebarNavGroup({ title, items }: { title: string; items: SidebarItem[]
                     {visibleItems.map((item) => {
                         const isActive = isItemActive(item, page.url);
 
+                        if (item.children?.length) {
+                            return <SidebarDropdownGroup key={`${title}-${item.title}`} title={item.title} icon={item.icon} items={item.children} />;
+                        }
+
                         return (
                             <SidebarMenuItem key={`${title}-${item.title}`}>
                                 <SidebarMenuButton asChild isActive={isActive} tooltip={item.title} className={item.badge ? 'pr-9' : undefined}>
@@ -201,13 +212,10 @@ function SidebarNavGroup({ title, items }: { title: string; items: SidebarItem[]
     );
 }
 
-function SidebarDropdownGroup({ title, icon: Icon, items, permissions }: SidebarDropdownGroup) {
+function SidebarDropdownGroup({ title, icon, items }: SidebarDropdownGroup) {
     const page = usePage();
     const { canAny } = usePermission();
-
-    if (permissions && !canAny(permissions)) {
-        return null;
-    }
+    const Icon = resolveSidebarIcon(icon);
 
     const visibleChildren = items.filter((item) => !item.permissions || canAny(item.permissions));
     const hasActiveChild = visibleChildren.some((item) => isItemActive(item, page.url));
@@ -221,7 +229,7 @@ function SidebarDropdownGroup({ title, icon: Icon, items, permissions }: Sidebar
             <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
                     <SidebarMenuButton isActive={hasActiveChild} tooltip={title}>
-                        <Icon className={sidebarIconColor(title)} />
+                        {Icon && <Icon className={sidebarIconColor(title)} />}
                         <span>{title}</span>
                         <ChevronRight className="text-muted-foreground ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
                     </SidebarMenuButton>

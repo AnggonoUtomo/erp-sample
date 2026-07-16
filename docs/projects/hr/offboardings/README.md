@@ -61,4 +61,4 @@ Proses resign, termination, end-of-contract, retirement, dan separation lain ser
 
 ## Status
 
-`CHECKPOINT A PASSED` — Task 01–03 dan template contract checkpoint selesai pada 2026-07-16. Authorized HR dapat membuat, melihat, mengarsipkan, dan merestore template ordered checklist. Snapshot gate untuk Task 04 sudah formal; integration event downstream tetap deferred.
+`TASK 04 COMPLETE` — Task 01–04 selesai pada 2026-07-16. Authorized HR dapat mengelola template serta membuat draft offboarding dengan ordered task snapshot atomic. Employee, contract, target final status, owner, exit date/type/reason, dan template divalidasi tanpa mengubah employment profile. Duplicate/idempotency guard tetap menjadi scope Task 05; integration event downstream tetap deferred.

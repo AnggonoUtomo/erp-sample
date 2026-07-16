@@ -2,7 +2,9 @@
 
 namespace App\Modules\HR\Offboardings\Providers;
 
+use App\Modules\HR\Offboardings\Models\Offboarding;
 use App\Modules\HR\Offboardings\Models\OffboardingTemplate;
+use App\Modules\HR\Offboardings\Policies\OffboardingPolicy;
 use App\Modules\HR\Offboardings\Policies\OffboardingTemplatePolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -16,6 +18,7 @@ class OffboardingsServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Gate::policy(Offboarding::class, OffboardingPolicy::class);
         Gate::policy(OffboardingTemplate::class, OffboardingTemplatePolicy::class);
     }
 }

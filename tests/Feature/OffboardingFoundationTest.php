@@ -74,13 +74,15 @@ class OffboardingFoundationTest extends TestCase
         );
     }
 
-    public function test_runtime_routes_and_navigation_only_expose_the_policy_backed_template_slice(): void
+    public function test_runtime_routes_and_navigation_only_expose_policy_backed_completed_slices(): void
     {
         $routes = collect(Route::getRoutes()->getRoutes())
             ->filter(fn ($route) => str_starts_with((string) $route->getName(), 'hr.offboardings.'));
         $navigation = require base_path('app/Modules/HR/Offboardings/navigation.php');
 
         $this->assertSame([
+            'hr.offboardings.index',
+            'hr.offboardings.store',
             'hr.offboardings.templates.archive',
             'hr.offboardings.templates.index',
             'hr.offboardings.templates.restore',
@@ -95,10 +97,17 @@ class OffboardingFoundationTest extends TestCase
         });
 
         $this->assertCount(1, $navigation['items']);
-        $this->assertSame('/hr/offboardings/templates', $navigation['items'][0]['url']);
+        $this->assertSame('/hr/offboardings', $navigation['items'][0]['url']);
+        $this->assertSame(
+            ['offboardings.view', 'offboardings.create', 'offboardings.template-manage', 'offboardings.manage'],
+            $navigation['items'][0]['permissions'],
+        );
+        $this->assertCount(2, $navigation['items'][0]['children']);
+        $this->assertSame('/hr/offboardings', $navigation['items'][0]['children'][0]['url']);
+        $this->assertSame('/hr/offboardings/templates', $navigation['items'][0]['children'][1]['url']);
         $this->assertSame(
             ['offboardings.view', 'offboardings.template-manage', 'offboardings.manage'],
-            $navigation['items'][0]['permissions'],
+            $navigation['items'][0]['children'][1]['permissions'],
         );
     }
 }

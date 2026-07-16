@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\HR\Offboardings\Http\Controllers\OffboardingsController;
 use App\Modules\HR\Offboardings\Http\Controllers\OffboardingTemplatesController;
 use Illuminate\Support\Facades\Route;
 
@@ -13,4 +14,12 @@ Route::middleware('auth')
         Route::patch('{template}/restore', [OffboardingTemplatesController::class, 'restore'])
             ->withTrashed()
             ->name('restore');
+    });
+
+Route::middleware('auth')
+    ->prefix('hr/offboardings')
+    ->name('hr.offboardings.')
+    ->group(function () {
+        Route::get('/', [OffboardingsController::class, 'index'])->name('index');
+        Route::post('/', [OffboardingsController::class, 'store'])->name('store');
     });

@@ -75,7 +75,7 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Gate Task 04:** snapshot wajib menyimpan source item id, content, category, required flag, order, signed due offset, calculated due date, default assignment context, dan initial status dalam transaction yang sama. Edit/archive template tidak boleh mengubah task existing. Draft tidak boleh mengubah Employee atau Contract.
 
-## Task 04 — Draft dan task snapshot
+## ✅ Task 04 — Draft dan task snapshot
 
 **Tujuan:** membuat draft Offboarding dengan task snapshot atomic.
 
@@ -83,9 +83,11 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Acceptance criteria:**
 
-- [ ] Employee, contract, target final status, template, exit date/type/reason, dan owner tervalidasi.
-- [ ] Case dan seluruh task snapshot dibuat atomic.
-- [ ] Edit/archive template tidak mengubah task existing.
+- [x] Employee, contract, target final status, template, exit date/type/reason, dan owner tervalidasi.
+- [x] Case dan seluruh task snapshot dibuat atomic.
+- [x] Edit/archive template tidak mengubah task existing.
+
+**Hasil:** selesai 2026-07-16. HR berizin dapat membuat dan melihat draft offboarding dari employee aktif, contract aktif opsional milik employee yang sama, template aktif, target employment status final, owner aktif, tanggal keluar non-backdate, jenis keluar terkontrol, alasan, dan notes opsional. Aggregate case beserta ordered task snapshot dibuat dalam satu transaction; referensi bisnis diperiksa ulang dengan row lock, audit failure merollback seluruh aggregate, dan perubahan/archive template tidak mengubah task existing. Slice ini hanya membaca Employee/Contract dan tidak menghasilkan side effect employment.
 
 **Test:** `php artisan test --filter=OffboardingDraftSnapshot && npm run typecheck && npm run build`
 

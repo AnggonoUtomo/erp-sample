@@ -74,6 +74,8 @@ export interface NavItem {
     isActive?: boolean;
     badge?: string;
     permissions?: string[];
+    children?: NavItem[];
+    exact?: boolean;
 }
 
 export interface NavigationGroup {
