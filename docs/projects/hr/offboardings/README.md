@@ -63,4 +63,4 @@ Proses resign, termination, end-of-contract, retirement, dan separation lain ser
 
 ## Status
 
-`CHECKPOINT B PASSED` — Task 01–06 dan draft snapshot checkpoint selesai pada 2026-07-16. Authorized HR dapat mengelola template, membuat draft idempotent dengan ordered task snapshot atomic, serta membaca detail/progress deterministic menggunakan business date eksplisit. Atomicity, authorization, audit, snapshot invariance, conflict/concurrency guard, dan field non-leakage telah dibuktikan. Integration event downstream tetap deferred.
+`TASK 07 COMPLETE` — Task 01–07 dan draft snapshot checkpoint selesai pada 2026-07-16. Authorized HR dapat mengelola template, membuat draft idempotent dengan ordered task snapshot atomic, membaca detail/progress deterministic menggunakan business date eksplisit, lalu mengaktifkan draft eligible secara atomic. Activation melakukan revalidation dan locking terhadap identity serta referensi penting, idempotent pada retry, dan tidak mengubah Employee, Contract, konteks exit, maupun task snapshot. Task execution, readiness, dan final employment exit tetap berada pada task berikutnya; integration event downstream tetap deferred.

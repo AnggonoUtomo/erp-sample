@@ -1,10 +1,12 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { usePermission } from '@/hooks/use-permission';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { Archive, ArrowLeft, CalendarDays } from 'lucide-react';
+import { canActivateOffboarding, OffboardingActivationDialog } from './offboarding-components/offboarding-activation-dialog';
 import { offboardingExitTypeLabel, offboardingStatusLabel } from './offboarding-components/offboarding-presenters';
 import { OffboardingSummaryCards } from './offboarding-components/offboarding-summary-cards';
 import { OffboardingTaskList } from './offboarding-components/offboarding-task-list';
@@ -16,6 +18,8 @@ type Props = {
 };
 
 export default function OffboardingShow({ offboarding, businessDate }: Props) {
+    const { canAny } = usePermission();
+    const showActivation = canActivateOffboarding(offboarding.status, offboarding.archived, canAny(['offboardings.activate', 'offboardings.manage']));
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'HR', href: '/hr/dashboard' },
         { title: 'Employee Offboardings', href: '/hr/offboardings' },
@@ -49,8 +53,11 @@ export default function OffboardingShow({ offboarding, businessDate }: Props) {
                             {offboarding.template?.name ?? 'Template tidak tersedia'}
                         </p>
                     </div>
-                    <div className="text-muted-foreground flex items-center gap-2 text-sm">
-                        <CalendarDays className="size-4" /> Business date: {businessDate}
+                    <div className="flex w-full flex-col items-start gap-3 sm:w-auto sm:items-end">
+                        <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                            <CalendarDays className="size-4" /> Business date: {businessDate}
+                        </div>
+                        {showActivation && <OffboardingActivationDialog offboardingId={offboarding.id} />}
                     </div>
                 </div>
 

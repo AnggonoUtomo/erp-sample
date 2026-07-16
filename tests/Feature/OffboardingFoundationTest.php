@@ -81,6 +81,7 @@ class OffboardingFoundationTest extends TestCase
         $navigation = require base_path('app/Modules/HR/Offboardings/navigation.php');
 
         $this->assertSame([
+            'hr.offboardings.activate',
             'hr.offboardings.index',
             'hr.offboardings.show',
             'hr.offboardings.store',

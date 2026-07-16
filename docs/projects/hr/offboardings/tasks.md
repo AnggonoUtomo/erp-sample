@@ -138,7 +138,7 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Gate Task 07:** activation hanya boleh menerapkan `DRAFT -> IN_PROGRESS` secara atomic pada aggregate non-archived dengan active identity valid, melakukan revalidation referensi/duplicate guard dengan lock, idempotent pada retry, tidak membuat audit ganda, dan tidak mengubah Employee/Contract/task snapshot.
 
-## Task 07 — Activate offboarding
+## ✅ Task 07 — Activate offboarding
 
 **Tujuan:** menerapkan `DRAFT -> IN_PROGRESS` secara atomic.
 
@@ -146,13 +146,15 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Acceptance criteria:**
 
-- [ ] Hanya draft eligible dapat diaktifkan.
-- [ ] Employee/contract/duplicate guard diperiksa ulang dengan lock.
-- [ ] Retry activation idempotent tanpa audit ganda.
+- [x] Hanya draft eligible dapat diaktifkan.
+- [x] Employee/contract/duplicate guard diperiksa ulang dengan lock.
+- [x] Retry activation idempotent tanpa audit ganda.
 
 **Test:** `php artisan test --filter=OffboardingActivation`
 
 **Dependencies:** Task 05. **Scope:** M.
+
+**Hasil:** selesai 2026-07-16. Activation menerapkan transisi tunggal `DRAFT -> IN_PROGRESS` di dalam transaction dengan row lock. Service memvalidasi ulang active identity, Employee aktif, optional Contract aktif milik Employee, target Employment Status final, owner, dan duplicate active case. Retry terhadap aggregate yang sudah `IN_PROGRESS` bersifat idempotent tanpa audit kedua. Activation tidak mengubah profile Employee, Contract, konteks exit, maupun task snapshot. UI hanya menampilkan aksi kepada user berizin pada draft non-archived.
 
 ## Task 08 — Assignment dan task completion
 

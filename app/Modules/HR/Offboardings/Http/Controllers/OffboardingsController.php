@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Modules\HR\Offboardings\Http\Requests\ShowOffboardingRequest;
 use App\Modules\HR\Offboardings\Http\Requests\StoreOffboardingDraftRequest;
 use App\Modules\HR\Offboardings\Models\Offboarding;
+use App\Modules\HR\Offboardings\Services\OffboardingActivationService;
 use App\Modules\HR\Offboardings\Services\OffboardingProgressReadService;
 use App\Modules\HR\Offboardings\Services\OffboardingService;
 use Illuminate\Http\RedirectResponse;
@@ -19,6 +20,7 @@ class OffboardingsController extends Controller implements HasMiddleware
     public function __construct(
         private readonly OffboardingService $offboardings,
         private readonly OffboardingProgressReadService $progress,
+        private readonly OffboardingActivationService $activation,
     ) {}
 
     public static function middleware(): array
@@ -27,6 +29,7 @@ class OffboardingsController extends Controller implements HasMiddleware
             new Middleware('can:viewAny,'.Offboarding::class, only: ['index']),
             new Middleware('can:view,offboarding', only: ['show']),
             new Middleware('can:create,'.Offboarding::class, only: ['store']),
+            new Middleware('can:activate,offboarding', only: ['activate']),
         ];
     }
 
@@ -50,5 +53,15 @@ class OffboardingsController extends Controller implements HasMiddleware
             'businessDate' => $businessDate,
             'offboarding' => $this->progress->detail($offboarding, $businessDate),
         ]);
+    }
+
+    public function activate(Offboarding $offboarding): RedirectResponse
+    {
+        $this->activation->activate($offboarding);
+
+        return redirect()->route('hr.offboardings.show', [
+            'offboarding' => $offboarding,
+            'business_date' => now()->toDateString(),
+        ])->with('success', 'Offboarding berhasil diaktifkan.');
     }
 }
