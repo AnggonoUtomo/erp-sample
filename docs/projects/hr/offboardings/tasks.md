@@ -156,7 +156,7 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Hasil:** selesai 2026-07-16. Activation menerapkan transisi tunggal `DRAFT -> IN_PROGRESS` di dalam transaction dengan row lock. Service memvalidasi ulang active identity, Employee aktif, optional Contract aktif milik Employee, target Employment Status final, owner, dan duplicate active case. Retry terhadap aggregate yang sudah `IN_PROGRESS` bersifat idempotent tanpa audit kedua. Activation tidak mengubah profile Employee, Contract, konteks exit, maupun task snapshot. UI hanya menampilkan aksi kepada user berizin pada draft non-archived.
 
-## Task 08 — Assignment dan task completion
+## ✅ Task 08 — Assignment dan task completion
 
 **Tujuan:** mengelola assignee serta task start/complete.
 
@@ -164,13 +164,15 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Acceptance criteria:**
 
-- [ ] Assignee Console User valid atau unassigned.
-- [ ] Completion menyimpan actor/time/note.
-- [ ] Terminal/archived case menolak task mutation.
+- [x] Assignee Console User valid atau unassigned.
+- [x] Completion menyimpan actor/time/note.
+- [x] Terminal/archived case menolak task mutation.
 
 **Test:** `php artisan test --filter=OffboardingTaskCompletion`
 
 **Dependencies:** Task 07. **Scope:** M.
+
+**Hasil:** selesai 2026-07-16. User dengan permission `offboardings.task-update` dapat assign/unassign Console User aktif pada task non-terminal ketika case masih `DRAFT` atau `IN_PROGRESS`. Task pada case `IN_PROGRESS` dapat ditransisikan secara idempotent dari `PENDING -> IN_PROGRESS -> COMPLETED`; completion menyimpan actor, timestamp, dan note maksimum 2.000 karakter. Aggregate dan task dikunci dalam transaction, cross-aggregate task ditolak melalui scoped binding, audit failure me-rollback mutation, dan case archived/terminal serta user tanpa permission ditolak. Detail read model dan UI menampilkan assignee serta completion evidence. Skip, reopen, dan readiness tetap deferred ke Task 09.
 
 ## Task 09 — Controlled skip, reopen, dan ready
 

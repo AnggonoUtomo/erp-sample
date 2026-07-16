@@ -15,10 +15,12 @@ import type { OffboardingDetail } from './types';
 type Props = {
     offboarding: OffboardingDetail;
     businessDate: string;
+    assigneeOptions: { id: number; name: string }[];
 };
 
-export default function OffboardingShow({ offboarding, businessDate }: Props) {
+export default function OffboardingShow({ offboarding, businessDate, assigneeOptions }: Props) {
     const { canAny } = usePermission();
+    const canUpdateTasks = canAny(['offboardings.task-update', 'offboardings.manage']);
     const showActivation = canActivateOffboarding(offboarding.status, offboarding.archived, canAny(['offboardings.activate', 'offboardings.manage']));
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'HR', href: '/hr/dashboard' },
@@ -64,7 +66,14 @@ export default function OffboardingShow({ offboarding, businessDate }: Props) {
                 <OffboardingSummaryCards progress={offboarding.progress} />
 
                 <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
-                    <OffboardingTaskList tasks={offboarding.tasks} />
+                    <OffboardingTaskList
+                        offboardingId={offboarding.id}
+                        offboardingStatus={offboarding.status}
+                        archived={offboarding.archived}
+                        tasks={offboarding.tasks}
+                        assigneeOptions={assigneeOptions}
+                        canUpdateTasks={canUpdateTasks}
+                    />
 
                     <Card className="h-fit">
                         <CardHeader>

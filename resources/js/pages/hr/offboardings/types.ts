@@ -45,6 +45,10 @@ export type OffboardingTaskRow = {
     sort_order: number;
     status: string;
     overdue: boolean;
+    assignee: IdName | null;
+    completed_by: IdName | null;
+    completed_at: string | null;
+    completion_note: string | null;
 };
 export type OffboardingDetail = {
     id: number;

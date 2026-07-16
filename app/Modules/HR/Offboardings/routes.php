@@ -1,6 +1,7 @@
 <?php
 
 use App\Modules\HR\Offboardings\Http\Controllers\OffboardingsController;
+use App\Modules\HR\Offboardings\Http\Controllers\OffboardingTasksController;
 use App\Modules\HR\Offboardings\Http\Controllers\OffboardingTemplatesController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,18 @@ Route::middleware('auth')
         Route::patch('{offboarding}/activate', [OffboardingsController::class, 'activate'])
             ->withTrashed()
             ->name('activate');
+        Route::patch('{offboarding}/tasks/{task}/assignment', [OffboardingTasksController::class, 'assignment'])
+            ->withTrashed()
+            ->scopeBindings()
+            ->name('tasks.assignment');
+        Route::patch('{offboarding}/tasks/{task}/start', [OffboardingTasksController::class, 'start'])
+            ->withTrashed()
+            ->scopeBindings()
+            ->name('tasks.start');
+        Route::patch('{offboarding}/tasks/{task}/complete', [OffboardingTasksController::class, 'complete'])
+            ->withTrashed()
+            ->scopeBindings()
+            ->name('tasks.complete');
         Route::get('{offboarding}', [OffboardingsController::class, 'show'])
             ->withTrashed()
             ->name('show');

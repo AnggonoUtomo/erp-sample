@@ -20,7 +20,8 @@ class OffboardingProgressReadService
             'template:id,code,name',
             'targetEmploymentStatus:id,code,name',
             'owner:id,name',
-            'tasks',
+            'tasks.assignee:id,name',
+            'tasks.completedBy:id,name',
         ]);
 
         $tasks = $offboarding->tasks;
@@ -80,6 +81,10 @@ class OffboardingProgressReadService
                 'sort_order' => $task->sort_order,
                 'status' => $task->status->value,
                 'overdue' => ! $task->status->isTerminal() && $task->due_date->lt($date),
+                'assignee' => $task->assignee?->only(['id', 'name']),
+                'completed_by' => $task->completedBy?->only(['id', 'name']),
+                'completed_at' => $task->completed_at?->toIso8601String(),
+                'completion_note' => $task->completion_note,
             ])->values(),
         ];
     }
