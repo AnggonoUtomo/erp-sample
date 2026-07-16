@@ -129,10 +129,14 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Dependencies:** Task 04. **Scope:** M.
 
-## Checkpoint B — Draft snapshot
+## ✅ Checkpoint B — Draft snapshot
 
-- [ ] Create/list/detail bekerja end-to-end.
-- [ ] Atomicity, idempotency, authorization, audit, dan snapshot invariance terbukti.
+- [x] Create/list/detail bekerja end-to-end.
+- [x] Atomicity, idempotency, authorization, audit, dan snapshot invariance terbukti.
+
+**Evidence 2026-07-16:** 23 targeted Offboarding tests dengan 255 assertions dan full backend regression 394 tests dengan 2.122 assertions lulus. Create membentuk aggregate/task snapshot atomic, list menyediakan link detail dengan business date eksplisit, detail menghitung progress dari snapshot, failure audit me-rollback seluruh aggregate, retry identik tidak menambah row/task/audit, conflict dan competing insert ditolak, serta route list/create/detail policy-backed. Module validation, Pint, ESLint, Prettier, TypeScript, 13 frontend tests, production build 2.188 modules, dan `git diff --check` juga hijau. Lihat [laporan Checkpoint B](02-draft-checkpoint-b.md).
+
+**Gate Task 07:** activation hanya boleh menerapkan `DRAFT -> IN_PROGRESS` secara atomic pada aggregate non-archived dengan active identity valid, melakukan revalidation referensi/duplicate guard dengan lock, idempotent pada retry, tidak membuat audit ganda, dan tidak mengubah Employee/Contract/task snapshot.
 
 ## Task 07 — Activate offboarding
 

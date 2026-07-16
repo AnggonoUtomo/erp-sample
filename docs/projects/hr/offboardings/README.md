@@ -13,6 +13,7 @@ Paket ini menjadi acuan pengembangan module `Offboardings`: HR merencanakan kelu
 7. [Implementation plan](implementation-plan.md) — dependency graph, fase, risiko, dan rollback.
 8. [Tasks](tasks.md) — task kecil berurutan dengan file, acceptance criteria, dan cara test.
 9. [Checkpoint A](01-template-checkpoint-a.md) — evidence template contract dan gate snapshot untuk Task 04.
+10. [Checkpoint B](02-draft-checkpoint-b.md) — evidence draft snapshot, idempotency, dan progress read model untuk gate Task 07.
 
 Dokumen terkait:
 
@@ -62,4 +63,4 @@ Proses resign, termination, end-of-contract, retirement, dan separation lain ser
 
 ## Status
 
-`TASK 06 COMPLETE` — Task 01–06 selesai pada 2026-07-16. Authorized HR dapat mengelola template, membuat draft idempotent dengan ordered task snapshot atomic, serta membaca detail dan progress deterministic menggunakan business date eksplisit. Internal identity/fingerprint dan source template item tidak diekspos. Checkpoint B belum ditutup; integration event downstream tetap deferred.
+`CHECKPOINT B PASSED` — Task 01–06 dan draft snapshot checkpoint selesai pada 2026-07-16. Authorized HR dapat mengelola template, membuat draft idempotent dengan ordered task snapshot atomic, serta membaca detail/progress deterministic menggunakan business date eksplisit. Atomicity, authorization, audit, snapshot invariance, conflict/concurrency guard, dan field non-leakage telah dibuktikan. Integration event downstream tetap deferred.
