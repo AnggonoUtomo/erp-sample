@@ -15,6 +15,7 @@ use App\Modules\HR\JobLevels\Models\JobLevel;
 use App\Modules\HR\Positions\Models\Position;
 use App\Modules\HR\WorkLocations\Models\WorkLocation;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\ValidationException as LaravelValidationException;
 
 class EmployeeMovementsService
 {
@@ -57,6 +58,8 @@ class EmployeeMovementsService
                         'creator' => $movement->creator?->only(['id', 'name']),
                         'applier' => $movement->applier?->only(['id', 'name']),
                         'applied_at' => $movement->applied_at?->toISOString(),
+                        'cancelled_at' => $movement->cancelled_at?->toISOString(),
+                        'cancel_reason' => $movement->cancel_reason,
                     ];
                 }),
             'options' => [
@@ -109,13 +112,75 @@ class EmployeeMovementsService
 
     public function apply(EmployeeMovement $movement): EmployeeMovement
     {
-        return $this->transaction->run(function () use ($movement): EmployeeMovement {
+        return $this->applyForBusinessDate($movement, now()->toDateString());
+    }
+
+    public function cancel(EmployeeMovement $movement, string $reason): EmployeeMovement
+    {
+        return $this->transaction->run(function () use ($movement, $reason): EmployeeMovement {
+            $locked = EmployeeMovement::query()->lockForUpdate()->findOrFail($movement->id);
+            if ($locked->status !== 'DRAFT') {
+                throw ValidationException::withMessages(['status' => 'Hanya movement DRAFT yang dapat dibatalkan.']);
+            }
+
+            $locked->update([
+                'status' => 'CANCELLED',
+                'cancelled_by' => auth()->id(),
+                'cancelled_at' => now(),
+                'cancel_reason' => trim($reason),
+            ]);
+            $this->audit->record(
+                module: 'hr.employee-movements',
+                event: 'EmployeeMovement.cancelled',
+                auditable: $locked,
+                description: "Cancelled {$locked->type} movement for employee #{$locked->employee_id}",
+                oldValues: ['status' => 'DRAFT'],
+                newValues: ['status' => 'CANCELLED', 'reason' => trim($reason)],
+            );
+
+            return $locked->refresh();
+        });
+    }
+
+    /**
+     * @return array{due: int, applied: int, failed: int, errors: array<int, string>}
+     */
+    public function applyDue(string $businessDate, bool $dryRun = false): array
+    {
+        $due = EmployeeMovement::query()
+            ->where('status', 'DRAFT')
+            ->whereDate('effective_date', '<=', $businessDate)
+            ->orderBy('effective_date')
+            ->orderBy('id')
+            ->get();
+
+        if ($dryRun) {
+            return ['due' => $due->count(), 'applied' => 0, 'failed' => 0, 'errors' => []];
+        }
+
+        $applied = 0;
+        $errors = [];
+        foreach ($due as $movement) {
+            try {
+                $this->applyForBusinessDate($movement, $businessDate);
+                $applied++;
+            } catch (LaravelValidationException $exception) {
+                $errors[] = "Movement {$movement->id}: ".collect($exception->errors())->flatten()->join('; ');
+            }
+        }
+
+        return ['due' => $due->count(), 'applied' => $applied, 'failed' => count($errors), 'errors' => $errors];
+    }
+
+    private function applyForBusinessDate(EmployeeMovement $movement, string $businessDate): EmployeeMovement
+    {
+        return $this->transaction->run(function () use ($movement, $businessDate): EmployeeMovement {
             $locked = EmployeeMovement::query()->lockForUpdate()->findOrFail($movement->id);
             if ($locked->status !== 'DRAFT') {
                 throw ValidationException::withMessages(['status' => 'Hanya movement DRAFT yang dapat diterapkan.']);
             }
-            if ($locked->effective_date->toDateString() !== now()->toDateString()) {
-                throw ValidationException::withMessages(['effective_date' => 'Movement hanya dapat diterapkan tepat pada effective date.']);
+            if ($locked->effective_date->toDateString() > $businessDate) {
+                throw ValidationException::withMessages(['effective_date' => 'Movement hanya dapat diterapkan saat sudah mencapai effective date.']);
             }
 
             $employee = Employee::query()->lockForUpdate()->findOrFail($locked->employee_id);

@@ -14,7 +14,7 @@ export type MovementRow = {
     id: number;
     type: 'TRANSFER' | 'PROMOTION' | 'DEMOTION' | 'EMPLOYMENT_CHANGE';
     effective_date: string;
-    status: 'DRAFT' | 'APPLIED';
+    status: 'DRAFT' | 'APPLIED' | 'CANCELLED';
     reason: string;
     notes: string | null;
     employee: { id: number; display_name: string; employee_number: string };
@@ -23,6 +23,8 @@ export type MovementRow = {
     creator: { id: number; name: string } | null;
     applier: { id: number; name: string } | null;
     applied_at: string | null;
+    cancelled_at: string | null;
+    cancel_reason: string | null;
 };
 export type MovementPageProps = {
     movements: { data: MovementRow[] };

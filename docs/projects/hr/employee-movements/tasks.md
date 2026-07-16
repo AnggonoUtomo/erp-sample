@@ -51,7 +51,24 @@
 
 **Test:** `php artisan test --filter=HREmployeeMovement`
 
+## Task 04 — Future-effective scheduler dan cancellation
+
+**Tujuan:** mendukung DRAFT dengan `effective_date` hari ini atau masa depan, menyediakan cancellation untuk DRAFT, dan command scheduler untuk menerapkan movement yang sudah due.
+
+**Files:** migration cancellation, command, provider/module manifest, request/controller/policy/service/model, page typed, feature test, specification, implementation plan, ADR, README.
+
+**Acceptance criteria:**
+
+- [x] DRAFT future-effective boleh dibuat; backdate ditolak.
+- [x] Manual apply ditolak bila movement belum mencapai effective date.
+- [x] Command `hr:employee-movements:apply-due --date=YYYY-MM-DD` menerapkan DRAFT due secara deterministik.
+- [x] Command `--dry-run` tidak mengubah database.
+- [x] DRAFT dapat dibatalkan dengan alasan; cancelled movement tidak dapat di-apply.
+
+**Hasil implementasi:** selesai 2026-07-17. Movement sekarang mendukung future-effective DRAFT, cancellation, dan scheduler command due-date.
+
+**Test:** `php artisan test --filter=HREmployeeMovement`
+
 ## Next tasks
 
-4. Future-effective scheduler dan cancellation.
 5. Archive/restore, approval, dan integration snapshot/event.

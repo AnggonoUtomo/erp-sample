@@ -6,6 +6,7 @@ use App\Modules\HR\EmployeeMovements\DTO\EmployeeMovementData;
 use App\Modules\HR\EmployeeMovements\Models\EmployeeMovement;
 use App\Modules\HR\Employees\Models\Employee;
 use App\Modules\HR\Positions\Models\Position;
+use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -41,8 +42,8 @@ class StoreEmployeeMovementRequest extends FormRequest
             if ($validator->errors()->isNotEmpty()) {
                 return;
             }
-            if ($this->input('effective_date') !== now()->toDateString()) {
-                $validator->errors()->add('effective_date', 'Slice ini hanya menerapkan movement yang efektif hari ini.');
+            if (CarbonImmutable::createFromFormat('!Y-m-d', (string) $this->input('effective_date'))->lt(CarbonImmutable::today())) {
+                $validator->errors()->add('effective_date', 'Movement tidak boleh backdate.');
             }
             $employee = Employee::query()->find($this->integer('employee_id'));
             if (! $employee) {

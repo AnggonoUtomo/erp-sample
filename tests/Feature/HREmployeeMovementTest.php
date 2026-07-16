@@ -24,7 +24,7 @@ class HREmployeeMovementTest extends TestCase
     {
         parent::setUp();
         $this->withoutVite();
-        foreach (['employee-movements.view', 'employee-movements.create', 'employee-movements.apply'] as $permission) {
+        foreach (['employee-movements.view', 'employee-movements.create', 'employee-movements.apply', 'employee-movements.cancel'] as $permission) {
             Permission::findOrCreate($permission);
         }
     }
@@ -199,6 +199,69 @@ class HREmployeeMovementTest extends TestCase
         $this->assertDatabaseHas('hr_employee_movements', ['id' => $movement->id, 'status' => 'DRAFT', 'applied_at' => null]);
     }
 
+    public function test_future_effective_draft_waits_until_due_date_and_can_be_cancelled(): void
+    {
+        [$employee, $targetDepartment, $targetPosition, $targetLocation] = $this->references();
+        $user = User::factory()->create();
+        $user->givePermissionTo(['employee-movements.create', 'employee-movements.apply', 'employee-movements.cancel']);
+
+        $this->actingAs($user)->post(route('hr.employee-movements.store'), [
+            'employee_id' => $employee->id,
+            'effective_date' => now()->addDay()->toDateString(),
+            'departement_id' => $targetDepartment->id,
+            'position_id' => $targetPosition->id,
+            'work_location_id' => $targetLocation->id,
+            'reason' => 'Future transfer',
+        ])->assertRedirect();
+
+        $movement = EmployeeMovement::query()->firstOrFail();
+        $this->actingAs($user)->post(route('hr.employee-movements.apply', $movement))->assertSessionHasErrors('effective_date');
+
+        $this->actingAs($user)->post(route('hr.employee-movements.cancel', $movement), [
+            'reason' => 'Business request withdrawn',
+        ])->assertRedirect();
+
+        $this->assertDatabaseHas('hr_employee_movements', [
+            'id' => $movement->id,
+            'status' => 'CANCELLED',
+            'cancelled_by' => $user->id,
+            'cancel_reason' => 'Business request withdrawn',
+        ]);
+        $this->actingAs($user)->post(route('hr.employee-movements.apply', $movement))->assertSessionHasErrors('status');
+    }
+
+    public function test_due_command_dry_runs_and_applies_due_movements_only(): void
+    {
+        [$employee, $targetDepartment, $targetPosition, $targetLocation] = $this->references();
+        $creator = User::factory()->create();
+        $creator->givePermissionTo('employee-movements.create');
+
+        $this->actingAs($creator)->post(route('hr.employee-movements.store'), [
+            'employee_id' => $employee->id,
+            'effective_date' => now()->toDateString(),
+            'departement_id' => $targetDepartment->id,
+            'position_id' => $targetPosition->id,
+            'work_location_id' => $targetLocation->id,
+            'reason' => 'Due transfer',
+        ])->assertRedirect();
+
+        $dueMovement = EmployeeMovement::query()->firstOrFail();
+        $this->artisan('hr:employee-movements:apply-due', ['--date' => now()->toDateString(), '--dry-run' => true])
+            ->assertSuccessful();
+        $this->assertDatabaseHas('hr_employee_movements', ['id' => $dueMovement->id, 'status' => 'DRAFT']);
+
+        $this->artisan('hr:employee-movements:apply-due', ['--date' => now()->toDateString()])
+            ->assertSuccessful();
+
+        $this->assertDatabaseHas('hr_employee_movements', ['id' => $dueMovement->id, 'status' => 'APPLIED']);
+        $this->assertDatabaseHas('hr_employees', [
+            'id' => $employee->id,
+            'departement_id' => $targetDepartment->id,
+            'position_id' => $targetPosition->id,
+            'work_location_id' => $targetLocation->id,
+        ]);
+    }
+
     public function test_invalid_transfer_and_unauthorized_mutations_are_rejected(): void
     {
         [$employee, $targetDepartment, , $targetLocation] = $this->references();
@@ -213,6 +276,10 @@ class HREmployeeMovementTest extends TestCase
 
         $this->actingAs($authorized)->post(route('hr.employee-movements.store'), $payload)
             ->assertSessionHasErrors(['position_id', 'supervisor_id']);
+        $this->actingAs($authorized)->post(route('hr.employee-movements.store'), [
+            ...$payload,
+            'effective_date' => now()->subDay()->toDateString(),
+        ])->assertSessionHasErrors('effective_date');
         $this->actingAs(User::factory()->create())->post(route('hr.employee-movements.store'), $payload)->assertForbidden();
     }
 

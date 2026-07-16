@@ -2,6 +2,7 @@
 
 namespace App\Modules\HR\EmployeeMovements\Providers;
 
+use App\Modules\HR\EmployeeMovements\Console\Commands\ApplyDueEmployeeMovementsCommand;
 use App\Modules\HR\EmployeeMovements\Models\EmployeeMovement;
 use App\Modules\HR\EmployeeMovements\Policies\EmployeeMovementPolicy;
 use Illuminate\Support\Facades\Gate;
@@ -13,5 +14,9 @@ class EmployeeMovementsServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
         Gate::policy(EmployeeMovement::class, EmployeeMovementPolicy::class);
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([ApplyDueEmployeeMovementsCommand::class]);
+        }
     }
 }

@@ -19,6 +19,7 @@ return [
         'permissions' => true,
         'navigation' => true,
     ],
+    'commands' => ['hr:employee-movements:apply-due'],
     'events' => ['EmployeeMovementApplied'],
     'listeners' => [],
     'integrations' => [],

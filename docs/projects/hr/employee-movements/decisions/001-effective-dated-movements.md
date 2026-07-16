@@ -16,11 +16,13 @@ Slice berikutnya memperluas snapshot ke `job_level_id` agar promotion/demotion t
 
 Task 03 memperluas snapshot ke `employment_status_id` dan `employment_type_id`. Employment change menjadi movement type terpisah agar perubahan status/type tidak terselip di transfer atau promotion/demotion.
 
+Task 04 mengizinkan effective date masa depan. Draft tidak mengubah profile sampai manual apply atau command scheduler menerapkannya setelah due date.
+
 ## Consequences
 
 - Histori transfer dapat diaudit dan current profile tetap cepat dibaca.
 - Draft aman dan belum memengaruhi Employees.
 - Promotion/demotion memiliki histori before/after yang sama kuatnya dengan transfer.
 - Employment status/type memiliki histori before/after tanpa mengubah kontrak secara diam-diam.
-- Future scheduling serta backdate memerlukan desain scheduler/reconciliation terpisah.
+- Future scheduling tersedia melalui command due-date; backdate tetap non-scope.
 - Contract tidak berubah otomatis pada transfer.

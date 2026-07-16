@@ -31,6 +31,7 @@ export default function EmployeeMovementsIndex({ movements, options }: MovementP
     const { canAny } = usePermission();
     const canCreate = canAny(['employee-movements.create', 'employee-movements.manage']);
     const canApply = canAny(['employee-movements.apply', 'employee-movements.manage']);
+    const canCancel = canAny(['employee-movements.cancel', 'employee-movements.manage']);
     const form = useForm<MovementForm>({
         employee_id: '',
         type: 'TRANSFER',
@@ -68,6 +69,13 @@ export default function EmployeeMovementsIndex({ movements, options }: MovementP
                     'notes',
                 ),
         });
+    };
+    const cancelMovement = (movementId: number) => {
+        const reason = window.prompt('Alasan pembatalan movement?');
+        if (!reason?.trim()) {
+            return;
+        }
+        router.post(route('hr.employee-movements.cancel', movementId), { reason: reason.trim() }, { preserveScroll: true });
     };
 
     return (
@@ -117,17 +125,29 @@ export default function EmployeeMovementsIndex({ movements, options }: MovementP
                                     <p className="text-sm">
                                         <span className="text-muted-foreground">Alasan:</span> {movement.reason}
                                     </p>
-                                    {canApply && movement.status === 'DRAFT' && (
-                                        <Button
-                                            size="sm"
-                                            onClick={() =>
-                                                router.post(route('hr.employee-movements.apply', movement.id), {}, { preserveScroll: true })
-                                            }
-                                        >
-                                            Terapkan hari ini
-                                        </Button>
+                                    {movement.status === 'DRAFT' && (
+                                        <div className="flex flex-wrap gap-2">
+                                            {canCancel && (
+                                                <Button size="sm" variant="outline" onClick={() => cancelMovement(movement.id)}>
+                                                    Batalkan
+                                                </Button>
+                                            )}
+                                            {canApply && (
+                                                <Button
+                                                    size="sm"
+                                                    onClick={() =>
+                                                        router.post(route('hr.employee-movements.apply', movement.id), {}, { preserveScroll: true })
+                                                    }
+                                                >
+                                                    Terapkan jika due
+                                                </Button>
+                                            )}
+                                        </div>
                                     )}
                                 </div>
+                                {movement.status === 'CANCELLED' && movement.cancel_reason && (
+                                    <p className="text-muted-foreground mt-2 text-xs">Dibatalkan: {movement.cancel_reason}</p>
+                                )}
                             </article>
                         ))}
                     </CardContent>

@@ -7,4 +7,5 @@ Route::middleware(['auth'])->prefix('hr/employee-movements')->name('hr.employee-
     Route::get('/', [EmployeeMovementsController::class, 'index'])->name('index');
     Route::post('/', [EmployeeMovementsController::class, 'store'])->name('store');
     Route::post('/{employeeMovement}/apply', [EmployeeMovementsController::class, 'apply'])->name('apply');
+    Route::post('/{employeeMovement}/cancel', [EmployeeMovementsController::class, 'cancel'])->name('cancel');
 });

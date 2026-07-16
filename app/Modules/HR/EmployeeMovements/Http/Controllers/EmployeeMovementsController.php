@@ -3,6 +3,7 @@
 namespace App\Modules\HR\EmployeeMovements\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Modules\HR\EmployeeMovements\Http\Requests\CancelEmployeeMovementRequest;
 use App\Modules\HR\EmployeeMovements\Http\Requests\StoreEmployeeMovementRequest;
 use App\Modules\HR\EmployeeMovements\Models\EmployeeMovement;
 use App\Modules\HR\EmployeeMovements\Services\EmployeeMovementsService;
@@ -25,7 +26,7 @@ class EmployeeMovementsController extends Controller
     {
         $this->movements->create($request->toDto());
 
-        return back()->with('success', 'Draft transfer berhasil dibuat.');
+        return back()->with('success', 'Draft movement berhasil dibuat.');
     }
 
     public function apply(EmployeeMovement $employeeMovement): RedirectResponse
@@ -33,6 +34,13 @@ class EmployeeMovementsController extends Controller
         $this->authorize('apply', $employeeMovement);
         $this->movements->apply($employeeMovement);
 
-        return back()->with('success', 'Transfer berhasil diterapkan ke profile employee.');
+        return back()->with('success', 'Movement berhasil diterapkan ke profile employee.');
+    }
+
+    public function cancel(CancelEmployeeMovementRequest $request, EmployeeMovement $employeeMovement): RedirectResponse
+    {
+        $this->movements->cancel($employeeMovement, (string) $request->validated('reason'));
+
+        return back()->with('success', 'Movement berhasil dibatalkan.');
     }
 }
