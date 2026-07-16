@@ -7,6 +7,7 @@ import type { BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { Archive, ArrowLeft, CalendarDays } from 'lucide-react';
 import { canActivateOffboarding, OffboardingActivationDialog } from './offboarding-components/offboarding-activation-dialog';
+import { canCancelOffboarding, OffboardingCancelDialog } from './offboarding-components/offboarding-cancel-dialog';
 import { offboardingExitTypeLabel, offboardingStatusLabel } from './offboarding-components/offboarding-presenters';
 import { canMarkOffboardingReady, OffboardingReadyDialog } from './offboarding-components/offboarding-ready-dialog';
 import { OffboardingSummaryCards } from './offboarding-components/offboarding-summary-cards';
@@ -30,6 +31,7 @@ export default function OffboardingShow({ offboarding, businessDate, assigneeOpt
         offboarding.progress.required_incomplete,
         canAny(['offboardings.mark-ready', 'offboardings.manage']),
     );
+    const showCancel = canCancelOffboarding(offboarding.status, offboarding.archived, canAny(['offboardings.cancel', 'offboardings.manage']));
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'HR', href: '/hr/dashboard' },
         { title: 'Employee Offboardings', href: '/hr/offboardings' },
@@ -70,6 +72,7 @@ export default function OffboardingShow({ offboarding, businessDate, assigneeOpt
                         <div className="flex flex-wrap gap-2">
                             {showActivation && <OffboardingActivationDialog offboardingId={offboarding.id} />}
                             {showReady && <OffboardingReadyDialog offboardingId={offboarding.id} />}
+                            {showCancel && <OffboardingCancelDialog offboardingId={offboarding.id} />}
                         </div>
                     </div>
                 </div>
@@ -99,6 +102,15 @@ export default function OffboardingShow({ offboarding, businessDate, assigneeOpt
                             <Detail label="Contract" value={offboarding.contract?.contract_number ?? 'Tanpa contract'} />
                             <Detail label="Alasan" value={offboarding.exit_reason} />
                             {offboarding.notes && <Detail label="Catatan" value={offboarding.notes} />}
+                            {offboarding.cancelled_by && (
+                                <div className="border-destructive/30 bg-destructive/5 rounded-lg border p-3">
+                                    <Detail label="Dibatalkan oleh" value={offboarding.cancelled_by.name} />
+                                    {offboarding.cancelled_at && (
+                                        <Detail label="Waktu pembatalan" value={new Date(offboarding.cancelled_at).toLocaleString('id-ID')} />
+                                    )}
+                                    {offboarding.cancel_reason && <Detail label="Alasan pembatalan" value={offboarding.cancel_reason} />}
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
                 </div>

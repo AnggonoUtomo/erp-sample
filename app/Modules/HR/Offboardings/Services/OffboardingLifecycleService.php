@@ -3,6 +3,7 @@
 namespace App\Modules\HR\Offboardings\Services;
 
 use App\Modules\Console\AuditLogs\Services\AuditLogService;
+use App\Modules\HR\Offboardings\DTO\OffboardingCancellationData;
 use App\Modules\HR\Offboardings\Enums\OffboardingStatus;
 use App\Modules\HR\Offboardings\Models\Offboarding;
 use App\Modules\HR\Offboardings\Models\OffboardingTask;
@@ -58,10 +59,63 @@ class OffboardingLifecycleService
         });
     }
 
+    public function cancel(Offboarding $offboarding, OffboardingCancellationData $data): Offboarding
+    {
+        return $this->transaction->run(function () use ($offboarding, $data) {
+            $locked = Offboarding::query()
+                ->withTrashed()
+                ->lockForUpdate()
+                ->findOrFail($offboarding->id);
+
+            if ($locked->trashed()
+                || ! in_array(
+                    $locked->status,
+                    [
+                        OffboardingStatus::Draft,
+                        OffboardingStatus::InProgress,
+                        OffboardingStatus::ReadyForExit,
+                    ],
+                    true,
+                )) {
+                $this->invalidCancellation();
+            }
+
+            $oldStatus = $locked->status;
+            $locked->update([
+                'status' => OffboardingStatus::Cancelled,
+                'cancelled_by_user_id' => $data->actorUserId,
+                'cancelled_at' => now(),
+                'cancel_reason' => $data->reason,
+                'active_identity_key' => null,
+            ]);
+            $this->audit->record(
+                module: 'hr.offboardings',
+                event: 'Offboarding.cancelled',
+                auditable: $locked,
+                description: "Cancelled offboarding {$locked->id}",
+                oldValues: ['status' => $oldStatus->value],
+                newValues: [
+                    'status' => OffboardingStatus::Cancelled->value,
+                    'cancelled_by_user_id' => $data->actorUserId,
+                    'reason' => $data->reason,
+                ],
+            );
+
+            return $locked->refresh();
+        });
+    }
+
     private function invalidTransition(): never
     {
         throw ValidationException::withMessages([
             'status' => 'Transisi readiness offboarding tidak valid.',
+        ]);
+    }
+
+    private function invalidCancellation(): never
+    {
+        throw ValidationException::withMessages([
+            'status' => 'Transisi cancellation offboarding tidak valid.',
         ]);
     }
 }

@@ -192,7 +192,7 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Hasil:** selesai 2026-07-16. Optional task dapat di-skip oleh user dengan `offboardings.task-update`, sedangkan required task memerlukan tambahan `offboardings.task-skip-required`; keduanya wajib menyimpan reason, actor, dan timestamp. Reopen task terminal membersihkan completion/skip evidence aktif lalu menyimpan reopen evidence. Jika case berstatus `READY_FOR_EXIT`, reopen task mengubah aggregate kembali ke `IN_PROGRESS` dalam transaction yang sama dan mencatat audit readiness revocation. Mark-ready hanya menerima case `IN_PROGRESS` non-archived ketika seluruh required task terminal; optional incomplete tidak memblokir. Retry ready idempotent, audit failure me-rollback mutation, dan tidak ada perubahan pada Employee atau Contract. UI menjelaskan bahwa `READY_FOR_EXIT` hanya checkpoint proses, bukan employment termination.
 
-## Task 10 — Cancel lifecycle
+## ✅ Task 10 — Cancel lifecycle
 
 **Tujuan:** membatalkan case aktif dengan evidence.
 
@@ -200,18 +200,24 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Acceptance criteria:**
 
-- [ ] Draft/in-progress/ready dapat cancel dengan reason.
-- [ ] Completed/cancelled immutable.
-- [ ] Cancel tidak mengubah Employee atau Contract.
+- [x] Draft/in-progress/ready dapat cancel dengan reason.
+- [x] Completed/cancelled immutable.
+- [x] Cancel tidak mengubah Employee atau Contract.
 
 **Test:** `php artisan test --filter=OffboardingCancellation`
 
 **Dependencies:** Task 09. **Scope:** M.
 
-## Checkpoint C — Operational lifecycle
+**Hasil:** selesai 2026-07-16. Case `DRAFT`, `IN_PROGRESS`, dan `READY_FOR_EXIT` dapat dibatalkan oleh user dengan permission `offboardings.cancel` menggunakan reason wajib maksimum 2.000 karakter. Cancellation menyimpan actor, timestamp, dan reason, mengubah status menjadi terminal `CANCELLED`, serta melepas active identity agar proses baru dapat dibuat kemudian. `COMPLETED`, `CANCELLED`, archived case, dan user tanpa permission ditolak. Mutation memakai transaction dan row lock; audit failure me-rollback status, evidence, serta active identity. Employee, optional Contract, exit context, dan task snapshot dipertahankan tanpa perubahan dan evidence cancellation ditampilkan pada detail UI.
 
-- [ ] Transition/denial matrix dan audit hijau.
-- [ ] Readiness tidak menghasilkan employment side effect.
+## ✅ Checkpoint C — Operational lifecycle
+
+- [x] Transition/denial matrix dan audit hijau.
+- [x] Readiness tidak menghasilkan employment side effect.
+
+**Evidence 2026-07-16:** 49 targeted Offboarding tests dengan 500 assertions, global mutation authentication 125 assertions, dan full backend regression 420 tests dengan 2.375 assertions lulus. Module validation, Pint, ESLint, Prettier, TypeScript, 17 frontend tests, production build 2.193 modules, dan `git diff --check` juga hijau. Activation, task lifecycle, readiness/revocation, serta cancellation telah direview untuk authorization, atomicity, audit rollback, idempotency, dan employment side-effect boundary. Lihat [laporan Checkpoint C](03-operational-lifecycle-checkpoint-c.md).
+
+**Gate Task 11:** finalization boundary hanya boleh memakai interface mutation publik milik Employees dan Employee Contracts, membawa expected-state/effective-date/reason/actor context minimum, fail-closed terhadap resource stale/archived/terminal, dan belum membuka route finalize sebelum owner-module contract tests lulus.
 
 ## Task 11 — Employment termination boundary
 

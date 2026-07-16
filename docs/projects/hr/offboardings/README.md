@@ -14,6 +14,7 @@ Paket ini menjadi acuan pengembangan module `Offboardings`: HR merencanakan kelu
 8. [Tasks](tasks.md) — task kecil berurutan dengan file, acceptance criteria, dan cara test.
 9. [Checkpoint A](01-template-checkpoint-a.md) — evidence template contract dan gate snapshot untuk Task 04.
 10. [Checkpoint B](02-draft-checkpoint-b.md) — evidence draft snapshot, idempotency, dan progress read model untuk gate Task 07.
+11. [Checkpoint C](03-operational-lifecycle-checkpoint-c.md) — evidence activation, task lifecycle, readiness, cancellation, dan gate employment termination boundary.
 
 Dokumen terkait:
 
@@ -63,4 +64,4 @@ Proses resign, termination, end-of-contract, retirement, dan separation lain ser
 
 ## Status
 
-`TASK 09 COMPLETE` — Task 01–09 dan draft snapshot checkpoint selesai pada 2026-07-16. Authorized HR dapat mengelola template, membuat dan mengaktifkan draft, menjalankan checklist, menyimpan completion/skip/reopen evidence, serta menandai case `READY_FOR_EXIT` setelah seluruh required task terminal. Required skip memakai permission khusus. Reopen task dari ready mengembalikan aggregate ke `IN_PROGRESS` secara atomic. Readiness tidak mengubah Employee atau Contract dan UI menyampaikan boundary tersebut secara eksplisit. Cancel, final employment exit, serta integration event downstream tetap deferred.
+`CHECKPOINT C PASSED` — Task 01–10 dan operational lifecycle checkpoint selesai pada 2026-07-16. Activation, assignment, completion, controlled skip/reopen, readiness/revocation, dan cancellation telah lulus transition/denial matrix, authorization, audit rollback, idempotency, serta full regression. Readiness dan cancellation tidak mengubah Employee atau Contract. Task 11 boleh membuka employment termination boundary melalui interface publik owner modules; effective finalization dan integration event downstream tetap deferred.

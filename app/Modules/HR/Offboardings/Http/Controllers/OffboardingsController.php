@@ -4,6 +4,7 @@ namespace App\Modules\HR\Offboardings\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Modules\HR\Offboardings\Http\Requests\CancelOffboardingRequest;
 use App\Modules\HR\Offboardings\Http\Requests\ShowOffboardingRequest;
 use App\Modules\HR\Offboardings\Http\Requests\StoreOffboardingDraftRequest;
 use App\Modules\HR\Offboardings\Models\Offboarding;
@@ -36,6 +37,7 @@ class OffboardingsController extends Controller implements HasMiddleware
             new Middleware('can:create,'.Offboarding::class, only: ['store']),
             new Middleware('can:activate,offboarding', only: ['activate']),
             new Middleware('can:markReady,offboarding', only: ['markReady']),
+            new Middleware('can:cancel,offboarding', only: ['cancel']),
         ];
     }
 
@@ -82,5 +84,15 @@ class OffboardingsController extends Controller implements HasMiddleware
             'offboarding' => $offboarding,
             'business_date' => now()->toDateString(),
         ])->with('success', 'Offboarding siap untuk proses final exit.');
+    }
+
+    public function cancel(CancelOffboardingRequest $request, Offboarding $offboarding): RedirectResponse
+    {
+        $this->lifecycle->cancel($offboarding, $request->toDto());
+
+        return redirect()->route('hr.offboardings.show', [
+            'offboarding' => $offboarding,
+            'business_date' => now()->toDateString(),
+        ])->with('success', 'Offboarding berhasil dibatalkan.');
     }
 }

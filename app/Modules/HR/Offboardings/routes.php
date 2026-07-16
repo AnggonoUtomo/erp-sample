@@ -29,6 +29,9 @@ Route::middleware('auth')
         Route::patch('{offboarding}/mark-ready', [OffboardingsController::class, 'markReady'])
             ->withTrashed()
             ->name('mark-ready');
+        Route::patch('{offboarding}/cancel', [OffboardingsController::class, 'cancel'])
+            ->withTrashed()
+            ->name('cancel');
         Route::patch('{offboarding}/tasks/{task}/assignment', [OffboardingTasksController::class, 'assignment'])
             ->withTrashed()
             ->scopeBindings()

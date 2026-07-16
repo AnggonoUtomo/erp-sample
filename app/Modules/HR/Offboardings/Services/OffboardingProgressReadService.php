@@ -20,6 +20,7 @@ class OffboardingProgressReadService
             'template:id,code,name',
             'targetEmploymentStatus:id,code,name',
             'owner:id,name',
+            'cancelledBy:id,name',
             'tasks.assignee:id,name',
             'tasks.completedBy:id,name',
             'tasks.skippedBy:id,name',
@@ -53,6 +54,9 @@ class OffboardingProgressReadService
             'status' => $offboarding->status->value,
             'archived' => $offboarding->trashed(),
             'created_at' => $offboarding->created_at?->toIso8601String(),
+            'cancelled_by' => $offboarding->cancelledBy?->only(['id', 'name']),
+            'cancelled_at' => $offboarding->cancelled_at?->toIso8601String(),
+            'cancel_reason' => $offboarding->cancel_reason,
             'progress' => [
                 'total' => $total,
                 'terminal' => $terminal->count(),

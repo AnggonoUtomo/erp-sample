@@ -34,6 +34,9 @@ class Offboarding extends Model
         'status',
         'active_identity_key',
         'request_fingerprint',
+        'cancelled_by_user_id',
+        'cancelled_at',
+        'cancel_reason',
     ];
 
     protected function casts(): array
@@ -42,6 +45,7 @@ class Offboarding extends Model
             'exit_date' => 'date',
             'exit_type' => OffboardingExitType::class,
             'status' => OffboardingStatus::class,
+            'cancelled_at' => 'datetime',
         ];
     }
 
@@ -68,6 +72,11 @@ class Offboarding extends Model
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_user_id')->withTrashed();
+    }
+
+    public function cancelledBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'cancelled_by_user_id')->withTrashed();
     }
 
     public function tasks(): HasMany

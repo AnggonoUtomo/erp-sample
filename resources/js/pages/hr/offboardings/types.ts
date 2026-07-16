@@ -70,6 +70,9 @@ export type OffboardingDetail = {
     status: string;
     archived: boolean;
     created_at: string;
+    cancelled_by: IdName | null;
+    cancelled_at: string | null;
+    cancel_reason: string | null;
     progress: OffboardingProgress;
     tasks: OffboardingTaskRow[];
 };

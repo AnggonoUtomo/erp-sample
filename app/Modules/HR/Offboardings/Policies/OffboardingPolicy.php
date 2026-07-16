@@ -30,4 +30,9 @@ class OffboardingPolicy
     {
         return $user->hasAnyPermission(['offboardings.mark-ready', 'offboardings.manage']);
     }
+
+    public function cancel(User $user, mixed $offboarding): bool
+    {
+        return $user->hasAnyPermission(['offboardings.cancel', 'offboardings.manage']);
+    }
 }
