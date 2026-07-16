@@ -15,6 +15,7 @@ Paket ini menjadi acuan pengembangan module `Offboardings`: HR merencanakan kelu
 9. [Checkpoint A](01-template-checkpoint-a.md) — evidence template contract dan gate snapshot untuk Task 04.
 10. [Checkpoint B](02-draft-checkpoint-b.md) — evidence draft snapshot, idempotency, dan progress read model untuk gate Task 07.
 11. [Checkpoint C](03-operational-lifecycle-checkpoint-c.md) — evidence activation, task lifecycle, readiness, cancellation, dan gate employment termination boundary.
+12. [Finalization security review](04-finalization-security-review.md) — threat model, denial matrix, generic error contract, dan route policy inventory.
 
 Dokumen terkait:
 
@@ -64,4 +65,4 @@ Proses resign, termination, end-of-contract, retirement, dan separation lain ser
 
 ## Status
 
-`TASK 12 COMPLETE` — Atomic effective finalization tersedia sejak 2026-07-16 melalui owner-module termination contract v1. Case `READY_FOR_EXIT` dapat menjadi `COMPLETED` pada/ setelah exit date; Employee, Contract, finalization evidence, dan audit commit bersama atau rollback. Retry diselesaikan idempotent di bawah row lock. Finalization denial/abuse matrix yang lebih luas tetap menjadi Task 13 dan integration event downstream belum dibuka.
+`TASK 13 COMPLETE` — Atomic finalization dan server-side denial matrix selesai pada 2026-07-16. Guest serta role tanpa permission ditolak; archived, stale owner data, dan invalid final status fail-closed dengan error generik; payload tidak dapat memilih Employee/Contract/status/reason/actor lain. Seluruh mutation Offboarding telah diinventarisasi dengan auth dan policy middleware. Checkpoint D dan integration event downstream belum ditutup.

@@ -255,7 +255,7 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Hasil:** selesai 2026-07-16. Endpoint policy-protected menerima business date eksplisit dan hanya memfinalisasi case `READY_FOR_EXIT` pada/ setelah exit date. Transaction mengunci Offboarding, menjalankan mutation melalui gateway resmi Employees dan Employee Contracts, lalu mengunci ulang snapshot task sebelum menyimpan status `COMPLETED`, actor, timestamp, dan business-date evidence. Owner mutation, evidence, dan tiga audit record commit bersama atau seluruhnya rollback. Retry pada case yang sudah `COMPLETED` menjadi no-op; row lock menserialisasi request bersamaan sehingga hanya request pertama yang menghasilkan mutation/audit. UI finalisasi hanya muncul untuk user berizin pada case eligible dan menampilkan konsekuensi Employee/Contract secara eksplisit.
 
-## Task 13 — Finalization authorization matrix
+## ✅ Task 13 — Finalization authorization matrix
 
 **Tujuan:** menutup abuse cases finalization.
 
@@ -263,13 +263,15 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Acceptance criteria:**
 
-- [ ] Guest, viewer, officer tanpa finalize, IDOR, archived, stale contract, dan invalid final status ditolak.
-- [ ] Error tidak mengekspos PII/internal state.
-- [ ] Seluruh privileged mutation memiliki auth dan policy middleware.
+- [x] Guest, viewer, officer tanpa finalize, IDOR, archived, stale contract, dan invalid final status ditolak.
+- [x] Error tidak mengekspos PII/internal state.
+- [x] Seluruh privileged mutation memiliki auth dan policy middleware.
 
 **Test:** `php artisan test --filter=OffboardingAuthorizationMatrix`
 
 **Dependencies:** Task 12. **Scope:** M.
+
+**Hasil:** selesai 2026-07-16. Denial matrix membuktikan authentication dan permission dijalankan server-side; unknown ID menghasilkan `404`; archived, stale Employee/Contract, dan invalid target status ditolak dengan satu generic invariant message tanpa PII, nama table, class, atau lock detail. Payload tambahan tidak dapat menimpa employee, contract, target status, effective date, reason, maupun actor karena service hanya memakai snapshot Offboarding terkunci dan actor session. Route inventory memaksa seluruh mutation `hr.offboardings.*` memiliki `auth` dan policy middleware. Lihat [finalization security review](04-finalization-security-review.md).
 
 ## Checkpoint D — Effective exit
 

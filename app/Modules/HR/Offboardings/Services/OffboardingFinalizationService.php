@@ -20,6 +20,8 @@ use Illuminate\Validation\ValidationException;
 
 final class OffboardingFinalizationService
 {
+    private const GENERIC_REJECTION = 'Finalisasi offboarding ditolak. Periksa kembali kesiapan dan data employment.';
+
     public function __construct(
         private readonly OffboardingTransaction $transaction,
         private readonly EmployeeTerminationGateway $employees,
@@ -40,7 +42,7 @@ final class OffboardingFinalizationService
             }
 
             if ($locked->trashed() || $locked->status !== OffboardingStatus::ReadyForExit) {
-                $this->reject('Finalisasi hanya tersedia untuk offboarding yang siap keluar.');
+                $this->reject();
             }
 
             $businessDate = CarbonImmutable::createFromFormat('!Y-m-d', $data->businessDate);
@@ -71,7 +73,7 @@ final class OffboardingFinalizationService
                     ));
                 }
             } catch (EmployeeTerminationRejected|EmployeeContractTerminationRejected) {
-                $this->reject('Data employment berubah dan finalisasi perlu diperiksa ulang.');
+                $this->reject();
             }
 
             $tasks = OffboardingTask::query()
@@ -79,12 +81,12 @@ final class OffboardingFinalizationService
                 ->lockForUpdate()
                 ->get();
             if ($tasks->contains(fn (OffboardingTask $task) => $task->required && ! $task->status->isTerminal())) {
-                $this->reject('Task wajib belum selesai.');
+                $this->reject();
             }
 
             $actor = User::query()->find($data->actorUserId);
             if (! $actor) {
-                $this->reject('Finalisasi offboarding ditolak.');
+                $this->reject();
             }
 
             $locked->update([
@@ -114,8 +116,8 @@ final class OffboardingFinalizationService
         });
     }
 
-    private function reject(string $message): never
+    private function reject(): never
     {
-        throw ValidationException::withMessages(['status' => $message]);
+        throw ValidationException::withMessages(['status' => self::GENERIC_REJECTION]);
     }
 }
