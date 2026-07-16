@@ -66,10 +66,14 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Dependencies:** Task 02. **Scope:** M.
 
-## Checkpoint A — Template contract
+## ✅ Checkpoint A — Template contract
 
-- [ ] Module validation, targeted test, Pint, typecheck, dan build hijau.
-- [ ] Review memastikan template bukan live source untuk case existing.
+- [x] Module validation, targeted test, Pint, typecheck, dan build hijau.
+- [x] Review memastikan template bukan live source untuk case existing.
+
+**Evidence 2026-07-16:** isolated migration `up/down`, migration SQL preview, module validation, 13 targeted tests dengan 130 assertions, Pint, TypeScript, dan production build 2.183 modules lulus. Review correctness/security/architecture memastikan template hanya menjadi source saat draft dibuat; Task 04 wajib menyimpan snapshot lengkap dan tidak membaca current template untuk histori/progress. Lihat [laporan Checkpoint A](01-template-checkpoint-a.md).
+
+**Gate Task 04:** snapshot wajib menyimpan source item id, content, category, required flag, order, signed due offset, calculated due date, default assignment context, dan initial status dalam transaction yang sama. Edit/archive template tidak boleh mengubah task existing. Draft tidak boleh mengubah Employee atau Contract.
 
 ## Task 04 — Draft dan task snapshot
 

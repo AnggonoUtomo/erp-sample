@@ -11,6 +11,7 @@ Paket ini menjadi acuan pengembangan module `Offboardings`: HR merencanakan kelu
 5. [ADR-002](decisions/002-effective-dated-termination-boundary.md) — ownership perubahan Employee/Contract dan batas integrasi downstream.
 6. [Implementation plan](implementation-plan.md) — dependency graph, fase, risiko, dan rollback.
 7. [Tasks](tasks.md) — task kecil berurutan dengan file, acceptance criteria, dan cara test.
+8. [Checkpoint A](01-template-checkpoint-a.md) — evidence template contract dan gate snapshot untuk Task 04.
 
 Dokumen terkait:
 
@@ -60,4 +61,4 @@ Proses resign, termination, end-of-contract, retirement, dan separation lain ser
 
 ## Status
 
-`TEMPLATE LIFECYCLE IMPLEMENTED` — Task 01–03 selesai pada 2026-07-16. Authorized HR dapat membuat, melihat, mengarsipkan, dan merestore template ordered checklist. Soft delete mempertahankan items dan code reservation; tidak ada force-delete route. Checkpoint A menjadi gate berikutnya; integration event downstream tetap deferred.
+`CHECKPOINT A PASSED` — Task 01–03 dan template contract checkpoint selesai pada 2026-07-16. Authorized HR dapat membuat, melihat, mengarsipkan, dan merestore template ordered checklist. Snapshot gate untuk Task 04 sudah formal; integration event downstream tetap deferred.
