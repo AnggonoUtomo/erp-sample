@@ -87,3 +87,7 @@ Ditolak karena business rule, permission, audit actor, dan error semantics menja
 ## Task 11 implementation note
 
 Boundary owner module tersedia sejak 2026-07-16. Implementasi memakai transaction dan row lock, melakukan stale-state validation setelah lock, serta menggunakan actor eksplisit tanpa fallback ke authenticated user. Belum ada route finalization dan belum ada event Attendance/Payroll; orchestration lintas owner module tetap ditunda ke Task 12.
+
+## Task 12 implementation note
+
+Orchestration finalization tersedia sejak 2026-07-16. Request hanya menerima business date; employee, contract, target status, effective date, dan reason dibaca dari snapshot Offboarding yang dikunci. Lock order adalah Offboarding, owner Employee mutation, owner Contract mutation, lalu task snapshot. Status `COMPLETED`, actor, timestamp, business date, owner mutations, dan audit berada dalam satu transaction. Request ulang setelah commit adalah no-op dan tidak membuat audit tambahan. Event Attendance/Payroll tetap tidak diterbitkan.

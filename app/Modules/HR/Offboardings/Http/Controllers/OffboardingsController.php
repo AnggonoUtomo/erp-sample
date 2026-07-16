@@ -5,11 +5,13 @@ namespace App\Modules\HR\Offboardings\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Modules\HR\Offboardings\Http\Requests\CancelOffboardingRequest;
+use App\Modules\HR\Offboardings\Http\Requests\FinalizeOffboardingRequest;
 use App\Modules\HR\Offboardings\Http\Requests\ShowOffboardingRequest;
 use App\Modules\HR\Offboardings\Http\Requests\StoreOffboardingDraftRequest;
 use App\Modules\HR\Offboardings\Models\Offboarding;
 use App\Modules\HR\Offboardings\Models\OffboardingTask;
 use App\Modules\HR\Offboardings\Services\OffboardingActivationService;
+use App\Modules\HR\Offboardings\Services\OffboardingFinalizationService;
 use App\Modules\HR\Offboardings\Services\OffboardingLifecycleService;
 use App\Modules\HR\Offboardings\Services\OffboardingProgressReadService;
 use App\Modules\HR\Offboardings\Services\OffboardingService;
@@ -27,6 +29,7 @@ class OffboardingsController extends Controller implements HasMiddleware
         private readonly OffboardingProgressReadService $progress,
         private readonly OffboardingActivationService $activation,
         private readonly OffboardingLifecycleService $lifecycle,
+        private readonly OffboardingFinalizationService $finalization,
     ) {}
 
     public static function middleware(): array
@@ -38,6 +41,7 @@ class OffboardingsController extends Controller implements HasMiddleware
             new Middleware('can:activate,offboarding', only: ['activate']),
             new Middleware('can:markReady,offboarding', only: ['markReady']),
             new Middleware('can:cancel,offboarding', only: ['cancel']),
+            new Middleware('can:finalize,offboarding', only: ['finalize']),
         ];
     }
 
@@ -94,5 +98,15 @@ class OffboardingsController extends Controller implements HasMiddleware
             'offboarding' => $offboarding,
             'business_date' => now()->toDateString(),
         ])->with('success', 'Offboarding berhasil dibatalkan.');
+    }
+
+    public function finalize(FinalizeOffboardingRequest $request, Offboarding $offboarding): RedirectResponse
+    {
+        $this->finalization->finalize($offboarding, $request->toDto());
+
+        return redirect()->route('hr.offboardings.show', [
+            'offboarding' => $offboarding,
+            'business_date' => $request->validated('business_date'),
+        ])->with('success', 'Employment exit berhasil difinalisasi.');
     }
 }

@@ -237,7 +237,7 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Hasil:** selesai 2026-07-16. Employees memublikasikan `EmployeeTerminationGateway` v1 dan Employee Contracts memublikasikan `EmployeeContractTerminationGateway` v1 melalui interface/DTO/schema tanpa mengekspos model atau service internal. Adapter owner module mengunci resource, actor, dan referensi status yang relevan; menolak archived, stale, terminal, mismatched, invalid effective date, actor tidak valid, serta target Employment Status yang bukan final aktif. Mutation dan audit berjalan dalam transaction owner module dan rollback ketika audit gagal. Task ini belum menambah route, UI, atau orchestration finalization; pembukaan `READY_FOR_EXIT -> COMPLETED` tetap scope Task 12.
 
-## Task 12 — Atomic effective finalization
+## ✅ Task 12 — Atomic effective finalization
 
 **Tujuan:** menerapkan `READY_FOR_EXIT -> COMPLETED` tepat satu kali.
 
@@ -245,13 +245,15 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Acceptance criteria:**
 
-- [ ] Sebelum exit date ditolak.
-- [ ] Employee, Contract, dan Offboarding berubah bersama atau rollback.
-- [ ] Retry/concurrent finalize idempotent dan audit tidak ganda.
+- [x] Sebelum exit date ditolak.
+- [x] Employee, Contract, dan Offboarding berubah bersama atau rollback.
+- [x] Retry/concurrent finalize diserialisasi oleh row lock, idempotent, dan audit tidak ganda.
 
 **Test:** `php artisan test --filter=OffboardingFinalization`
 
 **Dependencies:** Task 11. **Scope:** L outcome; pecah happy path, failure, concurrency.
+
+**Hasil:** selesai 2026-07-16. Endpoint policy-protected menerima business date eksplisit dan hanya memfinalisasi case `READY_FOR_EXIT` pada/ setelah exit date. Transaction mengunci Offboarding, menjalankan mutation melalui gateway resmi Employees dan Employee Contracts, lalu mengunci ulang snapshot task sebelum menyimpan status `COMPLETED`, actor, timestamp, dan business-date evidence. Owner mutation, evidence, dan tiga audit record commit bersama atau seluruhnya rollback. Retry pada case yang sudah `COMPLETED` menjadi no-op; row lock menserialisasi request bersamaan sehingga hanya request pertama yang menghasilkan mutation/audit. UI finalisasi hanya muncul untuk user berizin pada case eligible dan menampilkan konsekuensi Employee/Contract secara eksplisit.
 
 ## Task 13 — Finalization authorization matrix
 

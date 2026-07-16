@@ -73,6 +73,9 @@ export type OffboardingDetail = {
     cancelled_by: IdName | null;
     cancelled_at: string | null;
     cancel_reason: string | null;
+    finalized_by: IdName | null;
+    finalized_at: string | null;
+    finalization_business_date: string | null;
     progress: OffboardingProgress;
     tasks: OffboardingTaskRow[];
 };

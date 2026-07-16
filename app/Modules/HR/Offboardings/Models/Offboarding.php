@@ -37,6 +37,9 @@ class Offboarding extends Model
         'cancelled_by_user_id',
         'cancelled_at',
         'cancel_reason',
+        'finalized_by_user_id',
+        'finalized_at',
+        'finalization_business_date',
     ];
 
     protected function casts(): array
@@ -46,6 +49,8 @@ class Offboarding extends Model
             'exit_type' => OffboardingExitType::class,
             'status' => OffboardingStatus::class,
             'cancelled_at' => 'datetime',
+            'finalized_at' => 'datetime',
+            'finalization_business_date' => 'date',
         ];
     }
 
@@ -77,6 +82,11 @@ class Offboarding extends Model
     public function cancelledBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'cancelled_by_user_id')->withTrashed();
+    }
+
+    public function finalizedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'finalized_by_user_id')->withTrashed();
     }
 
     public function tasks(): HasMany

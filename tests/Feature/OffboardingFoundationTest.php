@@ -83,6 +83,7 @@ class OffboardingFoundationTest extends TestCase
         $this->assertSame([
             'hr.offboardings.activate',
             'hr.offboardings.cancel',
+            'hr.offboardings.finalize',
             'hr.offboardings.index',
             'hr.offboardings.mark-ready',
             'hr.offboardings.show',

@@ -64,4 +64,4 @@ Proses resign, termination, end-of-contract, retirement, dan separation lain ser
 
 ## Status
 
-`TASK 11 COMPLETE` — Task 01–10 dan operational lifecycle checkpoint selesai, lalu owner-module termination contract v1 untuk Employees dan Employee Contracts ditambahkan pada 2026-07-16. Contract bersifat model-free, versioned, fail-closed, transaction-aware, dan sudah membuktikan audit rollback. Effective finalization, route/UI, concurrency orchestration, serta integration event downstream tetap deferred ke Task 12 dan sesudahnya.
+`TASK 12 COMPLETE` — Atomic effective finalization tersedia sejak 2026-07-16 melalui owner-module termination contract v1. Case `READY_FOR_EXIT` dapat menjadi `COMPLETED` pada/ setelah exit date; Employee, Contract, finalization evidence, dan audit commit bersama atau rollback. Retry diselesaikan idempotent di bawah row lock. Finalization denial/abuse matrix yang lebih luas tetap menjadi Task 13 dan integration event downstream belum dibuka.

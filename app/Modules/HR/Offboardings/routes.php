@@ -32,6 +32,9 @@ Route::middleware('auth')
         Route::patch('{offboarding}/cancel', [OffboardingsController::class, 'cancel'])
             ->withTrashed()
             ->name('cancel');
+        Route::patch('{offboarding}/finalize', [OffboardingsController::class, 'finalize'])
+            ->withTrashed()
+            ->name('finalize');
         Route::patch('{offboarding}/tasks/{task}/assignment', [OffboardingTasksController::class, 'assignment'])
             ->withTrashed()
             ->scopeBindings()

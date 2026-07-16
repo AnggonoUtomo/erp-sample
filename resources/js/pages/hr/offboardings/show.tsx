@@ -8,6 +8,7 @@ import { Head, Link } from '@inertiajs/react';
 import { Archive, ArrowLeft, CalendarDays } from 'lucide-react';
 import { canActivateOffboarding, OffboardingActivationDialog } from './offboarding-components/offboarding-activation-dialog';
 import { canCancelOffboarding, OffboardingCancelDialog } from './offboarding-components/offboarding-cancel-dialog';
+import { canFinalizeOffboarding, OffboardingFinalizeDialog } from './offboarding-components/offboarding-finalize-dialog';
 import { offboardingExitTypeLabel, offboardingStatusLabel } from './offboarding-components/offboarding-presenters';
 import { canMarkOffboardingReady, OffboardingReadyDialog } from './offboarding-components/offboarding-ready-dialog';
 import { OffboardingSummaryCards } from './offboarding-components/offboarding-summary-cards';
@@ -32,6 +33,13 @@ export default function OffboardingShow({ offboarding, businessDate, assigneeOpt
         canAny(['offboardings.mark-ready', 'offboardings.manage']),
     );
     const showCancel = canCancelOffboarding(offboarding.status, offboarding.archived, canAny(['offboardings.cancel', 'offboardings.manage']));
+    const showFinalize = canFinalizeOffboarding(
+        offboarding.status,
+        offboarding.archived,
+        businessDate,
+        offboarding.exit_date,
+        canAny(['offboardings.finalize', 'offboardings.manage']),
+    );
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'HR', href: '/hr/dashboard' },
         { title: 'Employee Offboardings', href: '/hr/offboardings' },
@@ -72,6 +80,13 @@ export default function OffboardingShow({ offboarding, businessDate, assigneeOpt
                         <div className="flex flex-wrap gap-2">
                             {showActivation && <OffboardingActivationDialog offboardingId={offboarding.id} />}
                             {showReady && <OffboardingReadyDialog offboardingId={offboarding.id} />}
+                            {showFinalize && (
+                                <OffboardingFinalizeDialog
+                                    offboardingId={offboarding.id}
+                                    businessDate={businessDate}
+                                    exitDate={offboarding.exit_date}
+                                />
+                            )}
                             {showCancel && <OffboardingCancelDialog offboardingId={offboarding.id} />}
                         </div>
                     </div>
@@ -109,6 +124,17 @@ export default function OffboardingShow({ offboarding, businessDate, assigneeOpt
                                         <Detail label="Waktu pembatalan" value={new Date(offboarding.cancelled_at).toLocaleString('id-ID')} />
                                     )}
                                     {offboarding.cancel_reason && <Detail label="Alasan pembatalan" value={offboarding.cancel_reason} />}
+                                </div>
+                            )}
+                            {offboarding.finalized_by && (
+                                <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-3">
+                                    <Detail label="Difinalisasi oleh" value={offboarding.finalized_by.name} />
+                                    {offboarding.finalized_at && (
+                                        <Detail label="Waktu finalisasi" value={new Date(offboarding.finalized_at).toLocaleString('id-ID')} />
+                                    )}
+                                    {offboarding.finalization_business_date && (
+                                        <Detail label="Business date finalisasi" value={offboarding.finalization_business_date} />
+                                    )}
                                 </div>
                             )}
                         </CardContent>
