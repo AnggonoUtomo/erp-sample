@@ -2,6 +2,7 @@
 
 namespace App\Modules\HR\Offboardings\Providers;
 
+use App\Modules\HR\Offboardings\Console\Commands\OffboardingsDueCommand;
 use App\Modules\HR\Offboardings\Models\Offboarding;
 use App\Modules\HR\Offboardings\Models\OffboardingTask;
 use App\Modules\HR\Offboardings\Models\OffboardingTemplate;
@@ -16,6 +17,10 @@ class OffboardingsServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([OffboardingsDueCommand::class]);
+        }
     }
 
     public function boot(): void

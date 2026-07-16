@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Modules\HR\Offboardings\Http\Requests\CancelOffboardingRequest;
 use App\Modules\HR\Offboardings\Http\Requests\FinalizeOffboardingRequest;
+use App\Modules\HR\Offboardings\Http\Requests\IndexOffboardingsRequest;
 use App\Modules\HR\Offboardings\Http\Requests\ShowOffboardingRequest;
 use App\Modules\HR\Offboardings\Http\Requests\StoreOffboardingDraftRequest;
 use App\Modules\HR\Offboardings\Models\Offboarding;
@@ -42,12 +43,14 @@ class OffboardingsController extends Controller implements HasMiddleware
             new Middleware('can:markReady,offboarding', only: ['markReady']),
             new Middleware('can:cancel,offboarding', only: ['cancel']),
             new Middleware('can:finalize,offboarding', only: ['finalize']),
+            new Middleware('can:delete,offboarding', only: ['archive']),
+            new Middleware('can:restore,offboarding', only: ['restore']),
         ];
     }
 
-    public function index(): Response
+    public function index(IndexOffboardingsRequest $request): Response
     {
-        return Inertia::render('hr/offboardings/index', $this->offboardings->getPageData());
+        return Inertia::render('hr/offboardings/index', $this->offboardings->getPageData($request->filters()));
     }
 
     public function store(StoreOffboardingDraftRequest $request): RedirectResponse
@@ -108,5 +111,19 @@ class OffboardingsController extends Controller implements HasMiddleware
             'offboarding' => $offboarding,
             'business_date' => $request->validated('business_date'),
         ])->with('success', 'Employment exit berhasil difinalisasi.');
+    }
+
+    public function archive(Offboarding $offboarding): RedirectResponse
+    {
+        $this->offboardings->archive($offboarding);
+
+        return redirect()->route('hr.offboardings.index')->with('success', 'Offboarding berhasil diarsipkan.');
+    }
+
+    public function restore(Offboarding $offboarding): RedirectResponse
+    {
+        $this->offboardings->restore($offboarding);
+
+        return redirect()->route('hr.offboardings.index', ['archived' => 1])->with('success', 'Offboarding berhasil direstore.');
     }
 }

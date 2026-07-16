@@ -279,5 +279,5 @@ git diff --check
 
 - Bila terdapat lebih dari satu Employment Status final aktif, finalization harus meminta pilihan eksplisit dan tidak menebak.
 - Account disable/revoke memerlukan kebijakan Console terpisah.
-- Event `EmployeeOffboardingStarted` dan `EmploymentTerminated` deferred sampai consumer menyetujui schema/delivery.
+- Event `EmployeeOffboardingStarted`, `EmployeeOffboardingCompleted`, atau `EmploymentTerminated` tetap deferred sampai consumer menyetujui schema/delivery. Lihat [ADR-004](decisions/004-defer-integration-event-v1.md).
 - Attendance dan Payroll baru boleh bereaksi melalui integration contract yang disetujui.

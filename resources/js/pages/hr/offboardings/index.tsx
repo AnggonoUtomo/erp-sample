@@ -11,7 +11,10 @@ import type { BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { LogOut, Plus } from 'lucide-react';
 import type { FormEvent, ReactNode } from 'react';
-import type { CodeName, ContractOption, EmployeeOption, IdName, OffboardingDraftForm, OffboardingPaginator } from './types';
+import { OffboardingArchiveDialog } from './offboarding-components/offboarding-archive-dialog';
+import { OffboardingFilterCard } from './offboarding-components/offboarding-filter-card';
+import { emptyOffboardingMessage, hasActiveOffboardingFilters, offboardingStatusLabel } from './offboarding-components/offboarding-presenters';
+import type { CodeName, ContractOption, EmployeeOption, IdName, OffboardingDraftForm, OffboardingFilterForm, OffboardingPaginator } from './types';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'HR', href: '/hr/dashboard' },
@@ -34,6 +37,7 @@ type Props = {
     templateOptions: CodeName[];
     targetStatusOptions: CodeName[];
     ownerOptions: IdName[];
+    filters: Partial<OffboardingFilterForm>;
 };
 
 export default function OffboardingsIndex({
@@ -44,9 +48,12 @@ export default function OffboardingsIndex({
     templateOptions,
     targetStatusOptions,
     ownerOptions,
+    filters,
 }: Props) {
     const { canAny } = usePermission();
     const canCreate = canAny(['offboardings.create', 'offboardings.manage']);
+    const canArchive = canAny(['offboardings.archive', 'offboardings.manage']);
+    const canRestore = canAny(['offboardings.restore', 'offboardings.manage']);
     const form = useForm<OffboardingDraftForm>({
         employee_id: '',
         employee_contract_id: '',
@@ -59,6 +66,7 @@ export default function OffboardingsIndex({
         notes: '',
     });
     const employeeContracts = contractOptions.filter((contract) => String(contract.employee_id) === form.data.employee_id);
+    const hasFilters = hasActiveOffboardingFilters(filters as Record<string, unknown>);
 
     const submit = (event: FormEvent) => {
         event.preventDefault();
@@ -83,9 +91,18 @@ export default function OffboardingsIndex({
 
                 <div className={`grid gap-6 ${canCreate ? 'xl:grid-cols-[minmax(0,1fr)_400px]' : ''}`}>
                     <div className="space-y-4">
+                        <OffboardingFilterCard
+                            businessDate={businessDate}
+                            employeeOptions={employeeOptions}
+                            templateOptions={templateOptions}
+                            ownerOptions={ownerOptions}
+                            filters={filters}
+                        />
                         {offboardings.data.length === 0 && (
                             <Card>
-                                <CardContent className="text-muted-foreground p-8 text-center">Belum ada draft offboarding.</CardContent>
+                                <CardContent className="text-muted-foreground p-8 text-center" aria-live="polite">
+                                    {emptyOffboardingMessage(hasFilters, Boolean(filters.archived))}
+                                </CardContent>
                             </Card>
                         )}
                         {offboardings.data.map((offboarding) => (
@@ -111,7 +128,13 @@ export default function OffboardingsIndex({
                                             </Link>
                                         </Button>
                                     </div>
-                                    <Badge variant="secondary">{offboarding.status}</Badge>
+                                    <div className="flex items-center gap-2">
+                                        <Badge variant="secondary">{offboardingStatusLabel(offboarding.status)}</Badge>
+                                        {((offboarding.archived && canRestore) ||
+                                            (!offboarding.archived && canArchive && ['COMPLETED', 'CANCELLED'].includes(offboarding.status))) && (
+                                            <OffboardingArchiveDialog offboardingId={offboarding.id} archived={offboarding.archived} />
+                                        )}
+                                    </div>
                                 </CardContent>
                             </Card>
                         ))}

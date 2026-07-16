@@ -13,8 +13,22 @@ export type OffboardingRow = {
     exit_date: string;
     exit_type: string;
     status: string;
+    archived: boolean;
     tasks_count: number;
 };
+export interface OffboardingFilterForm extends Record<string, FormDataConvertible> {
+    employee_id: string;
+    owner_user_id: string;
+    template_id: string;
+    status: string;
+    exit_type: string;
+    exit_from: string;
+    exit_to: string;
+    due: boolean;
+    overdue: boolean;
+    archived: boolean;
+    business_date: string;
+}
 export type OffboardingPaginator = {
     data: OffboardingRow[];
     current_page: number;

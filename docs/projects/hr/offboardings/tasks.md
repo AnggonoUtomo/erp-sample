@@ -281,7 +281,7 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Evidence 2026-07-16:** owner-module termination contract, atomic finalization, authorization matrix, route inventory, dan full Offboarding regression lulus. Employee dan optional Contract hanya berubah lewat gateway resmi dalam transaksi yang sama dengan Offboarding evidence/audit; retry completed menjadi no-op; concurrent request diserialisasi row lock; stale/archived/invalid/input override ditolak fail-closed. Lihat [laporan Checkpoint D](05-effective-exit-checkpoint-d.md).
 
-## Task 14 — Filters, archive/restore, dan due command
+## ✅ Task 14 — Filters, archive/restore, dan due command
 
 **Tujuan:** menyiapkan operasi harian dan histori.
 
@@ -289,15 +289,17 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Acceptance criteria:**
 
-- [ ] Filter deterministic dan paginated.
-- [ ] Hanya terminal case dapat archive/restore; tidak ada force delete.
-- [ ] Due command read-only dengan input/exit code jelas.
+- [x] Filter deterministic dan paginated.
+- [x] Hanya terminal case dapat archive/restore; tidak ada force delete.
+- [x] Due command read-only dengan input/exit code jelas.
 
 **Test:** `php artisan test --filter=OffboardingArchive && php artisan test --filter=OffboardingsDueCommand`
 
 **Dependencies:** Checkpoint D. **Scope:** pecah query/archive/command.
 
-## Task 15 — Frontend completion dan quality gates
+**Hasil:** selesai 2026-07-16. Index Offboarding menerima filter server-side untuk employee, owner, template, status, exit type, exit date range, due, overdue, archived, dan business date; hasil tetap paginated dan mempertahankan query string. Archive/restore hanya berlaku untuk case terminal, tidak membuka force delete, dan mencatat audit. Command read-only `php artisan hr:offboardings:due --date=YYYY-MM-DD --within=0..365` menolak input invalid dengan exit code gagal dan tidak mengubah database. UI index menyediakan filter dasar serta tombol archive/restore sesuai permission untuk terminal/history case.
+
+## ✅ Task 15 — Frontend completion dan quality gates
 
 **Tujuan:** menyelesaikan UX, accessibility, responsive behavior, dan docs.
 
@@ -305,15 +307,17 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Acceptance criteria:**
 
-- [ ] State/empty/error/action visibility jelas.
-- [ ] Dialog keyboard/focus dan mobile layout layak.
-- [ ] Docs tidak mengklaim event/downstream non-MVP.
+- [x] State/empty/error/action visibility jelas.
+- [x] Dialog keyboard/focus dan mobile layout layak.
+- [x] Docs tidak mengklaim event/downstream non-MVP.
 
 **Test:** full quality checkpoint.
 
 **Dependencies:** Task 14. **Scope:** M per increment.
 
-## Task 16 — Integration event v1 (deferred gate)
+**Hasil:** selesai 2026-07-17. Index Offboardings dipoles dengan filter card terpisah, empty-state presenter, action visibility archive/restore berbasis permission dan terminal/archive state, serta dialog archive/restore yang memakai komponen dialog standar. Presenter tests menutup label, finalization visibility, active filter detection, dan empty-state message. Dokumentasi tetap menegaskan integration event downstream masih deferred sampai consumer disetujui.
+
+## ⏸️ Task 16 — Integration event v1 (DEFERRED)
 
 **Tujuan:** mempublikasikan event minimal hanya setelah consumer disetujui.
 
@@ -321,11 +325,13 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 - [ ] Schema versioned dan tidak membawa PII.
 - [ ] Delivery/retry/ordering semantics disetujui consumer.
-- [ ] Tanpa consumer, task tetap deferred dan manifest event kosong.
+- [x] Tanpa consumer, task tetap deferred dan manifest event kosong.
 
 **Test:** `php artisan test --filter=OffboardingIntegrationContract`
 
 **Dependencies:** Task 15 + consumer approval. **Scope:** M.
+
+**Gate result 2026-07-17:** DEFERRED. Belum ada consumer runtime/owner approval dari Attendance, Payroll, Accounting, DMS, atau module downstream lain; belum ada schema, delivery semantics, idempotency, ordering, retry, failure handling, maupun contract test producer-consumer yang disetujui. Karena itu tidak dibuat event, schema, adapter, listener, outbox, atau dependency downstream spekulatif. Manifest tetap `events: []`/`listeners: []` dan kondisi ini dijaga oleh `OffboardingIntegrationContractTest`. Lihat [laporan deferred gate](06-integration-event-deferred-gate.md) dan [ADR-004](decisions/004-defer-integration-event-v1.md).
 
 ## Final quality checkpoint
 

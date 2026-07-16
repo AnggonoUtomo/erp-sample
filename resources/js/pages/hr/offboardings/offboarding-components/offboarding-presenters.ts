@@ -32,3 +32,13 @@ export function offboardingTaskStatusLabel(status: string): string {
 export function offboardingExitTypeLabel(type: string): string {
     return exitTypeLabels[type] ?? type;
 }
+
+export function hasActiveOffboardingFilters(filters: Record<string, unknown>): boolean {
+    return Object.entries(filters).some(([key, value]) => key !== 'business_date' && value !== '' && value !== false && value != null);
+}
+
+export function emptyOffboardingMessage(filtered: boolean, archived: boolean): string {
+    if (filtered) return 'Tidak ada offboarding yang cocok dengan filter. Ubah atau reset filter untuk melihat data lain.';
+    if (archived) return 'Belum ada histori offboarding yang diarsipkan.';
+    return 'Belum ada offboarding. Buat draft pertama untuk memulai proses exit employee.';
+}

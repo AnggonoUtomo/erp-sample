@@ -40,4 +40,14 @@ class OffboardingPolicy
     {
         return $user->hasAnyPermission(['offboardings.finalize', 'offboardings.manage']);
     }
+
+    public function delete(User $user, mixed $offboarding): bool
+    {
+        return $user->hasAnyPermission(['offboardings.archive', 'offboardings.manage']);
+    }
+
+    public function restore(User $user, mixed $offboarding): bool
+    {
+        return $user->hasAnyPermission(['offboardings.restore', 'offboardings.manage']);
+    }
 }

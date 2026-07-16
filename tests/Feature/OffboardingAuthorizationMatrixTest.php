@@ -37,9 +37,11 @@ class OffboardingAuthorizationMatrixTest extends TestCase
 
         $expectedPolicies = [
             'hr.offboardings.activate' => 'can:activate,offboarding',
+            'hr.offboardings.archive' => 'can:delete,offboarding',
             'hr.offboardings.cancel' => 'can:cancel,offboarding',
             'hr.offboardings.finalize' => 'can:finalize,offboarding',
             'hr.offboardings.mark-ready' => 'can:markReady,offboarding',
+            'hr.offboardings.restore' => 'can:restore,offboarding',
             'hr.offboardings.store' => 'can:create,App\Modules\HR\Offboardings\Models\Offboarding',
             'hr.offboardings.tasks.assignment' => 'can:update,task',
             'hr.offboardings.tasks.complete' => 'can:update,task',

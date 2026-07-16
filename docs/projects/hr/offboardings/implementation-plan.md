@@ -96,7 +96,7 @@ Employees + EmploymentStatuses + optional EmployeeContracts + Console Users
 
 14. Filters, archive/restore, dan due command.
 15. Frontend completion, accessibility, responsive behavior.
-16. Evaluasi integration event hanya jika consumer nyata tersedia.
+16. Evaluasi integration event hanya jika consumer nyata tersedia. Hasil 2026-07-17: deferred; lihat [ADR-004](decisions/004-defer-integration-event-v1.md).
 
 ### Final checkpoint
 
@@ -123,4 +123,4 @@ Employees + EmploymentStatuses + optional EmployeeContracts + Console Users
 - Migration additive memiliki `down()` sebelum production data.
 - Setelah data production ada, rollback memakai forward migration dan disable navigation; histori tidak di-drop.
 - Finalization failure selalu rollback transaction.
-- Public event tidak diterbitkan sebelum schema disetujui.
+- Public event tidak diterbitkan sebelum schema dan consumer disetujui.

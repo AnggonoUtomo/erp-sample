@@ -25,9 +25,27 @@ class OffboardingService
     ) {}
 
     /** @return array<string, mixed> */
-    public function getPageData(): array
+    public function getPageData(array $filters = []): array
     {
-        $offboardings = Offboarding::query()
+        $businessDate = $filters['business_date'] ?? now()->toDateString();
+        $incompleteTaskStatuses = [OffboardingTaskStatus::Pending->value, OffboardingTaskStatus::InProgress->value];
+        $query = Offboarding::query()
+            ->when($filters['archived'] ?? false, fn ($query) => $query->onlyTrashed())
+            ->when($filters['employee_id'] ?? null, fn ($query, $value) => $query->where('employee_id', $value))
+            ->when($filters['owner_user_id'] ?? null, fn ($query, $value) => $query->where('owner_user_id', $value))
+            ->when($filters['template_id'] ?? null, fn ($query, $value) => $query->where('offboarding_template_id', $value))
+            ->when($filters['status'] ?? null, fn ($query, $value) => $query->where('status', $value))
+            ->when($filters['exit_type'] ?? null, fn ($query, $value) => $query->where('exit_type', $value))
+            ->when($filters['exit_from'] ?? null, fn ($query, $value) => $query->whereDate('exit_date', '>=', $value))
+            ->when($filters['exit_to'] ?? null, fn ($query, $value) => $query->whereDate('exit_date', '<=', $value))
+            ->when($filters['due'] ?? false, fn ($query) => $query->whereHas('tasks', fn ($tasks) => $tasks
+                ->whereIn('status', $incompleteTaskStatuses)
+                ->whereDate('due_date', '<=', $businessDate)))
+            ->when($filters['overdue'] ?? false, fn ($query) => $query->whereHas('tasks', fn ($tasks) => $tasks
+                ->whereIn('status', $incompleteTaskStatuses)
+                ->whereDate('due_date', '<', $businessDate)));
+
+        $offboardings = $query
             ->with([
                 'employee:id,employee_number,display_name',
                 'template:id,code,name',
@@ -37,6 +55,7 @@ class OffboardingService
             ->withCount('tasks')
             ->latest('id')
             ->paginate(20)
+            ->withQueryString()
             ->through(fn (Offboarding $offboarding) => [
                 'id' => $offboarding->id,
                 'employee' => $offboarding->employee?->only(['id', 'employee_number', 'display_name']),
@@ -46,11 +65,13 @@ class OffboardingService
                 'exit_date' => $offboarding->exit_date?->format('Y-m-d'),
                 'exit_type' => $offboarding->exit_type->value,
                 'status' => $offboarding->status->value,
+                'archived' => $offboarding->trashed(),
                 'tasks_count' => $offboarding->tasks_count,
             ]);
 
         return [
-            'businessDate' => now()->toDateString(),
+            'businessDate' => $businessDate,
+            'filters' => $filters,
             'offboardings' => $offboardings,
             'employeeOptions' => Employee::query()->where('active', true)->orderBy('display_name')->get(['id', 'employee_number', 'display_name']),
             'contractOptions' => EmployeeContract::query()->where('status', 'ACTIVE')->orderByDesc('start_date')->get(['id', 'employee_id', 'contract_number', 'start_date']),
@@ -58,6 +79,47 @@ class OffboardingService
             'targetStatusOptions' => EmploymentStatus::query()->where('active', true)->where('is_final_status', true)->orderBy('name')->get(['id', 'code', 'name']),
             'ownerOptions' => User::query()->orderBy('name')->get(['id', 'name']),
         ];
+    }
+
+    public function archive(Offboarding $offboarding): void
+    {
+        $this->transaction->run(function () use ($offboarding) {
+            $locked = Offboarding::query()->lockForUpdate()->findOrFail($offboarding->id);
+            if (! $locked->status->isTerminal()) {
+                throw ValidationException::withMessages(['status' => 'Hanya offboarding terminal yang dapat diarsipkan.']);
+            }
+
+            $locked->delete();
+            $this->audit->record(
+                module: 'hr.offboardings',
+                event: 'Offboarding.archived',
+                auditable: $locked,
+                description: "Archived offboarding {$locked->id}",
+                oldValues: ['deleted_at' => null],
+                newValues: ['deleted_at' => $locked->deleted_at?->toIso8601String()],
+            );
+        });
+    }
+
+    public function restore(Offboarding $offboarding): void
+    {
+        $this->transaction->run(function () use ($offboarding) {
+            $locked = Offboarding::query()->withTrashed()->lockForUpdate()->findOrFail($offboarding->id);
+            if (! $locked->trashed() || ! $locked->status->isTerminal() || $locked->active_identity_key !== null) {
+                throw ValidationException::withMessages(['status' => 'Hanya histori offboarding terminal yang valid dapat direstore.']);
+            }
+
+            $archivedAt = $locked->deleted_at?->toIso8601String();
+            $locked->restore();
+            $this->audit->record(
+                module: 'hr.offboardings',
+                event: 'Offboarding.restored',
+                auditable: $locked,
+                description: "Restored offboarding {$locked->id}",
+                oldValues: ['deleted_at' => $archivedAt],
+                newValues: ['deleted_at' => null],
+            );
+        });
     }
 
     public function createDraft(OffboardingDraftData $data): Offboarding
