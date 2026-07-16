@@ -84,12 +84,14 @@ class EmployeeContractSnapshotTest extends TestCase
         $this->assertFalse($schema['additionalProperties']);
 
         $manifest = require app_path('Modules/HR/EmployeeContracts/module.php');
-        $this->assertSame([[
+        $snapshotContract = collect($manifest['integrations']['contracts'])
+            ->firstWhere('name', 'EmployeeContractSnapshot');
+        $this->assertSame([
             'name' => 'EmployeeContractSnapshot',
             'schema_version' => 1,
             'reader' => EmployeeContractSnapshotReader::class,
             'schema' => 'Integration/Schemas/employee-contract-snapshot-v1.json',
-        ]], $manifest['integrations']['contracts']);
+        ], $snapshotContract);
         $this->assertInstanceOf(EmployeeContractSnapshotProjector::class, app(EmployeeContractSnapshotReader::class));
     }
 

@@ -24,6 +24,7 @@ class AuditLogService
         ?array $newValues = null,
         ?User $actor = null,
         bool $fallbackToAuthenticatedActor = true,
+        bool $throwOnFailure = false,
     ): void {
         try {
             $request = app()->runningInConsole() ? null : request();
@@ -44,6 +45,10 @@ class AuditLogService
                 'user_agent' => $request?->userAgent(),
             ]);
         } catch (Throwable $exception) {
+            if ($throwOnFailure) {
+                throw $exception;
+            }
+
             report($exception);
         }
     }

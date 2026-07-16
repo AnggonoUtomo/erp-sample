@@ -21,6 +21,13 @@ Finalisasi Offboarding perlu mengakhiri employment, tetapi:
 
 Offboardings mengoordinasikan finalization melalui interface mutation resmi yang dimiliki dan diimplementasikan oleh Employees serta Employee Contracts.
 
+Contract publik versi 1 yang disetujui:
+
+- `EmployeeTerminationGateway` menerima employee identifier, expected state `ACTIVE`, target Employment Status final, effective date, reason, dan actor user identifier;
+- `EmployeeContractTerminationGateway` menerima contract identifier, employee identifier, expected state `ACTIVE`, effective date, reason, dan actor user identifier;
+- kedua contract mengembalikan result DTO minimal dan tidak mengekspos Eloquent model atau service internal;
+- schema JSON dan manifest module menjadi contract machine-readable yang harus berubah versi bila bentuk payload berubah secara breaking.
+
 Finalization:
 
 1. hanya menerima case `READY_FOR_EXIT`;
@@ -73,6 +80,10 @@ Ditolak karena business rule, permission, audit actor, dan error semantics menja
 - Authorization diperiksa sebelum transaction dan invariant diperiksa ulang di dalam lock.
 - Identifier/stale-state mismatch fail-closed.
 - Error response tidak membawa PII atau internal lock/state detail.
-- Audit tidak mencatat notes sensitif secara penuh.
+- Audit mencatat bahwa reason tersedia tanpa menyalin reason sensitif secara penuh.
 - Partial failure me-rollback seluruh mutation.
 - Retry setelah commit tidak membuat audit/event kedua.
+
+## Task 11 implementation note
+
+Boundary owner module tersedia sejak 2026-07-16. Implementasi memakai transaction dan row lock, melakukan stale-state validation setelah lock, serta menggunakan actor eksplisit tanpa fallback ke authenticated user. Belum ada route finalization dan belum ada event Attendance/Payroll; orchestration lintas owner module tetap ditunda ke Task 12.

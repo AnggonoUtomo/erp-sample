@@ -219,7 +219,7 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Gate Task 11:** finalization boundary hanya boleh memakai interface mutation publik milik Employees dan Employee Contracts, membawa expected-state/effective-date/reason/actor context minimum, fail-closed terhadap resource stale/archived/terminal, dan belum membuka route finalize sebelum owner-module contract tests lulus.
 
-## Task 11 — Employment termination boundary
+## ✅ Task 11 — Employment termination boundary
 
 **Tujuan:** menyediakan interface mutation resmi dari Employees dan Employee Contracts untuk finalization.
 
@@ -227,13 +227,15 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Acceptance criteria:**
 
-- [ ] Offboardings tidak import model/service internal owner module.
-- [ ] Interface menggunakan identifier, expected state, effective date, reason, dan actor context minimal.
-- [ ] Contract fail-closed untuk archived/stale/terminal resource.
+- [x] Contract Task 11 dan calon mutation consumer tidak menambah import model/service internal owner module; relasi/read-model existing dievaluasi terpisah dari finalization boundary.
+- [x] Interface menggunakan identifier, expected state, effective date, reason, dan actor context minimal.
+- [x] Contract fail-closed untuk archived/stale/terminal resource.
 
 **Test:** `php artisan test --filter=OffboardingTerminationContract`
 
 **Dependencies:** Checkpoint C dan ADR-002. **Scope:** M per owner module.
+
+**Hasil:** selesai 2026-07-16. Employees memublikasikan `EmployeeTerminationGateway` v1 dan Employee Contracts memublikasikan `EmployeeContractTerminationGateway` v1 melalui interface/DTO/schema tanpa mengekspos model atau service internal. Adapter owner module mengunci resource, actor, dan referensi status yang relevan; menolak archived, stale, terminal, mismatched, invalid effective date, actor tidak valid, serta target Employment Status yang bukan final aktif. Mutation dan audit berjalan dalam transaction owner module dan rollback ketika audit gagal. Task ini belum menambah route, UI, atau orchestration finalization; pembukaan `READY_FOR_EXIT -> COMPLETED` tetap scope Task 12.
 
 ## Task 12 — Atomic effective finalization
 

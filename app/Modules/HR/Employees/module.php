@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\HR\Employees\Integration\Contracts\EmployeeTerminationGateway;
 use App\Modules\HR\Employees\Providers\EmployeesServiceProvider;
 
 return [
@@ -37,5 +38,11 @@ return [
     'integrations' => [
         'upstream_for' => ['Attendance', 'Payroll', 'DocumentManagement', 'CRM'],
         'depends_on' => ['Console.Users', 'HR.OrganizationFoundation'],
+        'contracts' => [[
+            'name' => 'EmployeeTerminationGateway',
+            'schema_version' => 1,
+            'reader' => EmployeeTerminationGateway::class,
+            'schema' => 'Integration/Schemas/employee-termination-command-v1.json',
+        ]],
     ],
 ];

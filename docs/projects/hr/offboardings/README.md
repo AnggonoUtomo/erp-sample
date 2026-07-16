@@ -64,4 +64,4 @@ Proses resign, termination, end-of-contract, retirement, dan separation lain ser
 
 ## Status
 
-`CHECKPOINT C PASSED` — Task 01–10 dan operational lifecycle checkpoint selesai pada 2026-07-16. Activation, assignment, completion, controlled skip/reopen, readiness/revocation, dan cancellation telah lulus transition/denial matrix, authorization, audit rollback, idempotency, serta full regression. Readiness dan cancellation tidak mengubah Employee atau Contract. Task 11 boleh membuka employment termination boundary melalui interface publik owner modules; effective finalization dan integration event downstream tetap deferred.
+`TASK 11 COMPLETE` — Task 01–10 dan operational lifecycle checkpoint selesai, lalu owner-module termination contract v1 untuk Employees dan Employee Contracts ditambahkan pada 2026-07-16. Contract bersifat model-free, versioned, fail-closed, transaction-aware, dan sudah membuktikan audit rollback. Effective finalization, route/UI, concurrency orchestration, serta integration event downstream tetap deferred ke Task 12 dan sesudahnya.

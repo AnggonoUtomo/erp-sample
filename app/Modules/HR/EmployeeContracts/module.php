@@ -1,6 +1,7 @@
 <?php
 
 use App\Modules\HR\EmployeeContracts\Integration\Contracts\EmployeeContractSnapshotReader;
+use App\Modules\HR\EmployeeContracts\Integration\Contracts\EmployeeContractTerminationGateway;
 use App\Modules\HR\EmployeeContracts\Providers\EmployeeContractsServiceProvider;
 
 return [
@@ -15,11 +16,19 @@ return [
     'integrations' => [
         'upstream_for' => ['Payroll'],
         'depends_on' => ['HR.Employees', 'HR.EmploymentTypes'],
-        'contracts' => [[
-            'name' => 'EmployeeContractSnapshot',
-            'schema_version' => 1,
-            'reader' => EmployeeContractSnapshotReader::class,
-            'schema' => 'Integration/Schemas/employee-contract-snapshot-v1.json',
-        ]],
+        'contracts' => [
+            [
+                'name' => 'EmployeeContractSnapshot',
+                'schema_version' => 1,
+                'reader' => EmployeeContractSnapshotReader::class,
+                'schema' => 'Integration/Schemas/employee-contract-snapshot-v1.json',
+            ],
+            [
+                'name' => 'EmployeeContractTerminationGateway',
+                'schema_version' => 1,
+                'reader' => EmployeeContractTerminationGateway::class,
+                'schema' => 'Integration/Schemas/employee-contract-termination-command-v1.json',
+            ],
+        ],
     ],
 ];
