@@ -259,10 +259,12 @@ Target: lifecycle masuk dan keluar karyawan bisa dikontrol.
 
 Status 2026-07-15: MVP `Onboardings` telah tersedia dari template snapshot, draft/activation, task lifecycle, completion/cancellation, filter operasional, archive/restore, hingga overdue command. Baca [paket project Onboardings](onboardings/README.md) dan [frontend quality review](onboardings/07-frontend-quality-task12.md). Integration contract tetap deferred sampai ada consumer nyata.
 
+Status 2026-07-16: paket specification dan ADR `Offboardings` telah diterima. Task 01 foundation menyediakan module/state/permission contract tanpa membuka route atau navigation sebelum policy-backed vertical slice tersedia. Baca [paket project Offboardings](offboardings/README.md).
+
 Module:
 
 - `Onboardings` **Status: MVP tersedia.**
-- `Offboardings`
+- `Offboardings` **Status: foundation tersedia; workflow berikutnya Task 02.**
 - `ChecklistTemplates`
 - `ChecklistTasks`
 
