@@ -13,8 +13,18 @@ import type { MovementForm, MovementPageProps, MovementSnapshot } from './types'
 const fields: Array<[keyof MovementSnapshot, string]> = [
     ['departement_id', 'Department'],
     ['position_id', 'Position'],
+    ['job_level_id', 'Job level'],
+    ['employment_status_id', 'Employment status'],
+    ['employment_type_id', 'Employment type'],
     ['work_location_id', 'Work location'],
     ['supervisor_id', 'Supervisor'],
+];
+
+const movementTypes = [
+    { value: 'TRANSFER', label: 'Transfer' },
+    { value: 'PROMOTION', label: 'Promotion' },
+    { value: 'DEMOTION', label: 'Demotion' },
+    { value: 'EMPLOYMENT_CHANGE', label: 'Employment change' },
 ];
 
 export default function EmployeeMovementsIndex({ movements, options }: MovementPageProps) {
@@ -23,9 +33,13 @@ export default function EmployeeMovementsIndex({ movements, options }: MovementP
     const canApply = canAny(['employee-movements.apply', 'employee-movements.manage']);
     const form = useForm<MovementForm>({
         employee_id: '',
+        type: 'TRANSFER',
         effective_date: options.today,
         departement_id: '',
         position_id: '',
+        job_level_id: '',
+        employment_status_id: '',
+        employment_type_id: '',
         work_location_id: '',
         supervisor_id: '',
         reason: '',
@@ -39,7 +53,20 @@ export default function EmployeeMovementsIndex({ movements, options }: MovementP
         event.preventDefault();
         form.post(route('hr.employee-movements.store'), {
             preserveScroll: true,
-            onSuccess: () => form.reset('employee_id', 'departement_id', 'position_id', 'work_location_id', 'supervisor_id', 'reason', 'notes'),
+            onSuccess: () =>
+                form.reset(
+                    'employee_id',
+                    'type',
+                    'departement_id',
+                    'position_id',
+                    'job_level_id',
+                    'employment_status_id',
+                    'employment_type_id',
+                    'work_location_id',
+                    'supervisor_id',
+                    'reason',
+                    'notes',
+                ),
         });
     };
 
@@ -109,10 +136,17 @@ export default function EmployeeMovementsIndex({ movements, options }: MovementP
                 {canCreate && (
                     <Card>
                         <CardHeader>
-                            <CardTitle>Buat draft transfer</CardTitle>
+                            <CardTitle>Buat draft movement</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <form className="space-y-4" onSubmit={submit}>
+                                <SelectField
+                                    label="Jenis movement"
+                                    value={form.data.type}
+                                    options={movementTypes}
+                                    onChange={(value) => form.setData('type', value)}
+                                    error={form.errors.type}
+                                />
                                 <SelectField
                                     label="Employee"
                                     value={form.data.employee_id}
@@ -141,6 +175,27 @@ export default function EmployeeMovementsIndex({ movements, options }: MovementP
                                     options={positions}
                                     onChange={(value) => form.setData('position_id', value)}
                                     error={form.errors.position_id}
+                                />
+                                <SelectField
+                                    label="Job level tujuan"
+                                    value={form.data.job_level_id}
+                                    options={options.jobLevels}
+                                    onChange={(value) => form.setData('job_level_id', value)}
+                                    error={form.errors.job_level_id}
+                                />
+                                <SelectField
+                                    label="Employment status tujuan"
+                                    value={form.data.employment_status_id}
+                                    options={options.employmentStatuses}
+                                    onChange={(value) => form.setData('employment_status_id', value)}
+                                    error={form.errors.employment_status_id}
+                                />
+                                <SelectField
+                                    label="Employment type tujuan"
+                                    value={form.data.employment_type_id}
+                                    options={options.employmentTypes}
+                                    onChange={(value) => form.setData('employment_type_id', value)}
+                                    error={form.errors.employment_type_id}
                                 />
                                 <SelectField
                                     label="Work location tujuan"
@@ -197,7 +252,7 @@ function SelectField({
 }: {
     label: string;
     value: string;
-    options: Array<{ value: number; label: string }>;
+    options: Array<{ value: number | string; label: string }>;
     onChange: (value: string) => void;
     error?: string;
 }) {

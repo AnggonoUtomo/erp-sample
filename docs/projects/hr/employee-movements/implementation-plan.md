@@ -11,7 +11,9 @@ FormRequest → DTO → Service → Transaction → EmployeeMovement/Employee. S
 3. Backend create/list dan audit.
 4. Backend apply atomik dan audit.
 5. Frontend form, table histori, before/after, apply action.
-6. Full quality gate dan scope review.
+6. Promotion/demotion + job level guard.
+7. Employment status/type change + active contract coordination guard.
+8. Full quality gate dan scope review.
 
 ## Risiko
 
@@ -20,7 +22,9 @@ FormRequest → DTO → Service → Transaction → EmployeeMovement/Employee. S
 | Profile berubah setelah draft | Bandingkan current assignment dengan before snapshot saat apply |
 | Position/departemen tidak cocok | Validasi relasi pada request dan ulangi pada service |
 | Partial update | Satu database transaction dengan row lock |
-| Movement dipakai untuk promotion/status | Allowlist field transfer; task terpisah untuk type lain |
+| Movement type mengubah field yang salah | Guard per type: transfer assignment-only, promotion/demotion job-level-only, employment change employment-only |
+| Employment type berubah tanpa dasar kontrak | Wajib ada active contract yang efektif pada tanggal movement dan memiliki employment type tujuan |
+| Movement memutasi kontrak | Movement hanya membaca contract sebagai guard; lifecycle contract tetap milik EmployeeContracts |
 
 ## Rollback
 

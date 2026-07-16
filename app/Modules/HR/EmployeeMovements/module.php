@@ -13,7 +13,7 @@ return [
     'providers' => [
         EmployeeMovementsServiceProvider::class,
     ],
-    'dependencies' => ['Employees', 'Departements', 'Positions', 'WorkLocations'],
+    'dependencies' => ['Employees', 'Departements', 'Positions', 'WorkLocations', 'EmploymentStatuses', 'EmploymentTypes', 'EmployeeContracts'],
     'exports' => [
         'routes' => true,
         'permissions' => true,

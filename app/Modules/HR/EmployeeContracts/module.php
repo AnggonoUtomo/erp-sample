@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\HR\EmployeeContracts\Integration\Contracts\EmployeeContractEmploymentTypeGuard;
 use App\Modules\HR\EmployeeContracts\Integration\Contracts\EmployeeContractSnapshotReader;
 use App\Modules\HR\EmployeeContracts\Integration\Contracts\EmployeeContractTerminationGateway;
 use App\Modules\HR\EmployeeContracts\Providers\EmployeeContractsServiceProvider;
@@ -22,6 +23,12 @@ return [
                 'schema_version' => 1,
                 'reader' => EmployeeContractSnapshotReader::class,
                 'schema' => 'Integration/Schemas/employee-contract-snapshot-v1.json',
+            ],
+            [
+                'name' => 'EmployeeContractEmploymentTypeGuard',
+                'version' => '1.0.0',
+                'reader' => EmployeeContractEmploymentTypeGuard::class,
+                'description' => 'Read-only guard for checking whether an employee has an active effective contract for an employment type.',
             ],
             [
                 'name' => 'EmployeeContractTerminationGateway',

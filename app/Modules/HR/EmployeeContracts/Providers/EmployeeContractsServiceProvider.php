@@ -3,7 +3,9 @@
 namespace App\Modules\HR\EmployeeContracts\Providers;
 
 use App\Modules\HR\EmployeeContracts\Console\Commands\ContractsExpiringCommand;
+use App\Modules\HR\EmployeeContracts\Integration\Adapters\EloquentEmployeeContractEmploymentTypeGuard;
 use App\Modules\HR\EmployeeContracts\Integration\Adapters\EloquentEmployeeContractTerminationAdapter;
+use App\Modules\HR\EmployeeContracts\Integration\Contracts\EmployeeContractEmploymentTypeGuard;
 use App\Modules\HR\EmployeeContracts\Integration\Contracts\EmployeeContractSnapshotReader;
 use App\Modules\HR\EmployeeContracts\Integration\Contracts\EmployeeContractTerminationGateway;
 use App\Modules\HR\EmployeeContracts\Integration\Projectors\EmployeeContractSnapshotProjector;
@@ -17,6 +19,7 @@ class EmployeeContractsServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(EmployeeContractSnapshotReader::class, EmployeeContractSnapshotProjector::class);
+        $this->app->bind(EmployeeContractEmploymentTypeGuard::class, EloquentEmployeeContractEmploymentTypeGuard::class);
         $this->app->bind(EmployeeContractTerminationGateway::class, EloquentEmployeeContractTerminationAdapter::class);
     }
 
