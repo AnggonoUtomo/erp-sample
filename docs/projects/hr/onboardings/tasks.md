@@ -251,9 +251,9 @@ Task dijalankan berurutan dan specification/ADR direvisi terlebih dahulu bila im
 
 **Acceptance criteria:**
 
-- [ ] Schema versioned dan hanya membawa identifier/status/date/progress minimal.
-- [ ] Tidak ada direct import model internal antar project.
-- [ ] Jika belum ada consumer yang disetujui, task tetap deferred dan tidak membuat speculative event.
+- [ ] Schema versioned dan hanya membawa identifier/status/date/progress minimal. **N/A selama gate deferred; belum diklaim selesai.**
+- [x] Tidak ada direct import model internal antar project.
+- [x] Jika belum ada consumer yang disetujui, task tetap deferred dan tidak membuat speculative event.
 
 **Test:** `php artisan test --filter=OnboardingIntegrationContract`
 
@@ -261,7 +261,7 @@ Task dijalankan berurutan dan specification/ADR direvisi terlebih dahulu bila im
 
 **Gate result 2026-07-15:** DEFERRED. Attendance masih berupa planning/roadmap dan belum menyediakan consumer runtime, use case owner, schema, delivery semantics, atau approval interface. Karena syarat dependency belum terpenuhi, tidak dibuat event, DTO, schema, adapter, listener, maupun dependency lintas project. Manifest tetap `events: []`/`listeners: []` dan kondisi ini dijaga oleh `OnboardingIntegrationContractTest`. Lihat [laporan deferred gate](08-integration-contract-deferred-gate.md) dan [ADR-007](decisions/007-defer-integration-contract-v1.md).
 
-## Final quality checkpoint
+## ✅ Final quality checkpoint
 
 ```bash
 php artisan module:validate
@@ -275,7 +275,9 @@ php artisan test
 git diff --check
 ```
 
-- [ ] Semua command hijau.
-- [ ] Mutation authorization matrix mencakup seluruh route baru.
-- [ ] Security review memastikan tidak ada hard delete, binary storage, PII/secret leak, atau frontend-only authorization.
-- [ ] README/spec/plan/tasks/ADR dan HR roadmap mencerminkan perilaku final.
+- [x] Semua command hijau.
+- [x] Mutation authorization matrix mencakup seluruh route baru.
+- [x] Security review memastikan tidak ada hard delete, binary storage, PII/secret leak, atau frontend-only authorization.
+- [x] README/spec/plan/tasks/ADR dan HR roadmap mencerminkan perilaku final.
+
+**Evidence 2026-07-15:** module validation, Pint, ESLint, Prettier, TypeScript, 11 frontend tests, production build, 371 backend tests dengan 1.863 assertions, dan `git diff --check` lulus. Review authorization/security/documentation tidak menemukan blocker. Browser runtime smoke test tetap residual karena Chrome DevTools connector tidak tersedia. Lihat [laporan final quality checkpoint](09-final-quality-checkpoint.md).

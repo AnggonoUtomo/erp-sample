@@ -227,16 +227,16 @@ git diff --check
 
 ## 10. Acceptance criteria
 
-- [ ] Authorized HR dapat membuat template ordered checklist.
-- [ ] Authorized HR dapat membuat draft onboarding dengan task snapshot atomic.
-- [ ] Duplicate active onboarding untuk employment period yang sama ditolak.
-- [ ] Edit template tidak mengubah task onboarding existing.
-- [ ] Task assignment, complete, skip khusus, dan reopen menjaga audit serta progress.
+- [x] Authorized HR dapat membuat template ordered checklist.
+- [x] Authorized HR dapat membuat draft onboarding dengan task snapshot atomic.
+- [x] Duplicate active onboarding untuk employment period yang sama ditolak.
+- [x] Edit template tidak mengubah task onboarding existing.
+- [x] Task assignment, complete, skip khusus, dan reopen menjaga audit serta progress.
 - [x] Completion ditolak selama required task belum terminal secara sah.
 - [x] Cancel membutuhkan reason dan tidak menghapus history.
 - [x] List/filter/detail deterministic, paginated, dan permission-aware.
-- [ ] Guest dan role tanpa permission ditolak pada seluruh mutation.
-- [ ] Tidak ada storage engine, direct Payroll/Attendance dependency, atau hard delete.
+- [x] Guest dan role tanpa permission ditolak pada seluruh mutation.
+- [x] Tidak ada storage engine, direct Payroll/Attendance dependency, atau hard delete.
 
 ## 11. Test plan
 

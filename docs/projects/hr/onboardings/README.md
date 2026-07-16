@@ -18,6 +18,7 @@ Paket ini menjadi acuan implementasi module `Onboardings`: HR membuat onboarding
 12. [Task 12 frontend review](07-frontend-quality-task12.md) — state labels, empty/error UX, accessibility, responsive behavior, dan verification evidence.
 13. [Task 13 deferred gate](08-integration-contract-deferred-gate.md) — bukti consumer belum tersedia dan syarat membuka integration contract.
 14. [ADR-007](decisions/007-defer-integration-contract-v1.md) — keputusan tidak mempublikasikan event/schema spekulatif.
+15. [Final quality checkpoint](09-final-quality-checkpoint.md) — hasil seluruh gate, security review, dan residual verification.
 
 Dokumen konteks terkait:
 
@@ -59,4 +60,4 @@ MVP memakai onboarding berbasis checklist:
 
 ## Status
 
-`MVP IMPLEMENTED` — Task 01–12 serta Checkpoint A–C selesai pada 2026-07-15. Task 13 telah dievaluasi dan tetap deferred karena belum ada consumer integration yang disetujui; manifest tidak mempublikasikan event spekulatif.
+`MVP VERIFIED` — Task 01–12, Checkpoint A–C, dan final automated quality checkpoint selesai pada 2026-07-15. Task 13 telah dievaluasi dan tetap deferred karena belum ada consumer integration yang disetujui; manifest tidak mempublikasikan event spekulatif.
