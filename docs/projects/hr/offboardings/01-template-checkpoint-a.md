@@ -1,7 +1,9 @@
 # Checkpoint A — Offboarding Template Contract
 
-**Status:** PASS  
-**Tanggal:** 2026-07-16  
+**Status:** PASS
+
+**Tanggal:** 2026-07-16
+
 **Verified baseline:** `52fbba7`
 
 ## Scope yang diverifikasi
