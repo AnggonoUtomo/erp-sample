@@ -49,6 +49,12 @@ export type OffboardingTaskRow = {
     completed_by: IdName | null;
     completed_at: string | null;
     completion_note: string | null;
+    skipped_by: IdName | null;
+    skipped_at: string | null;
+    skip_reason: string | null;
+    reopened_by: IdName | null;
+    reopened_at: string | null;
+    reopen_reason: string | null;
 };
 export type OffboardingDetail = {
     id: number;

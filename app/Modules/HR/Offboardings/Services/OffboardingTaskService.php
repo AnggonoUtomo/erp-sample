@@ -6,11 +6,13 @@ use App\Models\User;
 use App\Modules\Console\AuditLogs\Services\AuditLogService;
 use App\Modules\HR\Offboardings\DTO\OffboardingTaskAssignmentData;
 use App\Modules\HR\Offboardings\DTO\OffboardingTaskCompletionData;
+use App\Modules\HR\Offboardings\DTO\OffboardingTaskReasonData;
 use App\Modules\HR\Offboardings\Enums\OffboardingStatus;
 use App\Modules\HR\Offboardings\Enums\OffboardingTaskStatus;
 use App\Modules\HR\Offboardings\Models\Offboarding;
 use App\Modules\HR\Offboardings\Models\OffboardingTask;
 use App\Modules\HR\Offboardings\Transactions\OffboardingTransaction;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Validation\ValidationException;
 
 class OffboardingTaskService
@@ -130,6 +132,112 @@ class OffboardingTaskService
         });
     }
 
+    public function skip(
+        Offboarding $offboarding,
+        OffboardingTask $task,
+        OffboardingTaskReasonData $data,
+    ): OffboardingTask {
+        return $this->transaction->run(function () use ($offboarding, $task, $data) {
+            [$lockedOffboarding, $lockedTask] = $this->lockAggregate($offboarding, $task);
+            $this->ensureOffboardingInProgress($lockedOffboarding);
+
+            if (! in_array(
+                $lockedTask->status,
+                [OffboardingTaskStatus::Pending, OffboardingTaskStatus::InProgress],
+                true,
+            )) {
+                $this->invalidTaskTransition();
+            }
+
+            $actor = User::query()->lockForUpdate()->findOrFail($data->actorUserId);
+            if ($lockedTask->required
+                && ! $actor->hasAnyPermission(['offboardings.task-skip-required', 'offboardings.manage'])) {
+                throw new AuthorizationException('Required task skip membutuhkan permission khusus.');
+            }
+
+            $oldStatus = $lockedTask->status;
+            $lockedTask->update([
+                'status' => OffboardingTaskStatus::Skipped,
+                'skipped_by_user_id' => $actor->id,
+                'skipped_at' => now(),
+                'skip_reason' => $data->reason,
+            ]);
+            $this->audit->record(
+                module: 'hr.offboardings',
+                event: 'OffboardingTask.skipped',
+                auditable: $lockedTask,
+                description: "Skipped offboarding task {$lockedTask->id}",
+                oldValues: ['status' => $oldStatus->value],
+                newValues: [
+                    'status' => OffboardingTaskStatus::Skipped->value,
+                    'skipped_by_user_id' => $actor->id,
+                    'reason' => $data->reason,
+                ],
+            );
+
+            return $lockedTask->refresh();
+        });
+    }
+
+    public function reopen(
+        Offboarding $offboarding,
+        OffboardingTask $task,
+        OffboardingTaskReasonData $data,
+    ): OffboardingTask {
+        return $this->transaction->run(function () use ($offboarding, $task, $data) {
+            [$lockedOffboarding, $lockedTask] = $this->lockAggregate($offboarding, $task);
+            $this->ensureOffboardingAllowsReopen($lockedOffboarding);
+
+            if (! $lockedTask->status->isTerminal()) {
+                $this->invalidTaskTransition();
+            }
+
+            if (! User::query()->lockForUpdate()->whereKey($data->actorUserId)->exists()) {
+                $this->invalidTaskTransition();
+            }
+
+            $oldStatus = $lockedTask->status;
+            $lockedTask->update([
+                'status' => OffboardingTaskStatus::Pending,
+                'completed_by_user_id' => null,
+                'completed_at' => null,
+                'completion_note' => null,
+                'skipped_by_user_id' => null,
+                'skipped_at' => null,
+                'skip_reason' => null,
+                'reopened_by_user_id' => $data->actorUserId,
+                'reopened_at' => now(),
+                'reopen_reason' => $data->reason,
+            ]);
+            $this->audit->record(
+                module: 'hr.offboardings',
+                event: 'OffboardingTask.reopened',
+                auditable: $lockedTask,
+                description: "Reopened offboarding task {$lockedTask->id}",
+                oldValues: ['status' => $oldStatus->value],
+                newValues: [
+                    'status' => OffboardingTaskStatus::Pending->value,
+                    'reopened_by_user_id' => $data->actorUserId,
+                    'reason' => $data->reason,
+                ],
+            );
+
+            if ($lockedOffboarding->status === OffboardingStatus::ReadyForExit) {
+                $lockedOffboarding->update(['status' => OffboardingStatus::InProgress]);
+                $this->audit->record(
+                    module: 'hr.offboardings',
+                    event: 'Offboarding.readiness_revoked',
+                    auditable: $lockedOffboarding,
+                    description: "Revoked readiness for offboarding {$lockedOffboarding->id}",
+                    oldValues: ['status' => OffboardingStatus::ReadyForExit->value],
+                    newValues: ['status' => OffboardingStatus::InProgress->value],
+                );
+            }
+
+            return $lockedTask->refresh();
+        });
+    }
+
     /** @return array{Offboarding, OffboardingTask} */
     private function lockAggregate(Offboarding $offboarding, OffboardingTask $task): array
     {
@@ -156,6 +264,18 @@ class OffboardingTaskService
     private function ensureOffboardingInProgress(Offboarding $offboarding): void
     {
         if ($offboarding->trashed() || $offboarding->status !== OffboardingStatus::InProgress) {
+            $this->invalidOffboardingState();
+        }
+    }
+
+    private function ensureOffboardingAllowsReopen(Offboarding $offboarding): void
+    {
+        if ($offboarding->trashed()
+            || ! in_array(
+                $offboarding->status,
+                [OffboardingStatus::InProgress, OffboardingStatus::ReadyForExit],
+                true,
+            )) {
             $this->invalidOffboardingState();
         }
     }

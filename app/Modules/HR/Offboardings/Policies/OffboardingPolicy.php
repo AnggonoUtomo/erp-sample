@@ -25,4 +25,9 @@ class OffboardingPolicy
     {
         return $user->hasAnyPermission(['offboardings.activate', 'offboardings.manage']);
     }
+
+    public function markReady(User $user, mixed $offboarding): bool
+    {
+        return $user->hasAnyPermission(['offboardings.mark-ready', 'offboardings.manage']);
+    }
 }

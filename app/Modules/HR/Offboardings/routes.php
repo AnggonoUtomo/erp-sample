@@ -26,6 +26,9 @@ Route::middleware('auth')
         Route::patch('{offboarding}/activate', [OffboardingsController::class, 'activate'])
             ->withTrashed()
             ->name('activate');
+        Route::patch('{offboarding}/mark-ready', [OffboardingsController::class, 'markReady'])
+            ->withTrashed()
+            ->name('mark-ready');
         Route::patch('{offboarding}/tasks/{task}/assignment', [OffboardingTasksController::class, 'assignment'])
             ->withTrashed()
             ->scopeBindings()
@@ -38,6 +41,14 @@ Route::middleware('auth')
             ->withTrashed()
             ->scopeBindings()
             ->name('tasks.complete');
+        Route::patch('{offboarding}/tasks/{task}/skip', [OffboardingTasksController::class, 'skip'])
+            ->withTrashed()
+            ->scopeBindings()
+            ->name('tasks.skip');
+        Route::patch('{offboarding}/tasks/{task}/reopen', [OffboardingTasksController::class, 'reopen'])
+            ->withTrashed()
+            ->scopeBindings()
+            ->name('tasks.reopen');
         Route::get('{offboarding}', [OffboardingsController::class, 'show'])
             ->withTrashed()
             ->name('show');

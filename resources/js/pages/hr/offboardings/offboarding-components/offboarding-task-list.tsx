@@ -12,6 +12,7 @@ export function OffboardingTaskList({
     tasks,
     assigneeOptions,
     canUpdateTasks,
+    canSkipRequired,
 }: {
     offboardingId: number;
     offboardingStatus: string;
@@ -19,6 +20,7 @@ export function OffboardingTaskList({
     tasks: OffboardingTaskRow[];
     assigneeOptions: IdName[];
     canUpdateTasks: boolean;
+    canSkipRequired: boolean;
 }) {
     return (
         <Card>
@@ -73,6 +75,20 @@ export function OffboardingTaskList({
                                         {task.completion_note}
                                     </p>
                                 )}
+                                {task.skipped_by && (
+                                    <div className="mt-2 rounded-md bg-amber-50 p-2 text-xs text-amber-900 dark:bg-amber-950/40 dark:text-amber-100">
+                                        Di-skip oleh {task.skipped_by.name}
+                                        {task.skipped_at ? ` pada ${new Date(task.skipped_at).toLocaleString('id-ID')}` : ''}
+                                        {task.skip_reason && <p className="mt-1">{task.skip_reason}</p>}
+                                    </div>
+                                )}
+                                {task.reopened_by && (
+                                    <div className="mt-2 rounded-md bg-sky-50 p-2 text-xs text-sky-900 dark:bg-sky-950/40 dark:text-sky-100">
+                                        Dibuka kembali oleh {task.reopened_by.name}
+                                        {task.reopened_at ? ` pada ${new Date(task.reopened_at).toLocaleString('id-ID')}` : ''}
+                                        {task.reopen_reason && <p className="mt-1">{task.reopen_reason}</p>}
+                                    </div>
+                                )}
                                 <OffboardingTaskControls
                                     offboardingId={offboardingId}
                                     offboardingStatus={offboardingStatus}
@@ -80,6 +96,7 @@ export function OffboardingTaskList({
                                     task={task}
                                     assigneeOptions={assigneeOptions}
                                     hasPermission={canUpdateTasks}
+                                    canSkipRequired={canSkipRequired}
                                 />
                             </div>
                         </div>

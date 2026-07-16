@@ -9,6 +9,7 @@ use App\Modules\HR\Offboardings\Http\Requests\StoreOffboardingDraftRequest;
 use App\Modules\HR\Offboardings\Models\Offboarding;
 use App\Modules\HR\Offboardings\Models\OffboardingTask;
 use App\Modules\HR\Offboardings\Services\OffboardingActivationService;
+use App\Modules\HR\Offboardings\Services\OffboardingLifecycleService;
 use App\Modules\HR\Offboardings\Services\OffboardingProgressReadService;
 use App\Modules\HR\Offboardings\Services\OffboardingService;
 use Illuminate\Http\RedirectResponse;
@@ -24,6 +25,7 @@ class OffboardingsController extends Controller implements HasMiddleware
         private readonly OffboardingService $offboardings,
         private readonly OffboardingProgressReadService $progress,
         private readonly OffboardingActivationService $activation,
+        private readonly OffboardingLifecycleService $lifecycle,
     ) {}
 
     public static function middleware(): array
@@ -33,6 +35,7 @@ class OffboardingsController extends Controller implements HasMiddleware
             new Middleware('can:view,offboarding', only: ['show']),
             new Middleware('can:create,'.Offboarding::class, only: ['store']),
             new Middleware('can:activate,offboarding', only: ['activate']),
+            new Middleware('can:markReady,offboarding', only: ['markReady']),
         ];
     }
 
@@ -69,5 +72,15 @@ class OffboardingsController extends Controller implements HasMiddleware
             'offboarding' => $offboarding,
             'business_date' => now()->toDateString(),
         ])->with('success', 'Offboarding berhasil diaktifkan.');
+    }
+
+    public function markReady(Offboarding $offboarding): RedirectResponse
+    {
+        $this->lifecycle->markReady($offboarding);
+
+        return redirect()->route('hr.offboardings.show', [
+            'offboarding' => $offboarding,
+            'business_date' => now()->toDateString(),
+        ])->with('success', 'Offboarding siap untuk proses final exit.');
     }
 }

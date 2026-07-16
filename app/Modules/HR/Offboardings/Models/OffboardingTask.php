@@ -26,6 +26,12 @@ class OffboardingTask extends Model
         'completed_by_user_id',
         'completed_at',
         'completion_note',
+        'skipped_by_user_id',
+        'skipped_at',
+        'skip_reason',
+        'reopened_by_user_id',
+        'reopened_at',
+        'reopen_reason',
     ];
 
     protected function casts(): array
@@ -37,6 +43,8 @@ class OffboardingTask extends Model
             'sort_order' => 'integer',
             'status' => OffboardingTaskStatus::class,
             'completed_at' => 'datetime',
+            'skipped_at' => 'datetime',
+            'reopened_at' => 'datetime',
         ];
     }
 
@@ -53,5 +61,15 @@ class OffboardingTask extends Model
     public function completedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'completed_by_user_id')->withTrashed();
+    }
+
+    public function skippedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'skipped_by_user_id')->withTrashed();
+    }
+
+    public function reopenedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'reopened_by_user_id')->withTrashed();
     }
 }

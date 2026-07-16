@@ -174,7 +174,7 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Hasil:** selesai 2026-07-16. User dengan permission `offboardings.task-update` dapat assign/unassign Console User aktif pada task non-terminal ketika case masih `DRAFT` atau `IN_PROGRESS`. Task pada case `IN_PROGRESS` dapat ditransisikan secara idempotent dari `PENDING -> IN_PROGRESS -> COMPLETED`; completion menyimpan actor, timestamp, dan note maksimum 2.000 karakter. Aggregate dan task dikunci dalam transaction, cross-aggregate task ditolak melalui scoped binding, audit failure me-rollback mutation, dan case archived/terminal serta user tanpa permission ditolak. Detail read model dan UI menampilkan assignee serta completion evidence. Skip, reopen, dan readiness tetap deferred ke Task 09.
 
-## Task 09 — Controlled skip, reopen, dan ready
+## ✅ Task 09 — Controlled skip, reopen, dan ready
 
 **Tujuan:** menutup exception task dan readiness tanpa mengakhiri employment.
 
@@ -182,13 +182,15 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Acceptance criteria:**
 
-- [ ] Required skip memerlukan permission khusus dan reason.
-- [ ] Ready ditolak bila required task belum terminal.
-- [ ] Reopen task pada ready mengubah case kembali `IN_PROGRESS`.
+- [x] Required skip memerlukan permission khusus dan reason.
+- [x] Ready ditolak bila required task belum terminal.
+- [x] Reopen task pada ready mengubah case kembali `IN_PROGRESS`.
 
 **Test:** `php artisan test --filter=OffboardingTaskLifecycle && php artisan test --filter=OffboardingReadiness`
 
 **Dependencies:** Task 08. **Scope:** pecah task lifecycle dan ready.
+
+**Hasil:** selesai 2026-07-16. Optional task dapat di-skip oleh user dengan `offboardings.task-update`, sedangkan required task memerlukan tambahan `offboardings.task-skip-required`; keduanya wajib menyimpan reason, actor, dan timestamp. Reopen task terminal membersihkan completion/skip evidence aktif lalu menyimpan reopen evidence. Jika case berstatus `READY_FOR_EXIT`, reopen task mengubah aggregate kembali ke `IN_PROGRESS` dalam transaction yang sama dan mencatat audit readiness revocation. Mark-ready hanya menerima case `IN_PROGRESS` non-archived ketika seluruh required task terminal; optional incomplete tidak memblokir. Retry ready idempotent, audit failure me-rollback mutation, dan tidak ada perubahan pada Employee atau Contract. UI menjelaskan bahwa `READY_FOR_EXIT` hanya checkpoint proses, bukan employment termination.
 
 ## Task 10 — Cancel lifecycle
 

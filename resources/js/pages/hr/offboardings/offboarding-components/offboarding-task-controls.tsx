@@ -16,16 +16,27 @@ import { router } from '@inertiajs/react';
 import { Check, Play } from 'lucide-react';
 import { useState } from 'react';
 import type { IdName, OffboardingTaskRow } from '../types';
+import { OffboardingTaskReasonDialog } from './offboarding-task-reason-dialog';
 
-export function availableOffboardingTaskActions(offboardingStatus: string, taskStatus: string, archived: boolean, hasPermission: boolean) {
+export function availableOffboardingTaskActions(
+    offboardingStatus: string,
+    taskStatus: string,
+    taskRequired: boolean,
+    archived: boolean,
+    hasPermission: boolean,
+    canSkipRequired: boolean,
+) {
     const assignable = hasPermission && !archived && ['DRAFT', 'IN_PROGRESS'].includes(offboardingStatus);
     const lifecycle = hasPermission && !archived && offboardingStatus === 'IN_PROGRESS';
+    const reopenable = hasPermission && !archived && ['IN_PROGRESS', 'READY_FOR_EXIT'].includes(offboardingStatus);
     const terminal = ['COMPLETED', 'SKIPPED'].includes(taskStatus);
 
     return {
         assign: assignable && !terminal,
         start: lifecycle && taskStatus === 'PENDING',
         complete: lifecycle && taskStatus === 'IN_PROGRESS',
+        skip: lifecycle && ['PENDING', 'IN_PROGRESS'].includes(taskStatus) && (!taskRequired || canSkipRequired),
+        reopen: reopenable && terminal,
     };
 }
 
@@ -36,6 +47,7 @@ export function OffboardingTaskControls({
     task,
     assigneeOptions,
     hasPermission,
+    canSkipRequired,
 }: {
     offboardingId: number;
     offboardingStatus: string;
@@ -43,13 +55,14 @@ export function OffboardingTaskControls({
     task: OffboardingTaskRow;
     assigneeOptions: IdName[];
     hasPermission: boolean;
+    canSkipRequired: boolean;
 }) {
-    const actions = availableOffboardingTaskActions(offboardingStatus, task.status, archived, hasPermission);
+    const actions = availableOffboardingTaskActions(offboardingStatus, task.status, task.required, archived, hasPermission, canSkipRequired);
     const [completionOpen, setCompletionOpen] = useState(false);
     const [completionNote, setCompletionNote] = useState('');
     const [processing, setProcessing] = useState(false);
 
-    if (!actions.assign && !actions.start && !actions.complete) return null;
+    if (!actions.assign && !actions.start && !actions.complete && !actions.skip && !actions.reopen) return null;
 
     const routeParams = { offboarding: offboardingId, task: task.id };
     const options = {
@@ -148,6 +161,8 @@ export function OffboardingTaskControls({
                     </DialogContent>
                 </Dialog>
             )}
+            {actions.skip && <OffboardingTaskReasonDialog action="skip" offboardingId={offboardingId} taskId={task.id} />}
+            {actions.reopen && <OffboardingTaskReasonDialog action="reopen" offboardingId={offboardingId} taskId={task.id} />}
         </div>
     );
 }

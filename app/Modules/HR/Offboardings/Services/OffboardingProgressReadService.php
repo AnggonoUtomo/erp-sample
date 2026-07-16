@@ -22,6 +22,8 @@ class OffboardingProgressReadService
             'owner:id,name',
             'tasks.assignee:id,name',
             'tasks.completedBy:id,name',
+            'tasks.skippedBy:id,name',
+            'tasks.reopenedBy:id,name',
         ]);
 
         $tasks = $offboarding->tasks;
@@ -85,6 +87,12 @@ class OffboardingProgressReadService
                 'completed_by' => $task->completedBy?->only(['id', 'name']),
                 'completed_at' => $task->completed_at?->toIso8601String(),
                 'completion_note' => $task->completion_note,
+                'skipped_by' => $task->skippedBy?->only(['id', 'name']),
+                'skipped_at' => $task->skipped_at?->toIso8601String(),
+                'skip_reason' => $task->skip_reason,
+                'reopened_by' => $task->reopenedBy?->only(['id', 'name']),
+                'reopened_at' => $task->reopened_at?->toIso8601String(),
+                'reopen_reason' => $task->reopen_reason,
             ])->values(),
         ];
     }

@@ -8,6 +8,7 @@ import { Head, Link } from '@inertiajs/react';
 import { Archive, ArrowLeft, CalendarDays } from 'lucide-react';
 import { canActivateOffboarding, OffboardingActivationDialog } from './offboarding-components/offboarding-activation-dialog';
 import { offboardingExitTypeLabel, offboardingStatusLabel } from './offboarding-components/offboarding-presenters';
+import { canMarkOffboardingReady, OffboardingReadyDialog } from './offboarding-components/offboarding-ready-dialog';
 import { OffboardingSummaryCards } from './offboarding-components/offboarding-summary-cards';
 import { OffboardingTaskList } from './offboarding-components/offboarding-task-list';
 import type { OffboardingDetail } from './types';
@@ -21,7 +22,14 @@ type Props = {
 export default function OffboardingShow({ offboarding, businessDate, assigneeOptions }: Props) {
     const { canAny } = usePermission();
     const canUpdateTasks = canAny(['offboardings.task-update', 'offboardings.manage']);
+    const canSkipRequired = canAny(['offboardings.task-skip-required', 'offboardings.manage']);
     const showActivation = canActivateOffboarding(offboarding.status, offboarding.archived, canAny(['offboardings.activate', 'offboardings.manage']));
+    const showReady = canMarkOffboardingReady(
+        offboarding.status,
+        offboarding.archived,
+        offboarding.progress.required_incomplete,
+        canAny(['offboardings.mark-ready', 'offboardings.manage']),
+    );
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'HR', href: '/hr/dashboard' },
         { title: 'Employee Offboardings', href: '/hr/offboardings' },
@@ -59,7 +67,10 @@ export default function OffboardingShow({ offboarding, businessDate, assigneeOpt
                         <div className="text-muted-foreground flex items-center gap-2 text-sm">
                             <CalendarDays className="size-4" /> Business date: {businessDate}
                         </div>
-                        {showActivation && <OffboardingActivationDialog offboardingId={offboarding.id} />}
+                        <div className="flex flex-wrap gap-2">
+                            {showActivation && <OffboardingActivationDialog offboardingId={offboarding.id} />}
+                            {showReady && <OffboardingReadyDialog offboardingId={offboarding.id} />}
+                        </div>
                     </div>
                 </div>
 
@@ -73,6 +84,7 @@ export default function OffboardingShow({ offboarding, businessDate, assigneeOpt
                         tasks={offboarding.tasks}
                         assigneeOptions={assigneeOptions}
                         canUpdateTasks={canUpdateTasks}
+                        canSkipRequired={canSkipRequired}
                     />
 
                     <Card className="h-fit">

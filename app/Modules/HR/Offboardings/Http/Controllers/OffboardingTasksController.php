@@ -5,6 +5,8 @@ namespace App\Modules\HR\Offboardings\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\HR\Offboardings\Http\Requests\AssignOffboardingTaskRequest;
 use App\Modules\HR\Offboardings\Http\Requests\CompleteOffboardingTaskRequest;
+use App\Modules\HR\Offboardings\Http\Requests\ReopenOffboardingTaskRequest;
+use App\Modules\HR\Offboardings\Http\Requests\SkipOffboardingTaskRequest;
 use App\Modules\HR\Offboardings\Models\Offboarding;
 use App\Modules\HR\Offboardings\Models\OffboardingTask;
 use App\Modules\HR\Offboardings\Services\OffboardingTaskService;
@@ -46,6 +48,26 @@ class OffboardingTasksController extends Controller implements HasMiddleware
         $this->tasks->complete($offboarding, $task, $request->toDto());
 
         return $this->toDetail($offboarding, 'Task berhasil diselesaikan.');
+    }
+
+    public function skip(
+        SkipOffboardingTaskRequest $request,
+        Offboarding $offboarding,
+        OffboardingTask $task,
+    ): RedirectResponse {
+        $this->tasks->skip($offboarding, $task, $request->toDto());
+
+        return $this->toDetail($offboarding, 'Task berhasil di-skip.');
+    }
+
+    public function reopen(
+        ReopenOffboardingTaskRequest $request,
+        Offboarding $offboarding,
+        OffboardingTask $task,
+    ): RedirectResponse {
+        $this->tasks->reopen($offboarding, $task, $request->toDto());
+
+        return $this->toDetail($offboarding, 'Task berhasil dibuka kembali.');
     }
 
     private function toDetail(Offboarding $offboarding, string $message): RedirectResponse
