@@ -9,4 +9,8 @@ Route::middleware('auth')
     ->group(function () {
         Route::get('/', [OffboardingTemplatesController::class, 'index'])->name('index');
         Route::post('/', [OffboardingTemplatesController::class, 'store'])->name('store');
+        Route::delete('{template}', [OffboardingTemplatesController::class, 'archive'])->name('archive');
+        Route::patch('{template}/restore', [OffboardingTemplatesController::class, 'restore'])
+            ->withTrashed()
+            ->name('restore');
     });

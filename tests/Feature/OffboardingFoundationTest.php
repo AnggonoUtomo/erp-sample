@@ -81,7 +81,9 @@ class OffboardingFoundationTest extends TestCase
         $navigation = require base_path('app/Modules/HR/Offboardings/navigation.php');
 
         $this->assertSame([
+            'hr.offboardings.templates.archive',
             'hr.offboardings.templates.index',
+            'hr.offboardings.templates.restore',
             'hr.offboardings.templates.store',
         ], $routes->pluck('action.as')->sort()->values()->all());
         $routes->each(function ($route) {

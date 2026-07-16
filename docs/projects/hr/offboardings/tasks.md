@@ -48,7 +48,7 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Dependencies:** Task 01. **Scope:** pecah backend/UI menjadi increment M.
 
-## Task 03 — Archive dan restore template
+## ✅ Task 03 — Archive dan restore template
 
 **Tujuan:** menjaga histori template tanpa hard delete.
 
@@ -56,9 +56,11 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Acceptance criteria:**
 
-- [ ] Archived template tidak dapat dipakai case baru.
-- [ ] Restore menjaga uniqueness.
-- [ ] Used template tetap dapat dibaca dan tidak memiliki force-delete route.
+- [x] Archived template tidak dapat dipakai case baru.
+- [x] Restore menjaga uniqueness.
+- [x] Used template tetap dapat dibaca dan tidak memiliki force-delete route.
+
+**Hasil:** selesai 2026-07-16. Archive memakai soft delete dan mengeluarkan template dari query default, sementara filter eksplisit menampilkan histori beserta ordered items. Code tetap direservasi oleh unique constraint selama archived sehingga restore tidak merebut identity template lain. Archive/restore memakai transaction, row lock, policy, dan audit; route force delete tidak tersedia. Karena Offboarding case baru dibuat pada Task 04, perlindungan histori saat ini dijamin dengan mempertahankan template/items tanpa hard delete dan akan diperkuat oleh foreign key restrict pada snapshot source.
 
 **Test:** `php artisan test --filter=OffboardingTemplateArchive`
 

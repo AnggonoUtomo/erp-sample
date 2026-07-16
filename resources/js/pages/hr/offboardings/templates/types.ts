@@ -17,6 +17,7 @@ export type OffboardingTemplate = {
     name: string;
     description: string | null;
     active: boolean;
+    archived: boolean;
     items: OffboardingTemplateItem[];
 };
 

@@ -60,4 +60,4 @@ Proses resign, termination, end-of-contract, retirement, dan separation lain ser
 
 ## Status
 
-`TEMPLATE SLICE IMPLEMENTED` — Task 01–02 selesai pada 2026-07-16. Authorized HR dapat membuat dan melihat template ordered checklist dengan signed due offset, pagination, transaction, audit, serta policy protection. Archive/restore baru dibuka pada Task 03; integration event downstream tetap deferred.
+`TEMPLATE LIFECYCLE IMPLEMENTED` — Task 01–03 selesai pada 2026-07-16. Authorized HR dapat membuat, melihat, mengarsipkan, dan merestore template ordered checklist. Soft delete mempertahankan items dan code reservation; tidak ada force-delete route. Checkpoint A menjadi gate berikutnya; integration event downstream tetap deferred.

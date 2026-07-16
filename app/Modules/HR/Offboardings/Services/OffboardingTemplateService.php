@@ -14,10 +14,11 @@ class OffboardingTemplateService
         private readonly AuditLogService $audit,
     ) {}
 
-    /** @return array{templates: mixed} */
-    public function getPageData(): array
+    /** @return array{templates: mixed, showArchived: bool} */
+    public function getPageData(bool $includeArchived = false): array
     {
         $templates = OffboardingTemplate::query()
+            ->when($includeArchived, fn ($query) => $query->withTrashed())
             ->with('items')
             ->orderBy('name')
             ->paginate(20)
@@ -28,6 +29,7 @@ class OffboardingTemplateService
                 'name' => $template->name,
                 'description' => $template->description,
                 'active' => $template->active,
+                'archived' => $template->trashed(),
                 'items' => $template->items->map(fn ($item) => [
                     'id' => $item->id,
                     'title' => $item->title,
@@ -40,7 +42,10 @@ class OffboardingTemplateService
                 ])->all(),
             ]);
 
-        return ['templates' => $templates];
+        return [
+            'templates' => $templates,
+            'showArchived' => $includeArchived,
+        ];
     }
 
     public function create(OffboardingTemplateData $data): OffboardingTemplate
@@ -74,6 +79,61 @@ class OffboardingTemplateService
             );
 
             return $template->load('items');
+        });
+    }
+
+    public function archive(OffboardingTemplate $template): void
+    {
+        $this->transaction->run(function () use ($template): void {
+            $locked = OffboardingTemplate::query()
+                ->lockForUpdate()
+                ->findOrFail($template->id);
+
+            $locked->delete();
+            $this->audit->record(
+                module: 'hr.offboardings',
+                event: 'OffboardingTemplate.archived',
+                auditable: $locked,
+                description: "Archived offboarding template {$locked->code}",
+                oldValues: [
+                    'code' => $locked->code,
+                    'active' => $locked->active,
+                    'deleted_at' => null,
+                ],
+                newValues: [
+                    'deleted_at' => $locked->deleted_at?->toISOString(),
+                ],
+            );
+        });
+    }
+
+    public function restore(OffboardingTemplate $template): void
+    {
+        $this->transaction->run(function () use ($template): void {
+            $locked = OffboardingTemplate::withTrashed()
+                ->lockForUpdate()
+                ->findOrFail($template->id);
+
+            if (! $locked->trashed()) {
+                return;
+            }
+
+            $archivedAt = $locked->deleted_at?->toISOString();
+            $locked->restore();
+            $this->audit->record(
+                module: 'hr.offboardings',
+                event: 'OffboardingTemplate.restored',
+                auditable: $locked,
+                description: "Restored offboarding template {$locked->code}",
+                oldValues: [
+                    'deleted_at' => $archivedAt,
+                ],
+                newValues: [
+                    'code' => $locked->code,
+                    'active' => $locked->active,
+                    'deleted_at' => null,
+                ],
+            );
         });
     }
 }

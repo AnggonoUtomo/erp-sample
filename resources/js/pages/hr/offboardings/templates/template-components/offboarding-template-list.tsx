@@ -1,11 +1,11 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Link } from '@inertiajs/react';
-import { ClipboardList } from 'lucide-react';
+import { Link, router } from '@inertiajs/react';
+import { Archive, ClipboardList, RotateCcw } from 'lucide-react';
 import type { TemplatePaginator } from '../types';
 
-export function OffboardingTemplateList({ templates }: { templates: TemplatePaginator }) {
+export function OffboardingTemplateList({ templates, canManage }: { templates: TemplatePaginator; canManage: boolean }) {
     if (templates.data.length === 0) {
         return (
             <Card>
@@ -30,7 +30,26 @@ export function OffboardingTemplateList({ templates }: { templates: TemplatePagi
                                 <CardTitle className="truncate text-base">{template.name}</CardTitle>
                                 <p className="text-muted-foreground mt-1 text-xs">{template.code}</p>
                             </div>
-                            <Badge variant={template.active ? 'default' : 'secondary'}>{template.active ? 'Aktif' : 'Nonaktif'}</Badge>
+                            <div className="flex items-center gap-2">
+                                <Badge variant={template.archived ? 'outline' : template.active ? 'default' : 'secondary'}>
+                                    {template.archived ? 'Diarsipkan' : template.active ? 'Aktif' : 'Nonaktif'}
+                                </Badge>
+                                {canManage && (
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        aria-label={template.archived ? `Restore ${template.name}` : `Arsipkan ${template.name}`}
+                                        onClick={() => updateArchiveState(template.id, template.name, template.archived)}
+                                    >
+                                        {template.archived ? (
+                                            <RotateCcw className="size-4" aria-hidden="true" />
+                                        ) : (
+                                            <Archive className="size-4" aria-hidden="true" />
+                                        )}
+                                    </Button>
+                                )}
+                            </div>
                         </div>
                     </CardHeader>
                     <CardContent>
@@ -85,4 +104,17 @@ function formatDueOffset(offset: number) {
     }
 
     return offset < 0 ? `H${offset}` : `H+${offset}`;
+}
+
+function updateArchiveState(id: number, name: string, archived: boolean) {
+    if (archived) {
+        router.patch(route('hr.offboardings.templates.restore', id), {}, { preserveScroll: true });
+        return;
+    }
+
+    if (window.confirm(`Arsipkan template ${name}? Template tidak dapat dipakai untuk offboarding baru.`)) {
+        router.delete(route('hr.offboardings.templates.archive', id), {
+            preserveScroll: true,
+        });
+    }
 }
