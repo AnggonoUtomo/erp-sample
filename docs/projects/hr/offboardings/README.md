@@ -9,9 +9,10 @@ Paket ini menjadi acuan pengembangan module `Offboardings`: HR merencanakan kelu
 3. [Specification](specification.md) — requirement, state contract, non-scope, struktur, command, acceptance criteria, dan test plan.
 4. [ADR-001](decisions/001-checklist-snapshot-and-exit-readiness.md) — snapshot checklist dan pemisahan readiness dari final employment exit.
 5. [ADR-002](decisions/002-effective-dated-termination-boundary.md) — ownership perubahan Employee/Contract dan batas integrasi downstream.
-6. [Implementation plan](implementation-plan.md) — dependency graph, fase, risiko, dan rollback.
-7. [Tasks](tasks.md) — task kecil berurutan dengan file, acceptance criteria, dan cara test.
-8. [Checkpoint A](01-template-checkpoint-a.md) — evidence template contract dan gate snapshot untuk Task 04.
+6. [ADR-003](decisions/003-active-identity-and-idempotency.md) — identity aktif, fingerprint request, dan concurrency guard.
+7. [Implementation plan](implementation-plan.md) — dependency graph, fase, risiko, dan rollback.
+8. [Tasks](tasks.md) — task kecil berurutan dengan file, acceptance criteria, dan cara test.
+9. [Checkpoint A](01-template-checkpoint-a.md) — evidence template contract dan gate snapshot untuk Task 04.
 
 Dokumen terkait:
 
@@ -61,4 +62,4 @@ Proses resign, termination, end-of-contract, retirement, dan separation lain ser
 
 ## Status
 
-`TASK 04 COMPLETE` — Task 01–04 selesai pada 2026-07-16. Authorized HR dapat mengelola template serta membuat draft offboarding dengan ordered task snapshot atomic. Employee, contract, target final status, owner, exit date/type/reason, dan template divalidasi tanpa mengubah employment profile. Duplicate/idempotency guard tetap menjadi scope Task 05; integration event downstream tetap deferred.
+`TASK 05 COMPLETE` — Task 01–05 selesai pada 2026-07-16. Authorized HR dapat mengelola template serta membuat draft offboarding dengan ordered task snapshot atomic. Retry identik mengembalikan aggregate existing tanpa audit ganda, sedangkan payload berbeda dan competing insert untuk employee aktif yang sama ditolak. Integration event downstream tetap deferred.

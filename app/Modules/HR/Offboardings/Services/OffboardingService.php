@@ -14,6 +14,7 @@ use App\Modules\HR\Offboardings\Models\Offboarding;
 use App\Modules\HR\Offboardings\Models\OffboardingTemplate;
 use App\Modules\HR\Offboardings\Transactions\OffboardingTransaction;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
 
 class OffboardingService
@@ -60,59 +61,126 @@ class OffboardingService
 
     public function createDraft(OffboardingDraftData $data): Offboarding
     {
-        return $this->transaction->run(function () use ($data) {
-            $this->assertReferencesAreEligible($data);
-            $template = OffboardingTemplate::availableForOffboarding()
-                ->with('items')
-                ->lockForUpdate()
-                ->findOrFail($data->templateId);
-            $exitDate = CarbonImmutable::parse($data->exitDate);
-            $offboarding = Offboarding::query()->create([
-                'employee_id' => $data->employeeId,
-                'employee_contract_id' => $data->employeeContractId,
-                'offboarding_template_id' => $template->id,
-                'target_employment_status_id' => $data->targetEmploymentStatusId,
-                'owner_user_id' => $data->ownerUserId,
-                'exit_date' => $data->exitDate,
-                'exit_type' => $data->exitType,
-                'exit_reason' => $data->exitReason,
-                'notes' => $data->notes,
-                'status' => OffboardingStatus::Draft,
-            ]);
+        $identity = $this->activeIdentity($data);
+        $fingerprint = $this->requestFingerprint($data);
+        $existing = Offboarding::query()->where('active_identity_key', $identity)->first();
 
-            foreach ($template->items as $item) {
-                $offboarding->tasks()->create([
-                    'source_template_item_id' => $item->id,
-                    'title' => $item->title,
-                    'description' => $item->description,
-                    'category' => $item->category,
-                    'required' => $item->required,
-                    'due_offset_days' => $item->due_offset_days,
-                    'due_date' => $exitDate->addDays($item->due_offset_days)->format('Y-m-d'),
-                    'default_assignee_role' => $item->default_assignee_role,
-                    'sort_order' => $item->sort_order,
-                    'status' => OffboardingTaskStatus::Pending,
-                ]);
+        if ($existing) {
+            return $this->resolveExisting($existing, $fingerprint);
+        }
+
+        try {
+            return $this->transaction->run(function () use ($data, $identity, $fingerprint) {
+                $existing = Offboarding::query()
+                    ->where('active_identity_key', $identity)
+                    ->lockForUpdate()
+                    ->first();
+                if ($existing) {
+                    return $this->resolveExisting($existing, $fingerprint);
+                }
+
+                return $this->persistDraft($data, $identity, $fingerprint);
+            });
+        } catch (QueryException $exception) {
+            $existing = Offboarding::query()->where('active_identity_key', $identity)->first();
+            if (! $existing) {
+                throw $exception;
             }
 
-            $this->audit->record(
-                module: 'hr.offboardings',
-                event: 'Offboarding.created',
-                auditable: $offboarding,
-                description: "Created draft offboarding {$offboarding->id}",
-                newValues: [
-                    'employee_id' => $data->employeeId,
-                    'template_id' => $template->id,
-                    'target_employment_status_id' => $data->targetEmploymentStatusId,
-                    'exit_date' => $data->exitDate,
-                    'exit_type' => $data->exitType->value,
-                    'status' => OffboardingStatus::Draft->value,
-                    'task_count' => $template->items->count(),
-                ],
-            );
+            return $this->resolveExisting($existing, $fingerprint);
+        }
+    }
 
-            return $offboarding->load('tasks');
-        });
+    private function persistDraft(
+        OffboardingDraftData $data,
+        string $identity,
+        string $fingerprint,
+    ): Offboarding {
+        $this->assertReferencesAreEligible($data);
+        $template = OffboardingTemplate::availableForOffboarding()
+            ->with('items')
+            ->lockForUpdate()
+            ->findOrFail($data->templateId);
+        $exitDate = CarbonImmutable::parse($data->exitDate);
+        $offboarding = Offboarding::query()->create([
+            'employee_id' => $data->employeeId,
+            'employee_contract_id' => $data->employeeContractId,
+            'offboarding_template_id' => $template->id,
+            'target_employment_status_id' => $data->targetEmploymentStatusId,
+            'owner_user_id' => $data->ownerUserId,
+            'exit_date' => $data->exitDate,
+            'exit_type' => $data->exitType,
+            'exit_reason' => $data->exitReason,
+            'notes' => $data->notes,
+            'status' => OffboardingStatus::Draft,
+            'active_identity_key' => $identity,
+            'request_fingerprint' => $fingerprint,
+        ]);
+
+        foreach ($template->items as $item) {
+            $offboarding->tasks()->create([
+                'source_template_item_id' => $item->id,
+                'title' => $item->title,
+                'description' => $item->description,
+                'category' => $item->category,
+                'required' => $item->required,
+                'due_offset_days' => $item->due_offset_days,
+                'due_date' => $exitDate->addDays($item->due_offset_days)->format('Y-m-d'),
+                'default_assignee_role' => $item->default_assignee_role,
+                'sort_order' => $item->sort_order,
+                'status' => OffboardingTaskStatus::Pending,
+            ]);
+        }
+
+        $this->audit->record(
+            module: 'hr.offboardings',
+            event: 'Offboarding.created',
+            auditable: $offboarding,
+            description: "Created draft offboarding {$offboarding->id}",
+            newValues: [
+                'employee_id' => $data->employeeId,
+                'template_id' => $template->id,
+                'target_employment_status_id' => $data->targetEmploymentStatusId,
+                'exit_date' => $data->exitDate,
+                'exit_type' => $data->exitType->value,
+                'status' => OffboardingStatus::Draft->value,
+                'task_count' => $template->items->count(),
+            ],
+        );
+
+        return $offboarding->load('tasks');
+    }
+
+    private function resolveExisting(Offboarding $existing, string $fingerprint): Offboarding
+    {
+        if (is_string($existing->request_fingerprint)
+            && hash_equals($existing->request_fingerprint, $fingerprint)) {
+            return $existing->load('tasks');
+        }
+
+        throw ValidationException::withMessages([
+            'employee_id' => 'Employee ini sudah memiliki offboarding aktif dengan request berbeda.',
+        ]);
+    }
+
+    private function activeIdentity(OffboardingDraftData $data): string
+    {
+        return "employee:{$data->employeeId}";
+    }
+
+    private function requestFingerprint(OffboardingDraftData $data): string
+    {
+        return hash('sha256', json_encode([
+            'employee_id' => $data->employeeId,
+            'employee_contract_id' => $data->employeeContractId,
+            'offboarding_template_id' => $data->templateId,
+            'target_employment_status_id' => $data->targetEmploymentStatusId,
+            'owner_user_id' => $data->ownerUserId,
+            'exit_date' => $data->exitDate,
+            'exit_type' => $data->exitType->value,
+            'exit_reason' => $data->exitReason,
+            'notes' => $data->notes,
+        ], JSON_THROW_ON_ERROR));
     }
 
     private function assertReferencesAreEligible(OffboardingDraftData $data): void

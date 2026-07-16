@@ -19,6 +19,8 @@ class Offboarding extends Model
 
     protected $table = 'hr_offboardings';
 
+    protected $hidden = ['active_identity_key', 'request_fingerprint'];
+
     protected $fillable = [
         'employee_id',
         'employee_contract_id',
@@ -30,6 +32,8 @@ class Offboarding extends Model
         'exit_reason',
         'notes',
         'status',
+        'active_identity_key',
+        'request_fingerprint',
     ];
 
     protected function casts(): array

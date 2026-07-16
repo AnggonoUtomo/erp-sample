@@ -93,7 +93,7 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Dependencies:** Task 03. **Scope:** L outcome; wajib pecah backend/UI/test.
 
-## Task 05 — Duplicate active dan idempotency guard
+## ✅ Task 05 — Duplicate active dan idempotency guard
 
 **Tujuan:** mencegah case ganda untuk employment identity sama.
 
@@ -101,9 +101,11 @@ Task dijalankan berurutan. Setiap task harus meninggalkan project buildable dan 
 
 **Acceptance criteria:**
 
-- [ ] Retry identik mengembalikan case yang sama.
-- [ ] Request berbeda untuk identity aktif sama ditolak.
-- [ ] Concurrent create tidak menghasilkan dua case aktif.
+- [x] Retry identik mengembalikan case yang sama.
+- [x] Request berbeda untuk identity aktif sama ditolak.
+- [x] Concurrent create tidak menghasilkan dua case aktif.
+
+**Hasil:** selesai 2026-07-16. Draft aktif memakai identity stabil `employee:{id}` dan fingerprint SHA-256 dari payload bisnis ternormalisasi. Retry identik mengembalikan aggregate beserta task existing tanpa audit baru. Payload berbeda untuk employee aktif yang sama ditolak, sementara unique nullable constraint melindungi competing insert di database. Identity/fingerprint tetap internal dan tidak masuk props atau audit values. Lihat [ADR-003](decisions/003-active-identity-and-idempotency.md).
 
 **Test:** `php artisan test --filter=OffboardingDuplicateGuard`
 
