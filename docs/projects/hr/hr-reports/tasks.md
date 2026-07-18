@@ -182,7 +182,7 @@ npm run typecheck
 
 **Dependencies:** Task 04 dan Employee Documents. **Scope:** M.
 
-## Task 06 — Read-only report commands
+## Task 06 — Read-only report commands ✅
 
 **Tujuan:** menyediakan command report untuk validasi operasional dan automation non-mutating.
 
@@ -196,11 +196,19 @@ npm run typecheck
 
 **Acceptance criteria:**
 
-- [ ] Command menerima `--date=YYYY-MM-DD`.
-- [ ] Expiry command menerima `--within=0..3650`.
-- [ ] Input invalid menghasilkan exit code non-zero.
-- [ ] Input valid dengan hasil kosong tetap exit `0`.
-- [ ] Command tidak menulis database/audit/notification/queue/file.
+- [x] Command menerima `--date=YYYY-MM-DD`.
+- [x] Expiry command menerima `--within=0..3650`.
+- [x] Input invalid menghasilkan exit code non-zero.
+- [x] Input valid dengan hasil kosong tetap exit `0`.
+- [x] Command tidak menulis database/audit/notification/queue/file.
+
+**Hasil implementasi:** selesai 2026-07-18. HR Reports sekarang menyediakan command read-only:
+
+- `php artisan hr:reports:summary --date=2026-07-18`
+- `php artisan hr:reports:contracts-expiring --date=2026-07-18 --within=30`
+- `php artisan hr:reports:documents-expiring --date=2026-07-18 --within=30`
+
+Semua command memvalidasi input tanggal/window secara eksplisit, menghasilkan exit code non-zero untuk input invalid, dan tetap exit `0` untuk hasil kosong. Output command tidak menampilkan `contract_number`, document number, DMS reference, storage path, URL, token, notes, atau field kompensasi. Test memastikan tidak ada audit log, notification, queue, atau perubahan data sumber.
 
 **Test:**
 

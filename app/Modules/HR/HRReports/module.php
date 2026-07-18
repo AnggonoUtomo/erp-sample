@@ -13,6 +13,11 @@ return [
     'providers' => [
         HRReportsServiceProvider::class,
     ],
+    'commands' => [
+        'hr:reports:summary',
+        'hr:reports:contracts-expiring',
+        'hr:reports:documents-expiring',
+    ],
     'dependencies' => [
         'HR.Employees',
         'HR.EmployeeContracts',
