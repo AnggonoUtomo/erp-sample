@@ -88,7 +88,7 @@ php artisan test --filter=HRIntegrationSnapshot
 
 **Dependencies:** Task 02 dan Employees. **Scope:** M.
 
-## Task 04 — Assignment snapshot provider
+## Task 04 — Assignment snapshot provider ✅
 
 **Tujuan:** menyediakan `EmployeeAssignmentSnapshotV1` berdasarkan tanggal acuan eksplisit.
 
@@ -100,10 +100,12 @@ php artisan test --filter=HRIntegrationSnapshot
 
 **Acceptance criteria:**
 
-- [ ] Provider menerima employee id dan `effectiveDate/asOf`.
-- [ ] Snapshot memuat departement, position, job level, work location, employment status, dan employment type.
-- [ ] Semantics terminal/inactive jelas untuk Attendance/Payroll.
-- [ ] Output deterministic untuk tanggal acuan yang sama.
+- [x] Provider menerima employee id dan `effectiveDate/asOf`.
+- [x] Snapshot memuat departement, position, job level, work location, employment status, dan employment type.
+- [x] Semantics terminal/inactive jelas untuk Attendance/Payroll.
+- [x] Output deterministic untuk tanggal acuan yang sama.
+
+**Hasil implementasi:** selesai 2026-07-18. `EmployeeAssignmentSnapshotProvider` dan `EloquentEmployeeAssignmentSnapshotProvider` tersedia sebagai binding container. Provider membaca current work profile employee non-archived dan mengembalikan `EmployeeAssignmentSnapshotV1` untuk tanggal acuan eksplisit. Snapshot memuat reference aman untuk departement, position, job level, work location, employment status, dan employment type. Employment status membawa `requiresAttendance`, `includedInPayroll`, dan `isTerminal`; employment type membawa `requiresContractEndDate`, `includedInPayroll`, dan `eligibleForOvertime`. Provider belum melakukan replay histori Employee Movements; future-effective semantics lanjutan tetap deferred sampai consumer membutuhkan historical assignment.
 
 **Test:**
 
