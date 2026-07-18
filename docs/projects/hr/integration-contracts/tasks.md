@@ -34,7 +34,7 @@ php artisan module:validate
 
 **Dependencies:** specification dan ADR-001 approved. **Scope:** S.
 
-## Task 02 — DTO dan forbidden-field privacy guard
+## Task 02 — DTO dan forbidden-field privacy guard ✅
 
 **Tujuan:** membuat DTO/envelope v1 dan guard yang memastikan payload integration tidak membawa field sensitif.
 
@@ -46,10 +46,12 @@ php artisan module:validate
 
 **Acceptance criteria:**
 
-- [ ] DTO memakai field allowlist eksplisit.
-- [ ] Event envelope memiliki `eventId`, `eventName`, `eventVersion`, `occurredAt`, `sourceModule`, `actorUserId`, `correlationId`, dan `payload`.
-- [ ] Guard menolak forbidden fields seperti password, token, document number, DMS URL/path, bank, salary, dan notes confidential.
-- [ ] Test privacy hijau.
+- [x] DTO memakai field allowlist eksplisit.
+- [x] Event envelope memiliki `eventId`, `eventName`, `eventVersion`, `occurredAt`, `sourceModule`, `actorUserId`, `correlationId`, dan `payload`.
+- [x] Guard menolak forbidden fields seperti password, token, document number, DMS URL/path, bank, salary, dan notes confidential.
+- [x] Test privacy hijau.
+
+**Hasil implementasi:** selesai 2026-07-18. DTO contract v1 tersedia untuk `EmployeeSnapshotV1`, `EmployeeAssignmentSnapshotV1`, `EmployeeContractSnapshotV1`, `EmployeeDocumentComplianceSnapshotV1`, dan `IntegrationEventEnvelopeV1`. Semua DTO memakai `toArray()` allowlist eksplisit. Assignment nested reference difilter agar hanya field operasional yang keluar. `ForbiddenIntegrationFieldGuard` memindai key payload secara rekursif dan `IntegrationEventEnvelopeV1` menolak payload yang membawa field sensitif sebelum event dibentuk.
 
 **Test:**
 

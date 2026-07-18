@@ -46,8 +46,8 @@ Lihat [ADR-001](decisions/001-stable-hr-integration-contracts.md).
 
 1. Buat module/documented boundary `HR/IntegrationContracts`. ✅
 2. Buat registry contract awal. ✅
-3. Buat DTO/envelope v1 dan forbidden-field policy.
-4. Buat forbidden-field guard dan tests privacy.
+3. Buat DTO/envelope v1 dan forbidden-field policy. ✅
+4. Buat forbidden-field guard dan tests privacy. ✅
 
 ### Checkpoint A — Contract registry
 
