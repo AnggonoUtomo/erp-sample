@@ -315,7 +315,7 @@ npm run build
 
 **Dependencies:** Task 07. **Scope:** M.
 
-## Final quality checkpoint
+## Final quality checkpoint ✅
 
 ```bash
 vendor/bin/pint --test
@@ -328,8 +328,10 @@ php artisan test
 git diff --check
 ```
 
-- [ ] Semua command hijau.
-- [ ] Route inventory tetap read-only.
-- [ ] Seeder lifecycle HR idempotent.
-- [ ] Sensitive-data review lulus.
-- [ ] README/spec/plan/tasks/ADR sesuai implementasi aktual.
+- [x] Semua command hijau.
+- [x] Route inventory tetap read-only.
+- [x] Seeder lifecycle HR idempotent.
+- [x] Sensitive-data review lulus.
+- [x] README/spec/plan/tasks/ADR sesuai implementasi aktual.
+
+**Hasil checkpoint:** selesai 2026-07-18. HR Reports MVP lengkap: report headcount, contract expiry, document expiry, command read-only, lifecycle seeder local/dev, dan frontend polish/accessibility. Full quality gate hijau, termasuk `php artisan test` dengan `469 passed (2900 assertions)`.
