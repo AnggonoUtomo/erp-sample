@@ -151,7 +151,7 @@ npm run typecheck
 
 **Dependencies:** Checkpoint A dan Employee Contracts. **Scope:** M.
 
-## Task 05 — Document expiry report
+## Task 05 — Document expiry report ✅
 
 **Tujuan:** menampilkan dokumen employee yang expired/expiring tanpa membuka detail sensitif DMS.
 
@@ -165,11 +165,13 @@ npm run typecheck
 
 **Acceptance criteria:**
 
-- [ ] Query menerima `asOf` dan `withinDays` eksplisit.
-- [ ] Expired/expiring/not applicable semantics mengikuti Employee Documents.
-- [ ] Result tidak memuat document number plaintext, DMS reference, storage path, URL, atau token.
-- [ ] Empty result valid.
-- [ ] Tidak ada update document/audit/notification.
+- [x] Query menerima `asOf` dan `withinDays` eksplisit.
+- [x] Expired/expiring/not applicable semantics mengikuti Employee Documents.
+- [x] Result tidak memuat document number plaintext, DMS reference, storage path, URL, atau token.
+- [x] Empty result valid.
+- [x] Tidak ada update document/audit/notification.
+
+**Hasil implementasi:** selesai 2026-07-18. HR Reports sekarang memuat report `Document Expiry` read-only melalui `DocumentExpiryReportService` dan `DocumentExpiryReportQuery`. Page `/hr/reports` menerima filter `document_within_days` eksplisit dengan default 30 hari, menampilkan metadata dokumen yang sudah `EXPIRED` atau `EXPIRING`, dan mengecualikan dokumen `NOT_APPLICABLE` tanpa `expires_at`. Result sengaja hanya mengirim employee, tipe dokumen, tanggal expiry, days remaining, dan state; tidak mengirim document number, DMS reference, storage path, URL, token, notes, audit, notification, queue, atau file side effect.
 
 **Test:**
 

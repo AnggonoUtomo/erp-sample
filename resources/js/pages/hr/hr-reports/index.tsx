@@ -20,7 +20,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function HRReportsIndex({ meta, filters, options, headcount, contractExpiry }: HRReportsPageProps) {
+export default function HRReportsIndex({ meta, filters, options, headcount, contractExpiry, documentExpiry }: HRReportsPageProps) {
     const updateFilter = (key: keyof HRReportsPageProps['filters'], value: string) => {
         router.get(
             route('hr.reports.index'),
@@ -73,7 +73,7 @@ export default function HRReportsIndex({ meta, filters, options, headcount, cont
                         <CardTitle>Filter report</CardTitle>
                         <CardDescription>Tanggal acuan wajib eksplisit agar hasil laporan bisa direproduksi.</CardDescription>
                     </CardHeader>
-                    <CardContent className="grid gap-4 md:grid-cols-3">
+                    <CardContent className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                         <div className="space-y-2">
                             <Label htmlFor="hr-report-as-of">Tanggal acuan</Label>
                             <Input
@@ -114,6 +114,18 @@ export default function HRReportsIndex({ meta, filters, options, headcount, cont
                             />
                             <p className="text-muted-foreground text-xs">Jumlah hari dari tanggal acuan. Default 30 hari.</p>
                         </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="hr-report-document-window">Window dokumen kedaluwarsa</Label>
+                            <Input
+                                id="hr-report-document-window"
+                                min={0}
+                                max={3650}
+                                type="number"
+                                value={filters.document_within_days}
+                                onChange={(event) => updateFilter('document_within_days', event.target.value)}
+                            />
+                            <p className="text-muted-foreground text-xs">Jumlah hari dari tanggal acuan. Default 30 hari.</p>
+                        </div>
                     </CardContent>
                 </Card>
 
@@ -130,6 +142,7 @@ export default function HRReportsIndex({ meta, filters, options, headcount, cont
                 </section>
 
                 <ContractExpiryTable report={contractExpiry} />
+                <DocumentExpiryTable report={documentExpiry} />
             </div>
         </AppLayout>
     );
@@ -241,6 +254,64 @@ function ContractExpiryTable({ report }: { report: ExpiryReport }) {
 }
 
 function ContractExpiryRow({ row }: { row: ExpiryReportRow }) {
+    return (
+        <tr className="border-t">
+            <td className="p-3">
+                <p className="font-medium">{row.employeeName}</p>
+                <p className="text-muted-foreground text-xs">{row.employeeNumber}</p>
+            </td>
+            <td className="p-3">{row.typeLabel}</td>
+            <td className="p-3">
+                <Badge variant={row.state === 'EXPIRED' ? 'destructive' : 'secondary'}>{row.state}</Badge>
+                <span className="ml-2">{row.expiresAt}</span>
+            </td>
+            <td className="p-3 text-right font-semibold">{row.daysRemaining} hari</td>
+        </tr>
+    );
+}
+
+function DocumentExpiryTable({ report }: { report: ExpiryReport }) {
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                    <FileText className="size-5 text-rose-500" />
+                    Document Expiry
+                </CardTitle>
+                <CardDescription>
+                    Metadata dokumen employee yang sudah expired atau akan kedaluwarsa dalam {report.withinDays} hari dari {report.asOf}.
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                {report.rows.length === 0 ? (
+                    <div className="text-muted-foreground rounded-lg border border-dashed p-6 text-center text-sm">
+                        Tidak ada metadata dokumen yang expired atau expiring pada window ini.
+                    </div>
+                ) : (
+                    <div className="overflow-x-auto rounded-lg border">
+                        <table className="w-full text-sm">
+                            <thead className="bg-muted/50 text-left">
+                                <tr>
+                                    <th className="p-3 font-medium">Employee</th>
+                                    <th className="p-3 font-medium">Document Type</th>
+                                    <th className="p-3 font-medium">Expiry Date</th>
+                                    <th className="p-3 text-right font-medium">Remaining</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {report.rows.map((row) => (
+                                    <DocumentExpiryRow key={`${row.employeeId}-${row.expiresAt}-${row.typeLabel}`} row={row} />
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+            </CardContent>
+        </Card>
+    );
+}
+
+function DocumentExpiryRow({ row }: { row: ExpiryReportRow }) {
     return (
         <tr className="border-t">
             <td className="p-3">

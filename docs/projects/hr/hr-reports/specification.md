@@ -48,6 +48,7 @@ HR Reports menyediakan lima report read-only:
 5. **Document Expiry**
    - Menampilkan metadata dokumen employee yang expired/expiring.
    - Menggunakan status expiry dari Employee Documents.
+   - Dokumen tanpa `expires_at` mengikuti semantics `NOT_APPLICABLE` Employee Documents dan tidak masuk report expired/expiring.
    - Tidak menampilkan nomor dokumen plaintext, storage path, URL, token, atau DMS internal reference.
 
 ### 3.2 Functional deferred

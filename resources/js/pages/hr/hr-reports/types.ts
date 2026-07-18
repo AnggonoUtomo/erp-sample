@@ -43,6 +43,7 @@ export type HRReportsPageProps = {
         as_of: string;
         employment_status_id: number | null;
         contract_within_days: number;
+        document_within_days: number;
     };
     options: {
         employmentStatuses: HRReportOption[];
@@ -53,4 +54,5 @@ export type HRReportsPageProps = {
         byEmploymentStatus: HeadcountReport;
     };
     contractExpiry: ExpiryReport;
+    documentExpiry: ExpiryReport;
 };

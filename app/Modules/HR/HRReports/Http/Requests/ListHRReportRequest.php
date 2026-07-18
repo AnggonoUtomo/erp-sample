@@ -27,6 +27,7 @@ class ListHRReportRequest extends FormRequest
                 Rule::exists('hr_employment_statuses', 'id')->whereNull('deleted_at'),
             ],
             'contract_within_days' => ['nullable', 'integer', 'min:0', 'max:3650'],
+            'document_within_days' => ['nullable', 'integer', 'min:0', 'max:3650'],
         ];
     }
 
@@ -43,6 +44,16 @@ class ListHRReportRequest extends FormRequest
     public function toContractExpiryFilters(): ExpiryReportFilters
     {
         $withinDays = $this->validated('contract_within_days');
+
+        return new ExpiryReportFilters(
+            asOf: $this->validated('as_of') ?: now()->toDateString(),
+            withinDays: $withinDays === null ? 30 : (int) $withinDays,
+        );
+    }
+
+    public function toDocumentExpiryFilters(): ExpiryReportFilters
+    {
+        $withinDays = $this->validated('document_within_days');
 
         return new ExpiryReportFilters(
             asOf: $this->validated('as_of') ?: now()->toDateString(),

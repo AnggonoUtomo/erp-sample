@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Modules\HR\EmploymentStatuses\Models\EmploymentStatus;
 use App\Modules\HR\HRReports\Http\Requests\ListHRReportRequest;
 use App\Modules\HR\HRReports\Services\ContractExpiryReportService;
+use App\Modules\HR\HRReports\Services\DocumentExpiryReportService;
 use App\Modules\HR\HRReports\Services\HeadcountReportService;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -15,12 +16,14 @@ class HRReportsController extends Controller
     public function __construct(
         private readonly HeadcountReportService $headcount,
         private readonly ContractExpiryReportService $contractExpiry,
+        private readonly DocumentExpiryReportService $documentExpiry,
     ) {}
 
     public function index(ListHRReportRequest $request): Response
     {
         $headcountFilters = $request->toHeadcountFilters();
         $contractExpiryFilters = $request->toContractExpiryFilters();
+        $documentExpiryFilters = $request->toDocumentExpiryFilters();
 
         return Inertia::render('hr/hr-reports/index', [
             'meta' => [
@@ -37,6 +40,7 @@ class HRReportsController extends Controller
                 'as_of' => $headcountFilters->asOfDate()->toDateString(),
                 'employment_status_id' => $headcountFilters->employmentStatusIds[0] ?? null,
                 'contract_within_days' => $contractExpiryFilters->withinDays,
+                'document_within_days' => $documentExpiryFilters->withinDays,
             ],
             'options' => [
                 'employmentStatuses' => EmploymentStatus::query()
@@ -56,6 +60,7 @@ class HRReportsController extends Controller
                 'byEmploymentStatus' => $this->headcount->byEmploymentStatus($headcountFilters),
             ],
             'contractExpiry' => $this->contractExpiry->expiring($contractExpiryFilters),
+            'documentExpiry' => $this->documentExpiry->expiring($documentExpiryFilters),
         ]);
     }
 }
