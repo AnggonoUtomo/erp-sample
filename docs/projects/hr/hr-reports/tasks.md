@@ -63,7 +63,7 @@ php artisan test --filter=HRReportHeadcount
 
 **Dependencies:** Task 01. **Scope:** M.
 
-## Task 03 — HR Reports page vertical slice
+## Task 03 — HR Reports page vertical slice ✅
 
 **Tujuan:** menyediakan halaman pertama `/hr/reports` untuk membaca headcount summary.
 
@@ -77,11 +77,13 @@ php artisan test --filter=HRReportHeadcount
 
 **Acceptance criteria:**
 
-- [ ] Authorized user dapat membuka page HR Reports.
-- [ ] Page menampilkan tiga summary: Departement, Work Location, Employment Status.
-- [ ] Empty state jelas.
-- [ ] Filter tanggal/status tidak menyebabkan full page error.
-- [ ] Frontend tidak menampilkan action mutation.
+- [x] Authorized user dapat membuka page HR Reports.
+- [x] Page menampilkan tiga summary: Departement, Work Location, Employment Status.
+- [x] Empty state jelas.
+- [x] Filter tanggal/status tidak menyebabkan full page error.
+- [x] Frontend tidak menampilkan action mutation.
+
+**Hasil implementasi:** selesai 2026-07-18. Page `/hr/reports` sekarang menerima filter `as_of` dan `employment_status_id`, memuat tiga report headcount dari `HeadcountReportService`, menyediakan pilihan status kerja aktif, serta menampilkan summary card dan tabel read-only. Controller memakai `ListHRReportRequest` untuk authorization dan validasi boundary.
 
 **Test:**
 

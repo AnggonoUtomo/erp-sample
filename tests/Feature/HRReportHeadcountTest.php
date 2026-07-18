@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use App\Modules\HR\Departements\Models\Departement;
 use App\Modules\HR\Employees\Models\Employee;
 use App\Modules\HR\EmploymentStatuses\Models\EmploymentStatus;
@@ -9,11 +10,23 @@ use App\Modules\HR\HRReports\DTO\HeadcountReportFilters;
 use App\Modules\HR\HRReports\Services\HeadcountReportService;
 use App\Modules\HR\WorkLocations\Models\WorkLocation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 
 class HRReportHeadcountTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->withoutVite();
+
+        foreach (['hr.view', 'hr-reports.view'] as $permission) {
+            Permission::findOrCreate($permission);
+        }
+    }
 
     public function test_headcount_groups_active_employees_by_departement_location_and_status(): void
     {
@@ -75,6 +88,39 @@ class HRReportHeadcountTest extends TestCase
         $this->assertSame([
             ['id' => null, 'code' => null, 'name' => 'Unassigned', 'employeeCount' => 1],
         ], $reports->byWorkLocation($filters)->rows);
+    }
+
+    public function test_hr_reports_page_returns_headcount_reports_with_explicit_filters(): void
+    {
+        $user = User::factory()->create();
+        $user->givePermissionTo('hr.view', 'hr-reports.view');
+        $hr = $this->departement('HR', 'Human Resources');
+        $ops = $this->departement('OPS', 'Operations');
+        $hq = $this->workLocation('HQ', 'Head Office');
+        $active = $this->employmentStatus('ACTIVE', 'Active');
+        $probation = $this->employmentStatus('PROBATION', 'Probation');
+
+        $this->employee('EMP-201', 'Active One', $hr, $hq, $active, hiredAt: '2026-01-01');
+        $this->employee('EMP-202', 'Probation One', $ops, $hq, $probation, hiredAt: '2026-01-01');
+
+        $this->actingAs($user)
+            ->get(route('hr.reports.index', [
+                'as_of' => '2026-07-18',
+                'employment_status_id' => $active->id,
+            ]))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('hr/hr-reports/index')
+                ->where('filters.as_of', '2026-07-18')
+                ->where('filters.employment_status_id', $active->id)
+                ->where('headcount.byDepartement.total', 1)
+                ->where('headcount.byDepartement.rows.0.name', 'Human Resources')
+                ->where('headcount.byWorkLocation.total', 1)
+                ->where('headcount.byEmploymentStatus.total', 1)
+                ->has('options.employmentStatuses', 2)
+            );
+
+        $this->assertDatabaseCount('audit_logs', 0);
     }
 
     private function departement(string $code, string $name): Departement

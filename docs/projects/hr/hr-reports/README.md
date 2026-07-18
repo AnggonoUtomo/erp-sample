@@ -4,7 +4,7 @@ Paket dokumen ini mendefinisikan module `HR/HRReports` sebelum implementasi dimu
 
 ## Status
 
-`Implementation started` — batas read-only, MVP scope, implementation plan, task breakdown, dan ADR-001 telah disetujui pada 2026-07-18. [Task 01 — Module dan read-only boundary](tasks.md#task-01--module-dan-read-only-boundary) telah selesai sebagai shell read-only awal.
+`Implementation started` — batas read-only, MVP scope, implementation plan, task breakdown, dan ADR-001 telah disetujui pada 2026-07-18. Task 01–03 telah selesai sampai halaman read-only pertama untuk headcount summary.
 
 ## Scope MVP
 
