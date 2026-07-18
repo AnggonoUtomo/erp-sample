@@ -97,12 +97,30 @@ php artisan test --filter=HRReportAuthorization
 
 ## Checkpoint A — Read-only headcount report
 
-- [ ] Task 01–03 hijau.
-- [ ] Route inventory membuktikan GET-only.
-- [ ] Headcount report dapat dipakai untuk validasi awal data HR.
-- [ ] Docs sesuai behavior aktual.
+- [x] Task 01–03 hijau.
+- [x] Route inventory membuktikan GET-only.
+- [x] Headcount report dapat dipakai untuk validasi awal data HR.
+- [x] Docs sesuai behavior aktual.
 
-## Task 04 — Contract expiry report
+**Hasil checkpoint:** selesai 2026-07-18. HR Reports MVP tahap awal sudah read-only dan siap dipakai untuk validasi awal data HR melalui `/hr/reports`. Route inventory hanya mengekspos `GET /hr/reports`, permission mutation tidak tersedia di module HR Reports, query headcount tidak menulis database/audit/notification/queue/file, dan frontend tidak menyediakan action mutation.
+
+**Evidence:**
+
+```bash
+php artisan route:list --name=hr.reports
+vendor\bin\pint --test app\Modules\HR\HRReports tests\Feature\HRReportAuthorizationTest.php tests\Feature\HRReportHeadcountTest.php
+php artisan test --filter=HRReport
+php artisan module:validate
+npm run format:check
+npm run lint:check
+npm run typecheck
+npm run build
+git diff --check
+```
+
+Semua command di atas hijau. `php artisan test --filter=HRReport` menghasilkan `8 passed (48 assertions)`.
+
+## Task 04 — Contract expiry report ✅
 
 **Tujuan:** menampilkan kontrak aktif yang berakhir dalam window eksplisit.
 
@@ -116,11 +134,13 @@ php artisan test --filter=HRReportAuthorization
 
 **Acceptance criteria:**
 
-- [ ] Query menerima `asOf` dan `withinDays` eksplisit.
-- [ ] Contract expired/expiring boundary benar.
-- [ ] Result tidak memuat notes internal atau compensation.
-- [ ] Empty result valid.
-- [ ] Tidak ada update contract/audit/notification.
+- [x] Query menerima `asOf` dan `withinDays` eksplisit.
+- [x] Contract expired/expiring boundary benar.
+- [x] Result tidak memuat notes internal atau compensation.
+- [x] Empty result valid.
+- [x] Tidak ada update contract/audit/notification.
+
+**Hasil implementasi:** selesai 2026-07-18. HR Reports sekarang memuat report `Contract Expiry` read-only melalui `ContractExpiryReportService`, `ContractExpiryReportQuery`, dan DTO expiry report. Page `/hr/reports` menerima filter `contract_within_days` eksplisit dengan default 30 hari, menampilkan kontrak `ACTIVE` yang sudah melewati `end_date` atau akan berakhir sampai `asOf + withinDays`, dan membedakan state `EXPIRED`/`EXPIRING`. Result sengaja tidak mengirim `contract_number`, `notes`, compensation, audit, notification, queue, atau file side effect.
 
 **Test:**
 

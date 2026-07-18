@@ -5,6 +5,7 @@ namespace App\Modules\HR\HRReports\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\HR\EmploymentStatuses\Models\EmploymentStatus;
 use App\Modules\HR\HRReports\Http\Requests\ListHRReportRequest;
+use App\Modules\HR\HRReports\Services\ContractExpiryReportService;
 use App\Modules\HR\HRReports\Services\HeadcountReportService;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -13,11 +14,13 @@ class HRReportsController extends Controller
 {
     public function __construct(
         private readonly HeadcountReportService $headcount,
+        private readonly ContractExpiryReportService $contractExpiry,
     ) {}
 
     public function index(ListHRReportRequest $request): Response
     {
-        $filters = $request->toHeadcountFilters();
+        $headcountFilters = $request->toHeadcountFilters();
+        $contractExpiryFilters = $request->toContractExpiryFilters();
 
         return Inertia::render('hr/hr-reports/index', [
             'meta' => [
@@ -31,8 +34,9 @@ class HRReportsController extends Controller
                 ],
             ],
             'filters' => [
-                'as_of' => $filters->asOfDate()->toDateString(),
-                'employment_status_id' => $filters->employmentStatusIds[0] ?? null,
+                'as_of' => $headcountFilters->asOfDate()->toDateString(),
+                'employment_status_id' => $headcountFilters->employmentStatusIds[0] ?? null,
+                'contract_within_days' => $contractExpiryFilters->withinDays,
             ],
             'options' => [
                 'employmentStatuses' => EmploymentStatus::query()
@@ -47,10 +51,11 @@ class HRReportsController extends Controller
                     ->values(),
             ],
             'headcount' => [
-                'byDepartement' => $this->headcount->byDepartement($filters),
-                'byWorkLocation' => $this->headcount->byWorkLocation($filters),
-                'byEmploymentStatus' => $this->headcount->byEmploymentStatus($filters),
+                'byDepartement' => $this->headcount->byDepartement($headcountFilters),
+                'byWorkLocation' => $this->headcount->byWorkLocation($headcountFilters),
+                'byEmploymentStatus' => $this->headcount->byEmploymentStatus($headcountFilters),
             ],
+            'contractExpiry' => $this->contractExpiry->expiring($contractExpiryFilters),
         ]);
     }
 }

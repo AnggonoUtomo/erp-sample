@@ -2,6 +2,7 @@
 
 namespace App\Modules\HR\HRReports\Http\Requests;
 
+use App\Modules\HR\HRReports\DTO\ExpiryReportFilters;
 use App\Modules\HR\HRReports\DTO\HeadcountReportFilters;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -25,6 +26,7 @@ class ListHRReportRequest extends FormRequest
                 'integer',
                 Rule::exists('hr_employment_statuses', 'id')->whereNull('deleted_at'),
             ],
+            'contract_within_days' => ['nullable', 'integer', 'min:0', 'max:3650'],
         ];
     }
 
@@ -35,6 +37,16 @@ class ListHRReportRequest extends FormRequest
         return new HeadcountReportFilters(
             asOf: $this->validated('as_of') ?: now()->toDateString(),
             employmentStatusIds: $employmentStatusId === null ? [] : [$employmentStatusId],
+        );
+    }
+
+    public function toContractExpiryFilters(): ExpiryReportFilters
+    {
+        $withinDays = $this->validated('contract_within_days');
+
+        return new ExpiryReportFilters(
+            asOf: $this->validated('as_of') ?: now()->toDateString(),
+            withinDays: $withinDays === null ? 30 : (int) $withinDays,
         );
     }
 }

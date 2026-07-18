@@ -17,6 +17,23 @@ export type HeadcountReport = {
     total: number;
 };
 
+export type ExpiryReportRow = {
+    employeeId: number;
+    employeeNumber: string;
+    employeeName: string;
+    typeLabel: string;
+    expiresAt: string;
+    daysRemaining: number;
+    state: 'EXPIRED' | 'EXPIRING';
+};
+
+export type ExpiryReport = {
+    asOf: string;
+    withinDays: number;
+    rows: ExpiryReportRow[];
+    total: number;
+};
+
 export type HRReportsPageProps = {
     meta: {
         status: 'read-only-boundary';
@@ -25,6 +42,7 @@ export type HRReportsPageProps = {
     filters: {
         as_of: string;
         employment_status_id: number | null;
+        contract_within_days: number;
     };
     options: {
         employmentStatuses: HRReportOption[];
@@ -34,4 +52,5 @@ export type HRReportsPageProps = {
         byWorkLocation: HeadcountReport;
         byEmploymentStatus: HeadcountReport;
     };
+    contractExpiry: ExpiryReport;
 };

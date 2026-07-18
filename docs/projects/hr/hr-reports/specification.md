@@ -42,6 +42,7 @@ HR Reports menyediakan lima report read-only:
 4. **Contract Expiry**
    - Menampilkan kontrak aktif yang berakhir dalam window tertentu.
    - Default window implementasi boleh 30 hari, tetapi service wajib menerima `withinDays` eksplisit.
+   - Kontrak `ACTIVE` dengan `end_date < asOf` tetap muncul sebagai `EXPIRED` agar data kontrak stale terlihat; kontrak dengan `asOf <= end_date <= asOf + withinDays` muncul sebagai `EXPIRING`.
    - Tidak menampilkan notes internal atau field kompensasi.
 
 5. **Document Expiry**
