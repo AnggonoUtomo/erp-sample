@@ -4,7 +4,7 @@ Dokumen ini mendefinisikan project kecil `HR/IntegrationContracts` sebagai payun
 
 ## Status
 
-`Task 01–06 implemented — snapshot foundation, compliance snapshot, dan event envelope/publisher mapping selesai pada 2026-07-18`.
+`Task 01–07 implemented — snapshot foundation, compliance snapshot, event envelope/publisher mapping, dan read-only inspection commands selesai pada 2026-07-18`.
 
 Dokumen ini dibuat setelah MVP HR Reports selesai agar langkah berikutnya tidak langsung membuat integrasi spekulatif. Specification dan ADR-001 sudah disetujui. Implementasi dimulai dari module shell + registry tanpa UI, route, migration, atau permission user baru.
 
@@ -42,6 +42,8 @@ Checkpoint A sudah membuktikan foundation ini tetap read-only: tidak ada UI/menu
 Task 05 menambahkan `EmployeeContractSnapshotProvider` dan `EmployeeDocumentComplianceSnapshotProvider`. Contract snapshot hanya mengirim ringkasan aman kontrak, sedangkan document compliance snapshot hanya mengirim hitungan compliance/expiry tanpa document number, DMS reference, path, URL, token, atau notes.
 
 Task 06 menambahkan `HRIntegrationEventRegistry` dan `HRIntegrationEventV1`. Registry memetakan 10 event contract v1 ke source module. Publisher existing yang sudah final ikut dicatat sebagai mapping, sedangkan publisher lain tetap deferred sampai source module siap. Envelope event memakai bentuk standar, event name wajib dikenal registry, dan payload tetap melewati forbidden-field guard. Task ini tidak memasang listener downstream, queue/outbox, route publik, menu, migration, atau mutation spekulatif.
+
+Task 07 menambahkan command inspeksi read-only: `hr:integration-contracts:describe`, `hr:integration-contracts:validate`, dan `hr:integration-contracts:sample`. Command ini membantu developer/agent memeriksa daftar contract, validasi registry vs manifest, dan membuat sample payload aman untuk satu employee tanpa membuka route/menu user dan tanpa mutation.
 
 MVP tidak membuat:
 

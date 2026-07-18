@@ -202,7 +202,7 @@ php artisan test --filter=HRIntegrationEventRegistry
 
 **Dependencies:** Task 05. **Scope:** M.
 
-## Task 07 — Read-only inspection commands
+## Task 07 — Read-only inspection commands ✅
 
 **Tujuan:** menyediakan command untuk melihat dan memvalidasi contract.
 
@@ -216,11 +216,15 @@ php artisan test --filter=HRIntegrationEventRegistry
 
 **Acceptance criteria:**
 
-- [ ] `describe` menampilkan contract dan versi.
-- [ ] `validate` memeriksa registry dan forbidden fields.
-- [ ] `sample` menghasilkan payload aman untuk employee tertentu.
-- [ ] Semua command non-mutating.
-- [ ] Input invalid menghasilkan exit code non-zero.
+- [x] `describe` menampilkan contract dan versi.
+- [x] `validate` memeriksa registry dan forbidden fields.
+- [x] `sample` menghasilkan payload aman untuk employee tertentu.
+- [x] Semua command non-mutating.
+- [x] Input invalid menghasilkan exit code non-zero.
+
+**Hasil implementasi:** selesai 2026-07-18. Tersedia tiga command read-only: `hr:integration-contracts:describe`, `hr:integration-contracts:validate`, dan `hr:integration-contracts:sample`. `describe` menampilkan daftar snapshot/event contract v1 dan mendukung output JSON. `validate` membandingkan contract registry dengan module manifest, memastikan event registry sinkron, memastikan listener downstream tetap deferred, dan menguji forbidden-field guard pada payload aman/terlarang. `sample` menerima employee id, tanggal acuan eksplisit, dan warning window dokumen; output hanya memakai snapshot provider resmi sehingga tidak membawa personal email, phone, national id, address, notes, document number, DMS path/reference, token, salary, atau compensation.
+
+**Catatan boundary:** Command ini tidak membuat route/menu baru dan tidak menulis database, audit log, notification, queue, file, event downstream, atau integration warehouse.
 
 **Test:**
 

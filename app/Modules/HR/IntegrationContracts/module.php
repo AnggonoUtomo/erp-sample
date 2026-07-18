@@ -13,7 +13,11 @@ return [
     'providers' => [
         HRIntegrationContractsServiceProvider::class,
     ],
-    'commands' => [],
+    'commands' => [
+        'hr:integration-contracts:describe',
+        'hr:integration-contracts:validate',
+        'hr:integration-contracts:sample',
+    ],
     'dependencies' => [
         'HR.Employees',
         'HR.EmployeeContracts',

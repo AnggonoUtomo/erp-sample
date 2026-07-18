@@ -2,6 +2,9 @@
 
 namespace App\Modules\HR\IntegrationContracts\Providers;
 
+use App\Modules\HR\IntegrationContracts\Console\Commands\DescribeHRIntegrationContractsCommand;
+use App\Modules\HR\IntegrationContracts\Console\Commands\SampleHRIntegrationContractsCommand;
+use App\Modules\HR\IntegrationContracts\Console\Commands\ValidateHRIntegrationContractsCommand;
 use App\Modules\HR\IntegrationContracts\Contracts\EmployeeAssignmentSnapshotProvider;
 use App\Modules\HR\IntegrationContracts\Contracts\EmployeeContractSnapshotProvider;
 use App\Modules\HR\IntegrationContracts\Contracts\EmployeeDocumentComplianceSnapshotProvider;
@@ -24,5 +27,16 @@ class HRIntegrationContractsServiceProvider extends ServiceProvider
         $this->app->bind(EmployeeContractSnapshotProvider::class, EloquentEmployeeContractSnapshotProvider::class);
         $this->app->bind(EmployeeDocumentComplianceSnapshotProvider::class, EloquentEmployeeDocumentComplianceSnapshotProvider::class);
         $this->app->bind(EmployeeSnapshotProvider::class, EloquentEmployeeSnapshotProvider::class);
+    }
+
+    public function boot(): void
+    {
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                DescribeHRIntegrationContractsCommand::class,
+                ValidateHRIntegrationContractsCommand::class,
+                SampleHRIntegrationContractsCommand::class,
+            ]);
+        }
     }
 }
