@@ -220,10 +220,36 @@ php artisan test --filter=HRReportCommand
 
 ## Checkpoint B — MVP reports complete
 
-- [ ] Headcount, status summary, contract expiry, dan document expiry tersedia.
-- [ ] Sensitive-data review lulus.
-- [ ] Backend/frontend focused tests hijau.
-- [ ] Export tetap belum dibuat.
+- [x] Headcount, status summary, contract expiry, dan document expiry tersedia.
+- [x] Sensitive-data review lulus.
+- [x] Backend/frontend focused tests hijau.
+- [x] Export tetap belum dibuat.
+
+**Hasil checkpoint:** selesai 2026-07-18. MVP HR Reports sudah lengkap untuk report read-only awal:
+
+- Headcount by Departement.
+- Headcount by Work Location.
+- Employment Status Summary.
+- Contract Expiry.
+- Document Expiry.
+
+Route inventory tetap hanya mengekspos `GET /hr/reports`; tidak ada route mutation/export di namespace HR Reports. Review sensitive-data memastikan implementation tidak mengirim `contract_number`, document number plaintext, DMS reference, storage path, URL, token, notes internal, atau compensation pada report expiry. Command report juga hanya read-only dan diuji tidak membuat audit log, notification, queue, file, atau perubahan data sumber.
+
+**Evidence:**
+
+```bash
+php artisan route:list --name=hr.reports
+vendor\bin\pint --test app\Modules\HR\HRReports tests\Feature\HRReportAuthorizationTest.php tests\Feature\HRReportHeadcountTest.php tests\Feature\HRReportContractExpiryTest.php tests\Feature\HRReportDocumentExpiryTest.php tests\Feature\HRReportCommandTest.php
+php artisan test --filter=HRReport
+php artisan module:validate
+npm run format:check
+npm run lint:check
+npm run typecheck
+npm run build
+git diff --check
+```
+
+Semua command di atas hijau. `php artisan test --filter=HRReport` menghasilkan `18 passed (179 assertions)`.
 
 ## Task 07 — Lifecycle HR seeder untuk report
 
