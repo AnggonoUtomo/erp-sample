@@ -28,7 +28,7 @@ export function PermissionModulePanel({
     onTogglePermission,
 }: PermissionModulePanelProps) {
     return (
-        <Card data-dashboard-card className="overflow-hidden xl:max-h-[calc(100vh-140px)]">
+        <Card data-dashboard-card className="min-h-[640px] overflow-hidden xl:max-h-[calc(100vh-96px)]">
             <CardContent className="flex h-full flex-col p-5">
                 <div className="flex items-center justify-between gap-3">
                     <div className="flex min-w-0 items-center gap-3">

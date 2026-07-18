@@ -97,7 +97,7 @@ export function RolePermissionWorkspace({
 
     return (
         <>
-            <div className="grid gap-4 xl:grid-cols-[300px_1fr]">
+            <div className="grid gap-4 xl:grid-cols-[280px_1fr]">
                 <RoleControlCard
                     roles={roles}
                     activeRole={activeRole}
