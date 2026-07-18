@@ -283,7 +283,7 @@ php artisan test --filter=HRReport
 
 **Dependencies:** Checkpoint B. **Scope:** M/L; pecah menjadi master seed, employee lifecycle seed, dan assertion test bila perlu.
 
-## Task 08 — Frontend polish dan accessibility
+## Task 08 — Frontend polish dan accessibility ✅
 
 **Tujuan:** membuat page report nyaman dibaca oleh user HR pemula tanpa overload informasi.
 
@@ -296,11 +296,13 @@ php artisan test --filter=HRReport
 
 **Acceptance criteria:**
 
-- [ ] Summary card/table responsive.
-- [ ] Filter label mudah dipahami.
-- [ ] Empty state memberi arahan data apa yang harus diinput lebih dulu.
-- [ ] Tidak ada tombol mutation.
-- [ ] Build/typecheck/lint hijau.
+- [x] Summary card/table responsive.
+- [x] Filter label mudah dipahami.
+- [x] Empty state memberi arahan data apa yang harus diinput lebih dulu.
+- [x] Tidak ada tombol mutation.
+- [x] Build/typecheck/lint hijau.
+
+**Hasil implementasi:** selesai 2026-07-18. Page HR Reports dipecah dari single-file besar menjadi component folder `hr-report-components`. Polish frontend mencakup hero read-only, filter card dengan label eksplisit, summary cards responsive, headcount cards dengan caption table, expiry cards dengan state text + badge, dan empty state yang mengarahkan user ke input master/employee/contract/document yang relevan. Tidak ada tombol atau route mutation yang ditambahkan.
 
 **Test:**
 

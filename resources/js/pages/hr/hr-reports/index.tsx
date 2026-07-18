@@ -1,13 +1,13 @@
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
-import { Building2, CalendarClock, FileText, MapPin, ShieldCheck, UsersRound } from 'lucide-react';
-import type { ExpiryReport, ExpiryReportRow, HeadcountReport, HeadcountReportRow, HRReportsPageProps } from './types';
+import { FileText } from 'lucide-react';
+import { HRReportExpiryCard } from './hr-report-components/hr-report-expiry-card';
+import { HRReportFilterCard } from './hr-report-components/hr-report-filter-card';
+import { HRReportHeadcountCard } from './hr-report-components/hr-report-headcount-card';
+import { HRReportHeroCard } from './hr-report-components/hr-report-hero-card';
+import { HRReportSummaryCards } from './hr-report-components/hr-report-summary-cards';
+import type { HRReportsPageProps } from './types';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -40,290 +40,77 @@ export default function HRReportsIndex({ meta, filters, options, headcount, cont
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="HR Reports" />
 
-            <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-4 p-4 sm:p-6">
-                <Card>
-                    <CardHeader className="space-y-3">
-                        <div className="flex flex-wrap items-start justify-between gap-3">
-                            <div>
-                                <CardTitle className="flex items-center gap-2">
-                                    <FileText className="size-5 text-cyan-500" />
-                                    HR Reports
-                                </CardTitle>
-                                <CardDescription>
-                                    Boundary awal laporan HR. Module ini hanya membaca data dan belum membuka action mutasi atau export.
-                                </CardDescription>
-                            </div>
-                            <Badge variant="secondary" className="gap-1">
-                                <ShieldCheck className="size-3.5" />
-                                {meta.status}
-                            </Badge>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
-                        {meta.scope.map((item) => (
-                            <div key={item} className="bg-muted/30 rounded-xl border p-3 text-sm">
-                                {item}
-                            </div>
-                        ))}
-                    </CardContent>
-                </Card>
+            <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-5 p-4 sm:p-6">
+                <HRReportHeroCard meta={meta} />
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Filter report</CardTitle>
-                        <CardDescription>Tanggal acuan wajib eksplisit agar hasil laporan bisa direproduksi.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="hr-report-as-of">Tanggal acuan</Label>
-                            <Input
-                                id="hr-report-as-of"
-                                type="date"
-                                value={filters.as_of}
-                                onChange={(event) => updateFilter('as_of', event.target.value)}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label>Status kerja</Label>
-                            <Select
-                                value={filters.employment_status_id ? String(filters.employment_status_id) : 'all'}
-                                onValueChange={(value) => updateFilter('employment_status_id', value)}
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Semua status" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">Semua status</SelectItem>
-                                    {options.employmentStatuses.map((status) => (
-                                        <SelectItem key={status.value} value={String(status.value)}>
-                                            {status.label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="hr-report-contract-window">Window kontrak berakhir</Label>
-                            <Input
-                                id="hr-report-contract-window"
-                                min={0}
-                                max={3650}
-                                type="number"
-                                value={filters.contract_within_days}
-                                onChange={(event) => updateFilter('contract_within_days', event.target.value)}
-                            />
-                            <p className="text-muted-foreground text-xs">Jumlah hari dari tanggal acuan. Default 30 hari.</p>
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="hr-report-document-window">Window dokumen kedaluwarsa</Label>
-                            <Input
-                                id="hr-report-document-window"
-                                min={0}
-                                max={3650}
-                                type="number"
-                                value={filters.document_within_days}
-                                onChange={(event) => updateFilter('document_within_days', event.target.value)}
-                            />
-                            <p className="text-muted-foreground text-xs">Jumlah hari dari tanggal acuan. Default 30 hari.</p>
-                        </div>
-                    </CardContent>
-                </Card>
+                <HRReportFilterCard filters={filters} options={options} onChange={updateFilter} />
 
-                <section className="grid gap-4 md:grid-cols-3">
-                    <SummaryCard title="Total by Departement" value={headcount.byDepartement.total} icon={Building2} />
-                    <SummaryCard title="Total by Work Location" value={headcount.byWorkLocation.total} icon={MapPin} />
-                    <SummaryCard title="Total by Employment Status" value={headcount.byEmploymentStatus.total} icon={UsersRound} />
+                <HRReportSummaryCards headcount={headcount} contractExpiry={contractExpiry} documentExpiry={documentExpiry} />
+
+                <section aria-labelledby="hr-report-headcount-title" className="space-y-3">
+                    <div>
+                        <h2 id="hr-report-headcount-title" className="text-lg font-semibold tracking-tight">
+                            Ringkasan jumlah employee
+                        </h2>
+                        <p className="text-muted-foreground text-sm">
+                            Gunakan bagian ini untuk cek sebaran employee aktif berdasarkan tanggal acuan.
+                        </p>
+                    </div>
+                    <div className="grid gap-4 xl:grid-cols-3">
+                        <HRReportHeadcountCard
+                            title="By Departement"
+                            description="Cek unit kerja mana yang paling banyak memegang employee aktif."
+                            emptyMessage="Belum ada employee aktif pada tanggal ini. Mulai dari master Departement, lalu isi Employees."
+                            report={headcount.byDepartement}
+                        />
+                        <HRReportHeadcountCard
+                            title="By Work Location"
+                            description="Cek persebaran employee berdasarkan lokasi kerja utama."
+                            emptyMessage="Belum ada employee dengan lokasi kerja aktif. Isi Work Locations dan hubungkan ke Employees."
+                            report={headcount.byWorkLocation}
+                        />
+                        <HRReportHeadcountCard
+                            title="Employment Status"
+                            description="Cek komposisi status kerja employee pada tanggal acuan."
+                            emptyMessage="Belum ada status kerja yang terbaca. Isi Employment Statuses dan profile Employees."
+                            report={headcount.byEmploymentStatus}
+                        />
+                    </div>
                 </section>
 
-                <section className="grid gap-4 xl:grid-cols-3">
-                    <HeadcountTable title="Headcount by Departement" report={headcount.byDepartement} />
-                    <HeadcountTable title="Headcount by Work Location" report={headcount.byWorkLocation} />
-                    <HeadcountTable title="Employment Status Summary" report={headcount.byEmploymentStatus} />
+                <section aria-labelledby="hr-report-risk-title" className="space-y-3">
+                    <div>
+                        <h2 id="hr-report-risk-title" className="text-lg font-semibold tracking-tight">
+                            Masa berlaku yang perlu dipantau
+                        </h2>
+                        <p className="text-muted-foreground text-sm">
+                            Report ini hanya menampilkan metadata aman. Nomor dokumen, DMS reference, token, dan notes internal tidak ditampilkan.
+                        </p>
+                    </div>
+                    <div className="grid gap-4 xl:grid-cols-2">
+                        <HRReportExpiryCard
+                            title="Contract Expiry"
+                            icon={FileText}
+                            tone="amber"
+                            itemLabel="kontrak"
+                            windowLabel="berakhir"
+                            emptyMessage="Tidak ada kontrak aktif yang expired atau akan berakhir pada window ini. Jika kosong terus, cek Employee Contracts."
+                            report={contractExpiry}
+                            typeHeader="Employment Type"
+                        />
+                        <HRReportExpiryCard
+                            title="Document Expiry"
+                            icon={FileText}
+                            tone="rose"
+                            itemLabel="dokumen"
+                            windowLabel="kedaluwarsa"
+                            emptyMessage="Tidak ada metadata dokumen yang expired atau akan kedaluwarsa pada window ini. Jika perlu, isi Employee Documents."
+                            report={documentExpiry}
+                            typeHeader="Document Type"
+                        />
+                    </div>
                 </section>
-
-                <ContractExpiryTable report={contractExpiry} />
-                <DocumentExpiryTable report={documentExpiry} />
             </div>
         </AppLayout>
-    );
-}
-
-function SummaryCard({ title, value, icon: Icon }: { title: string; value: number; icon: React.ComponentType<{ className?: string }> }) {
-    return (
-        <Card>
-            <CardContent className="flex items-center gap-4 p-4">
-                <div className="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-lg">
-                    <Icon className="size-5" />
-                </div>
-                <div>
-                    <p className="text-muted-foreground text-sm">{title}</p>
-                    <p className="text-2xl font-semibold">{value}</p>
-                </div>
-            </CardContent>
-        </Card>
-    );
-}
-
-function HeadcountTable({ title, report }: { title: string; report: HeadcountReport }) {
-    return (
-        <Card>
-            <CardHeader>
-                <CardTitle>{title}</CardTitle>
-                <CardDescription>
-                    As of {report.asOf} • Total {report.total}
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                {report.rows.length === 0 ? (
-                    <div className="text-muted-foreground rounded-lg border border-dashed p-6 text-center text-sm">
-                        Belum ada employee yang sesuai filter.
-                    </div>
-                ) : (
-                    <div className="overflow-x-auto rounded-lg border">
-                        <table className="w-full text-sm">
-                            <thead className="bg-muted/50 text-left">
-                                <tr>
-                                    <th className="p-3 font-medium">Group</th>
-                                    <th className="p-3 text-right font-medium">Employee</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {report.rows.map((row) => (
-                                    <HeadcountRow key={`${report.groupBy}-${row.id ?? 'unassigned'}`} row={row} />
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-            </CardContent>
-        </Card>
-    );
-}
-
-function HeadcountRow({ row }: { row: HeadcountReportRow }) {
-    return (
-        <tr className="border-t">
-            <td className="p-3">
-                <p className="font-medium">{row.name}</p>
-                <p className="text-muted-foreground text-xs">{row.code ?? 'UNASSIGNED'}</p>
-            </td>
-            <td className="p-3 text-right font-semibold">{row.employeeCount}</td>
-        </tr>
-    );
-}
-
-function ContractExpiryTable({ report }: { report: ExpiryReport }) {
-    return (
-        <Card>
-            <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                    <CalendarClock className="size-5 text-amber-500" />
-                    Contract Expiry
-                </CardTitle>
-                <CardDescription>
-                    Kontrak aktif yang sudah lewat tanggal akhir atau akan berakhir dalam {report.withinDays} hari dari {report.asOf}.
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                {report.rows.length === 0 ? (
-                    <div className="text-muted-foreground rounded-lg border border-dashed p-6 text-center text-sm">
-                        Tidak ada kontrak aktif yang expired atau expiring pada window ini.
-                    </div>
-                ) : (
-                    <div className="overflow-x-auto rounded-lg border">
-                        <table className="w-full text-sm">
-                            <thead className="bg-muted/50 text-left">
-                                <tr>
-                                    <th className="p-3 font-medium">Employee</th>
-                                    <th className="p-3 font-medium">Employment Type</th>
-                                    <th className="p-3 font-medium">End Date</th>
-                                    <th className="p-3 text-right font-medium">Remaining</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {report.rows.map((row) => (
-                                    <ContractExpiryRow key={`${row.employeeId}-${row.expiresAt}-${row.typeLabel}`} row={row} />
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-            </CardContent>
-        </Card>
-    );
-}
-
-function ContractExpiryRow({ row }: { row: ExpiryReportRow }) {
-    return (
-        <tr className="border-t">
-            <td className="p-3">
-                <p className="font-medium">{row.employeeName}</p>
-                <p className="text-muted-foreground text-xs">{row.employeeNumber}</p>
-            </td>
-            <td className="p-3">{row.typeLabel}</td>
-            <td className="p-3">
-                <Badge variant={row.state === 'EXPIRED' ? 'destructive' : 'secondary'}>{row.state}</Badge>
-                <span className="ml-2">{row.expiresAt}</span>
-            </td>
-            <td className="p-3 text-right font-semibold">{row.daysRemaining} hari</td>
-        </tr>
-    );
-}
-
-function DocumentExpiryTable({ report }: { report: ExpiryReport }) {
-    return (
-        <Card>
-            <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                    <FileText className="size-5 text-rose-500" />
-                    Document Expiry
-                </CardTitle>
-                <CardDescription>
-                    Metadata dokumen employee yang sudah expired atau akan kedaluwarsa dalam {report.withinDays} hari dari {report.asOf}.
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                {report.rows.length === 0 ? (
-                    <div className="text-muted-foreground rounded-lg border border-dashed p-6 text-center text-sm">
-                        Tidak ada metadata dokumen yang expired atau expiring pada window ini.
-                    </div>
-                ) : (
-                    <div className="overflow-x-auto rounded-lg border">
-                        <table className="w-full text-sm">
-                            <thead className="bg-muted/50 text-left">
-                                <tr>
-                                    <th className="p-3 font-medium">Employee</th>
-                                    <th className="p-3 font-medium">Document Type</th>
-                                    <th className="p-3 font-medium">Expiry Date</th>
-                                    <th className="p-3 text-right font-medium">Remaining</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {report.rows.map((row) => (
-                                    <DocumentExpiryRow key={`${row.employeeId}-${row.expiresAt}-${row.typeLabel}`} row={row} />
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-            </CardContent>
-        </Card>
-    );
-}
-
-function DocumentExpiryRow({ row }: { row: ExpiryReportRow }) {
-    return (
-        <tr className="border-t">
-            <td className="p-3">
-                <p className="font-medium">{row.employeeName}</p>
-                <p className="text-muted-foreground text-xs">{row.employeeNumber}</p>
-            </td>
-            <td className="p-3">{row.typeLabel}</td>
-            <td className="p-3">
-                <Badge variant={row.state === 'EXPIRED' ? 'destructive' : 'secondary'}>{row.state}</Badge>
-                <span className="ml-2">{row.expiresAt}</span>
-            </td>
-            <td className="p-3 text-right font-semibold">{row.daysRemaining} hari</td>
-        </tr>
     );
 }
