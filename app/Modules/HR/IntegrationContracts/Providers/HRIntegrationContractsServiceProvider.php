@@ -11,12 +11,14 @@ use App\Modules\HR\IntegrationContracts\Services\EloquentEmployeeContractSnapsho
 use App\Modules\HR\IntegrationContracts\Services\EloquentEmployeeDocumentComplianceSnapshotProvider;
 use App\Modules\HR\IntegrationContracts\Services\EloquentEmployeeSnapshotProvider;
 use App\Modules\HR\IntegrationContracts\Support\HRIntegrationContractRegistry;
+use App\Modules\HR\IntegrationContracts\Support\HRIntegrationEventRegistry;
 use Illuminate\Support\ServiceProvider;
 
 class HRIntegrationContractsServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->singleton(HRIntegrationEventRegistry::class);
         $this->app->singleton(HRIntegrationContractRegistry::class);
         $this->app->bind(EmployeeAssignmentSnapshotProvider::class, EloquentEmployeeAssignmentSnapshotProvider::class);
         $this->app->bind(EmployeeContractSnapshotProvider::class, EloquentEmployeeContractSnapshotProvider::class);

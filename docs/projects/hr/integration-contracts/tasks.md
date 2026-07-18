@@ -171,7 +171,7 @@ php artisan test --filter=HRIntegrationComplianceSnapshot
 
 **Dependencies:** Task 04, Employee Contracts, Employee Documents. **Scope:** M.
 
-## Task 06 — Event envelope dan publisher mapping
+## Task 06 — Event envelope dan publisher mapping ✅
 
 **Tujuan:** mendefinisikan event v1 dan mapping source module tanpa listener downstream.
 
@@ -184,11 +184,15 @@ php artisan test --filter=HRIntegrationComplianceSnapshot
 
 **Acceptance criteria:**
 
-- [ ] Event v1 terdaftar di registry.
-- [ ] Payload memakai envelope standar.
-- [ ] Event tidak membawa forbidden fields.
-- [ ] Tidak ada listener downstream Attendance/Payroll/CRM.
-- [ ] Event hanya mewakili state yang sudah final/committed.
+- [x] Event v1 terdaftar di registry.
+- [x] Payload memakai envelope standar.
+- [x] Event tidak membawa forbidden fields.
+- [x] Tidak ada listener downstream Attendance/Payroll/CRM.
+- [x] Event hanya mewakili state yang sudah final/committed.
+
+**Hasil implementasi:** selesai 2026-07-18. `HRIntegrationEventRegistry` menambah mapping 10 event contract v1 ke source module resmi. Event yang sudah punya source publisher existing dimapping tanpa memasang listener downstream baru: `EmployeeAssignmentChangedV1` ke `EmployeeMovementAppliedV1`, serta `EmployeeOffboardingFinalizedV1` dan `EmploymentTerminatedV1` ke `EmployeeOffboardingCompletedV1`. Event lain tetap `deferred_*` sampai source module punya publisher final yang disetujui. `HRIntegrationEventV1` membentuk envelope standar dari registry, menghasilkan `eventId` deterministic bila caller tidak memasok id eksplisit, menolak event name yang tidak dikenal, dan tetap memakai forbidden-field guard agar salary/document reference/path/token/notes sensitif tidak bocor.
+
+**Catatan boundary:** Task ini hanya membuat contract envelope dan mapping registry. Tidak ada route publik, menu, queue/outbox, listener Attendance/Payroll/CRM, migration, atau mutation downstream spekulatif.
 
 **Test:**
 

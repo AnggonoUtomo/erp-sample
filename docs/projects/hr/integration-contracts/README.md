@@ -4,7 +4,7 @@ Dokumen ini mendefinisikan project kecil `HR/IntegrationContracts` sebagai payun
 
 ## Status
 
-`Task 01–05 implemented — snapshot foundation dan compliance snapshot selesai pada 2026-07-18`.
+`Task 01–06 implemented — snapshot foundation, compliance snapshot, dan event envelope/publisher mapping selesai pada 2026-07-18`.
 
 Dokumen ini dibuat setelah MVP HR Reports selesai agar langkah berikutnya tidak langsung membuat integrasi spekulatif. Specification dan ADR-001 sudah disetujui. Implementasi dimulai dari module shell + registry tanpa UI, route, migration, atau permission user baru.
 
@@ -35,11 +35,13 @@ MVP Integration Contracts hanya menyediakan:
 - registry/schema contract agar consumer tahu field yang boleh dipakai;
 - contract tests untuk memastikan payload stabil dan tidak membawa data sensitif.
 
-Task 01 sudah menyediakan registry awal untuk daftar snapshot/event v1. Task 02 menambahkan DTO snapshot/event envelope dan forbidden-field privacy guard. Task 03 menambahkan `EmployeeSnapshotProvider` read-only untuk identitas operasional minimal employee. Task 04 menambahkan `EmployeeAssignmentSnapshotProvider` read-only untuk current work profile pada tanggal acuan eksplisit. Contract/document compliance provider, command inspeksi, dan event publisher mapping dikerjakan pada task berikutnya.
+Task 01 sudah menyediakan registry awal untuk daftar snapshot/event v1. Task 02 menambahkan DTO snapshot/event envelope dan forbidden-field privacy guard. Task 03 menambahkan `EmployeeSnapshotProvider` read-only untuk identitas operasional minimal employee. Task 04 menambahkan `EmployeeAssignmentSnapshotProvider` read-only untuk current work profile pada tanggal acuan eksplisit. Contract/document compliance provider, command inspeksi, dan consumer handoff dikerjakan bertahap pada task berikutnya.
 
 Checkpoint A sudah membuktikan foundation ini tetap read-only: tidak ada UI/menu, route, migration, permission user-facing, atau mutation/write pattern di module Integration Contracts.
 
 Task 05 menambahkan `EmployeeContractSnapshotProvider` dan `EmployeeDocumentComplianceSnapshotProvider`. Contract snapshot hanya mengirim ringkasan aman kontrak, sedangkan document compliance snapshot hanya mengirim hitungan compliance/expiry tanpa document number, DMS reference, path, URL, token, atau notes.
+
+Task 06 menambahkan `HRIntegrationEventRegistry` dan `HRIntegrationEventV1`. Registry memetakan 10 event contract v1 ke source module. Publisher existing yang sudah final ikut dicatat sebagai mapping, sedangkan publisher lain tetap deferred sampai source module siap. Envelope event memakai bentuk standar, event name wajib dikenal registry, dan payload tetap melewati forbidden-field guard. Task ini tidak memasang listener downstream, queue/outbox, route publik, menu, migration, atau mutation spekulatif.
 
 MVP tidak membuat:
 

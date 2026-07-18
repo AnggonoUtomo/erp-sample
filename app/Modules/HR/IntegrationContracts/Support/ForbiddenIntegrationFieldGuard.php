@@ -36,6 +36,7 @@ class ForbiddenIntegrationFieldGuard
         'salary',
         'compensation',
         'document_number',
+        'document_reference',
         'dms_reference',
         'storage_path',
         'download_url',

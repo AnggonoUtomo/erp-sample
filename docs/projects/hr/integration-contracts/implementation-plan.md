@@ -69,7 +69,7 @@ Lihat [ADR-001](decisions/001-stable-hr-integration-contracts.md).
 
 ## Phase 3 — Events dan commands
 
-7. Tambahkan event envelope v1 dan mapping publisher dari source module.
+7. Tambahkan event envelope v1 dan mapping publisher dari source module. ✅
 8. Tambahkan command `describe`, `validate`, dan `sample`.
 9. Update module manifest agar contract bisa ditemukan tool/agent/developer.
 
