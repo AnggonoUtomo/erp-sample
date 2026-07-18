@@ -3,7 +3,6 @@
 namespace App\Modules\HR\Departements\Database\Seeders;
 
 use App\Modules\HR\Departements\Models\Departement;
-use App\Modules\HR\Positions\Database\Seeders\HRPositionSeeder;
 use Illuminate\Database\Seeder;
 
 class HRDepartementSeeder extends Seeder
@@ -58,7 +57,5 @@ class HRDepartementSeeder extends Seeder
                 $departement->restore();
             }
         }
-
-        $this->call(HRPositionSeeder::class);
     }
 }
