@@ -4,7 +4,7 @@ Dokumen ini mendefinisikan project kecil `HR/IntegrationContracts` sebagai payun
 
 ## Status
 
-`Task 01–04 implemented — module shell, registry, DTO, privacy guard, employee snapshot, dan assignment snapshot provider selesai pada 2026-07-18`.
+`Checkpoint A complete — read-only snapshot foundation selesai pada 2026-07-18`.
 
 Dokumen ini dibuat setelah MVP HR Reports selesai agar langkah berikutnya tidak langsung membuat integrasi spekulatif. Specification dan ADR-001 sudah disetujui. Implementasi dimulai dari module shell + registry tanpa UI, route, migration, atau permission user baru.
 
@@ -36,6 +36,8 @@ MVP Integration Contracts hanya menyediakan:
 - contract tests untuk memastikan payload stabil dan tidak membawa data sensitif.
 
 Task 01 sudah menyediakan registry awal untuk daftar snapshot/event v1. Task 02 menambahkan DTO snapshot/event envelope dan forbidden-field privacy guard. Task 03 menambahkan `EmployeeSnapshotProvider` read-only untuk identitas operasional minimal employee. Task 04 menambahkan `EmployeeAssignmentSnapshotProvider` read-only untuk current work profile pada tanggal acuan eksplisit. Contract/document compliance provider, command inspeksi, dan event publisher mapping dikerjakan pada task berikutnya.
+
+Checkpoint A sudah membuktikan foundation ini tetap read-only: tidak ada UI/menu, route, migration, permission user-facing, atau mutation/write pattern di module Integration Contracts.
 
 MVP tidak membuat:
 

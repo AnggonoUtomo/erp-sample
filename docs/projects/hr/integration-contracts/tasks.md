@@ -117,19 +117,31 @@ php artisan test --filter=HRIntegrationAssignmentSnapshot
 
 ## Checkpoint A — Read-only snapshot foundation
 
-- [ ] Task 01–04 hijau.
-- [ ] Tidak ada UI/menu/mutation baru.
-- [ ] Forbidden-field guard membuktikan payload aman.
-- [ ] Docs sesuai behavior aktual.
+- [x] Task 01–04 hijau.
+- [x] Tidak ada UI/menu/mutation baru.
+- [x] Forbidden-field guard membuktikan payload aman.
+- [x] Docs sesuai behavior aktual.
+
+**Hasil checkpoint:** selesai 2026-07-18. Read-only snapshot foundation sudah siap. Module `HR/IntegrationContracts` tetap contract-only tanpa `routes.php`, tanpa `navigation.php`, tanpa migration/table baru, dan tanpa permission user-facing. Registry, DTO, event envelope, forbidden-field guard, `EmployeeSnapshotProvider`, dan `EmployeeAssignmentSnapshotProvider` sudah tersedia serta teruji. Review statis pada module tidak menemukan pola write seperti create/update/delete, DB schema operation, notification, queue, atau file write.
 
 **Evidence yang wajib dicatat:**
 
 ```bash
-vendor/bin/pint --test app/Modules/HR/IntegrationContracts tests/Feature/HRIntegration*
+vendor/bin/pint --test app/Modules/HR/IntegrationContracts tests/Feature/HRIntegrationAssignmentSnapshotTest.php tests/Feature/HRIntegrationContractRegistryTest.php tests/Feature/HRIntegrationEventPrivacyTest.php tests/Feature/HRIntegrationSnapshotTest.php
 php artisan test --filter=HRIntegration
 php artisan module:validate
 git diff --check
 ```
+
+Tambahan review non-mutating:
+
+```bash
+Test-Path app/Modules/HR/IntegrationContracts/routes.php
+Test-Path app/Modules/HR/IntegrationContracts/navigation.php
+rg "::create\\(|->create\\(|->update\\(|->delete\\(|DB::|Schema::|Notification::|Queue::|File::" app/Modules/HR/IntegrationContracts -n
+```
+
+Hasil: `routes.php` dan `navigation.php` tidak ada; scan mutation/write pattern tidak menemukan match.
 
 ## Task 05 — Contract dan document compliance snapshot
 
