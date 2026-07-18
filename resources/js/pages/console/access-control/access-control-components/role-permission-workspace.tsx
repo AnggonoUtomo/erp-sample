@@ -44,11 +44,12 @@ export function RolePermissionWorkspace({
     const totalPermissionCount = visiblePermissionGroups.reduce((total, group) => total + group.permissions.length, 0);
     const selectedPermissionCount = data.permissions.length;
     const progress = totalPermissionCount > 0 ? Math.round((selectedPermissionCount / totalPermissionCount) * 100) : 0;
+    const canUpdateActiveRole = abilities.canUpdateRole && !activeRole.is_protected;
 
     const isPermissionChecked = (permissionName: string) => data.permissions.includes(permissionName);
 
     const togglePermission = (permissionName: string) => {
-        if (!abilities.canUpdateRole) {
+        if (!canUpdateActiveRole) {
             return;
         }
 
@@ -63,7 +64,7 @@ export function RolePermissionWorkspace({
     };
 
     const toggleGroup = (group: PermissionGroup) => {
-        if (!abilities.canUpdateRole) {
+        if (!canUpdateActiveRole) {
             return;
         }
 
@@ -86,7 +87,7 @@ export function RolePermissionWorkspace({
     };
 
     const submit = () => {
-        if (!abilities.canUpdateRole) {
+        if (!canUpdateActiveRole) {
             return;
         }
 
@@ -119,7 +120,7 @@ export function RolePermissionWorkspace({
                     activeRole={activeRole}
                     groups={visiblePermissionGroups}
                     openedModule={openedModule}
-                    canUpdateRole={abilities.canUpdateRole}
+                    canUpdateRole={canUpdateActiveRole}
                     onToggleModule={(module) => setOpenedModule((current) => (current === module ? null : module))}
                     isGroupChecked={isGroupChecked}
                     getSelectedCountInGroup={getSelectedCountInGroup}

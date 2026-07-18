@@ -58,6 +58,23 @@ class UserManagementTest extends TestCase
             );
     }
 
+    public function test_super_system_user_can_view_super_system_role_in_user_management(): void
+    {
+        $user = User::factory()->create();
+        Role::findOrCreate(User::SUPER_SYSTEM_ROLE)->syncPermissions(['users.view']);
+        $user->assignRole(User::SUPER_SYSTEM_ROLE);
+
+        $this->actingAs($user)
+            ->get(route('users.index', ['role' => User::SUPER_SYSTEM_ROLE]))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('roles', fn ($roles) => collect($roles)->pluck('name')->contains(User::SUPER_SYSTEM_ROLE))
+                ->where('users.data', fn ($users) => collect($users)->contains(fn ($listedUser) => collect($listedUser['roles'])->contains(User::SUPER_SYSTEM_ROLE)))
+                ->where('filters.role', User::SUPER_SYSTEM_ROLE)
+                ->etc()
+            );
+    }
+
     public function test_super_system_role_cannot_be_assigned_from_user_management(): void
     {
         $user = User::factory()->create();

@@ -23,7 +23,7 @@ class AccessControlService
     /**
      * @return array<string, mixed>
      */
-    public function getPageData(?int $selectedRoleId = null): array
+    public function getPageData(?int $selectedRoleId = null, ?User $actor = null): array
     {
         $roles = Role::query()
             ->with([
@@ -32,7 +32,7 @@ class AccessControlService
                     ->orderBy('name'),
             ])
             ->select('id', 'name', 'guard_name')
-            ->where('name', '!=', User::SUPER_SYSTEM_ROLE)
+            ->when(! $actor?->isSuperAdmin(), fn ($query) => $query->where('name', '!=', User::SUPER_SYSTEM_ROLE))
             ->orderBy('name')
             ->get()
             ->map(fn (Role $role) => [
@@ -40,7 +40,7 @@ class AccessControlService
                 'name' => $role->name,
                 'guard_name' => $role->guard_name,
                 'permissions' => $role->permissions->pluck('name')->sort()->values(),
-                'is_protected' => false,
+                'is_protected' => $role->name === User::SUPER_SYSTEM_ROLE,
             ]);
 
         $permissionGroups = Permission::query()

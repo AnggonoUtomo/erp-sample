@@ -38,6 +38,7 @@ export function RoleControlCard({
     onDeleteRole,
 }: RoleControlCardProps) {
     const canDeleteActiveRole = abilities.canDeleteRole && !activeRole.is_protected;
+    const canUpdateActiveRole = abilities.canUpdateRole && !activeRole.is_protected;
 
     return (
         <Card data-dashboard-card className="overflow-hidden">
@@ -74,7 +75,12 @@ export function RoleControlCard({
                 </select>
 
                 <div className="bg-muted/30 rounded-lg border p-3">
-                    <p className="text-sm leading-tight font-semibold">{activeRole.name}</p>
+                    <div className="flex items-center justify-between gap-2">
+                        <p className="text-sm leading-tight font-semibold">{activeRole.name}</p>
+                        {activeRole.is_protected ? (
+                            <span className="bg-primary/10 text-primary rounded-full px-2 py-0.5 text-[10px] font-semibold">Protected</span>
+                        ) : null}
+                    </div>
                     <p className="text-muted-foreground mt-1 text-xs">Guard: {activeRole.guard_name}</p>
                 </div>
 
@@ -100,7 +106,7 @@ export function RoleControlCard({
                 {permissionError ? <p className="text-destructive text-xs">{permissionError}</p> : null}
 
                 <div className="flex gap-2">
-                    <Button type="button" variant="outline" className="flex-1" onClick={onReset} disabled={processing || !abilities.canUpdateRole}>
+                    <Button type="button" variant="outline" className="flex-1" onClick={onReset} disabled={processing || !canUpdateActiveRole}>
                         <RefreshCcw className="size-4" />
                         Reset
                     </Button>
@@ -109,7 +115,7 @@ export function RoleControlCard({
                         type="button"
                         className="flex-1"
                         onClick={onSubmit}
-                        disabled={processing || !abilities.canUpdateRole}
+                        disabled={processing || !canUpdateActiveRole}
                     >
                         <Save className="size-4" />
                         {processing ? 'Simpan...' : 'Simpan'}

@@ -70,7 +70,6 @@ class User extends Authenticatable implements HasMedia
     public function getUserRoles(): array
     {
         return $this->getRoleNames()
-            ->reject(fn (string $role) => $role === self::SUPER_SYSTEM_ROLE)
             ->mapWithKeys(fn (string $role) => [$role => true])
             ->all();
     }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 export type Appearance = 'light' | 'dark';
-export type Theme = 'urban' | 'graphite' | 'mist' | 'harbor' | 'quartz' | 'aurora' | 'saffron' | 'ruby';
+export type Theme = 'urban' | 'graphite' | 'mist' | 'harbor' | 'quartz' | 'aurora' | 'saffron' | 'ruby' | 'forest' | 'ocean' | 'plum' | 'copper';
 
 export const themes: { value: Theme; label: string; description: string; colors: string[] }[] = [
     {
@@ -51,6 +51,30 @@ export const themes: { value: Theme; label: string; description: string; colors:
         label: 'Ruby',
         description: 'Rose, cyan, dan graphite untuk admin yang lebih tajam.',
         colors: ['oklch(0.52 0.16 18)', 'oklch(0.55 0.095 205)', 'oklch(0.38 0.035 260)'],
+    },
+    {
+        value: 'forest',
+        label: 'Forest',
+        description: 'Hijau matang dengan aksen lime dan teal.',
+        colors: ['oklch(0.43 0.105 145)', 'oklch(0.62 0.13 125)', 'oklch(0.5 0.085 185)'],
+    },
+    {
+        value: 'ocean',
+        label: 'Ocean',
+        description: 'Navy, cyan, dan mint untuk dashboard yang tenang.',
+        colors: ['oklch(0.45 0.12 235)', 'oklch(0.62 0.105 205)', 'oklch(0.58 0.09 165)'],
+    },
+    {
+        value: 'plum',
+        label: 'Plum',
+        description: 'Ungu elegan dengan sentuhan rose dan slate.',
+        colors: ['oklch(0.48 0.13 305)', 'oklch(0.58 0.12 345)', 'oklch(0.44 0.04 255)'],
+    },
+    {
+        value: 'copper',
+        label: 'Copper',
+        description: 'Tembaga hangat dengan nuansa amber dan olive.',
+        colors: ['oklch(0.55 0.12 48)', 'oklch(0.64 0.12 72)', 'oklch(0.48 0.075 120)'],
     },
 ];
 

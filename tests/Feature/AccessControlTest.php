@@ -39,6 +39,22 @@ class AccessControlTest extends TestCase
             );
     }
 
+    public function test_super_system_user_can_view_protected_super_system_role(): void
+    {
+        $user = User::factory()->create();
+        Role::findOrCreate(User::SUPER_SYSTEM_ROLE)->syncPermissions(['roles.manage']);
+        $user->assignRole(User::SUPER_SYSTEM_ROLE);
+
+        $this->actingAs($user)
+            ->get(route('access-control.index'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('roles', fn ($roles) => collect($roles)
+                    ->contains(fn ($role) => $role['name'] === User::SUPER_SYSTEM_ROLE && $role['is_protected'] === true))
+                ->etc()
+            );
+    }
+
     public function test_authorized_users_can_create_role_with_permissions(): void
     {
         $user = User::factory()->create();

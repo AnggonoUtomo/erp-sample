@@ -39,7 +39,7 @@ class AccessControlController extends Controller implements HasMiddleware
     {
         return Inertia::render(
             'console/access-control/index',
-            $this->accessControl->getPageData($request->integer('role') ?: null),
+            $this->accessControl->getPageData($request->integer('role') ?: null, $request->user()),
         );
     }
 
