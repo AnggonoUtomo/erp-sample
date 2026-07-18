@@ -2,7 +2,7 @@
 
 Semua task belum dikerjakan. Implementasi harus berurutan dan berhenti di checkpoint untuk review. Project ini adalah boundary teknis, bukan menu operasional.
 
-## Task 01 — Module shell dan contract registry
+## Task 01 — Module shell dan contract registry ✅
 
 **Tujuan:** membuat shell module `HR/IntegrationContracts` dan registry contract v1 tanpa UI/menu user.
 
@@ -17,11 +17,13 @@ Semua task belum dikerjakan. Implementasi harus berurutan dan berhenti di checkp
 
 **Acceptance criteria:**
 
-- [ ] Module valid di `php artisan module:validate`.
-- [ ] Registry mencatat contract snapshot dan event v1.
-- [ ] Tidak ada route/menu user baru.
-- [ ] Tidak ada migration/table baru.
-- [ ] Permission hanya untuk CLI/admin inspection bila diperlukan; tidak ada CRUD permission.
+- [x] Module valid di `php artisan module:validate`.
+- [x] Registry mencatat contract snapshot dan event v1.
+- [x] Tidak ada route/menu user baru.
+- [x] Tidak ada migration/table baru.
+- [x] Permission hanya untuk CLI/admin inspection bila diperlukan; tidak ada CRUD permission.
+
+**Hasil implementasi:** selesai 2026-07-18. Module `HR/IntegrationContracts` terdaftar sebagai contract-only boundary dengan provider dan registry awal. Export route dan navigation dimatikan, permissions file sengaja kosong karena belum ada UI/route/command admin, dan tidak ada migration/table baru. Registry mencatat 4 snapshot contract v1 serta 10 event contract v1 sebagai daftar awal yang akan diisi DTO/provider pada task berikutnya.
 
 **Test:**
 
@@ -266,4 +268,3 @@ npm run build
 php artisan test
 git diff --check
 ```
-

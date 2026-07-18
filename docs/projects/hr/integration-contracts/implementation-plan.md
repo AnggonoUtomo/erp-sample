@@ -44,9 +44,10 @@ Lihat [ADR-001](decisions/001-stable-hr-integration-contracts.md).
 
 ## Phase 1 — Contract foundation
 
-1. Buat module/documented boundary `HR/IntegrationContracts`.
-2. Buat DTO/envelope v1 dan registry contract.
-3. Buat forbidden-field guard dan tests privacy.
+1. Buat module/documented boundary `HR/IntegrationContracts`. ✅
+2. Buat registry contract awal. ✅
+3. Buat DTO/envelope v1 dan forbidden-field policy.
+4. Buat forbidden-field guard dan tests privacy.
 
 ### Checkpoint A — Contract registry
 
@@ -111,4 +112,3 @@ Lihat [ADR-001](decisions/001-stable-hr-integration-contracts.md).
 ## Approval checkpoint
 
 Coding dimulai hanya setelah specification dan ADR-001 disetujui. Jika user memilih route JSON internal atau queue/outbox sejak awal, specification harus direvisi dulu.
-

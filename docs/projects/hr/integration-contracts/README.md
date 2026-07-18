@@ -4,9 +4,9 @@ Dokumen ini mendefinisikan project kecil `HR/IntegrationContracts` sebagai payun
 
 ## Status
 
-`Draft for approval — documentation first, belum coding`.
+`Task 01 implemented — module shell dan contract registry selesai pada 2026-07-18`.
 
-Dokumen ini dibuat setelah MVP HR Reports selesai agar langkah berikutnya tidak langsung membuat integrasi spekulatif. Coding baru boleh dimulai setelah specification, ADR, dan tasks disetujui.
+Dokumen ini dibuat setelah MVP HR Reports selesai agar langkah berikutnya tidak langsung membuat integrasi spekulatif. Specification dan ADR-001 sudah disetujui. Implementasi dimulai dari module shell + registry tanpa UI, route, migration, atau permission user baru.
 
 ## Urutan baca
 
@@ -35,6 +35,8 @@ MVP Integration Contracts hanya menyediakan:
 - registry/schema contract agar consumer tahu field yang boleh dipakai;
 - contract tests untuk memastikan payload stabil dan tidak membawa data sensitif.
 
+Task 01 sudah menyediakan registry awal untuk daftar snapshot/event v1. DTO, provider, event envelope, command inspeksi, dan privacy guard dikerjakan pada task berikutnya.
+
 MVP tidak membuat:
 
 - halaman menu baru;
@@ -51,4 +53,3 @@ MVP tidak membuat:
 - Payload default harus minim PII.
 - Event hanya dipublikasikan untuk perubahan yang sudah commit/berhasil.
 - Tidak ada consumer downstream spekulatif sampai modul consumer dibuat.
-

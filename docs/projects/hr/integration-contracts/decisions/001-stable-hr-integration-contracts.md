@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Accepted
 
 ## Date
 
@@ -95,4 +95,3 @@ Rejected untuk MVP. Event schema boleh dibuat, delivery production ditunda.
 - Review dan approve specification sebelum coding.
 - Implement registry dan privacy guard sebagai vertical slice pertama.
 - Dokumentasikan consumer handoff untuk Attendance dan Payroll setelah event/snapshot v1 stabil.
-
