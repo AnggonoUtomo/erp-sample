@@ -338,6 +338,32 @@ Module `Employees` menyimpan data inti employee yang menjadi pusat relasi untuk 
 
 Detail personal tersebut tetap berada di `Employees` karena merupakan satu profile aggregate. Kontrak, dokumen, dan movement tidak dimasukkan ke tabel ini; ketiganya tetap menjadi module terpisah agar histori dan authorization dapat berkembang tanpa memperbesar aggregate Employees.
 
+## Dummy Data Lifecycle HR Untuk Reports
+
+Module `HRReports` menyediakan seeder lifecycle local/dev agar report MVP punya data realistis untuk dibaca:
+
+```txt
+app/Modules/HR/HRReports/Database/Seeders/HRReportLifecycleSeeder.php
+```
+
+Jalankan manual jika butuh sample data report:
+
+```bash
+php artisan db:seed --class="App\\Modules\\HR\\HRReports\\Database\\Seeders\\HRReportLifecycleSeeder"
+```
+
+Aturan seed lifecycle report:
+
+- semua kode seed memakai namespace `RPT-*`;
+- employee number memakai namespace `EMP-RPT-*`;
+- email memakai domain dummy `example.test`;
+- user seed memakai password acak yang tidak diketahui;
+- dokumen employee hanya metadata dan tidak membuat file/storage/DMS reference;
+- seeder idempotent dan aman dijalankan ulang;
+- seeder tidak boleh didaftarkan sebagai production seeder otomatis tanpa approval eksplisit.
+
+Data minimal yang dibuat mencakup master HR, employees, contracts, documents, movements, onboarding, dan offboarding agar `Headcount`, `Contract Expiry`, dan `Document Expiry` langsung menghasilkan data non-kosong.
+
 ## Soft Delete
 
 Module `Departements` memakai soft delete karena departement adalah master organisasi yang akan direferensikan oleh employee, attendance, payroll, approval, dan report.

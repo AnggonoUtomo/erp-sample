@@ -251,7 +251,7 @@ git diff --check
 
 Semua command di atas hijau. `php artisan test --filter=HRReport` menghasilkan `18 passed (179 assertions)`.
 
-## Task 07 — Lifecycle HR seeder untuk report
+## Task 07 — Lifecycle HR seeder untuk report ✅
 
 **Tujuan:** membuat data local/dev yang realistis untuk satu lifecycle HR sehingga HR Reports punya data valid untuk dibaca.
 
@@ -265,11 +265,13 @@ Semua command di atas hijau. `php artisan test --filter=HRReport` menghasilkan `
 
 **Acceptance criteria:**
 
-- [ ] Seeder idempotent dan aman dijalankan ulang.
-- [ ] Data seed mencakup master HR, employees, contracts, documents, movements, onboarding, dan offboarding minimal.
-- [ ] Report MVP menghasilkan data non-kosong dari seeder.
-- [ ] Seeder tidak membuat password/email/file/storage data production nyata.
-- [ ] Seeder tidak mengubah data manual di luar namespace/kode seed.
+- [x] Seeder idempotent dan aman dijalankan ulang.
+- [x] Data seed mencakup master HR, employees, contracts, documents, movements, onboarding, dan offboarding minimal.
+- [x] Report MVP menghasilkan data non-kosong dari seeder.
+- [x] Seeder tidak membuat password/email/file/storage data production nyata.
+- [x] Seeder tidak mengubah data manual di luar namespace/kode seed.
+
+**Hasil implementasi:** selesai 2026-07-18. `HRReportLifecycleSeeder` menyediakan data local/dev dengan namespace `RPT-*`, employee number `EMP-RPT-*`, dan email dummy `example.test`. Seeder membuat master HR minimal, tiga employee lifecycle, kontrak aktif, metadata dokumen expiring, movement transfer applied, onboarding in-progress, dan offboarding draft. Seeder tidak membuat file/storage/DMS reference/token; user seed memakai password acak yang tidak diketahui. Untuk movement yang belum punya natural unique key, seeder hanya merapikan ulang movement di seed namespace milik employee `EMP-RPT-002` agar state akhir tetap idempotent tanpa menyentuh data manual.
 
 **Test:**
 
