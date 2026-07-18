@@ -326,28 +326,41 @@ Catatan:
 
 Target: HR menjadi upstream untuk Attendance dan Payroll.
 
-Module kandidat:
+Module/dokumen kandidat:
 
+- `IntegrationContracts` **Status: dokumentasi draft tersedia.**
 - `EmployeeSnapshots`
-- `HRIntegrations`
 - `EmployeeEventProjectors`
 
 Fitur:
 
-- Publish employee snapshot.
-- Sync employee to Attendance.
-- Sync employee payroll profile placeholder.
-- Employee status lock for Attendance/Payroll.
-- Integration event log.
+- Publish employee snapshot v1.
+- Publish employee assignment snapshot v1.
+- Publish contract/document compliance snapshot aman.
+- Definisikan event HR v1 untuk perubahan assignment, contract, onboarding, offboarding, dan termination.
+- Dokumentasikan consumer handoff untuk Attendance dan Payroll.
+- Sync employee to Attendance **ditunda sampai module Attendance dibuat**.
+- Sync employee payroll profile placeholder **ditunda sampai module Payroll dibuat**.
+- Employee status lock for Attendance/Payroll **ditunda sampai consumer lifecycle jelas**.
+- Integration event log **deferred**, tidak masuk MVP contract.
 
 Integrasi event:
 
-- HR dispatch `EmployeeCreated`.
-- HR dispatch `EmployeeUpdated`.
-- HR dispatch `EmployeeTransferred`.
-- HR dispatch `EmploymentTerminated`.
-- Attendance listen event untuk membuat/memperbarui attendance employee read model.
-- Payroll listen event untuk membuat/memperbarui payroll employee read model.
+- HR mendefinisikan `EmployeeCreatedV1`.
+- HR mendefinisikan `EmployeeProfileUpdatedV1`.
+- HR mendefinisikan `EmployeeAssignmentChangedV1`.
+- HR mendefinisikan `EmployeeContractChangedV1`.
+- HR mendefinisikan `EmployeeDocumentComplianceChangedV1`.
+- HR mendefinisikan `EmployeeOnboardingActivatedV1`.
+- HR mendefinisikan `EmployeeOnboardingCompletedV1`.
+- HR mendefinisikan `EmployeeOffboardingReadyV1`.
+- HR mendefinisikan `EmployeeOffboardingFinalizedV1`.
+- HR mendefinisikan `EmploymentTerminatedV1`.
+- Attendance/Payroll listener downstream belum dibuat pada MVP agar tidak ada mutation spekulatif.
+
+Dokumentasi:
+
+- [HR Integration Contracts](integration-contracts/README.md)
 
 ## Permission Awal
 

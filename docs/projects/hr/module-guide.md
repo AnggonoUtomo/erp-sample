@@ -30,6 +30,8 @@ resources/js/pages/hr/
 
 Module `Departements` menjadi fondasi pertama untuk struktur organisasi. Module `Positions` menjadi master jabatan yang terhubung ke Departement dan akan dipakai oleh Employees, Attendance, dan Payroll. Module `JobLevels` menjadi master level/grade jabatan lintas departement untuk employee profile, approval, benefit, dan payroll. Module `WorkLocations` menjadi master lokasi kerja untuk employee profile, attendance area, payroll, dan report organisasi. Module `EmploymentStatuses` menjadi master status kerja untuk lifecycle employee, attendance eligibility, dan payroll inclusion. Module `EmploymentTypes` menjadi master tipe hubungan kerja untuk aturan kontrak, benefit, overtime, dan payroll. Module `HRReferenceData` menjadi master referensi umum HR seperti gender, marital status, education level, religion, bank, dan blood type. Module `OrganizationStructures` menjadi hierarchy formal untuk reporting line, supervisor relationship, dan fondasi approval. Module `Employees` menjadi master employee inti dengan avatar, link user, work profile, dan relasi ke master HR foundation.
 
+`IntegrationContracts` adalah project/dokumentasi boundary teknis setelah HR Reports. Ia bukan menu user dan bukan lifecycle baru. Fungsinya adalah menyediakan snapshot/event contract versioned agar Attendance, Payroll, CRM, Document Management, dan report lanjutan tidak membaca tabel internal HR secara bebas. Baca [paket HR Integration Contracts](integration-contracts/README.md).
+
 ## Departements vs OrganizationStructures
 
 `Departements` menyimpan master unit kerja. Contohnya `Human Resources`, `Finance`, `Operations`, dan `IT`. Module ini dipakai untuk mengelompokkan employee, position, budget, report, dan headcount berdasarkan unit kerja.
@@ -583,6 +585,8 @@ Setelah itu baru masuk ke data employee:
 `EmployeeDocuments` direncanakan sebagai owner metadata bisnis, expiry, dan verification dokumen employee. Blob, version, checksum, download, retention, dan legal hold tetap dimiliki Document Management melalui reference contract, bukan storage kedua di HR. Lihat [spesifikasi Employee Documents](employee-documents/specification.md) dan [ADR boundary HR–DMS](employee-documents/decisions/001-hr-metadata-dms-storage-boundary.md).
 
 `EmployeeMovements` vertical slice pertama tersedia untuk transfer efektif hari ini. Module menyimpan snapshot assignment sebelum/sesudah dan menjadi satu-satunya jalur pada slice ini yang menerapkan perubahan department, position, work location, dan supervisor ke profile Employees. Lihat [spesifikasi Employee Movements](employee-movements/specification.md) dan [ADR effective-dated movement](employee-movements/decisions/001-effective-dated-movements.md).
+
+`IntegrationContracts` menjadi payung kontrak antar modul setelah HR Reports. Contract ini menyatukan employee snapshot, assignment snapshot, contract/document compliance snapshot, dan event v1 untuk consumer masa depan seperti Attendance dan Payroll. Lihat [spesifikasi HR Integration Contracts](integration-contracts/specification.md) dan [ADR stable HR integration contracts](integration-contracts/decisions/001-stable-hr-integration-contracts.md).
 
 ## Contract Wajib Per Module HR
 
