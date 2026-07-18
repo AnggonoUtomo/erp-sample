@@ -328,7 +328,7 @@ Target: HR menjadi upstream untuk Attendance dan Payroll.
 
 Module/dokumen kandidat:
 
-- `IntegrationContracts` **Status: dokumentasi draft tersedia.**
+- `IntegrationContracts` **Status: MVP contract + event boundary + consumer handoff tersedia.**
 - `EmployeeSnapshots`
 - `EmployeeEventProjectors`
 
@@ -361,6 +361,7 @@ Integrasi event:
 Dokumentasi:
 
 - [HR Integration Contracts](integration-contracts/README.md)
+- [Consumer handoff Attendance/Payroll](integration-contracts/consumer-handoff.md)
 
 ## Permission Awal
 

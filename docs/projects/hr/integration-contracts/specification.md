@@ -219,7 +219,7 @@ Command non-mutating untuk inspeksi contract:
 ```bash
 php artisan hr:integration-contracts:describe
 php artisan hr:integration-contracts:validate
-php artisan hr:integration-contracts:sample --employee=1001 --date=2026-07-18
+php artisan hr:integration-contracts:sample 1001 --date=2026-07-18
 ```
 
 Design:
@@ -252,14 +252,14 @@ app/Modules/HR/IntegrationContracts/
     EmployeeDocumentComplianceSnapshotV1.php
     IntegrationEventEnvelopeV1.php
   Events/
-    EmployeeAssignmentChangedV1.php
-    EmploymentTerminatedV1.php
+    HRIntegrationEventV1.php
   Console/Commands/
     DescribeHRIntegrationContractsCommand.php
     ValidateHRIntegrationContractsCommand.php
     SampleHRIntegrationContractsCommand.php
   Support/
     HRIntegrationContractRegistry.php
+    HRIntegrationEventRegistry.php
     ForbiddenIntegrationFieldGuard.php
 
 tests/Feature/
@@ -318,4 +318,3 @@ Jika task hanya backend dan tidak menyentuh frontend, `npm run typecheck` dan `n
 3. Apakah command `sample` boleh membaca employee production by id di CLI admin, atau hanya di local/dev?
 
 Rekomendasi sementara: mulai dari internal PHP contract + registry + tests dulu. Route JSON dan queue/outbox ditunda.
-

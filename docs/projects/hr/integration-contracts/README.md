@@ -4,7 +4,7 @@ Dokumen ini mendefinisikan project kecil `HR/IntegrationContracts` sebagai payun
 
 ## Status
 
-`Task 01–07 implemented — snapshot foundation, compliance snapshot, event envelope/publisher mapping, dan read-only inspection commands selesai pada 2026-07-18`.
+`Task 01–08 implemented — snapshot foundation, compliance snapshot, event envelope/publisher mapping, read-only inspection commands, dan consumer handoff Attendance/Payroll selesai pada 2026-07-18`.
 
 Dokumen ini dibuat setelah MVP HR Reports selesai agar langkah berikutnya tidak langsung membuat integrasi spekulatif. Specification dan ADR-001 sudah disetujui. Implementasi dimulai dari module shell + registry tanpa UI, route, migration, atau permission user baru.
 
@@ -14,6 +14,7 @@ Dokumen ini dibuat setelah MVP HR Reports selesai agar langkah berikutnya tidak 
 2. [ADR-001: Stable HR integration contracts](decisions/001-stable-hr-integration-contracts.md) — alasan kontrak dibuat sebagai boundary, bukan akses tabel langsung.
 3. [Implementation plan](implementation-plan.md) — urutan vertical slice, dependency, risiko, dan checkpoint.
 4. [Tasks](tasks.md) — task kecil yang nanti bisa dieksekusi satu per satu.
+5. [Consumer handoff](consumer-handoff.md) — cara Attendance dan Payroll memakai contract HR tanpa query internal table.
 
 ## Relasi lintas dokumen
 
@@ -44,6 +45,8 @@ Task 05 menambahkan `EmployeeContractSnapshotProvider` dan `EmployeeDocumentComp
 Task 06 menambahkan `HRIntegrationEventRegistry` dan `HRIntegrationEventV1`. Registry memetakan 10 event contract v1 ke source module. Publisher existing yang sudah final ikut dicatat sebagai mapping, sedangkan publisher lain tetap deferred sampai source module siap. Envelope event memakai bentuk standar, event name wajib dikenal registry, dan payload tetap melewati forbidden-field guard. Task ini tidak memasang listener downstream, queue/outbox, route publik, menu, migration, atau mutation spekulatif.
 
 Task 07 menambahkan command inspeksi read-only: `hr:integration-contracts:describe`, `hr:integration-contracts:validate`, dan `hr:integration-contracts:sample`. Command ini membantu developer/agent memeriksa daftar contract, validasi registry vs manifest, dan membuat sample payload aman untuk satu employee tanpa membuka route/menu user dan tanpa mutation.
+
+Task 08 menambahkan [consumer handoff Attendance/Payroll](consumer-handoff.md). Dokumen ini menetapkan input contract yang wajib dipakai consumer, semantics eligibility/payroll inclusion, field yang dilarang, deferred items, dan acceptance handoff untuk MVP Attendance serta Payroll.
 
 MVP tidak membuat:
 

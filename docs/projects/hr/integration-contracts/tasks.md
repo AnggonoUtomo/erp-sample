@@ -236,10 +236,14 @@ php artisan test --filter=HRIntegrationCommand
 
 ## Checkpoint B — Event contract ready
 
-- [ ] Task 05–07 hijau.
-- [ ] Event v1 siap dipakai consumer masa depan.
-- [ ] Tidak ada route publik, listener downstream, queue/outbox, atau mutation spekulatif.
-- [ ] Dokumentasi consumer boundary diperbarui.
+- [x] Task 05–07 hijau.
+- [x] Event v1 siap dipakai consumer masa depan.
+- [x] Tidak ada route publik, listener downstream, queue/outbox, atau mutation spekulatif.
+- [x] Dokumentasi consumer boundary diperbarui.
+
+**Hasil checkpoint:** selesai 2026-07-18. Event contract boundary siap sebagai fondasi consumer masa depan. Task 05 menyediakan snapshot contract/document compliance yang minim PII, Task 06 menyediakan event envelope dan publisher mapping registry tanpa listener downstream, dan Task 07 menyediakan command inspeksi read-only. Module `HR/IntegrationContracts` tetap tanpa `routes.php`, tanpa `navigation.php`, tanpa migration/table baru, tanpa listener downstream, tanpa queue/outbox, dan tanpa mutation/write pattern di source module.
+
+**Review code quality:** implementasi sesuai arsitektur contract-only HR. Command hanya membaca registry/provider resmi, input command divalidasi di boundary, payload sample tetap melewati DTO allowlist, forbidden-field guard tetap aktif, dan tidak ada dependency baru.
 
 **Evidence yang wajib dicatat:**
 
@@ -250,7 +254,19 @@ vendor/bin/pint --test app/Modules/HR/IntegrationContracts tests/Feature/HRInteg
 git diff --check
 ```
 
-## Task 08 — Attendance dan Payroll consumer handoff docs
+Tambahan review non-mutating:
+
+```bash
+Test-Path app/Modules/HR/IntegrationContracts/routes.php
+Test-Path app/Modules/HR/IntegrationContracts/navigation.php
+rg "::create\(|->create\(|->update\(|->delete\(|DB::|Schema::|Notification::|Queue::|File::|Storage::|event\(|dispatch\(" app/Modules/HR/IntegrationContracts -n
+php artisan hr:integration-contracts:validate
+php artisan hr:integration-contracts:describe --json
+```
+
+Hasil: semua quality gate hijau; `routes.php` dan `navigation.php` tidak ada; scan mutation/write/event dispatch tidak menemukan match; command validate melaporkan 4 snapshot contract, 10 event contract, dan downstream listeners tetap deferred.
+
+## Task 08 — Attendance dan Payroll consumer handoff docs ✅
 
 **Tujuan:** mendokumentasikan cara Attendance dan Payroll memakai contract HR tanpa query internal table.
 
@@ -263,10 +279,14 @@ git diff --check
 
 **Acceptance criteria:**
 
-- [ ] Attendance input contract tertulis jelas.
-- [ ] Payroll input contract tertulis jelas.
-- [ ] Field yang tidak boleh dipakai consumer disebutkan.
-- [ ] Deferred items untuk queue/outbox/API publik dicatat.
+- [x] Attendance input contract tertulis jelas.
+- [x] Payroll input contract tertulis jelas.
+- [x] Field yang tidak boleh dipakai consumer disebutkan.
+- [x] Deferred items untuk queue/outbox/API publik dicatat.
+
+**Hasil implementasi:** selesai 2026-07-18. Dokumen [consumer handoff](consumer-handoff.md) dibuat sebagai panduan resmi consumer Attendance dan Payroll. Attendance diarahkan memakai `EmployeeSnapshotV1` dan `EmployeeAssignmentSnapshotV1` untuk eligibility, work location, status terminal, dan overtime eligibility. Payroll diarahkan memakai `EmployeeSnapshotV1`, `EmployeeAssignmentSnapshotV1`, `EmployeeContractSnapshotV1`, dan optional `EmployeeDocumentComplianceSnapshotV1` untuk import snapshot, validation, calculate run, dan compliance gate. Field terlarang seperti NIK/KTP/NPWP, personal phone, address, bank account, salary/compensation, document number, DMS reference/path/URL/token, dan notes confidential dicatat eksplisit. Deferred items untuk queue/outbox, listener downstream, public API/webhook, integration event log, data warehouse, payroll compensation contract, dan accounting journal contract tetap ditunda.
+
+**Cross-link:** `docs/planning/attendance.md`, `docs/planning/payroll.md`, `docs/projects/hr/roadmap.md`, dan README Integration Contracts sudah menunjuk ke handoff doc.
 
 **Test:**
 
@@ -279,10 +299,14 @@ git diff --check
 
 ## Final quality checkpoint
 
-- [ ] Semua task MVP selesai.
-- [ ] Full relevant quality gates hijau.
-- [ ] README/spec/plan/tasks/ADR sesuai implementasi aktual.
-- [ ] HR Integration Contracts siap menjadi fondasi Attendance/Payroll MVP.
+- [x] Semua task MVP selesai.
+- [x] Full relevant quality gates hijau.
+- [x] README/spec/plan/tasks/ADR sesuai implementasi aktual.
+- [x] HR Integration Contracts siap menjadi fondasi Attendance/Payroll MVP.
+
+**Hasil final:** selesai 2026-07-18. MVP `HR/IntegrationContracts` sudah lengkap sebagai boundary internal PHP contract untuk Attendance/Payroll MVP. Module menyediakan registry snapshot/event v1, DTO allowlist, forbidden-field guard, provider snapshot read-only, event envelope + publisher mapping registry, command inspeksi read-only, dan consumer handoff docs. Tidak ada UI/menu user, route publik, migration/table integration warehouse, listener downstream, queue/outbox, webhook, public API, atau mutation spekulatif.
+
+**Review akhir:** perubahan sesuai arsitektur contract-only. Correctness ditutup oleh 497 backend tests dan 28 test khusus `HRIntegration`. Maintainability dijaga lewat registry + DTO/provider yang kecil dan versioned. Security/privacy dijaga lewat explicit allowlist dan forbidden-field guard. Consistency dokumentasi disinkronkan dengan command aktual `hr:integration-contracts:sample {employeeId} --date=YYYY-MM-DD`.
 
 **Evidence final:**
 
@@ -296,3 +320,14 @@ npm run build
 php artisan test
 git diff --check
 ```
+
+Hasil evidence 2026-07-18:
+
+- `vendor/bin/pint --test` — passed.
+- `php artisan module:validate` — passed, all module contracts valid.
+- `npm run format:check` — passed.
+- `npm run lint:check` — passed.
+- `npm run typecheck` — passed.
+- `npm run build` — passed.
+- `php artisan test` — passed, 497 tests / 3030 assertions.
+- `git diff --check` — passed.

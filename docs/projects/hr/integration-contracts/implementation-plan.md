@@ -81,8 +81,8 @@ Lihat [ADR-001](decisions/001-stable-hr-integration-contracts.md).
 
 ## Phase 4 — Consumer handoff
 
-10. Dokumentasikan cara Attendance membaca assignment snapshot.
-11. Dokumentasikan cara Payroll membaca employee/contract/termination snapshot.
+10. Dokumentasikan cara Attendance membaca assignment snapshot. ✅
+11. Dokumentasikan cara Payroll membaca employee/contract/termination snapshot. ✅
 12. Buat final quality checkpoint dan update roadmap.
 
 ### Final checkpoint

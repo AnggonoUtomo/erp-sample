@@ -4,6 +4,8 @@
 
 Mencatat waktu kerja secara auditable dari jadwal sampai penutupan periode, dengan HR sebagai sumber employee dan work location.
 
+Attendance wajib memakai [HR Integration Contracts consumer handoff](../projects/hr/integration-contracts/consumer-handoff.md) untuk membaca employee eligibility dan assignment. Jangan query table/model internal HR secara bebas untuk flow schedule, check-in/out, overtime eligibility, atau period closing.
+
 ## Submodule dan urutan
 
 1. `AttendancePolicies` — toleransi, rounding, lateness, dan eligibility.
@@ -19,6 +21,7 @@ Mencatat waktu kerja secara auditable dari jadwal sampai penutupan periode, deng
 
 - Simpan timezone dan timestamp asli; hitung hari kerja secara eksplisit.
 - Tolak presensi employee yang tidak eligible berdasarkan HR snapshot.
+- Baca `EmployeeSnapshotV1` dan `EmployeeAssignmentSnapshotV1` melalui provider resmi HR Integration Contracts.
 - Koreksi tidak menimpa bukti asli dan wajib menyimpan actor/reason.
 - Closing menghasilkan snapshot berversi untuk Payroll.
 
@@ -29,6 +32,13 @@ Perhitungan gaji, master employee, payroll journal, biometrik vendor-specific, d
 ## Command design
 
 `attendance:generate-schedules`, `attendance:flag-anomalies`, `attendance:close-period {period}`, dan `attendance:export-snapshot {period}` harus idempotent, mendukung `--dry-run`, dan gagal tertutup saat contract HR tidak valid.
+
+Sebelum implementasi command Attendance, jalankan:
+
+```bash
+php artisan hr:integration-contracts:validate
+php artisan hr:integration-contracts:describe
+```
 
 ## Acceptance criteria dan test plan
 
