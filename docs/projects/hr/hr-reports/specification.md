@@ -26,15 +26,18 @@ HR Reports menyediakan lima report read-only:
    - Menghitung jumlah employee per departement.
    - Mendukung filter status kerja dan tanggal acuan.
    - Menampilkan departement kosong atau tidak tergantung opsi `includeEmpty`.
+   - MVP menghitung employee non-archived dengan `active = true`, `hired_at` kosong atau `<= asOf`, dan `ended_at` kosong atau `> asOf`.
 
 2. **Headcount by Work Location**
    - Menghitung jumlah employee per lokasi kerja.
    - Mendukung filter status kerja dan tanggal acuan.
    - Membantu HR memahami distribusi employee onsite/remote/branch.
+   - Employee tanpa work location masuk group `Unassigned`.
 
 3. **Employment Status Summary**
    - Menghitung jumlah employee per employment status.
    - Membantu HR membedakan active, probation, resigned, terminated, suspended, atau status lain sesuai master data.
+   - Employee tanpa employment status masuk group `Unassigned`.
 
 4. **Contract Expiry**
    - Menampilkan kontrak aktif yang berakhir dalam window tertentu.

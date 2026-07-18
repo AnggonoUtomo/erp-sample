@@ -33,7 +33,7 @@ php artisan module:validate
 
 **Dependencies:** specification dan ADR-001 approved. **Scope:** M.
 
-## Task 02 — Headcount query contract
+## Task 02 — Headcount query contract ✅
 
 **Tujuan:** menyediakan service/query read-only untuk headcount by Departement, Work Location, dan Employment Status.
 
@@ -47,11 +47,13 @@ php artisan module:validate
 
 **Acceptance criteria:**
 
-- [ ] Query menerima `asOf` eksplisit.
-- [ ] Count by Departement, Work Location, dan Employment Status deterministic.
-- [ ] Filter employment status tersedia.
-- [ ] Archived/deleted master dan employee diperlakukan sesuai spec yang disetujui.
-- [ ] Query tidak menulis database, audit, notification, queue, atau file.
+- [x] Query menerima `asOf` eksplisit.
+- [x] Count by Departement, Work Location, dan Employment Status deterministic.
+- [x] Filter employment status tersedia.
+- [x] Archived/deleted employee dikecualikan; employee tanpa master masuk group `Unassigned`.
+- [x] Query tidak menulis database, audit, notification, queue, atau file.
+
+**Hasil implementasi:** selesai 2026-07-18. Headcount query contract tersedia melalui `HeadcountReportService`, `HeadcountReportQuery`, `HeadcountReportFilters`, dan `HeadcountReportResult`. Semantics MVP menghitung employee non-archived dengan `active = true`, `hired_at` kosong atau `<= asOf`, dan `ended_at` kosong atau `> asOf`. Grouping tersedia untuk Departement, Work Location, dan Employment Status; filter employment status didukung.
 
 **Test:**
 
