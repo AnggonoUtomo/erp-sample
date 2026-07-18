@@ -61,7 +61,7 @@ php artisan test --filter=HRIntegrationEventPrivacy
 
 **Dependencies:** Task 01. **Scope:** M.
 
-## Task 03 — Employee snapshot provider
+## Task 03 — Employee snapshot provider ✅
 
 **Tujuan:** menyediakan `EmployeeSnapshotV1` read-only untuk identitas operasional minimal employee.
 
@@ -73,10 +73,12 @@ php artisan test --filter=HRIntegrationEventPrivacy
 
 **Acceptance criteria:**
 
-- [ ] Provider menerima employee id dan menghasilkan snapshot minimal.
-- [ ] Snapshot tidak memuat PII pribadi.
-- [ ] Employee archived/tidak ditemukan menghasilkan null/not found semantics yang terdokumentasi.
-- [ ] Provider tidak menulis database/audit/notification/queue/file.
+- [x] Provider menerima employee id dan menghasilkan snapshot minimal.
+- [x] Snapshot tidak memuat PII pribadi.
+- [x] Employee archived/tidak ditemukan menghasilkan null/not found semantics yang terdokumentasi.
+- [x] Provider tidak menulis database/audit/notification/queue/file.
+
+**Hasil implementasi:** selesai 2026-07-18. `EmployeeSnapshotProvider` dan `EloquentEmployeeSnapshotProvider` tersedia sebagai binding container. Provider membaca employee non-archived berdasarkan id dan menghasilkan `EmployeeSnapshotV1` berisi `employeeId`, `employeeNumber`, `displayName`, `workEmail`, `isActive`, dan `linkedUserId`. Employee yang tidak ditemukan atau sudah soft-deleted mengembalikan `null`. Test memastikan personal email, phone, birth data, national id, address, emergency contact, dan notes tidak masuk payload serta provider tidak mengirim notification, queue job, atau file write.
 
 **Test:**
 

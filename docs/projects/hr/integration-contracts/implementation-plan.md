@@ -57,7 +57,7 @@ Lihat [ADR-001](decisions/001-stable-hr-integration-contracts.md).
 
 ## Phase 2 — Snapshot providers
 
-4. Implement `EmployeeSnapshotV1`.
+4. Implement `EmployeeSnapshotV1`. ✅
 5. Implement `EmployeeAssignmentSnapshotV1` dengan tanggal acuan.
 6. Implement contract/document compliance snapshot minimal.
 
