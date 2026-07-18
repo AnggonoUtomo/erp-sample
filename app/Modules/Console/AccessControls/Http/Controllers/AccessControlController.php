@@ -3,6 +3,7 @@
 namespace App\Modules\Console\AccessControls\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Modules\Console\AccessControls\Http\Requests\StorePermissionRequest;
 use App\Modules\Console\AccessControls\Http\Requests\StoreRoleRequest;
 use App\Modules\Console\AccessControls\Http\Requests\SyncRolePermissionsRequest;
@@ -67,7 +68,7 @@ class AccessControlController extends Controller implements HasMiddleware
 
     public function destroyRole(Role $role): RedirectResponse
     {
-        abort_if($role->name === 'super-admin', 403, 'The super-admin role cannot be deleted.');
+        abort_if($role->name === User::SUPER_SYSTEM_ROLE, 403, 'The super-system role cannot be deleted.');
 
         $this->accessControl->deleteRole($role);
 

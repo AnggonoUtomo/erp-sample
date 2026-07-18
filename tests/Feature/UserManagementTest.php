@@ -9,6 +9,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Testing\AssertableInertia as Assert;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
@@ -46,10 +47,31 @@ class UserManagementTest extends TestCase
     {
         $user = User::factory()->create();
         $user->assignRole('admin');
+        Role::findOrCreate(User::SUPER_SYSTEM_ROLE)->syncPermissions(['users.view']);
 
         $this->actingAs($user)
             ->get(route('users.index'))
-            ->assertOk();
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('roles', fn ($roles) => ! collect($roles)->pluck('name')->contains(User::SUPER_SYSTEM_ROLE))
+                ->etc()
+            );
+    }
+
+    public function test_super_system_role_cannot_be_assigned_from_user_management(): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole('admin');
+        Role::findOrCreate(User::SUPER_SYSTEM_ROLE)->syncPermissions(['users.view']);
+
+        $this->actingAs($user)
+            ->post(route('users.store'), [
+                'name' => 'Hidden Role Attempt',
+                'email' => 'hidden.role@example.test',
+                'roles' => [User::SUPER_SYSTEM_ROLE],
+                'permissions' => [],
+            ])
+            ->assertSessionHasErrors('roles.0');
     }
 
     public function test_authorized_users_can_create_a_user_with_role(): void

@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('verification_reason', 1000)->nullable();
             $table->string('document_reference')->nullable();
             $table->unsignedSmallInteger('document_reference_version')->nullable();
+            $table->char('attachment_idempotency_key_hash', 64)->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
             $table->softDeletes();

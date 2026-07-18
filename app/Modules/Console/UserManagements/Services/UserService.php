@@ -178,6 +178,10 @@ class UserService
      */
     private function syncRoles(User $user, array $roles): void
     {
+        if ($user->isSuperAdmin() && ! in_array(User::SUPER_SYSTEM_ROLE, $roles, true)) {
+            $roles[] = User::SUPER_SYSTEM_ROLE;
+        }
+
         $user->syncRoles($roles);
     }
 

@@ -17,11 +17,11 @@ class UserSeeder extends Seeder
             Permission::findOrCreate($permission);
         }
 
-        $superAdmin = Role::findOrCreate('super-admin');
+        $superSystem = Role::findOrCreate(User::SUPER_SYSTEM_ROLE);
         $admin = Role::findOrCreate('admin');
         $staff = Role::findOrCreate('staff');
 
-        $superAdmin->syncPermissions(ModulePermissionRegistry::permissions());
+        $superSystem->syncPermissions(ModulePermissionRegistry::permissions());
         $admin->syncPermissions(ModulePermissionRegistry::defaultRolePermissions('admin'));
         $staff->syncPermissions(ModulePermissionRegistry::defaultRolePermissions('staff'));
 
@@ -34,7 +34,7 @@ class UserSeeder extends Seeder
             ],
         );
 
-        $superUser->syncRoles([$superAdmin]);
+        $superUser->syncRoles([$superSystem]);
 
         $adminUser = User::updateOrCreate(
             ['email' => 'admin@mail.com'],

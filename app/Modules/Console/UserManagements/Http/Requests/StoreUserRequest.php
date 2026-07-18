@@ -23,7 +23,7 @@ class StoreUserRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
             'roles' => ['array'],
-            'roles.*' => ['string', Rule::exists('roles', 'name')->where('guard_name', 'web')],
+            'roles.*' => ['string', Rule::exists('roles', 'name')->where('guard_name', 'web'), Rule::notIn([User::SUPER_SYSTEM_ROLE])],
             'permissions' => ['array'],
             'permissions.*' => ['string', Rule::exists('permissions', 'name')->where('guard_name', 'web')],
             'avatar' => ['nullable', 'image', 'max:2048'],

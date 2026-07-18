@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
@@ -27,10 +28,15 @@ class AccessControlTest extends TestCase
     {
         $user = User::factory()->create();
         $user->assignRole('admin');
+        Role::findOrCreate(User::SUPER_SYSTEM_ROLE)->syncPermissions(['roles.manage']);
 
         $this->actingAs($user)
             ->get(route('access-control.index'))
-            ->assertOk();
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('roles', fn ($roles) => ! collect($roles)->pluck('name')->contains(User::SUPER_SYSTEM_ROLE))
+                ->etc()
+            );
     }
 
     public function test_authorized_users_can_create_role_with_permissions(): void
@@ -99,5 +105,37 @@ class AccessControlTest extends TestCase
         foreach ($requests as [$method, $url]) {
             $this->actingAs($user)->{$method}($url)->assertForbidden();
         }
+    }
+
+    public function test_super_system_role_is_hidden_and_cannot_be_mutated_directly(): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole('admin');
+
+        $role = Role::findOrCreate(User::SUPER_SYSTEM_ROLE);
+
+        $this->actingAs($user)
+            ->put(route('access-control.roles.update', $role), [
+                'name' => 'renamed-super-system',
+                'permissions' => ['users.view'],
+            ])
+            ->assertForbidden();
+
+        $this->actingAs($user)
+            ->put(route('access-control.roles.permissions.sync', $role), [
+                'permissions' => ['users.view'],
+            ])
+            ->assertForbidden();
+
+        $this->actingAs($user)
+            ->delete(route('access-control.roles.destroy', $role))
+            ->assertForbidden();
+
+        $this->actingAs($user)
+            ->post(route('access-control.roles.store'), [
+                'name' => User::SUPER_SYSTEM_ROLE,
+                'permissions' => ['users.view'],
+            ])
+            ->assertSessionHasErrors('name');
     }
 }

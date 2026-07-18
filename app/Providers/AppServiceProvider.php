@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
                 return null;
             }
 
-            return $user->hasRole('super-admin') ? true : null;
+            return $user->isSuperAdmin() ? true : null;
         });
 
         app(SystemSettingService::class)->applyMailSettings();

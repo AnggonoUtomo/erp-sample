@@ -19,12 +19,12 @@ class AccessControlPolicy
 
     public function update(User $user, Role $role): bool
     {
-        return $this->canManage($user) || $user->can('access-control.update');
+        return $role->name !== User::SUPER_SYSTEM_ROLE && ($this->canManage($user) || $user->can('access-control.update'));
     }
 
     public function delete(User $user, Role $role): bool
     {
-        return $role->name !== 'super-admin' && ($this->canManage($user) || $user->can('access-control.delete'));
+        return $role->name !== User::SUPER_SYSTEM_ROLE && ($this->canManage($user) || $user->can('access-control.delete'));
     }
 
     public function manage(User $user): bool

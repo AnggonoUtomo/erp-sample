@@ -18,6 +18,9 @@ return new class extends Migration
             $table->string('country', 100)->default('Indonesia');
             $table->string('postal_code', 20)->nullable();
             $table->string('timezone', 64)->default('Asia/Jakarta');
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
+            $table->unsignedInteger('geofence_radius_meters')->nullable();
             $table->text('description')->nullable();
             $table->boolean('active')->default(true);
             $table->unsignedInteger('sort_order')->default(0);

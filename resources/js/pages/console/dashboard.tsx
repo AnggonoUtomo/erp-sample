@@ -202,7 +202,7 @@ export default function Dashboard() {
         {
             title: 'Role User',
             value: String(roleCount),
-            change: props.auth.super ? 'super admin' : 'aktif',
+            change: props.auth.super ? 'super system' : 'aktif',
             detail: 'Role yang dibagikan ke Inertia',
             icon: Users,
             tone: 'green' as const,

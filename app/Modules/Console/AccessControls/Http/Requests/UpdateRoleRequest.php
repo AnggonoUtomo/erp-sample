@@ -2,6 +2,7 @@
 
 namespace App\Modules\Console\AccessControls\Http\Requests;
 
+use App\Models\User;
 use App\Modules\Console\AccessControls\DTO\RoleData;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -21,7 +22,7 @@ class UpdateRoleRequest extends FormRequest
         $roleId = $this->route('role')?->id;
 
         return [
-            'name' => ['required', 'string', 'max:255', Rule::unique('roles', 'name')->where('guard_name', 'web')->ignore($roleId)],
+            'name' => ['required', 'string', 'max:255', Rule::notIn([User::SUPER_SYSTEM_ROLE]), Rule::unique('roles', 'name')->where('guard_name', 'web')->ignore($roleId)],
             'permissions' => ['array'],
             'permissions.*' => ['string', Rule::exists('permissions', 'name')->where('guard_name', 'web')],
         ];

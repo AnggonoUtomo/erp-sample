@@ -18,6 +18,8 @@ return new class extends Migration
             $table->date('probation_end_date')->nullable();
             $table->date('signed_date')->nullable();
             $table->string('status', 20)->default('DRAFT');
+            $table->string('ended_reason', 500)->nullable();
+            $table->foreignId('superseded_by_id')->nullable()->constrained('hr_employee_contracts')->nullOnDelete();
             $table->text('notes')->nullable();
             $table->timestamps();
             $table->softDeletes();

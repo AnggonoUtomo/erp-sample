@@ -2,6 +2,7 @@
 
 namespace App\Modules\Console\UserManagements\Http\Requests;
 
+use App\Models\User;
 use App\Modules\Console\UserManagements\DTO\UserData;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -25,7 +26,7 @@ class UpdateUserRequest extends FormRequest
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique('users', 'email')->ignore($userId)],
             'send_password_reset_link' => ['boolean'],
             'roles' => ['array'],
-            'roles.*' => ['string', Rule::exists('roles', 'name')->where('guard_name', 'web')],
+            'roles.*' => ['string', Rule::exists('roles', 'name')->where('guard_name', 'web'), Rule::notIn([User::SUPER_SYSTEM_ROLE])],
             'permissions' => ['array'],
             'permissions.*' => ['string', Rule::exists('permissions', 'name')->where('guard_name', 'web')],
             'avatar' => ['nullable', 'image', 'max:2048'],

@@ -2,6 +2,7 @@
 
 namespace App\Modules\Console\AccessControls\Services;
 
+use App\Models\User;
 use App\Modules\Console\AccessControls\DTO\PermissionData;
 use App\Modules\Console\AccessControls\DTO\RoleData;
 use App\Modules\Console\AccessControls\DTO\SyncRolePermissionsData;
@@ -31,6 +32,7 @@ class AccessControlService
                     ->orderBy('name'),
             ])
             ->select('id', 'name', 'guard_name')
+            ->where('name', '!=', User::SUPER_SYSTEM_ROLE)
             ->orderBy('name')
             ->get()
             ->map(fn (Role $role) => [
@@ -38,7 +40,7 @@ class AccessControlService
                 'name' => $role->name,
                 'guard_name' => $role->guard_name,
                 'permissions' => $role->permissions->pluck('name')->sort()->values(),
-                'is_protected' => $role->name === 'super-admin',
+                'is_protected' => false,
             ]);
 
         $permissionGroups = Permission::query()

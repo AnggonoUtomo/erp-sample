@@ -6,7 +6,7 @@ import type { PermissionGroup, RoleOption, UserRow } from '@/pages/console/users
 import { CheckCircle2, Mail, ShieldCheck, UserRound } from 'lucide-react';
 
 const roleColorMap: Record<string, string> = {
-    'super-admin': 'bg-purple-600 text-white',
+    'super-system': 'bg-purple-600 text-white',
     'admin-ops': 'bg-sky-600 text-white',
     'finance-admin': 'bg-emerald-600 text-white',
     'customer-support': 'bg-amber-500 text-white',

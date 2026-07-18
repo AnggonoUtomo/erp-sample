@@ -16,6 +16,8 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements HasMedia
 {
+    public const SUPER_SYSTEM_ROLE = 'super-system';
+
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasRoles, InteractsWithMedia, Notifiable, SoftDeletes;
 
@@ -68,6 +70,7 @@ class User extends Authenticatable implements HasMedia
     public function getUserRoles(): array
     {
         return $this->getRoleNames()
+            ->reject(fn (string $role) => $role === self::SUPER_SYSTEM_ROLE)
             ->mapWithKeys(fn (string $role) => [$role => true])
             ->all();
     }
@@ -85,7 +88,7 @@ class User extends Authenticatable implements HasMedia
 
     public function isSuperAdmin(): bool
     {
-        return $this->hasRole('super-admin');
+        return $this->hasRole(self::SUPER_SYSTEM_ROLE);
     }
 
     /**

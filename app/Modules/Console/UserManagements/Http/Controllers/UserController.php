@@ -31,6 +31,7 @@ class UserController extends Controller
 
         $search = $request->string('search')->toString();
         $role = $request->string('role')->toString();
+        $role = $role === User::SUPER_SYSTEM_ROLE ? '' : $role;
         $archive = $request->string('archive', 'active')->toString();
         $perPage = $this->perPage($request);
 
@@ -51,8 +52,12 @@ class UserController extends Controller
             ->paginate($perPage)
             ->withQueryString()
             ->through(function (User $user) use ($request) {
-                $roles = $user->roles->pluck('name')->values();
+                $roles = $user->roles
+                    ->pluck('name')
+                    ->reject(fn (string $role) => $role === User::SUPER_SYSTEM_ROLE)
+                    ->values();
                 $rolePermissions = $user->roles
+                    ->reject(fn (Role $role) => $role->name === User::SUPER_SYSTEM_ROLE)
                     ->mapWithKeys(fn (Role $role) => [
                         $role->name => $role->permissions
                             ->pluck('name')
@@ -90,6 +95,7 @@ class UserController extends Controller
             'roles' => Role::query()
                 ->select('id', 'name')
                 ->with('permissions:id,name')
+                ->where('name', '!=', User::SUPER_SYSTEM_ROLE)
                 ->orderBy('name')
                 ->get()
                 ->map(fn (Role $role) => [

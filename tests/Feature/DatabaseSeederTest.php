@@ -15,15 +15,15 @@ class DatabaseSeederTest extends TestCase
     {
         $this->seed();
 
-        $superAdmin = User::where('email', 'anggono@mail.com')->firstOrFail();
+        $superSystem = User::where('email', 'anggono@mail.com')->firstOrFail();
         $admin = User::where('email', 'admin@mail.com')->firstOrFail();
         $staff = User::where('email', 'staff@mail.com')->firstOrFail();
 
-        $this->assertTrue(Role::findByName('super-admin')->hasPermissionTo('departements.manage'));
+        $this->assertTrue(Role::findByName('super-system')->hasPermissionTo('departements.manage'));
         $this->assertTrue(Role::findByName('admin')->hasPermissionTo('departements.manage'));
         $this->assertTrue(Role::findByName('staff')->hasPermissionTo('departements.view'));
 
-        $this->assertTrue($superAdmin->hasRole('super-admin'));
+        $this->assertTrue($superSystem->hasRole('super-system'));
         $this->assertTrue($admin->hasRole('admin'));
         $this->assertTrue($staff->hasRole('staff'));
     }

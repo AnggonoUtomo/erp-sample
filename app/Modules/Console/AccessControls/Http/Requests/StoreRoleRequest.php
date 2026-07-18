@@ -2,6 +2,7 @@
 
 namespace App\Modules\Console\AccessControls\Http\Requests;
 
+use App\Models\User;
 use App\Modules\Console\AccessControls\DTO\RoleData;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -21,7 +22,7 @@ class StoreRoleRequest extends FormRequest
         $guardName = $this->input('guard_name', 'web');
 
         return [
-            'name' => ['required', 'string', 'max:255', Rule::unique('roles', 'name')->where('guard_name', $guardName)],
+            'name' => ['required', 'string', 'max:255', Rule::notIn([User::SUPER_SYSTEM_ROLE]), Rule::unique('roles', 'name')->where('guard_name', $guardName)],
             'guard_name' => ['nullable', 'string', 'max:50'],
             'permissions' => ['array'],
             'permissions.*' => ['string', Rule::exists('permissions', 'name')->where('guard_name', $guardName)],

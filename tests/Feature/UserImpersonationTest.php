@@ -23,7 +23,7 @@ class UserImpersonationTest extends TestCase
 
         Role::findOrCreate('admin')->syncPermissions(['users.view', 'users.impersonate']);
         Role::findOrCreate('staff')->syncPermissions(['users.view']);
-        Role::findOrCreate('super-admin')->syncPermissions(['users.view', 'users.impersonate']);
+        Role::findOrCreate('super-system')->syncPermissions(['users.view', 'users.impersonate']);
     }
 
     public function test_authorized_user_can_start_and_stop_impersonation(): void
@@ -48,43 +48,43 @@ class UserImpersonationTest extends TestCase
         $this->assertFalse(session()->has(UserImpersonationService::SESSION_IMPERSONATOR_ID));
     }
 
-    public function test_super_admin_users_cannot_be_impersonated(): void
+    public function test_super_system_users_cannot_be_impersonated(): void
     {
         $admin = User::factory()->create();
         $admin->assignRole('admin');
 
         $target = User::factory()->create();
-        $target->assignRole('super-admin');
+        $target->assignRole('super-system');
 
         $this->actingAs($admin)
             ->post(route('users.impersonate', $target))
             ->assertRedirect()
-            ->assertSessionHas('error', 'Tidak bisa impersonate akun super-admin.');
+            ->assertSessionHas('error', 'Tidak bisa impersonate akun super-system.');
     }
 
-    public function test_user_cannot_impersonate_themself_even_when_super_admin(): void
+    public function test_user_cannot_impersonate_themself_even_when_super_system(): void
     {
-        $superAdmin = User::factory()->create();
-        $superAdmin->assignRole('super-admin');
+        $superSystem = User::factory()->create();
+        $superSystem->assignRole('super-system');
 
-        $this->actingAs($superAdmin)
-            ->post(route('users.impersonate', $superAdmin))
+        $this->actingAs($superSystem)
+            ->post(route('users.impersonate', $superSystem))
             ->assertRedirect()
             ->assertSessionHas('error', 'Tidak bisa impersonate akun sendiri.');
 
-        $this->assertAuthenticatedAs($superAdmin);
+        $this->assertAuthenticatedAs($superSystem);
         $this->assertFalse(session()->has(UserImpersonationService::SESSION_IMPERSONATOR_ID));
     }
 
-    public function test_super_admin_can_impersonate_non_super_admin_user(): void
+    public function test_super_system_can_impersonate_non_super_system_user(): void
     {
-        $superAdmin = User::factory()->create();
-        $superAdmin->assignRole('super-admin');
+        $superSystem = User::factory()->create();
+        $superSystem->assignRole('super-system');
 
         $target = User::factory()->create();
         $target->assignRole('admin');
 
-        $this->actingAs($superAdmin)
+        $this->actingAs($superSystem)
             ->post(route('users.impersonate', $target))
             ->assertRedirect(route('dashboard'));
 

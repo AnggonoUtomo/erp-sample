@@ -476,7 +476,7 @@ User auth dibagikan ke frontend melalui Inertia:
 - user
 - roles
 - permissions
-- super admin flag
+- super system flag
 
 Super admin dapat diberi bypass melalui `Gate::before`.
 

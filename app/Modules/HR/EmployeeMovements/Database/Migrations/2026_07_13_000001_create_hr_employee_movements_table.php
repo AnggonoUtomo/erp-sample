@@ -19,8 +19,15 @@ return new class extends Migration
             $table->json('before_values');
             $table->json('after_values');
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('approved_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->timestamp('approved_at')->nullable();
             $table->foreignId('applied_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamp('applied_at')->nullable();
+            $table->foreignId('cancelled_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->timestamp('cancelled_at')->nullable();
+            $table->string('cancel_reason', 500)->nullable();
+            $table->foreignId('archived_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->timestamp('archived_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->index(['employee_id', 'effective_date']);

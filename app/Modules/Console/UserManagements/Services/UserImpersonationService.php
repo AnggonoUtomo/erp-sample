@@ -32,7 +32,7 @@ class UserImpersonationService
         }
 
         if ($target->isSuperAdmin()) {
-            return 'Tidak bisa impersonate akun super-admin.';
+            return 'Tidak bisa impersonate akun super-system.';
         }
 
         if ($request->session()->has(self::SESSION_IMPERSONATOR_ID)) {
