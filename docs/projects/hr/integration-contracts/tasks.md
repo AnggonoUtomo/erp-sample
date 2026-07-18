@@ -143,7 +143,7 @@ rg "::create\\(|->create\\(|->update\\(|->delete\\(|DB::|Schema::|Notification::
 
 Hasil: `routes.php` dan `navigation.php` tidak ada; scan mutation/write pattern tidak menemukan match.
 
-## Task 05 — Contract dan document compliance snapshot
+## Task 05 — Contract dan document compliance snapshot ✅
 
 **Tujuan:** menyediakan snapshot ringkasan contract dan document compliance tanpa field sensitif.
 
@@ -156,10 +156,12 @@ Hasil: `routes.php` dan `navigation.php` tidak ada; scan mutation/write pattern 
 
 **Acceptance criteria:**
 
-- [ ] Contract snapshot tidak memuat compensation, notes, atau attachment.
-- [ ] Document compliance snapshot tidak memuat document number, DMS reference, storage path, URL, atau token.
-- [ ] Snapshot menerima tanggal acuan eksplisit.
-- [ ] Empty/missing data menghasilkan payload aman dan terdokumentasi.
+- [x] Contract snapshot tidak memuat compensation, notes, atau attachment.
+- [x] Document compliance snapshot tidak memuat document number, DMS reference, storage path, URL, atau token.
+- [x] Snapshot menerima tanggal acuan eksplisit.
+- [x] Empty/missing data menghasilkan payload aman dan terdokumentasi.
+
+**Hasil implementasi:** selesai 2026-07-18. `EmployeeContractSnapshotProvider` dan `EmployeeDocumentComplianceSnapshotProvider` tersedia sebagai binding container. Contract provider memilih kontrak yang effective pada `asOf`; jika tidak ada, provider fallback ke kontrak non-cancelled terbaru dengan `isCurrent=false`. Payload hanya memuat employee id, contract id, contract type code, status, tanggal mulai/akhir, dan current flag. Document compliance provider menghitung total metadata dokumen aktif, verified, pending, expired, dan expiring berdasarkan `asOf` dan warning window eksplisit. Payload tidak membawa document number, fingerprint, DMS reference, storage path, URL, token, issuer, verification reason, atau notes.
 
 **Test:**
 

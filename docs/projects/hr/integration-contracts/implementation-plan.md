@@ -59,7 +59,7 @@ Lihat [ADR-001](decisions/001-stable-hr-integration-contracts.md).
 
 4. Implement `EmployeeSnapshotV1`. ✅
 5. Implement `EmployeeAssignmentSnapshotV1` dengan tanggal acuan. ✅
-6. Implement contract/document compliance snapshot minimal.
+6. Implement contract/document compliance snapshot minimal. ✅
 
 ### Checkpoint B — Read-only snapshots
 
