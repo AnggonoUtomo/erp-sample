@@ -7,33 +7,61 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import { UserMenuContent } from '@/components/user-menu-content';
 import { useAppearance } from '@/hooks/use-appearance';
 import { useInitials } from '@/hooks/use-initials';
+import { cn } from '@/lib/utils';
 import { type BreadcrumbItem as BreadcrumbItemType, type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
-import { Moon, Sun } from 'lucide-react';
+import { HelpCircle, Moon, Search, Sun } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export function AppMenuHeader({ breadcrumbs = [] }: { breadcrumbs?: BreadcrumbItemType[] }) {
     const { auth } = usePage<SharedData>().props;
     const { appearance, updateAppearance } = useAppearance();
     const getInitials = useInitials();
     const isDark = appearance === 'dark';
+    const [isSticky, setIsSticky] = useState(false);
+
+    useEffect(() => {
+        const updateStickyState = () => setIsSticky(window.scrollY > 4);
+
+        updateStickyState();
+        window.addEventListener('scroll', updateStickyState, { passive: true });
+
+        return () => window.removeEventListener('scroll', updateStickyState);
+    }, []);
 
     if (!auth.user) {
         return null;
     }
 
     return (
-        <header className="bg-card/92 supports-[backdrop-filter]:bg-card/78 sticky top-3 z-40 mx-3 mt-3 rounded-xl border px-3 py-2 shadow-sm backdrop-blur md:mx-4 md:px-4">
-            <div className="flex min-h-11 items-center justify-between gap-3">
-                <div className="flex min-w-0 items-center gap-2">
+        <header
+            className={cn(
+                'border-sidebar-border/70 bg-sidebar text-sidebar-foreground sticky top-0 z-40 border-b px-3 py-2 transition-all duration-200 md:px-5',
+                isSticky && 'supports-[backdrop-filter]:bg-sidebar/78 bg-sidebar/92 shadow-sm backdrop-blur-xl',
+            )}
+        >
+            <div className="flex min-h-12 items-center justify-between gap-3">
+                <div className="flex min-w-0 flex-1 items-center gap-2">
                     <SidebarTrigger className="size-9 rounded-lg" />
                     <div className="bg-border hidden h-5 w-px sm:block" />
-                    <div className="min-w-0">
+                    <div className="min-w-0 shrink">
                         <Breadcrumbs breadcrumbs={breadcrumbs} />
+                    </div>
+
+                    <div className="border-sidebar-border/80 bg-sidebar-accent/70 text-muted-foreground ml-auto hidden h-10 max-w-xl min-w-44 flex-1 items-center gap-2 rounded-xl border px-3 text-sm shadow-xs lg:flex">
+                        <Search className="size-4" />
+                        <span className="truncate">Cari menu, data, laporan...</span>
+                        <kbd className="bg-sidebar text-muted-foreground ml-auto rounded-md px-1.5 py-0.5 text-[11px]">Ctrl K</kbd>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 sm:gap-2">
                     <ActivityCenterDropdown />
+
+                    <Button type="button" variant="ghost" size="icon" className="size-9 rounded-lg">
+                        <HelpCircle className="size-4" />
+                        <span className="sr-only">Bantuan</span>
+                    </Button>
 
                     <Button
                         type="button"
