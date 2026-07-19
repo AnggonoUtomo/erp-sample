@@ -196,12 +196,16 @@ git diff --check
 
 **Dependencies:** Task 04. **Scope:** S.
 
-## Checkpoint B — Configuration and notification boundary
+## Checkpoint B — Configuration and notification boundary ✅
 
-- [ ] Task 04–05 selesai.
-- [ ] Secret masking/encryption policy jelas.
-- [ ] Email/log delivery mode jelas.
-- [ ] Mutation settings/templates permission-gated.
+- [x] Task 04–05 selesai.
+- [x] Secret masking/encryption policy jelas.
+- [x] Email/log delivery mode jelas.
+- [x] Mutation settings/templates permission-gated.
+
+**Hasil checkpoint:** selesai 2026-07-19. Ringkasan gabungan tersedia di [Checkpoint B — Configuration and Notification Boundary](checkpoint-b-configuration-notification-boundary.md). Evidence gabungan `SystemSetting|NotificationTemplate|ProfileUpdate`, targeted Pint, `module:validate`, `typecheck`, `build`, dan `git diff --check` hijau. System Settings sudah aman untuk secret email/map/maintenance pada props dan audit, email delivery mode local/log jelas, delete account visibility ditegakkan, dan Notification Templates sudah permission-gated. Tidak ada blocker untuk lanjut ke Activity Center.
+
+**Follow-up tercatat:** depresiasi/guard legacy credential password notification, safe preview endpoint jika dibutuhkan, audit body policy untuk template, enforcement tambahan security policy seperti single session/email verification, dan copy inactive template agar selaras dengan behavior service.
 
 ## Task 06 — Activity Center read model
 

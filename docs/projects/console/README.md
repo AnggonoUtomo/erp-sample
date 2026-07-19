@@ -22,6 +22,7 @@ Dokumen ini belum berarti seluruh Console perlu dibangun ulang. Tujuannya adalah
 8. [Checkpoint A — Identity and Access Boundary](checkpoint-a-identity-access-boundary.md) — verifikasi gabungan Task 01–03 sebelum lanjut ke System Settings.
 9. [04 — System Settings Boundary](04-system-settings-boundary.md) — hasil telusur konfigurasi runtime, permission boundary, secret masking, email/log behavior, dan hardening map/maintenance secret.
 10. [05 — Notification Templates Lifecycle](05-notification-templates-lifecycle.md) — hasil telusur template notification/email, permission update, default templates, preview boundary, dan guide-plan legacy credential.
+11. [Checkpoint B — Configuration and Notification Boundary](checkpoint-b-configuration-notification-boundary.md) — verifikasi gabungan Task 04–05 sebelum lanjut ke observability Console.
 
 ## Relasi lintas dokumen
 
