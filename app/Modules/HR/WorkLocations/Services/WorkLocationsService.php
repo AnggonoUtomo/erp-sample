@@ -84,7 +84,7 @@ class WorkLocationsService
                 'inactive' => WorkLocation::query()->where('active', false)->count(),
                 'archived' => WorkLocation::onlyTrashed()->count(),
             ],
-            'mapSettings' => $this->settings->mapSettings(),
+            'mapSettings' => $this->settings->mapRuntimeSettings(),
         ];
     }
 

@@ -18,6 +18,9 @@ Dokumen ini belum berarti seluruh Console perlu dibangun ulang. Tujuannya adalah
 4. [Tasks](tasks.md) — daftar task kecil untuk menelusuri, memformalkan, dan mengoreksi Console module-by-module.
 5. [01 — Console Shell Baseline](01-console-shell-baseline.md) — hasil telusur login, dashboard, layout, sidebar, header, shared props, dan theme.
 6. [02 — Access Control Boundary](02-access-control-boundary.md) — hasil telusur role/permission CRUD, protected `super-system`, permission module panel, policy, dan denial matrix.
+7. [03 — User Management Lifecycle](03-user-management-lifecycle.md) — hasil telusur user create/update/archive/restore/force-delete, avatar, activation/reset link, profile settings, dan impersonation.
+8. [Checkpoint A — Identity and Access Boundary](checkpoint-a-identity-access-boundary.md) — verifikasi gabungan Task 01–03 sebelum lanjut ke System Settings.
+9. [04 — System Settings Boundary](04-system-settings-boundary.md) — hasil telusur konfigurasi runtime, permission boundary, secret masking, email/log behavior, dan hardening map/maintenance secret.
 
 ## Relasi lintas dokumen
 

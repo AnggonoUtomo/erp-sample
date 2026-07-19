@@ -124,7 +124,7 @@ export default function SystemSettings({
         page_style: maintenanceMode.page_style ?? 'aurora',
         retry_seconds: maintenanceMode.retry_seconds ? String(maintenanceMode.retry_seconds) : '',
         refresh_seconds: maintenanceMode.refresh_seconds ? String(maintenanceMode.refresh_seconds) : '',
-        secret: maintenanceMode.secret ?? '',
+        secret: '',
     });
     const mapForm = useForm<MapSettingForm>({
         enabled: mapSettings.enabled,

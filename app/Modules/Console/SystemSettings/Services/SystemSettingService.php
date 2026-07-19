@@ -146,6 +146,8 @@ class SystemSettingService
      */
     private const ENCRYPTED_KEYS = [
         'password',
+        'google_maps_api_key',
+        'secret',
     ];
 
     public function __construct(
@@ -546,11 +548,16 @@ class SystemSettingService
     /**
      * @return array<string, mixed>
      */
-    public function maintenanceModeSettings(): array
+    public function maintenanceModeSettings(bool $includeSecret = false): array
     {
         $settings = $this->storedSettings(self::MAINTENANCE_MODE_GROUP, self::MAINTENANCE_MODE_DEFAULTS);
         $settings['active'] = app()->isDownForMaintenance();
-        $settings['bypass_url'] = filled($settings['secret']) ? url($settings['secret']) : null;
+        $settings['secret_configured'] = filled($settings['secret']);
+        $settings['bypass_url'] = $includeSecret && filled($settings['secret']) ? url($settings['secret']) : null;
+
+        if (! $includeSecret) {
+            $settings['secret'] = null;
+        }
 
         return $settings;
     }
@@ -577,7 +584,10 @@ class SystemSettingService
             $this->put(self::MAINTENANCE_MODE_GROUP, 'page_style', $data->pageStyle);
             $this->put(self::MAINTENANCE_MODE_GROUP, 'retry_seconds', $data->retrySeconds);
             $this->put(self::MAINTENANCE_MODE_GROUP, 'refresh_seconds', $data->refreshSeconds);
-            $this->put(self::MAINTENANCE_MODE_GROUP, 'secret', $data->secret);
+
+            if (filled($data->secret)) {
+                $this->put(self::MAINTENANCE_MODE_GROUP, 'secret', $data->secret, true);
+            }
         });
 
         $this->applyMaintenanceMode();
@@ -594,12 +604,24 @@ class SystemSettingService
     /**
      * @return array<string, mixed>
      */
-    public function mapSettings(): array
+    public function mapSettings(bool $includeSecret = false): array
     {
         $settings = $this->storedSettings(self::MAP_GROUP, self::MAP_DEFAULTS);
         $settings['configured'] = filled($settings['google_maps_api_key']);
 
+        if (! $includeSecret) {
+            $settings['google_maps_api_key'] = null;
+        }
+
         return $settings;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function mapRuntimeSettings(): array
+    {
+        return $this->mapSettings(includeSecret: true);
     }
 
     public function updateMapSettings(MapSettingData $data): void
@@ -608,7 +630,11 @@ class SystemSettingService
 
         $this->transaction->run(function () use ($data) {
             $this->put(self::MAP_GROUP, 'enabled', $data->enabled);
-            $this->put(self::MAP_GROUP, 'google_maps_api_key', $data->googleMapsApiKey);
+
+            if (filled($data->googleMapsApiKey)) {
+                $this->put(self::MAP_GROUP, 'google_maps_api_key', $data->googleMapsApiKey, true);
+            }
+
             $this->put(self::MAP_GROUP, 'google_maps_map_id', $data->googleMapsMapId);
         });
 
@@ -627,7 +653,7 @@ class SystemSettingService
             return;
         }
 
-        $settings = $this->maintenanceModeSettings();
+        $settings = $this->maintenanceModeSettings(includeSecret: true);
 
         if (! $settings['enabled']) {
             Artisan::call('up');

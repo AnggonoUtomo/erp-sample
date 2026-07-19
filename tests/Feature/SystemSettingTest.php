@@ -3,10 +3,14 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Modules\Console\AuditLogs\Models\AuditLog;
 use App\Modules\Console\SystemSettings\Mail\SmtpTestMail;
+use App\Modules\Console\SystemSettings\Models\SystemSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
+use Inertia\Testing\AssertableInertia as Assert;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
@@ -177,9 +181,16 @@ class SystemSettingTest extends TestCase
         $this->assertDatabaseHas('system_settings', [
             'group' => 'map',
             'key' => 'google_maps_api_key',
-            'value' => 'AIza-test-key',
-            'encrypted' => false,
+            'encrypted' => true,
         ]);
+
+        $storedApiKey = SystemSetting::query()
+            ->where('group', 'map')
+            ->where('key', 'google_maps_api_key')
+            ->firstOrFail();
+
+        $this->assertNotSame('AIza-test-key', $storedApiKey->value);
+        $this->assertSame('AIza-test-key', Crypt::decryptString($storedApiKey->value));
 
         $this->assertDatabaseHas('system_settings', [
             'group' => 'map',
@@ -194,6 +205,48 @@ class SystemSettingTest extends TestCase
             'event' => 'map.updated',
             'description' => 'Updated Google Maps configuration',
         ]);
+
+        $audit = AuditLog::query()->where('event', 'map.updated')->firstOrFail();
+
+        $this->assertFalse(str_contains(json_encode($audit->new_values), 'AIza-test-key'));
+    }
+
+    public function test_map_api_key_is_masked_in_props_and_blank_update_keeps_existing_secret(): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole('admin');
+
+        $this->actingAs($user)
+            ->put(route('system-settings.map.update'), [
+                'enabled' => true,
+                'google_maps_api_key' => 'AIza-existing-key',
+                'google_maps_map_id' => 'starterkit-map-id',
+            ])
+            ->assertRedirect();
+
+        $this->actingAs($user)
+            ->get(route('system-settings.index'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('mapSettings.google_maps_api_key', null)
+                ->where('mapSettings.configured', true)
+                ->etc()
+            );
+
+        $this->actingAs($user)
+            ->put(route('system-settings.map.update'), [
+                'enabled' => true,
+                'google_maps_api_key' => '',
+                'google_maps_map_id' => 'updated-map-id',
+            ])
+            ->assertRedirect();
+
+        $storedApiKey = SystemSetting::query()
+            ->where('group', 'map')
+            ->where('key', 'google_maps_api_key')
+            ->firstOrFail();
+
+        $this->assertSame('AIza-existing-key', Crypt::decryptString($storedApiKey->value));
     }
 
     public function test_authorized_users_can_update_security_policy(): void
@@ -324,9 +377,16 @@ class SystemSettingTest extends TestCase
         $this->assertDatabaseHas('system_settings', [
             'group' => 'maintenance_mode',
             'key' => 'secret',
-            'value' => 'admin-bypass-2026',
-            'encrypted' => false,
+            'encrypted' => true,
         ]);
+
+        $storedSecret = SystemSetting::query()
+            ->where('group', 'maintenance_mode')
+            ->where('key', 'secret')
+            ->firstOrFail();
+
+        $this->assertNotSame('admin-bypass-2026', $storedSecret->value);
+        $this->assertSame('admin-bypass-2026', Crypt::decryptString($storedSecret->value));
 
         $this->assertDatabaseHas('system_settings', [
             'group' => 'maintenance_mode',
@@ -341,6 +401,56 @@ class SystemSettingTest extends TestCase
             'event' => 'maintenance_mode.updated',
             'description' => 'Updated maintenance mode',
         ]);
+
+        $audit = AuditLog::query()->where('event', 'maintenance_mode.updated')->firstOrFail();
+
+        $this->assertFalse(str_contains(json_encode($audit->new_values), 'admin-bypass-2026'));
+        $this->assertNull($audit->new_values['bypass_url'] ?? null);
+    }
+
+    public function test_maintenance_secret_is_masked_in_props_and_blank_update_keeps_existing_secret(): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole('admin');
+
+        $this->actingAs($user)
+            ->put(route('system-settings.maintenance-mode.update'), [
+                'enabled' => true,
+                'message' => 'Maintenance terjadwal.',
+                'page_style' => 'operations',
+                'retry_seconds' => 600,
+                'refresh_seconds' => 30,
+                'secret' => 'admin-bypass-2026',
+            ])
+            ->assertRedirect();
+
+        $this->actingAs($user)
+            ->get(route('system-settings.index'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('maintenanceMode.secret', null)
+                ->where('maintenanceMode.secret_configured', true)
+                ->where('maintenanceMode.bypass_url', null)
+                ->etc()
+            );
+
+        $this->actingAs($user)
+            ->put(route('system-settings.maintenance-mode.update'), [
+                'enabled' => true,
+                'message' => 'Maintenance terjadwal.',
+                'page_style' => 'operations',
+                'retry_seconds' => 600,
+                'refresh_seconds' => 30,
+                'secret' => '',
+            ])
+            ->assertRedirect();
+
+        $storedSecret = SystemSetting::query()
+            ->where('group', 'maintenance_mode')
+            ->where('key', 'secret')
+            ->firstOrFail();
+
+        $this->assertSame('admin-bypass-2026', Crypt::decryptString($storedSecret->value));
     }
 
     public function test_system_settings_remains_reachable_during_maintenance_mode(): void

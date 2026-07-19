@@ -71,7 +71,7 @@ git diff --check
 
 **Dependencies:** Task 01. **Scope:** M.
 
-## Task 03 — User Management lifecycle
+## Task 03 — User Management lifecycle ✅
 
 **Tujuan:** menelusuri user create/update/archive/restore/force-delete, avatar, reset/activation link, role/direct permission, dan impersonation.
 
@@ -86,11 +86,15 @@ git diff --check
 
 **Acceptance criteria:**
 
-- [ ] User lifecycle dan soft delete policy jelas.
-- [ ] Role protected tidak assignable dari payload user management.
-- [ ] Avatar upload/crop/remove terdokumentasi.
-- [ ] Password reset/activation link behavior jelas untuk email/log local.
-- [ ] Impersonation menolak target super-system untuk non-super-system.
+- [x] User lifecycle dan soft delete policy jelas.
+- [x] Role protected tidak assignable dari payload user management.
+- [x] Avatar upload/crop/remove terdokumentasi.
+- [x] Password reset/activation link behavior jelas untuk email/log local.
+- [x] Impersonation menolak target super-system untuk non-super-system.
+
+**Hasil telusur:** selesai 2026-07-19. User Management lifecycle terdokumentasi di [03 — User Management Lifecycle](03-user-management-lifecycle.md). Module bergantung ke `Console.AccessControls`, mengekspor route/permission/navigation, dan mengelola akun login, avatar, role/direct permission, activation/reset link, archive/restore/force-delete, serta impersonation. Semua route wajib `auth`; create/update memakai FormRequest authorization, sedangkan delete/restore/force-delete memakai `UserPolicy`. Role `super-system` disembunyikan dari actor non-super-system, tidak bisa diassign lewat User Management, tetap dipertahankan saat update user super-system, dan tidak bisa menjadi target impersonation. Password tidak pernah diatur manual dari User Management; create/update hanya dapat memicu activation/reset link melalui job mail jika System Settings mengizinkan. Profile settings `/settings/profile` dicatat sebagai self-service lifecycle terkait avatar dan delete account visibility.
+
+**Follow-up tercatat:** validasi avatar User Management belum memakai MIME allowlist eksplisit seperti profile settings; label UI masih campuran “User/User Management/Manajemen User”; `lastLogin` read model masih `null`; audit impersonation menyimpan email actor/target sebagai identifier audit; stop impersonation route sengaja berbasis session, bukan permission.
 
 **Cara test:**
 
@@ -102,12 +106,16 @@ git diff --check
 
 **Dependencies:** Task 02. **Scope:** M.
 
-## Checkpoint A — Identity and access boundary
+## Checkpoint A — Identity and access boundary ✅
 
-- [ ] Task 01–03 selesai.
-- [ ] Protected role policy/visibility sudah terdokumentasi.
-- [ ] Denial matrix users/access-control hijau.
-- [ ] Tidak ada secret/password/token masuk response/audit.
+- [x] Task 01–03 selesai.
+- [x] Protected role policy/visibility sudah terdokumentasi.
+- [x] Denial matrix users/access-control hijau.
+- [x] Tidak ada secret/password/token masuk response/audit.
+
+**Hasil checkpoint:** selesai 2026-07-19. Ringkasan gabungan tersedia di [Checkpoint A — Identity and Access Boundary](checkpoint-a-identity-access-boundary.md). Evidence gabungan `Dashboard|AccessControl|UserManagement|UserImpersonation`, `module:validate`, `typecheck`, dan `build` hijau. Protected `super-system`, user lifecycle, role/permission mutation denial, dan impersonation boundary sudah cukup kuat untuk lanjut ke System Settings.
+
+**Follow-up tercatat:** samakan MIME allowlist avatar User Management dengan profile settings; polish label Bahasa Indonesia; hubungkan `lastLogin` ke Login Activities saat Task 08; formalkan audit retention/PII minimization saat Task 07; aktifkan global search/help pada polish Console berikutnya.
 
 **Evidence:**
 
@@ -119,7 +127,7 @@ npm run build
 git diff --check
 ```
 
-## Task 04 — System Settings configuration boundary
+## Task 04 — System Settings configuration boundary ✅
 
 **Tujuan:** menelusuri konfigurasi runtime dan memastikan secret/setting sensitif aman.
 
@@ -132,10 +140,15 @@ git diff --check
 
 **Acceptance criteria:**
 
-- [ ] Branding/localization/pagination/password/security/email/map/maintenance terdokumentasi.
-- [ ] Secret email/map tidak dikirim plaintext ke frontend.
-- [ ] Delete account visibility setting terdokumentasi.
-- [ ] Email automation local/log behavior terdokumentasi.
+- [x] Branding/localization/pagination/password/security/email/map/maintenance terdokumentasi.
+- [x] Secret email/map tidak dikirim plaintext ke frontend.
+  - Email password sudah aman/masked.
+  - Map API key sudah encrypted at rest dan masked pada System Settings props/audit.
+  - Maintenance secret/bypass URL sudah encrypted/masked pada System Settings props/audit.
+- [x] Delete account visibility setting terdokumentasi.
+- [x] Email automation local/log behavior terdokumentasi.
+
+**Hasil telusur dan hardening:** selesai 2026-07-19. Dokumentasi tersedia di [04 — System Settings Boundary](04-system-settings-boundary.md). System Settings sudah punya route `auth`, policy `system-settings.view/update`, request authorization, DTO, service, audit, dan panel frontend untuk email, branding, localization, pagination, security policy, password policy, maintenance, map, health, dan environment. Hardening kecil sudah diterapkan: `google_maps_api_key` dan maintenance `secret` disimpan encrypted, tidak dikirim balik plaintext pada System Settings props, update kosong mempertahankan secret lama, dan audit hanya mencatat status configured tanpa nilai secret.
 
 **Cara test:**
 

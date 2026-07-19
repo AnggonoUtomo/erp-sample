@@ -82,6 +82,7 @@ export type MaintenanceMode = {
     retry_seconds: number | null;
     refresh_seconds: number | null;
     secret: string | null;
+    secret_configured: boolean;
     bypass_url: string | null;
 };
 

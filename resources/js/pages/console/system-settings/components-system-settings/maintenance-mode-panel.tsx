@@ -166,29 +166,29 @@ export function MaintenanceModePanel({
                             <InputError message={form.errors.refresh_seconds} />
                         </div>
                         <div className="space-y-2">
-                            <FieldInfoLabel description="Slug rahasia untuk bypass maintenance. Contoh: admin-bypass-2026.">
+                            <FieldInfoLabel description="Slug rahasia untuk bypass maintenance. Kosongkan jika tidak ingin mengubah secret yang sudah tersimpan.">
                                 Secret Bypass
                             </FieldInfoLabel>
                             <Input
+                                type="password"
                                 value={form.data.secret}
                                 disabled={disabled}
-                                placeholder="admin-bypass-2026"
+                                placeholder={maintenanceMode.secret_configured ? 'Secret bypass sudah tersimpan' : 'admin-bypass-2026'}
                                 onChange={(event) => form.setData('secret', event.target.value)}
                             />
                             <p className="text-muted-foreground text-xs leading-relaxed">
-                                URL rahasia untuk melewati maintenance dari browser admin, misalnya /admin-bypass-2026.
+                                Secret tidak ditampilkan ulang. Jika perlu membagikan bypass URL, gunakan slug baru yang baru saja disimpan.
                             </p>
                             <InputError message={form.errors.secret} />
                         </div>
                     </div>
 
-                    {maintenanceMode.bypass_url ? (
+                    {maintenanceMode.secret_configured ? (
                         <div className="rounded-lg border border-dashed p-4">
-                            <p className="text-sm font-medium">Bypass URL</p>
-                            <p className="text-muted-foreground mt-1 text-xs leading-relaxed break-all">{maintenanceMode.bypass_url}</p>
+                            <p className="text-sm font-medium">Secret Bypass Tersimpan</p>
                             <p className="text-muted-foreground mt-2 text-xs leading-relaxed">
-                                Buka URL ini sekali dari browser admin untuk mendapatkan cookie bypass. Setelah itu browser tersebut bisa mengakses
-                                aplikasi walaupun maintenance mode aktif.
+                                Nilai secret dan bypass URL tidak ditampilkan ulang untuk keamanan. Jika secret hilang, isi secret baru lalu simpan
+                                maintenance mode.
                             </p>
                         </div>
                     ) : null}
