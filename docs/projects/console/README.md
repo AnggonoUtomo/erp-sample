@@ -31,6 +31,7 @@ Dokumen ini belum berarti seluruh Console perlu dibangun ulang. Tujuannya adalah
 17. [10 — Scheduler Monitor Runtime Control](10-scheduler-monitor-runtime-control.md) — hasil telusur scheduled task list, run due task permission, heartbeat, timezone semantics, dan output safety.
 18. [Checkpoint D — Runtime Operation Boundary](checkpoint-d-runtime-operation-boundary.md) — verifikasi gabungan Queue Monitor dan Scheduler Monitor sebelum lanjut ke recovery boundary.
 19. [11 — Backup Restore Signed Recovery Boundary](11-backup-restore-signed-recovery-boundary.md) — hasil telusur settings backup, full signed ZIP v3, DMS private coverage, signature, restore validation, dan dry-run.
+20. [Checkpoint E — Recovery Boundary](checkpoint-e-recovery-boundary.md) — verifikasi Backup Restore sebagai signed recovery boundary sebelum lanjut ke Console guide/roadmap.
 
 ## Relasi lintas dokumen
 

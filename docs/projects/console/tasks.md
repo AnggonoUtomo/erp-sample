@@ -430,11 +430,15 @@ git diff --check
 
 **Dependencies:** Checkpoint D. **Scope:** M.
 
-## Checkpoint E — Recovery boundary
+## Checkpoint E — Recovery boundary ✅
 
-- [ ] Task 11 selesai.
-- [ ] Runbook backup sesuai behavior aktual.
-- [ ] Recovery path tidak memberi rasa aman palsu.
+- [x] Task 11 selesai.
+- [x] Runbook backup sesuai behavior aktual.
+- [x] Recovery path tidak memberi rasa aman palsu.
+
+**Hasil checkpoint:** selesai 2026-07-19. Ringkasan gabungan tersedia di [Checkpoint E — Recovery Boundary](checkpoint-e-recovery-boundary.md). Evidence `BackupRestore`, targeted Pint, `module:validate`, `typecheck`, `build`, dan `git diff --check` hijau. Backup Restore sudah diposisikan sebagai recovery boundary high-risk: settings backup dan full backup berbeda schema, full backup aktif signed ZIP v3, private DMS masuk payload, restore unsafe/legacy ditolak, dry-run eksplisit tersedia, dan residual risk recovery tidak disembunyikan.
+
+**Follow-up tercatat:** restore drill SOP di UI, multi-key verification, asymmetric signature evaluation, restore staging directory, backup size/runtime observability, dan production restore drill.
 
 ## Task 12 — Console module guide dan roadmap
 
