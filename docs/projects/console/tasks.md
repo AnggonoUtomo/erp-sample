@@ -162,7 +162,7 @@ git diff --check
 
 **Dependencies:** Checkpoint A. **Scope:** M.
 
-## Task 05 — Notification Templates lifecycle
+## Task 05 — Notification Templates lifecycle ✅
 
 **Tujuan:** menelusuri template notification/email dan preview/update behavior.
 
@@ -174,15 +174,23 @@ git diff --check
 
 **Acceptance criteria:**
 
-- [ ] Template key/channel/body/subject terdokumentasi.
-- [ ] Update dibatasi permission.
-- [ ] Preview tidak mengirim secret/PII sensitif yang salah.
-- [ ] Template default dari seeder/module permission jelas.
+- [x] Template key/channel/body/subject terdokumentasi.
+- [x] Update dibatasi permission.
+- [x] Preview tidak mengirim secret/PII sensitif yang salah.
+- [x] Template default dari seeder/module permission jelas.
+
+**Hasil telusur:** selesai 2026-07-19. Dokumentasi tersedia di [05 — Notification Templates Lifecycle](05-notification-templates-lifecycle.md). Module mengekspor route, permission, navigation, policy, FormRequest, service default template, dan frontend editor/list. Route view/update wajib `auth`; view dikontrol `notification-templates.view`, sedangkan update dikontrol `notification-templates.update`. Default template aktif saat ini adalah `user.activation`, `user.credential`, dan `smtp.test`. Halaman template tidak mengirim email dan belum punya executable preview route; karena itu tidak ada jalur preview yang mengirim secret/PII. Gap yang dicatat: legacy `user.credential`, `SendUserCredentialNotificationJob`, dan `UserCredentialNotification` masih membawa konsep plain password meski tidak ditemukan caller aktif pada flow User Management saat ini.
+
+**Guide-plan koreksi:** depresiasi/guard legacy credential password notification, tambahkan safe preview endpoint jika dibutuhkan, dan formalkan policy audit body agar isi template tidak menjadi tempat secret nyata.
 
 **Cara test:**
 
 ```bash
 php artisan test --filter=NotificationTemplate
+vendor/bin/pint --test app/Modules/Console/NotificationTemplates tests/Feature/NotificationTemplateTest.php
+npm run typecheck
+npm run build
+php artisan module:validate
 git diff --check
 ```
 
