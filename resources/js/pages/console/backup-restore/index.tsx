@@ -169,8 +169,8 @@ export default function BackupRestore({ overview, can }: Props) {
                                         <span>
                                             <span className="block font-medium">Dry-run validation saja</span>
                                             <span className="mt-1 block text-xs leading-relaxed opacity-80">
-                                                Validasi signature, checksum, manifest, dan keamanan ZIP tanpa menulis database atau storage.
-                                                Matikan opsi ini hanya saat benar-benar siap restore.
+                                                Validasi signature, checksum, manifest, dan keamanan ZIP tanpa menulis database atau storage. Matikan
+                                                opsi ini hanya saat benar-benar siap restore.
                                             </span>
                                         </span>
                                     </label>

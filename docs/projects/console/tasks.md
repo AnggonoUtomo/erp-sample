@@ -440,7 +440,7 @@ git diff --check
 
 **Follow-up tercatat:** restore drill SOP di UI, multi-key verification, asymmetric signature evaluation, restore staging directory, backup size/runtime observability, dan production restore drill.
 
-## Task 12 — Console module guide dan roadmap
+## Task 12 — Console module guide dan roadmap ✅
 
 **Tujuan:** membuat dokumen lanjutan setelah penelusuran awal agar Console punya guide seperti HR.
 
@@ -453,9 +453,11 @@ git diff --check
 
 **Acceptance criteria:**
 
-- [ ] Guide mencatat aturan module Console.
-- [ ] Roadmap mencatat status module-by-module.
-- [ ] Cross-link ke docs architecture/reviews tersedia.
+- [x] Guide mencatat aturan module Console.
+- [x] Roadmap mencatat status module-by-module.
+- [x] Cross-link ke docs architecture/reviews tersedia.
+
+**Hasil:** selesai 2026-07-19. Panduan teknis tersedia di [Panduan Module Project Console](module-guide.md), sedangkan peta status/backlog tersedia di [Roadmap Project Console](roadmap.md). README Console sudah ditambah urutan baca dan cross-link. Guide mencatat aturan route/frontend/backend, permission, protected role, lifecycle, backup/recovery, quality gate, dan checklist saat menambah module Console. Roadmap mencatat status Phase 1–6, backlog per boundary, urutan operasional human/admin, definition of done, risiko besar, dan hubungan Console dengan project lain.
 
 **Cara test:**
 
@@ -465,22 +467,37 @@ git diff --check
 
 **Dependencies:** Checkpoint E. **Scope:** S.
 
-## Final quality checkpoint
+## Final quality checkpoint ✅
 
-- [ ] Semua task penelusuran Console selesai.
-- [ ] Gap correction guide tersedia.
-- [ ] Relevant tests hijau.
-- [ ] README/spec/plan/tasks/ADR sesuai implementasi aktual.
+- [x] Semua task penelusuran Console selesai.
+- [x] Gap correction guide tersedia melalui checkpoint, roadmap, dan follow-up per task.
+- [x] Relevant tests hijau.
+- [x] README/spec/plan/tasks/ADR sesuai implementasi aktual.
+
+**Hasil checkpoint:** selesai 2026-07-19. Ringkasan akhir tersedia di [Final Quality Checkpoint — Console Project](final-quality-checkpoint.md). Console dinyatakan siap sebagai MVP operational foundation: identity/access boundary, configuration/notification boundary, observability boundary, runtime operation boundary, recovery boundary, module guide, dan roadmap sudah terdokumentasi dan diverifikasi.
 
 **Evidence final:**
 
 ```bash
-vendor/bin/pint --test
+git diff --check
 php artisan module:validate
 npm run format:check
+vendor/bin/pint --test
 npm run lint:check
 npm run typecheck
+npm run test:frontend
 npm run build
 php artisan test
-git diff --check
 ```
+
+**Hasil evidence:**
+
+- `git diff --check` — pass.
+- `php artisan module:validate` — pass.
+- `npm run format:check` — pass.
+- `vendor/bin/pint --test` — pass.
+- `npm run lint:check` — pass.
+- `npm run typecheck` — pass.
+- `npm run test:frontend` — pass, 11 file / 20 test.
+- `npm run build` — pass.
+- `php artisan test` — pass, 513 test / 3161 assertions.

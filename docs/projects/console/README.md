@@ -32,6 +32,9 @@ Dokumen ini belum berarti seluruh Console perlu dibangun ulang. Tujuannya adalah
 18. [Checkpoint D — Runtime Operation Boundary](checkpoint-d-runtime-operation-boundary.md) — verifikasi gabungan Queue Monitor dan Scheduler Monitor sebelum lanjut ke recovery boundary.
 19. [11 — Backup Restore Signed Recovery Boundary](11-backup-restore-signed-recovery-boundary.md) — hasil telusur settings backup, full signed ZIP v3, DMS private coverage, signature, restore validation, dan dry-run.
 20. [Checkpoint E — Recovery Boundary](checkpoint-e-recovery-boundary.md) — verifikasi Backup Restore sebagai signed recovery boundary sebelum lanjut ke Console guide/roadmap.
+21. [Panduan Module Project Console](module-guide.md) — aturan teknis module Console, route/frontend/backend, permission, lifecycle, dan quality gate.
+22. [Roadmap Project Console](roadmap.md) — status implementasi module-by-module, backlog, dan urutan operasional.
+23. [Final Quality Checkpoint](final-quality-checkpoint.md) — review akhir correctness, maintainability, security, test coverage, architecture consistency, dan evidence quality gate.
 
 ## Relasi lintas dokumen
 
@@ -42,6 +45,8 @@ Dokumen ini belum berarti seluruh Console perlu dibangun ulang. Tujuannya adalah
 - [Mutation authorization matrix](../../reviews/2026-07-11-project-baseline/08-mutation-authorization-matrix.md) — daftar route mutasi global dan permission denial matrix.
 - [Backup signature runbook](../../reviews/2026-07-11-project-baseline/09-backup-signature-runbook.md) — runbook full-backup signed.
 - [HR module guide](../hr/module-guide.md) — HR memakai Console sebagai pola UI/permission/audit dan optional Console User boundary.
+- [Console module guide](module-guide.md) — aturan teknis khusus Console.
+- [Console roadmap](roadmap.md) — status dan backlog Console.
 
 ## Module Console yang ditelusuri
 
