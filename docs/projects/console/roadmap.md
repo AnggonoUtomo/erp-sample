@@ -175,6 +175,28 @@ Backlog:
 - Buat guide-plan koreksi gabungan setelah final checkpoint.
 - Tambahkan SOP human-user untuk Console jika pengujian manual mulai dilakukan.
 
+## Phase 7 — Console UX follow-up
+
+Status: mulai dipetakan.
+
+Scope:
+
+- Global search/command palette.
+- Help/documentation center.
+- Label localization full Bahasa Indonesia.
+- Dashboard widget yang lebih actionable.
+
+Output awal:
+
+- [Console Global Search / Command Palette](global-search/README.md)
+
+Backlog:
+
+- Implement command palette read-only dari navigation/sidebar.
+- Aktifkan Help button atau hubungkan ke dokumentasi internal.
+- Polish label Bahasa Indonesia yang masih campuran.
+- Evaluasi dashboard widget setelah search/help stabil.
+
 ## Urutan operasional yang disarankan untuk user/admin
 
 Untuk instalasi atau pengujian manual dari nol:

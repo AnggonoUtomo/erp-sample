@@ -1,5 +1,6 @@
 import { ActivityCenterDropdown } from '@/components/activity-center-dropdown';
 import { Breadcrumbs } from '@/components/breadcrumbs';
+import { GlobalCommandPalette } from '@/components/global-command-palette';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -10,7 +11,7 @@ import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
 import { type BreadcrumbItem as BreadcrumbItemType, type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
-import { HelpCircle, Moon, Search, Sun } from 'lucide-react';
+import { HelpCircle, Moon, Sun } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 export function AppMenuHeader({ breadcrumbs = [] }: { breadcrumbs?: BreadcrumbItemType[] }) {
@@ -48,11 +49,7 @@ export function AppMenuHeader({ breadcrumbs = [] }: { breadcrumbs?: BreadcrumbIt
                         <Breadcrumbs breadcrumbs={breadcrumbs} />
                     </div>
 
-                    <div className="border-sidebar-border/80 bg-sidebar-accent/70 text-muted-foreground ml-auto hidden h-10 max-w-xl min-w-44 flex-1 items-center gap-2 rounded-xl border px-3 text-sm shadow-xs lg:flex">
-                        <Search className="size-4" />
-                        <span className="truncate">Cari menu, data, laporan...</span>
-                        <kbd className="bg-sidebar text-muted-foreground ml-auto rounded-md px-1.5 py-0.5 text-[11px]">Ctrl K</kbd>
-                    </div>
+                    <GlobalCommandPalette className="ml-auto" />
                 </div>
 
                 <div className="flex items-center gap-1.5 sm:gap-2">

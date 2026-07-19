@@ -35,6 +35,7 @@ Dokumen ini belum berarti seluruh Console perlu dibangun ulang. Tujuannya adalah
 21. [Panduan Module Project Console](module-guide.md) — aturan teknis module Console, route/frontend/backend, permission, lifecycle, dan quality gate.
 22. [Roadmap Project Console](roadmap.md) — status implementasi module-by-module, backlog, dan urutan operasional.
 23. [Final Quality Checkpoint](final-quality-checkpoint.md) — review akhir correctness, maintainability, security, test coverage, architecture consistency, dan evidence quality gate.
+24. [Console Global Search / Command Palette](global-search/README.md) — project lanjutan untuk mengaktifkan search header sebagai command palette read-only dan permission-aware.
 
 ## Relasi lintas dokumen
 
@@ -47,6 +48,7 @@ Dokumen ini belum berarti seluruh Console perlu dibangun ulang. Tujuannya adalah
 - [HR module guide](../hr/module-guide.md) — HR memakai Console sebagai pola UI/permission/audit dan optional Console User boundary.
 - [Console module guide](module-guide.md) — aturan teknis khusus Console.
 - [Console roadmap](roadmap.md) — status dan backlog Console.
+- [Console Global Search / Command Palette](global-search/README.md) — follow-up UX Console setelah baseline selesai.
 
 ## Module Console yang ditelusuri
 
