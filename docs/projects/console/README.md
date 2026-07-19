@@ -17,6 +17,7 @@ Dokumen ini belum berarti seluruh Console perlu dibangun ulang. Tujuannya adalah
 3. [Implementation plan](implementation-plan.md) — urutan vertical slice dari identity sampai backup/restore.
 4. [Tasks](tasks.md) — daftar task kecil untuk menelusuri, memformalkan, dan mengoreksi Console module-by-module.
 5. [01 — Console Shell Baseline](01-console-shell-baseline.md) — hasil telusur login, dashboard, layout, sidebar, header, shared props, dan theme.
+6. [02 — Access Control Boundary](02-access-control-boundary.md) — hasil telusur role/permission CRUD, protected `super-system`, permission module panel, policy, dan denial matrix.
 
 ## Relasi lintas dokumen
 

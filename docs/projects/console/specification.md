@@ -203,7 +203,7 @@ Untuk penelusuran module-by-module, jalankan test terarah sesuai module sebelum 
 
 | Area | View permission | Mutation/manage permission | Catatan |
 |---|---|---|---|
-| Access Control | `roles.view`/`access-control.view` | `roles.manage`, `access-control.*` | `super-system` protected |
+| Access Control | `access-control.view` atau `roles.manage` | `roles.manage`, `access-control.create/update/delete` | `super-system` protected; permission CRUD hanya via `roles.manage` |
 | Users | `users.view` | `users.create/update/delete/restore/force-delete/impersonate` | Role protected tidak assignable |
 | System Settings | `system-settings.view` | `system-settings.update` | Secret masked |
 | Notification Templates | `notification-templates.view` | `notification-templates.update` | Preview aman |
@@ -258,4 +258,3 @@ git diff --check
 3. Apakah System Settings perlu ADR khusus untuk secret masking/encryption?
 4. Apakah Audit Logs perlu retention/archival policy?
 5. Apakah Backup Restore perlu scheduled backup MVP atau tetap manual?
-

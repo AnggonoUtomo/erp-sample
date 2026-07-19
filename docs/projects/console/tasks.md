@@ -38,7 +38,7 @@ git diff --check
 
 **Dependencies:** none. **Scope:** M.
 
-## Task 02 — Access Control protected authorization boundary
+## Task 02 — Access Control protected authorization boundary ✅
 
 **Tujuan:** menelusuri role/permission management dan memastikan role `super-system` protected.
 
@@ -51,10 +51,14 @@ git diff --check
 
 **Acceptance criteria:**
 
-- [ ] Role/permission CRUD terdokumentasi.
-- [ ] `super-system` visible hanya untuk akun super-system.
-- [ ] `super-system` tidak bisa dibuat, rename, delete, atau sync permission via UI biasa.
-- [ ] Permission module panel dan grouping terdokumentasi.
+- [x] Role/permission CRUD terdokumentasi.
+- [x] `super-system` visible hanya untuk akun super-system.
+- [x] `super-system` tidak bisa dibuat, rename, delete, atau sync permission via UI biasa.
+- [x] Permission module panel dan grouping terdokumentasi.
+
+**Hasil telusur:** selesai 2026-07-19. Access Control boundary terdokumentasi di [02 — Access Control Boundary](02-access-control-boundary.md). Module mengekspor route, permission, dan navigation melalui contract module. Semua route memakai `auth`, lalu action penting dilindungi middleware `can` berbasis `AccessControlPolicy`. `roles.manage` menjadi manage permission tertinggi, sedangkan `access-control.view/create/update/delete` menjadi permission granular role CRUD. Role `super-system` disembunyikan dari actor non-super-system di `AccessControlService::getPageData()`, tetap terlihat sebagai protected role untuk akun super-system, dan tidak dapat dibuat/update/delete/sync permission lewat UI biasa karena ditolak policy/request/controller. Frontend sudah memakai disabled state, protected badge, dan keyboard shortcut guard sebagai UX layer; security boundary tetap backend.
+
+**Follow-up tercatat:** label breadcrumb/page masih “Access Control” sementara sidebar “Kontrol Akses”; permission creation/deletion sengaja lebih ketat via `roles.manage`; Add Role dialog belum memberi hint eksplisit bahwa `super-system` tidak boleh dibuat; label permission group masih headline otomatis dari prefix permission.
 
 **Cara test:**
 
