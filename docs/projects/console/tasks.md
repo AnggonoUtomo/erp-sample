@@ -240,7 +240,7 @@ git diff --check
 
 **Dependencies:** Checkpoint B. **Scope:** S.
 
-## Task 07 — Audit Logs immutable boundary
+## Task 07 — Audit Logs immutable boundary ✅
 
 **Tujuan:** menelusuri audit log sebagai histori immutable mutation penting.
 
@@ -252,21 +252,29 @@ git diff --check
 
 **Acceptance criteria:**
 
-- [ ] Audit log read-only untuk user.
-- [ ] Audit service tidak menyimpan password/token/secret.
-- [ ] Filter/list behavior terdokumentasi.
-- [ ] Retention/archival gap dicatat jika belum ada.
+- [x] Audit log read-only untuk user.
+- [x] Audit service tidak menyimpan password/token/secret.
+- [x] Filter/list behavior terdokumentasi.
+- [x] Retention/archival gap dicatat jika belum ada.
+
+**Hasil telusur dan hardening:** selesai 2026-07-19. Dokumentasi tersedia di [07 — Audit Logs Immutable Boundary](07-audit-logs-immutable-boundary.md). Module `Console.AuditLogs` hanya memiliki route user-facing `GET /audit-logs` dengan policy `audit-logs.view`; tidak ada route create/update/delete untuk user. List mendukung search, module filter, event filter, pagination dari System Settings, dan detail old/new values. Hardening kecil diterapkan pada `AuditLogService`: sanitizer `old_values`/`new_values` sekarang recursive dan me-redact key sensitif seperti password, token, secret, api_key, dan apikey menjadi `[redacted]`.
+
+**Follow-up tercatat:** retention/archival policy belum ada, actor email/IP/user agent adalah PII yang perlu minimization policy, description caller belum disanitasi otomatis, dan tamper-evident audit chain belum menjadi scope MVP.
 
 **Cara test:**
 
 ```bash
 php artisan test --filter=AuditLog
+vendor/bin/pint --test app/Modules/Console/AuditLogs tests/Feature/AuditLogTest.php resources/js/pages/console/audit-logs/index.tsx
+npm run typecheck
+npm run build
+php artisan module:validate
 git diff --check
 ```
 
 **Dependencies:** Task 06. **Scope:** S.
 
-## Task 08 — Login Activities security observability
+## Task 08 — Login Activities security observability ✅
 
 **Tujuan:** menelusuri log login sukses/gagal tanpa menyimpan credential.
 
@@ -278,25 +286,37 @@ git diff --check
 
 **Acceptance criteria:**
 
-- [ ] Login success/failure tercatat.
-- [ ] Password/token tidak pernah dicatat.
-- [ ] IP/user agent handling terdokumentasi.
-- [ ] View permission jelas.
+- [x] Login success/failure tercatat.
+- [x] Password/token tidak pernah dicatat.
+- [x] IP/user agent handling terdokumentasi.
+- [x] View permission jelas.
+
+**Hasil telusur dan coverage:** selesai 2026-07-19. Dokumentasi tersedia di [08 — Login Activities Security Observability](08-login-activities-security-observability.md). Module `Console.LoginActivities` hanya memiliki route user-facing `GET /login-activities` dengan policy `login-activities.view`; tidak ada route mutation untuk user. Recording dilakukan internal dari `AuthenticatedSessionController` untuk `login`, `login_failed`, dan `logout`. Data yang disimpan adalah metadata security seperti email, event, success flag, IP, user agent, device/browser/platform, message, dan waktu kejadian; password/token tidak disimpan. Test ditambah untuk unauthorized view, logout recorded, dan submitted password tidak masuk message/user_agent.
+
+**Follow-up tercatat:** retention/privacy policy untuk email/IP/user agent, `lastLogin` read model User Management dari event login sukses terakhir, dan security signal summary/alert sebagai roadmap setelah policy disetujui.
 
 **Cara test:**
 
 ```bash
 php artisan test --filter=LoginActivity
+vendor/bin/pint --test app/Modules/Console/LoginActivities tests/Feature/LoginActivityTest.php resources/js/pages/console/login-activities
+npm run typecheck
+npm run build
+php artisan module:validate
 git diff --check
 ```
 
 **Dependencies:** Task 07. **Scope:** S.
 
-## Checkpoint C — Observability boundary
+## Checkpoint C — Observability boundary ✅
 
-- [ ] Task 06–08 selesai.
-- [ ] Activity/audit/login logs aman dari secret leakage.
-- [ ] Read-only observability route terlindungi permission.
+- [x] Task 06–08 selesai.
+- [x] Activity/audit/login logs aman dari secret leakage.
+- [x] Read-only observability route terlindungi permission.
+
+**Hasil checkpoint:** selesai 2026-07-19. Ringkasan gabungan tersedia di [Checkpoint C — Observability Boundary](checkpoint-c-observability-boundary.md). Evidence gabungan `ActivityCenter|AuditLog|LoginActivity`, targeted Pint, `module:validate`, `typecheck`, `build`, dan `git diff --check` hijau. Activity Center hanya read model dari Audit Logs plus marker baca user sendiri; Audit Logs read-only dari sisi user dan sanitizer old/new values sudah recursive; Login Activities mencatat login sukses/gagal/logout tanpa password/token.
+
+**Follow-up tercatat:** retention/archive policy, PII minimization untuk email/IP/user-agent, audit description safety, User Management `lastLogin` read model dari login sukses terakhir, dan tamper-evident audit chain sebagai roadmap compliance.
 
 ## Task 09 — Queue Monitor runtime control
 

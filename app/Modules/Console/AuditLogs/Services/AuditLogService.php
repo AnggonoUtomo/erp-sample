@@ -5,7 +5,6 @@ namespace App\Modules\Console\AuditLogs\Services;
 use App\Models\User;
 use App\Modules\Console\AuditLogs\Models\AuditLog;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
 
@@ -59,12 +58,23 @@ class AuditLogService
      */
     private function sanitize(array $values): array
     {
-        return Arr::except($values, [
-            'password',
-            'password_confirmation',
-            'current_password',
-            'remember_token',
-            'smtp_password',
-        ]);
+        return collect($values)
+            ->mapWithKeys(function (mixed $value, string|int $key): array {
+                if (is_string($key) && $this->isSensitiveKey($key)) {
+                    return [$key => '[redacted]'];
+                }
+
+                if (is_array($value)) {
+                    return [$key => $this->sanitize($value)];
+                }
+
+                return [$key => $value];
+            })
+            ->all();
+    }
+
+    private function isSensitiveKey(string $key): bool
+    {
+        return (bool) preg_match('/(^|_)(password|token|secret|api_key|apikey)(_|$)/i', $key);
     }
 }

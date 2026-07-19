@@ -24,6 +24,9 @@ Dokumen ini belum berarti seluruh Console perlu dibangun ulang. Tujuannya adalah
 10. [05 — Notification Templates Lifecycle](05-notification-templates-lifecycle.md) — hasil telusur template notification/email, permission update, default templates, preview boundary, dan guide-plan legacy credential.
 11. [Checkpoint B — Configuration and Notification Boundary](checkpoint-b-configuration-notification-boundary.md) — verifikasi gabungan Task 04–05 sebelum lanjut ke observability Console.
 12. [06 — Activity Center Read Model](06-activity-center-read-model.md) — hasil telusur dropdown activity center, shared props, mark-as-read, dan relasinya dengan Audit Logs.
+13. [07 — Audit Logs Immutable Boundary](07-audit-logs-immutable-boundary.md) — hasil telusur audit log read-only, filter/list, sanitization old/new values, dan retention gap.
+14. [08 — Login Activities Security Observability](08-login-activities-security-observability.md) — hasil telusur login sukses/gagal/logout, metadata IP/user-agent, privacy gap, dan view boundary.
+15. [Checkpoint C — Observability Boundary](checkpoint-c-observability-boundary.md) — verifikasi gabungan Activity Center, Audit Logs, dan Login Activities sebelum lanjut ke runtime operation.
 
 ## Relasi lintas dokumen
 

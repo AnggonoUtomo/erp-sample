@@ -80,4 +80,49 @@ class LoginActivityTest extends TestCase
             ->get(route('login-activities.index'))
             ->assertOk();
     }
+
+    public function test_users_without_permission_cannot_view_login_activities(): void
+    {
+        $this->actingAs(User::factory()->create())
+            ->get(route('login-activities.index'))
+            ->assertForbidden();
+    }
+
+    public function test_logout_is_recorded(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'logout@example.com',
+        ]);
+
+        $this->actingAs($user)
+            ->post(route('logout'))
+            ->assertRedirect('/');
+
+        $this->assertDatabaseHas('login_activities', [
+            'user_id' => $user->id,
+            'email' => 'logout@example.com',
+            'event' => 'logout',
+            'successful' => true,
+        ]);
+    }
+
+    public function test_login_activity_does_not_store_submitted_password(): void
+    {
+        User::factory()->create([
+            'email' => 'safe-login@example.com',
+            'password' => Hash::make('correct-password'),
+        ]);
+
+        $this->from(route('login'))
+            ->post(route('login'), [
+                'email' => 'safe-login@example.com',
+                'password' => 'very-sensitive-wrong-password',
+            ])
+            ->assertRedirect(route('login'));
+
+        $activity = LoginActivity::query()->where('email', 'safe-login@example.com')->firstOrFail();
+
+        $this->assertStringNotContainsString('very-sensitive-wrong-password', (string) $activity->message);
+        $this->assertStringNotContainsString('very-sensitive-wrong-password', (string) $activity->user_agent);
+    }
 }

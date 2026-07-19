@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Modules\Console\AuditLogs\Models\AuditLog;
+use App\Modules\Console\AuditLogs\Services\AuditLogService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -42,6 +43,15 @@ class AuditLogTest extends TestCase
             ->assertOk();
     }
 
+    public function test_users_without_permission_cannot_view_audit_logs(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->get(route('audit-logs.index'))
+            ->assertForbidden();
+    }
+
     public function test_user_creation_writes_audit_log(): void
     {
         $admin = User::factory()->create();
@@ -61,5 +71,33 @@ class AuditLogTest extends TestCase
             'event' => 'user.created',
             'description' => 'Created user audited@example.com',
         ]);
+    }
+
+    public function test_audit_log_service_redacts_sensitive_values_recursively(): void
+    {
+        app(AuditLogService::class)->record(
+            module: 'testing',
+            event: 'testing.redacted',
+            newValues: [
+                'email' => 'safe@example.com',
+                'password' => 'plain-secret',
+                'reset_token' => 'token-secret',
+                'nested' => [
+                    'smtp_password' => 'smtp-secret',
+                    'google_maps_api_key' => 'maps-secret',
+                    'visible' => 'safe-value',
+                ],
+            ],
+            fallbackToAuthenticatedActor: false,
+        );
+
+        $values = AuditLog::query()->where('event', 'testing.redacted')->firstOrFail()->new_values;
+
+        $this->assertSame('safe@example.com', $values['email']);
+        $this->assertSame('[redacted]', $values['password']);
+        $this->assertSame('[redacted]', $values['reset_token']);
+        $this->assertSame('[redacted]', $values['nested']['smtp_password']);
+        $this->assertSame('[redacted]', $values['nested']['google_maps_api_key']);
+        $this->assertSame('safe-value', $values['nested']['visible']);
     }
 }
