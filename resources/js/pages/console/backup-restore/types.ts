@@ -28,6 +28,7 @@ export type FullRestoreForm = {
     backup: File | null;
     restore_database: boolean;
     restore_storage_public: boolean;
+    dry_run: boolean;
     confirmation: string;
 };
 

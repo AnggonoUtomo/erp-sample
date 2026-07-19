@@ -62,21 +62,21 @@ class BackupRestoreService
     /**
      * @return array<string, int|bool>
      */
-    public function restoreFullBackup(UploadedFile $file, bool $restoreDatabase, bool $restoreStoragePublic): array
+    public function restoreFullBackup(UploadedFile $file, bool $restoreDatabase, bool $restoreStoragePublic, bool $dryRun = false): array
     {
-        if (! $restoreDatabase && ! $restoreStoragePublic) {
+        if (! $dryRun && ! $restoreDatabase && ! $restoreStoragePublic) {
             throw ValidationException::withMessages([
                 'backup' => 'Pilih minimal database atau storage file untuk full restore.',
             ]);
         }
 
-        $summary = $this->zipService->restore($file, $restoreDatabase, $restoreStoragePublic);
+        $summary = $this->zipService->restore($file, $restoreDatabase, $restoreStoragePublic, $dryRun);
 
         $this->audit->record(
             module: 'backup-restore',
-            event: 'full_backup.restored',
-            description: 'Restored full backup',
-            newValues: $summary,
+            event: $dryRun ? 'full_backup.dry_run_validated' : 'full_backup.restored',
+            description: $dryRun ? 'Validated full backup dry-run' : 'Restored full backup',
+            newValues: $summary + ['dry_run' => $dryRun],
         );
 
         return $summary;

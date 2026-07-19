@@ -67,7 +67,7 @@ class FullBackupZipService
     }
 
     /** @return array{database_restored: bool, storage_files_restored: int} */
-    public function restore(UploadedFile $file, bool $restoreDatabase, bool $restoreStoragePublic): array
+    public function restore(UploadedFile $file, bool $restoreDatabase, bool $restoreStoragePublic, bool $dryRun = false): array
     {
         if (! class_exists(ZipArchive::class)) {
             throw ValidationException::withMessages(['backup' => 'PHP ZipArchive extension belum aktif.']);
@@ -101,6 +101,12 @@ class FullBackupZipService
         }
 
         $summary = ['database_restored' => false, 'storage_files_restored' => 0];
+        if ($dryRun) {
+            $zip->close();
+
+            return $summary;
+        }
+
         if ($restoreDatabase) {
             $sql = $zip->getFromName('database.sql');
             if (! $sql) {

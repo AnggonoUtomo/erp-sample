@@ -22,6 +22,7 @@ class FullRestoreBackupRequest extends FormRequest
             'backup' => ['required', 'file', 'max:524288'],
             'restore_database' => ['nullable', 'boolean'],
             'restore_storage_public' => ['nullable', 'boolean'],
+            'dry_run' => ['nullable', 'boolean'],
             'confirmation' => ['required', 'string', Rule::in(['RESTORE FULL BACKUP'])],
         ];
     }

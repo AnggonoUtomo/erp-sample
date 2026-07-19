@@ -36,6 +36,7 @@ export default function BackupRestore({ overview, can }: Props) {
         backup: null,
         restore_database: true,
         restore_storage_public: true,
+        dry_run: true,
         confirmation: '',
     });
 
@@ -159,6 +160,21 @@ export default function BackupRestore({ overview, can }: Props) {
                                         </label>
                                     </div>
 
+                                    <label className="flex items-start gap-3 rounded-lg border border-sky-300/70 bg-sky-50 p-4 text-sm text-sky-950 dark:border-sky-500/30 dark:bg-sky-500/10 dark:text-sky-100">
+                                        <Checkbox
+                                            checked={fullForm.data.dry_run}
+                                            disabled={!can.fullRestore || fullForm.processing}
+                                            onCheckedChange={(checked) => fullForm.setData('dry_run', checked === true)}
+                                        />
+                                        <span>
+                                            <span className="block font-medium">Dry-run validation saja</span>
+                                            <span className="mt-1 block text-xs leading-relaxed opacity-80">
+                                                Validasi signature, checksum, manifest, dan keamanan ZIP tanpa menulis database atau storage.
+                                                Matikan opsi ini hanya saat benar-benar siap restore.
+                                            </span>
+                                        </span>
+                                    </label>
+
                                     <div className="space-y-2">
                                         <label htmlFor="full_confirmation" className="text-sm font-medium">
                                             Ketik RESTORE FULL BACKUP
@@ -190,7 +206,7 @@ export default function BackupRestore({ overview, can }: Props) {
                                     <div className="flex justify-end">
                                         <Button type="submit" disabled={!can.fullRestore || fullForm.processing} className="h-11 min-w-44">
                                             <Upload className="size-4" />
-                                            Restore Full Backup
+                                            {fullForm.data.dry_run ? 'Validate Full Backup' : 'Restore Full Backup'}
                                         </Button>
                                     </div>
                                 </form>

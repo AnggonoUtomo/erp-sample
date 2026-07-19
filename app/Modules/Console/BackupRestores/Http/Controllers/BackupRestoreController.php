@@ -77,7 +77,12 @@ class BackupRestoreController extends Controller
             $request->file('backup'),
             $restoreDatabase,
             $request->boolean('restore_storage_public'),
+            $request->boolean('dry_run'),
         );
+
+        if ($request->boolean('dry_run')) {
+            return back()->with('success', 'Dry-run full restore valid. Signature, checksum, manifest, dan archive safety lulus tanpa menulis database/storage.');
+        }
 
         if ($restoreDatabase) {
             Auth::guard('web')->logout();

@@ -394,7 +394,7 @@ git diff --check
 
 **Follow-up tercatat:** audit runtime actions, operator safety dialog, queue driver compatibility warning, scheduler heartbeat troubleshooting UI, dan domain idempotency contract untuk job/command penting.
 
-## Task 11 — Backup Restore signed recovery boundary
+## Task 11 — Backup Restore signed recovery boundary ✅
 
 **Tujuan:** menelusuri backup/restore database, storage, settings, signature, validator, SQL dump executor, ZIP builder/restorer.
 
@@ -407,17 +407,24 @@ git diff --check
 
 **Acceptance criteria:**
 
-- [ ] Backup format aktif terdokumentasi.
-- [ ] Signature/authenticity lintas environment jelas.
-- [ ] Restore unsafe/legacy ditolak.
-- [ ] DMS private storage coverage jelas.
-- [ ] Full restore memakai validation/dry-run yang eksplisit.
+- [x] Backup format aktif terdokumentasi.
+- [x] Signature/authenticity lintas environment jelas.
+- [x] Restore unsafe/legacy ditolak.
+- [x] DMS private storage coverage jelas.
+- [x] Full restore memakai validation/dry-run yang eksplisit.
+
+**Hasil telusur dan hardening:** selesai 2026-07-19. Dokumentasi tersedia di [11 — Backup Restore Signed Recovery Boundary](11-backup-restore-signed-recovery-boundary.md). Module `Console.BackupRestores` memisahkan settings backup JSON dan full signed ZIP v3. Full backup aktif memakai schema `laravel12-starterkit.full-backup`, version `3`, HMAC-SHA256 signature dengan `BACKUP_SIGNATURE_KEY`, exact SHA-256 entry list, `database.sql`, `storage_public/*`, dan `storage_dms_private/*` untuk private Document Management. Full restore hanya menerima signed `.zip`, menolak raw SQL/legacy/unsafe archive, melewati archive/signature/checksum validation sebelum write, dan sekarang punya `dry_run` eksplisit yang default aktif di UI untuk memvalidasi tanpa menulis database/storage.
+
+**Follow-up tercatat:** restore drill SOP di UI, multi-key verification untuk rotasi, asymmetric signature evaluation, restore staging directory untuk filesystem, dan backup size/runtime observability.
 
 **Cara test:**
 
 ```bash
 php artisan test --filter=BackupRestore
 vendor/bin/pint --test app/Modules/Console/BackupRestores tests/Feature/BackupRestoreTest.php
+npm run typecheck
+npm run build
+php artisan module:validate
 git diff --check
 ```
 

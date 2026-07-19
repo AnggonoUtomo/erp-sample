@@ -138,7 +138,7 @@ class SettingsBackupService
 
         $schema = $payload['schema'] ?? null;
         if ($schema === 'laravel12-starterkit.full-backup') {
-            throw ValidationException::withMessages(['backup' => 'File JSON ini adalah manifest full backup. Untuk full restore, upload file .zip atau .sql pada panel Full Restore.']);
+            throw ValidationException::withMessages(['backup' => 'File JSON ini adalah manifest full backup. Untuk full restore, upload signed full backup .zip pada panel Full Restore.']);
         }
         if ($schema !== 'laravel12-starterkit.settings-backup') {
             $message = is_string($schema) && $schema !== '' ? "Schema yang terbaca: {$schema}." : 'Field schema tidak ditemukan.';

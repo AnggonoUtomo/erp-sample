@@ -236,7 +236,7 @@ class BackupRestoreTest extends TestCase
                 'restore_system_settings' => true,
             ])
             ->assertSessionHasErrors([
-                'backup' => 'File JSON ini adalah manifest full backup. Untuk full restore, upload file .zip atau .sql pada panel Full Restore.',
+                'backup' => 'File JSON ini adalah manifest full backup. Untuk full restore, upload signed full backup .zip pada panel Full Restore.',
             ]);
     }
 
@@ -375,6 +375,36 @@ class BackupRestoreTest extends TestCase
             );
         } finally {
             File::delete($path);
+        }
+    }
+
+    public function test_full_restore_dry_run_validates_signed_zip_without_writing_files(): void
+    {
+        $user = User::factory()->create();
+        $user->givePermissionTo('backup-restore.full-restore');
+        $dmsPath = storage_path('app/private/document-management/objects/dry-run/document.pdf');
+        File::ensureDirectoryExists(dirname($dmsPath));
+        File::put($dmsPath, 'dry-run-binary');
+        $path = app(FullBackupZipService::class)->create('-- Laravel 12 Starterkit full database backup');
+
+        try {
+            File::delete($dmsPath);
+            $file = new UploadedFile($path, 'backup.zip', 'application/zip', null, true);
+
+            $this->actingAs($user)->post(route('backup-restore.full.restore'), [
+                'backup' => $file,
+                'restore_database' => true,
+                'restore_storage_public' => true,
+                'dry_run' => true,
+                'confirmation' => 'RESTORE FULL BACKUP',
+            ])->assertRedirect()
+                ->assertSessionHas('success', 'Dry-run full restore valid. Signature, checksum, manifest, dan archive safety lulus tanpa menulis database/storage.');
+
+            $this->assertFileDoesNotExist($dmsPath);
+            $this->assertAuthenticatedAs($user);
+        } finally {
+            File::delete($path);
+            File::delete($dmsPath);
         }
     }
 
