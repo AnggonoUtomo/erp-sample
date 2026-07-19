@@ -21,6 +21,8 @@ Panduan teknis lintas project:
 
 Roadmap dan panduan spesifik project:
 
+- `projects/console/README.md`
+- `projects/console/specification.md`
 - `projects/hr/README.md`
 - `projects/hr/roadmap.md`
 - `projects/hr/module-guide.md`
