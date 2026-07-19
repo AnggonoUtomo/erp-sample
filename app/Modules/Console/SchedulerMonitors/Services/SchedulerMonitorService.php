@@ -57,7 +57,7 @@ class SchedulerMonitorService
     {
         Artisan::call('schedule:run');
 
-        return trim(Artisan::output()) ?: 'Scheduler dijalankan. Tidak ada output dari schedule:run.';
+        return $this->redactSensitiveText(trim(Artisan::output()) ?: 'Scheduler dijalankan. Tidak ada output dari schedule:run.');
     }
 
     public function recordHeartbeat(): void
@@ -117,5 +117,14 @@ class SchedulerMonitorService
         } catch (\Throwable) {
             return null;
         }
+    }
+
+    private function redactSensitiveText(string $value): string
+    {
+        return preg_replace(
+            '/((?:password|token|secret|api[_-]?key|apikey)\\s*[=:]\\s*)([^\\s,;]+)/i',
+            '$1[redacted]',
+            $value,
+        ) ?? $value;
     }
 }

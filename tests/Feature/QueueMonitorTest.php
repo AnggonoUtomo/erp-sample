@@ -92,6 +92,28 @@ class QueueMonitorTest extends TestCase
         $this->assertDatabaseCount('failed_jobs', 0);
         $this->assertDatabaseCount('jobs', 1);
     }
+
+    public function test_failed_job_exception_summary_redacts_sensitive_values(): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole('admin');
+
+        DB::table('failed_jobs')->insert([
+            'uuid' => (string) str()->uuid(),
+            'connection' => 'database',
+            'queue' => 'default',
+            'payload' => json_encode(['displayName' => 'SensitiveFailureJob']),
+            'exception' => 'RuntimeException: token=super-secret api_key=maps-secret password=hunter2',
+            'failed_at' => now(),
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('queue-monitor.index'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->where('failedJobs.data.0.exception', 'RuntimeException: token=[redacted] api_key=[redacted] password=[redacted]')
+            );
+    }
 }
 
 class AlwaysFailingQueueJob implements ShouldQueue

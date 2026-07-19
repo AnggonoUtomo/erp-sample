@@ -318,7 +318,7 @@ git diff --check
 
 **Follow-up tercatat:** retention/archive policy, PII minimization untuk email/IP/user-agent, audit description safety, User Management `lastLogin` read model dari login sukses terakhir, dan tamper-evident audit chain sebagai roadmap compliance.
 
-## Task 09 — Queue Monitor runtime control
+## Task 09 — Queue Monitor runtime control ✅
 
 **Tujuan:** menelusuri queue monitor, failed job listing, retry, forget, dan flush.
 
@@ -330,20 +330,28 @@ git diff --check
 
 **Acceptance criteria:**
 
-- [ ] View dan manage permission terpisah.
-- [ ] Retry/forget/flush denial matrix hijau.
-- [ ] Payload failed job tidak mengekspos secret berlebih.
+- [x] View dan manage permission terpisah.
+- [x] Retry/forget/flush denial matrix hijau.
+- [x] Payload failed job tidak mengekspos secret berlebih.
+
+**Hasil telusur dan hardening:** selesai 2026-07-19. Dokumentasi tersedia di [09 — Queue Monitor Runtime Control](09-queue-monitor-runtime-control.md). Module `Console.QueueMonitors` memisahkan `queue-monitor.view` untuk halaman index dan `queue-monitor.manage` untuk retry/forget/flush failed jobs. Controller melakukan authorization langsung pada setiap action; frontend hanya memberi UX disabled state. Service tidak mengirim raw payload job ke UI, hanya job name dan exception summary. Hardening kecil diterapkan: exception summary me-redact pola `password`, `token`, `secret`, `api_key`, `api-key`, dan `apikey` sebelum dikirim ke frontend.
+
+**Follow-up tercatat:** audit runtime queue actions, dialog safety untuk retry/flush, compatibility note untuk queue driver non-database, dan reminder bahwa retry job tidak boleh menjadi bypass domain authorization.
 
 **Cara test:**
 
 ```bash
 php artisan test --filter=QueueMonitor
+vendor/bin/pint --test app/Modules/Console/QueueMonitors tests/Feature/QueueMonitorTest.php resources/js/pages/console/queue-monitor
+npm run typecheck
+npm run build
+php artisan module:validate
 git diff --check
 ```
 
 **Dependencies:** Checkpoint C. **Scope:** M.
 
-## Task 10 — Scheduler Monitor runtime control
+## Task 10 — Scheduler Monitor runtime control ✅
 
 **Tujuan:** menelusuri scheduler monitor, task list, dan controlled run due task.
 
@@ -355,24 +363,36 @@ git diff --check
 
 **Acceptance criteria:**
 
-- [ ] Scheduled task list read-only tersedia.
-- [ ] Run due task hanya untuk manage permission.
-- [ ] Timezone/date semantics terdokumentasi.
+- [x] Scheduled task list read-only tersedia.
+- [x] Run due task hanya untuk manage permission.
+- [x] Timezone/date semantics terdokumentasi.
+
+**Hasil telusur dan hardening:** selesai 2026-07-19. Dokumentasi tersedia di [10 — Scheduler Monitor Runtime Control](10-scheduler-monitor-runtime-control.md). Module `Console.SchedulerMonitors` memisahkan `scheduler-monitor.view` untuk halaman index dan `scheduler-monitor.manage` untuk aksi `Run Due Tasks`. List scheduled tasks read-only dari `schedule:list --json --next --timezone=<app timezone>`. Aksi manage hanya menjalankan `schedule:run`, bukan arbitrary command, dan output Artisan sekarang di-redact untuk pola `password`, `token`, `secret`, `api_key`, `api-key`, dan `apikey` sebelum tampil sebagai flash message. Timezone/date semantics, heartbeat cache status, dan risiko runtime side effect sudah dicatat.
+
+**Follow-up tercatat:** audit runtime scheduler actions, dialog operator yang lebih informatif, warning UI untuk heartbeat `stale/down/never`, dan reminder bahwa command/job scheduler harus tetap idempotent serta enforce invariant domain masing-masing.
 
 **Cara test:**
 
 ```bash
 php artisan test --filter=SchedulerMonitor
+vendor/bin/pint --test app/Modules/Console/SchedulerMonitors tests/Feature/SchedulerMonitorTest.php resources/js/pages/console/scheduler-monitor
+npm run typecheck
+npm run build
+php artisan module:validate
 git diff --check
 ```
 
 **Dependencies:** Task 09. **Scope:** M.
 
-## Checkpoint D — Runtime operation boundary
+## Checkpoint D — Runtime operation boundary ✅
 
-- [ ] Task 09–10 selesai.
-- [ ] Queue/scheduler manage action permission-gated.
-- [ ] Runtime operations tidak menjadi bypass business authorization.
+- [x] Task 09–10 selesai.
+- [x] Queue/scheduler manage action permission-gated.
+- [x] Runtime operations tidak menjadi bypass business authorization.
+
+**Hasil checkpoint:** selesai 2026-07-19. Ringkasan gabungan tersedia di [Checkpoint D — Runtime Operation Boundary](checkpoint-d-runtime-operation-boundary.md). Evidence gabungan `QueueMonitor|SchedulerMonitor`, targeted Pint masing-masing runtime module, `module:validate`, `typecheck`, `build`, dan `git diff --check` hijau. Queue Monitor dan Scheduler Monitor sudah memisahkan view/manage permission, menolak user tanpa permission, menghindari raw payload/secret leakage dasar, dan didokumentasikan sebagai operator tool yang tidak boleh menggantikan authorization/invariant di job/command domain.
+
+**Follow-up tercatat:** audit runtime actions, operator safety dialog, queue driver compatibility warning, scheduler heartbeat troubleshooting UI, dan domain idempotency contract untuk job/command penting.
 
 ## Task 11 — Backup Restore signed recovery boundary
 

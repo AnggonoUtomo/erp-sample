@@ -27,6 +27,9 @@ Dokumen ini belum berarti seluruh Console perlu dibangun ulang. Tujuannya adalah
 13. [07 — Audit Logs Immutable Boundary](07-audit-logs-immutable-boundary.md) — hasil telusur audit log read-only, filter/list, sanitization old/new values, dan retention gap.
 14. [08 — Login Activities Security Observability](08-login-activities-security-observability.md) — hasil telusur login sukses/gagal/logout, metadata IP/user-agent, privacy gap, dan view boundary.
 15. [Checkpoint C — Observability Boundary](checkpoint-c-observability-boundary.md) — verifikasi gabungan Activity Center, Audit Logs, dan Login Activities sebelum lanjut ke runtime operation.
+16. [09 — Queue Monitor Runtime Control](09-queue-monitor-runtime-control.md) — hasil telusur pending/failed jobs, retry/forget/flush permission, payload safety, dan queue operation risks.
+17. [10 — Scheduler Monitor Runtime Control](10-scheduler-monitor-runtime-control.md) — hasil telusur scheduled task list, run due task permission, heartbeat, timezone semantics, dan output safety.
+18. [Checkpoint D — Runtime Operation Boundary](checkpoint-d-runtime-operation-boundary.md) — verifikasi gabungan Queue Monitor dan Scheduler Monitor sebelum lanjut ke recovery boundary.
 
 ## Relasi lintas dokumen
 

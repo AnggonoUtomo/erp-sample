@@ -145,7 +145,18 @@ class QueueMonitorService
 
     private function exceptionSummary(?string $exception): string
     {
-        return trim(Str::of($exception ?: 'No exception message.')->explode("\n")->first() ?: 'No exception message.');
+        $summary = trim(Str::of($exception ?: 'No exception message.')->explode("\n")->first() ?: 'No exception message.');
+
+        return $this->redactSensitiveText($summary);
+    }
+
+    private function redactSensitiveText(string $value): string
+    {
+        return preg_replace(
+            '/((?:password|token|secret|api[_-]?key|apikey)\\s*[=:]\\s*)([^\\s,;]+)/i',
+            '$1[redacted]',
+            $value,
+        ) ?? $value;
     }
 
     private function timestamp(?int $timestamp): ?string
