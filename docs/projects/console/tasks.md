@@ -207,7 +207,7 @@ git diff --check
 
 **Follow-up tercatat:** depresiasi/guard legacy credential password notification, safe preview endpoint jika dibutuhkan, audit body policy untuk template, enforcement tambahan security policy seperti single session/email verification, dan copy inactive template agar selaras dengan behavior service.
 
-## Task 06 — Activity Center read model
+## Task 06 — Activity Center read model ✅
 
 **Tujuan:** menelusuri activity center sebagai read model aktivitas user.
 
@@ -219,14 +219,22 @@ git diff --check
 
 **Acceptance criteria:**
 
-- [ ] Activity center tidak menjadi source mutation bisnis.
-- [ ] Read/mark behavior jelas.
-- [ ] Tidak ada navigation menu wajib jika hanya dropdown.
+- [x] Activity center tidak menjadi source mutation bisnis.
+- [x] Read/mark behavior jelas.
+- [x] Tidak ada navigation menu wajib jika hanya dropdown.
+
+**Hasil telusur:** selesai 2026-07-19. Dokumentasi tersedia di [06 — Activity Center Read Model](06-activity-center-read-model.md). Module `Console.ActivityCenters` hanya mengekspor route dan permission, tanpa navigation menu, karena tampil sebagai dropdown header. Shared Inertia props `activity_center` membaca `AuditLog` terbaru lewat `ActivityCenterService::summaryFor()` jika user punya `activity-center.view`; user tanpa permission mendapat fallback kosong. Mutation satu-satunya adalah `POST activity-center/read`, yang hanya mengisi `users.activity_center_read_at` milik user login sebagai read marker. Module ini tidak membuat/mengubah/menghapus audit log atau data bisnis.
+
+**Follow-up tercatat:** Activity Center menampilkan `actor.email` dari audit log dan mewarisi kualitas masking Audit Logs; PII minimization dan audit payload policy dibahas di Task 07.
 
 **Cara test:**
 
 ```bash
 php artisan test --filter=ActivityCenter
+vendor/bin/pint --test app/Modules/Console/ActivityCenters tests/Feature/ActivityCenterTest.php resources/js/components/activity-center-dropdown.tsx
+npm run typecheck
+npm run build
+php artisan module:validate
 git diff --check
 ```
 
