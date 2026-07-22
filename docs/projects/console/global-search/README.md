@@ -6,7 +6,7 @@ Fitur ini mengaktifkan kolom search di header Console. Target MVP bukan mesin pe
 
 ## Status
 
-`Task 06 complete — 2026-07-19`.
+`Final checkpoint pass — 2026-07-22`.
 
 Command palette navigation MVP sudah melewati Checkpoint B. Entity search backend spike pertama sudah aktif untuk provider `Users` sebagai endpoint read-only yang permission-aware, tetapi frontend command palette masih navigation-only sampai integrasi entity result di-approve terpisah.
 
@@ -19,6 +19,7 @@ Command palette navigation MVP sudah melewati Checkpoint B. Entity search backen
 5. [Tasks](tasks.md) — task kecil dengan tujuan, file yang disentuh, acceptance criteria, dan cara test.
 6. [Checkpoint A — Search Shell Usable](checkpoint-a-search-shell-usable.md) — verifikasi command palette shell dan navigation result provider.
 7. [Checkpoint B — Safe Navigation Command Palette](checkpoint-b-safe-navigation-command-palette.md) — verifikasi keyboard navigation, ranking, permission guard, URL guard, dan forbidden-result guard.
+8. [Final Quality Checkpoint](final-quality-checkpoint.md) — verifikasi final navigation search, backend `Users` provider spike, quality gates, dan boundary follow-up.
 
 ## Relasi lintas dokumen
 
@@ -50,8 +51,8 @@ MVP dianggap cukup jika:
 
 ## Next step
 
-Setelah Task 06, lanjut ke:
+Setelah final checkpoint, follow-up berikutnya adalah:
 
-**Final quality checkpoint**
+**Entity result frontend integration decision**
 
-Checkpoint final memastikan dokumentasi, provider contract, backend endpoint, frontend navigation palette, test, build, dan module validation tetap konsisten sebelum fitur ini dianggap selesai.
+Putuskan apakah endpoint `GET /global-search` mulai dikonsumsi command palette UI. Jika iya, buat task terpisah untuk debounce, loading state, cancellation, dan frontend privacy guard.
