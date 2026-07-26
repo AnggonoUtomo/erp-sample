@@ -184,9 +184,9 @@ Catatan: setiap perubahan baru tetap wajib menjalankan gate proporsional sesuai 
 
 Urutan paling aman setelah status MVP ini:
 
-1. Polish dashboard utama agar membaca ringkasan Console, HR, DMS, dan aktivitas sistem.
-2. Telusuri ulang HR foundation modules satu per satu untuk mencari gap kecil sebelum Attendance.
-3. Buat SOP release/dev workflow untuk branch `dev -> main`, migration, seed, quality gate, dan rollback lokal.
+1. Polish dashboard utama agar membaca ringkasan Console, HR, DMS, dan aktivitas sistem. **Status: berjalan.**
+2. Telusuri ulang HR foundation modules satu per satu untuk mencari gap kecil sebelum Attendance. Lihat [HR Foundation Review Plan](hr/foundation-review-plan.md).
+3. Buat SOP release/dev workflow untuk branch `dev -> main`, migration, seed, quality gate, dan rollback lokal. Lihat [SOP Release dan Dev Workflow](release-dev-workflow.md).
 4. Baru mulai Attendance MVP dengan input dari [HR Integration Contracts](hr/integration-contracts/README.md).
 
 Rekomendasi saat ini: mulai dari dashboard utama, karena project sudah punya banyak data MVP tetapi halaman ringkasan utama masih bisa dibuat lebih informatif.

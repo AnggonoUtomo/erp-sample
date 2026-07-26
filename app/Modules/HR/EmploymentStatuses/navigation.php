@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'group' => 'Employee',
-    'sort' => 142,
+    'group' => 'HR',
+    'sort' => 140,
     'items' => [
         [
             'title' => 'Employment Statuses',
