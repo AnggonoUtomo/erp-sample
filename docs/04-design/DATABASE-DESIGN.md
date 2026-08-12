@@ -63,7 +63,7 @@ erDiagram
 | Kolom | Tipe | Constraint | Deskripsi |
 |---|---|---|---|
 | id | CHAR(26) | PRIMARY KEY, ULID | Primary key |
-| user_id | CHAR(26) | FOREIGN KEY -> users.id, NULL | User关联 |
+| user_id | CHAR(26) | FOREIGN KEY -> users.id, NULL | User ID |
 | employee_number | VARCHAR(50) | UNIQUE, NOT NULL | Nomor karyawan |
 | full_name | VARCHAR(255) | NOT NULL | Nama lengkap |
 | email | VARCHAR(255) | UNIQUE, NOT NULL | Email |
