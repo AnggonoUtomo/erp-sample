@@ -1,96 +1,144 @@
 ---
 id: ADR-0001
-title: Restrukturisasi Struktur Modul ke DDD-Lite Layered Structure
-status: proposed
+title: Struktur Modul DDD-Lite yang Baku dan Adaptif
+status: accepted
 created: 2026-08-12
-updated: 2026-08-12
-deciders: []
+updated: 2026-08-13
+deciders: [Pemilik proyek]
 related: [ARC-DDD-LITE-001]
 ---
 
-# ADR-0001: Restrukturisasi Struktur Modul ke DDD-Lite Layered Structure
+# ADR-0001: Struktur Modul DDD-Lite yang Baku dan Adaptif
 
 ## Konteks
 
-Project ini menggunakan struktur modul flat di mana semua folder (DTO, Events, Http, Models, Services, dll) berada di root setiap modul. Pendekatan ini menyulitkan penelusuran kode dan tidak mengikuti pola DDD-lite yang telah ditetapkan dalam acuan arsitektur.
+Kode saat ini memakai modul Laravel dengan folder yang sebagian besar masih datar, sedangkan dokumen aktif sebelumnya memuat beberapa struktur target yang saling bertentangan. Perbedaan terutama terdapat pada lokasi model, controller, route, DTO, serta kewajiban membuat semua layer sejak awal.
 
-Faktor yang memerlukan keputusan:
-1. Struktur flat tidak memisahkan concern dengan jelas
-2. Sulit membedakan antara Application, Domain, Infrastructure, dan Presentation layer
-3. Module generator saat ini generate struktur flat
-4. Tests dan routes berada di luar modul, menyulitkan penelusuran
+Keputusan manusia pada 2026-08-13 menetapkan bahwa DDD-Lite adalah target utama sekarang, bukan perubahan hipotetis untuk masa depan. Perilaku aplikasi yang ada harus dipetakan dan dipertahankan sebelum pemindahan file atau namespace dimulai.
 
 ## Pendorong Keputusan
 
-1. Konsistensi dengan acuan DDD-Lite Modular Monolith
-2. Kemudahan maintenance dan penelusuran kode
-3. Skalabilitas untuk modul baru
-4. Separation of concerns yang lebih baik
+1. Satu lokasi baku dibutuhkan agar kode mudah ditemukan.
+2. Modul sederhana tidak boleh dipaksa memiliki folder atau abstraksi kosong.
+3. Modul dibentuk berdasarkan tanggung jawab bisnis, bukan jenis teknologi.
+4. Restrukturisasi harus mempertahankan perilaku HTTP, use case, data, permission, event, dan kontrak yang sudah berjalan.
+5. Perubahan identifier database mempunyai risiko dan lifecycle berbeda dari pemindahan struktur kode.
 
 ## Opsi yang Dipertimbangkan
 
-### Opsi A: Big Bang Migration
+### Opsi A: Delapan layer wajib untuk semua modul
 
-- Deskripsi: Konversi semua modul sekaligus dalam satu PR besar
-- Manfaat: Cepat selesai, tidak ada struktur hybrid
-- Biaya/risiko: High risk, sulit rollback, testing kompleks
+- Manfaat: bentuk direktori seragam secara visual.
+- Biaya/risiko: folder kosong, abstraksi spekulatif, dan beban migrasi tanpa nilai bisnis.
 
-### Opsi B: Incremental Migration (Dipilih)
+### Opsi B: Lokasi baku dengan struktur minimal sesuai kebutuhan
 
-- Deskripsi: Konversi per modul secara bertahap dengan 10 phases
-- Manfaat: Low risk per phase, mudah rollback, testing bertahap
-- Biaya/risiko: Butuh waktu lebih lama, ada periode struktur hybrid
+- Manfaat: konsisten tanpa memaksakan kompleksitas; sesuai prinsip DDD-Lite.
+- Biaya/risiko: reviewer harus menilai kebutuhan setiap folder, bukan hanya memeriksa bentuk pohon direktori.
 
-### Opsi C: Parallel Structure
+### Opsi C: Mempertahankan struktur datar
 
-- Deskripsi: Maintain struktur lama dan baru secara paralel dengan backward compatibility layer
-- Manfaat: Zero downtime, backward compatible
-- Biaya/risiko: Kompleksitas tinggi, technical debt
+- Manfaat: tidak membutuhkan pemindahan file.
+- Biaya/risiko: concern teknis dan bisnis tetap bercampur serta tidak memenuhi target proyek.
 
 ## Keputusan
 
-**Opsi B: Incremental Migration** dipilih karena:
-1. Risiko per phase dapat dikelola
-2. Rollback per phase memungkinkan
-3. Testing bisa dilakukan bertahap
-4. Tim bisa belajar dari setiap phase
+Opsi B diterima dengan ketentuan berikut.
+
+1. Lokasi yang dipakai ketika concern-nya ada:
+
+   ```text
+   app/Modules/{Boundary}/{Module}/
+   |-- Application/
+   |   |-- Actions/
+   |   |-- DTOs/
+   |   |-- Queries/
+   |   `-- Services/
+   |-- Domain/
+   |   |-- Entities/
+   |   |-- ValueObjects/
+   |   |-- Events/
+   |   |-- Services/
+   |   `-- Exceptions/
+   |-- Infrastructure/
+   |   |-- Models/
+   |   |-- Repositories/
+   |   |-- Providers/
+   |   `-- External/
+   |-- Presentation/
+   |   |-- Http/
+   |   |   |-- Controllers/
+   |   |   |-- Requests/
+   |   |   `-- Resources/
+   |   `-- Routes/
+   |-- Integration/
+   |   |-- Contracts/
+   |   |-- DTOs/
+   |   |-- Events/
+   |   |-- Adapters/
+   |   `-- Listeners/
+   |-- Database/
+   |-- Tests/
+   |-- module.php
+   |-- permissions.php
+   `-- navigation.php
+   ```
+
+2. Hanya folder dan file yang mempunyai isi serta alasan nyata yang dibuat. `Domain/` tidak diwajibkan untuk CRUD sederhana. `Integration/` hanya ada saat modul memiliki atau menggunakan kontrak/event lintas modul. `permissions.php` dan `navigation.php` juga hanya ada bila modul benar-benar mengekspornya.
+3. Eloquent model berada di `Infrastructure/Models/`; tidak diwajibkan membuat domain entity atau repository pembungkus Eloquent.
+4. HTTP berada di `Presentation/Http/`; route milik modul berada di `Presentation/Routes/`.
+5. Kontrak lintas modul dimiliki modul bisnis penyedia dan diekspos melalui `Integration/Contracts/` beserta DTO/event versioned yang relevan.
+6. Test yang secara jelas dimiliki modul ditempatkan di `Tests/`; test arsitektur dan lintas sistem boleh tetap berada pada test suite tingkat aplikasi.
+7. Migrasi dilakukan per vertical slice terkecil yang dapat diverifikasi. Struktur campuran sementara diperbolehkan dan harus dicatat.
+8. Perubahan primary key ke ULID tidak termasuk ADR atau work item struktur ini. Perubahan tersebut dipisahkan ke `MIG-ID-001` dan tetap ditunda sampai memiliki pemetaan data, rollback, serta persetujuan tersendiri.
 
 ## Konsekuensi
 
 ### Positif
 
-1. Struktur lebih jelas dan mudah ditelusuri
-2. Konsisten dengan acuan DDD-Lite
-3. Module generator menghasilkan struktur yang benar
-4. Tests dan routes dalam modul memudahkan maintenance
+- Semua concern mempunyai lokasi target yang tunggal.
+- Struktur tetap ringan untuk modul sederhana.
+- Kontrak lintas modul kembali ke pemilik bisnisnya.
+- Risiko pemindahan kode tidak tercampur dengan risiko migrasi data.
 
 ### Negatif
 
-1. Butuh 10 phases untuk selesai
-2. Periode struktur hybrid selama migrasi
-3. Namespace changes di banyak file
-4. Perlu update dokumentasi
+- Repository berada dalam keadaan struktur campuran selama migrasi bertahap.
+- Setiap pemindahan namespace harus memperbarui consumer, binding, route loading, dan test.
 
 ### Netral / Tindak Lanjut
 
-1. Update MODULE-CATALOG.md setelah semua modul dikonversi
-2. Update DEPENDENCY-RULES.md dengan aturan baru
-3. Update EVENT-CATALOG.md dengan lokasi event baru
-4. Baseline snapshot di docs/11-baselines/
+- Evaluasi katalog modul menentukan modul yang dipertahankan, diganti nama, atau dihentikan.
+- Generator modul harus menghasilkan struktur minimal berdasarkan opsi, bukan seluruh folder kosong.
+- Baseline aktif diperbarui hanya berdasarkan bukti kode atau keputusan yang telah diterima.
 
 ## Validasi
 
-Keputusan akan diuji dengan:
-1. Module generator test - generate modul baru dengan struktur DDD-Lite
-2. WorkLocations sebagai proof of concept (Phase 3)
-3. Full test suite harus pass setelah setiap phase
-4. Aplikasi harus bisa diakses di browser
+Setiap irisan migrasi wajib membuktikan:
+
+1. tidak ada perubahan perilaku route, response, permission, data, event, atau kontrak;
+2. autoload dan registrasi provider berhasil;
+3. test terfokus dan pemeriksaan arsitektur lulus;
+4. referensi namespace lama tidak tersisa pada scope irisan;
+5. dokumentasi dan manifest bukti tersinkron.
 
 ## Penggantian
 
-ADR ini menggantikan struktur flat yang ada saat ini. Kondisi yang akan memicu review ulang:
-1. Ditemukan pola yang lebih baik untuk DDD-lite di Laravel
-2. Kebutuhan untuk microservices di masa depan
-3. Perubahan fundamental dalam arsitektur Laravel
+ADR ini menggantikan semua variasi struktur target dalam dokumen aktif yang mewajibkan delapan layer penuh, menggunakan `Infrastructure/Persistence/Models`, `Presentation/Controllers`, root `Routes/`, atau `Application/DTO` sebagai lokasi baku.
 
-</contents>
+Keputusan ini tidak menghapus bukti historis. Dokumen sebelum SEOS tetap dapat ditelusuri melalui snapshot `BL-2026-001-pre-seos`.
+
+## Catatan Persetujuan
+
+```yaml
+gate: architecture-approval
+decision: approved
+approver: Pemilik proyek
+date: 2026-08-13
+conditions:
+  - perilaku aplikasi dipertahankan
+  - struktur bersifat minimal sesuai kebutuhan
+  - migrasi ULID dipisahkan
+evidence:
+  - konfirmasi eksplisit melalui percakapan evaluasi dokumentasi
+```

@@ -1,138 +1,68 @@
-# 05 Laporan Validasi
-
-> Fokus wajib: arah dependensi, enkapsulasi, kontrak, ownership, dan pengujian arsitektur.
+# 05 Kriteria dan Laporan Validasi
 
 ## Metadata
 
 ```yaml
 work_item: ARC-DDD-LITE-001
-status: draft
+status: criteria-prepared
 owner: unassigned
-last_updated: 2026-08-12
+last_updated: 2026-08-13
 ```
 
-## Tujuan
+## Gate per Task
 
-Mendokumentasikan kriteria validasi untuk setiap phase implementasi restrukturisasi DDD-Lite.
+| Kriteria | Bukti wajib |
+|---|---|
+| Autoload valid | `composer dump-autoload` dan bootstrap artisan |
+| Modul terdaftar | module validation/list command yang berhasil |
+| HTTP kompatibel | perbandingan URI, verb, name, middleware, binding |
+| Authorization kompatibel | test policy/permission terfokus |
+| Perilaku bisnis kompatibel | test feature sebelum/sesudah tanpa pengurangan assertion |
+| Boundary patuh | search import langsung dan architecture test |
+| Formatting/static check | perintah proyek yang relevan |
+| Dokumentasi sinkron | evidence manifest, deviation, catalog impacted |
 
-## Input dan Referensi
+## Pemeriksaan Discovery 2026-08-13
 
-- docs/07-work-items/architecture-changes/ARC-DDD-LITE-001/04-IMPLEMENTATION-PLAN.md
-- docs/05-engineering/TESTING-STRATEGY.md
-- docs/08-quality/QUALITY-GATES.md
+| Pemeriksaan | Hasil |
+|---|---|
+| Inventaris manifest | 28 ditemukan |
+| Test location | 101 Feature, 5 Unit; tidak ada module-local test |
+| Import production `HR\IntegrationContracts` di luar modul | tidak ditemukan |
+| Import test `HR\IntegrationContracts` | ditemukan pada test HRIntegration* |
+| `php artisan test --filter=MakeModuleCommandTest` | gagal: target class command tidak ada |
+| `php artisan module:validate` | gagal: target class command tidak ada |
+| PHP syntax/Pint pada dashboard yang diaudit | lulus pada pemeriksaan discovery sebelumnya |
+| Frontend lint/typecheck | melewati batas waktu; bukan bukti lulus |
 
-## Detail
+## Status
 
-### Kriteria Validasi Per Phase
+Belum ada validasi implementasi DDD-Lite karena coding belum dimulai. Dokumen ini tidak boleh digunakan sebagai klaim bahwa work item telah verified.
 
-#### Phase 1: Module Generator
+## TSK-ARC-DDD-LITE-001-01 — Hasil yang Akan Diisi
 
-| Kriteria | Metode Validasi | Bukti |
-|---|---|---|
-| Generator generate struktur DDD-Lite | Manual test `php artisan make:module` | Screenshot folder structure |
-| Namespace stubs benar | Code review stub files | Stub file contents |
-| ServiceProvider ter-register | `php artisan module:list` | Output command |
-| Routes bisa diakses | `php artisan route:list` | Route list output |
+| Pemeriksaan | Perintah | Hasil aktual | Exit code |
+|---|---|---|---:|
+| Restore identik dengan HEAD | `git diff --exit-code HEAD -- app/Support/Modules/Commands/MakeModuleCommand.php` | tidak ada diff; blob lokal `cd3c449747a14f0c286072a7a3374ba8b0ebbadf` | 0 |
+| Syntax PHP | `php -l app/Support/Modules/Commands/MakeModuleCommand.php` | tidak ada syntax error | 0 |
+| Test generator | `php artisan test --filter=MakeModuleCommandTest` | 4 test lulus, 23 assertion | 0 |
+| Validasi modul | `php artisan module:validate` | seluruh contract modul valid | 0 |
+| Whitespace/error patch | `git diff --check` | tidak ada error | 0 |
 
-#### Phase 2: Shared Kernel
+Restore menggunakan konten exact dari commit sumber dengan blob `cd3c449747a14f0c286072a7a3374ba8b0ebbadf`; local diff dan runtime test mengonfirmasi hasilnya.
 
-| Kriteria | Metode Validasi | Bukti |
-|---|---|---|
-| Shared Kernel namespace tidak berubah | Grep namespace | Grep results |
-| Semua modul bisa akses Shared | Test import | Test results |
+## Gangguan Verifikasi Sementara
 
-#### Phase 3-9: Modul Konversi
+Percobaan pertama setelah restore timeout 120 detik tanpa output. Pemeriksaan tidak diklaim lulus pada saat itu. Setelah runner pulih, semua perintah di atas dijalankan ulang satu per satu dan lulus; gangguan dicatat sebagai `DEV-ARC-005`.
 
-| Kriteria | Metode Validasi | Bukti |
-|---|---|---|
-| Namespace changes konsisten | Grep namespace lama | Zero match |
-| Composer autoloader bekerja | `composer dump-autoload` | Success output |
-| Routes ter-register | `php artisan route:list` | Route list |
-| Tests pass | `php artisan test --filter=ModuleName` | Test output |
-| Aplikasi bisa diakses | Manual browser test | Screenshot |
-| Dependency tidak putus | Test fitur terkait | Test results |
+## Review Lima Sumbu
 
-#### Phase 10: Tests Migration
+| Sumbu | Hasil |
+|---|---|
+| Correctness | exact restore; regression test dan module validation lulus |
+| Readability | tidak ada perubahan isi dibanding `HEAD` |
+| Architecture | hanya memulihkan baseline tooling; adaptasi DDD-Lite tidak diselipkan |
+| Security | tidak ada dependency, input surface, secret, auth, atau data flow baru |
+| Performance | tidak ada perubahan runtime dibanding baseline `HEAD` |
 
-| Kriteria | Metode Validasi | Bukti |
-|---|---|---|
-| Semua tests di dalam modul | Directory listing | Folder structure |
-| phpunit.xml include paths baru | Config review | phpunit.xml |
-| Full test suite pass | `php artisan test` | Test output |
-| Tidak ada file duplikat | File search | Search results |
-
-### Arsitektur Pengujian
-
-#### Dependency Direction Test
-
-```php
-// tests/Architecture/DependencyDirectionTest.php
-
-it('does not allow Presentation to depend on Infrastructure directly', function () {
-    // Presentation should only depend on Application contracts
-})->group('architecture');
-
-it('does not allow Application to depend on HTTP details', function () {
-    // Application should not import Request, Response, etc.
-})->group('architecture');
-```
-
-#### Module Boundary Test
-
-```php
-// tests/Architecture/ModuleBoundaryTest.php
-
-it('does not allow cross-module direct model access', function () {
-    // Finance module should not access Student model directly
-})->group('architecture');
-```
-
-### Enkapsulasi Validasi
-
-| Check | Deskripsi | Metode |
-|---|---|---|
-| Models di Infrastructure | Eloquent models hanya di Infrastructure/Persistence/Models | Directory scan |
-| Controllers di Presentation | HTTP controllers hanya di Presentation/Controllers | Directory scan |
-| Domain logic tidak di Controller | Tidak ada business logic di controllers | Code review |
-| Events di Domain atau Integration | Events di layer yang sesuai | Directory scan |
-
-### Kontrak Validasi
-
-| Check | Deskripsi | Metode |
-|---|---|---|
-| Contracts di Application/Contracts | Interface contracts di layer Application | Directory scan |
-| Contracts diimplementasi di Infrastructure | Implementation di Infrastructure | Code review |
-| Dependency injection via contracts | Service providers bind contracts | Provider review |
-
-### Ownership Validasi
-
-| Check | Deskripsi | Metode |
-|---|---|---|
-| Setiap tabel punya owner | Module catalog review | Document review |
-| Tidak ada cross-module direct update | Code review | Grep search |
-| Cross-module via contract atau event | Architecture review | Code review |
-
-## Keputusan / Hasil
-
-1. **Validasi otomatis** melalui tests dan architecture tests
-2. **Validasi manual** melalui code review dan browser testing
-3. **Gate keeper** adalah test suite - harus pass sebelum lanjut phase
-
-## Risiko dan Pertanyaan Terbuka
-
-| Risiko | Dampak | Mitigasi |
-|---|---|---|
-| Architecture tests tidak cover semua kasus | Medium | Tambah architecture tests secara incremental |
-| Manual testing tidak konsisten | Medium | Buat checklist validasi per phase |
-
-## Persetujuan yang Diperlukan
-
-- [ ] Human review untuk validation criteria
-- [ ] Approval untuk architecture test suite
-
-## Keterlacakan
-
-- Terkait dengan docs/08-quality/QUALITY-GATES.md
-- Terkait dengan docs/05-engineering/TESTING-STRATEGY.md
-
-</contents>
+Verdict: `APPROVE` untuk task restore. Tidak ada finding Critical atau Required.

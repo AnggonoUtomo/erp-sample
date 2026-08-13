@@ -1,4 +1,19 @@
+---
+id: ARC-GUIDE-001
+title: Acuan DDD-Lite Modular Monolith Laravel
+document_type: architecture-guide
+status: active
+version: 1.1.0
+owner: Pemilik proyek
+created: 2026-08-12
+updated: 2026-08-13
+source_work_item: ARC-DDD-LITE-001
+related: [ADR-0001, ADR-0002]
+---
+
 # DDD-Lite Modular Monolith Laravel
+
+> Interpretasi normative struktur folder berada pada ADR-0001. Jika contoh dalam dokumen ini berbeda, ADR-0001 berlaku: lokasi baku, tetapi hanya folder yang benar-benar dibutuhkan yang dibuat. Kondisi kode saat ini masih struktur lama dan tidak boleh disebut sudah bermigrasi.
 
 **Dokumen Acuan Arsitektur dan Komunikasi Antar-Modul**  
 **Versi:** 1.0  

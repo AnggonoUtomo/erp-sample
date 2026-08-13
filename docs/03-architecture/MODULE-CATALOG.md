@@ -1,52 +1,87 @@
-﻿# Katalog Module
+---
+id: MOD-CATALOG-001
+title: Katalog Modul Aktif dan Target
+document_type: architecture-catalog
+status: active
+version: 1.0.0
+owner: Pemilik proyek
+created: 2026-08-12
+updated: 2026-08-13
+source_work_item: ARC-DDD-LITE-001
+related: [ADR-0001, ADR-0002, DEP-HR-001]
+---
 
-| Module | Boundary | Tujuan | Owns Data | Kontrak Publik | Menerbitkan Event | Mengonsumsi | Dilarang Dependensi | Pemilik |
-|---|---|---|---|---|---|---|---|---|
-| WorkLocations | HR | Master lokasi kerja | hr_work_locations | WorkLocationLookup | WorkLocationCreated | - | Direct employee update | HR Team |
-| Positions | HR | Manajemen posisi/jabatan | hr_positions | PositionLookup | PositionCreated | WorkLocations | Direct org structure update | HR Team |
-| OrganizationStructures | HR | Struktur organisasi | hr_organization_structures | OrgStructureLookup | OrgStructureCreated | Positions | Direct position update | HR Team |
-| Employees | HR | Data karyawan | hr_employees | EmployeeLookup, EmployeeManagement | EmployeeRegistered | WorkLocations, Positions | Direct contract update | HR Team |
-| EmployeeContracts | HR | Kontrak karyawan | hr_employee_contracts | ContractLookup | ContractCreated, ContractExpiring | Employees | Direct employee update | HR Team |
-| EmployeeDocuments | HR | Dokumen karyawan | hr_employee_documents | DocumentLookup | DocumentUploaded, DocumentExpiring | Employees | Direct document access | HR Team |
-| EmployeeMovements | HR | Mutasi karyawan | hr_employee_movements | MovementLookup | MovementCreated | Employees, Positions | Direct position update | HR Team |
-| EmploymentStatuses | HR | Status employment | hr_employment_statuses | StatusLookup | StatusChanged | Employees | Direct employee update | HR Team |
-| EmploymentTypes | HR | Tipe employment | hr_employment_types | TypeLookup | TypeChanged | Employees | Direct employee update | HR Team |
-| JobLevels | HR | Level jabatan | hr_job_levels | JobLevelLookup | JobLevelChanged | Positions | Direct position update | HR Team |
-| Departements | HR | Departemen | hr_departements | DepartmentLookup | DepartmentCreated | OrganizationStructures | Direct org update | HR Team |
-| HRReferenceData | HR | Data referensi HR | hr_reference_data | ReferenceLookup | - | - | Direct master data update | HR Team |
-| HRReports | HR | Reporting HR | - | ReportService | - | All HR modules | Direct data modification | HR Team |
-| Onboardings | HR | Workflow onboarding | hr_onboardings, hr_onboarding_tasks, hr_onboarding_templates | OnboardingService | OnboardingCompleted | Employees, OrganizationStructures | Direct employee activation | HR Team |
-| Offboardings | HR | Workflow offboarding | hr_offboardings, hr_offboarding_tasks, hr_offboarding_templates | OffboardingService | OffboardingCompleted | Employees, Onboardings | Direct employee deactivation | HR Team |
-| IntegrationContracts | HR | Kontrak integrasi | - | EmployeeSnapshotProvider, ContractSnapshotProvider | HRIntegrationEventV1 | All HR modules | Direct data modification | HR Team |
-| DocumentManagement | DocumentManagement | Manajemen dokumen | documents, document_versions, document_approvals | DocumentService | DocumentUploaded, DocumentApproved | HR IntegrationContracts | Direct HR data update | Admin Team |
-| UserManagements | Console | User management | users, role_has_permissions | UserService | UserCreated, UserImpersonated | - | Direct role modification | System Team |
-| SystemSettings | Console | System configuration | system_settings | SettingService | SettingChanged | - | Direct config modification | System Team |
-| AuditLogs | Console | Audit trail | audit_logs | AuditLogService | - | All modules events | Direct log modification | System Team |
-| BackupRestores | Console | Database backup | backup_history | BackupService | BackupCompleted | SystemSettings | Direct DB access | System Team |
-| AccessControls | Console | Access control | access_policies | AccessControlService | AccessPolicyChanged | Users | Direct permission modification | System Team |
-| ActivityCenters | Console | Activity tracking | activities | ActivityService | - | All modules | Direct activity modification | System Team |
-| GlobalSearches | Console | Cross-module search | - | SearchService | - | All modules | Direct data modification | System Team |
-| LoginActivities | Console | Login monitoring | login_activities | LoginActivityService | LoginDetected | - | Direct log modification | System Team |
-| NotificationTemplates | Console | Notification templates | notification_templates | TemplateService | TemplateChanged | All modules | Direct template modification | System Team |
-| QueueMonitors | Console | Queue monitoring | - | QueueMonitorService | - | Queue system | Direct queue modification | System Team |
-| SchedulerMonitors | Console | Scheduled task monitoring | - | SchedulerMonitorService | - | Scheduler | Direct schedule modification | System Team |
+# Katalog Modul Aktif dan Target
 
-## Boundary Aturan
+Katalog ini membedakan fakta implementasi saat ini dari keputusan target. `Dipertahankan` berarti tanggung jawabnya cukup mandiri; bukan klaim bahwa struktur foldernya telah memenuhi ADR-0001.
 
-- Modul dilarang query modul lain boundary privat tabel secara langsung kecuali secara eksplisit disetujui.
-- Lintas-modul sinkron behavior menggunakan eksplisit publik kontrak.
-- Lintas-modul asinkron behavior menggunakan terdokumentasi events/messages.
-- Shared kode wajib minimal dan dilarang memuat spesifik modul aturan bisnis.
+## Ringkasan
 
-## Module Summary by Boundary
+| Keadaan | Console | HR | DocumentManagement | Total |
+|---|---:|---:|---:|---:|
+| Manifest aktif pada kode | 11 | 16 | 1 | 28 |
+| Target setelah deprecation yang diusulkan | 11 | 15 | 1 | 27 |
 
-### HR Boundary (16 modules)
-Core HR management: employee data, onboarding/offboarding, contracts, documents, organization structure.
+- Tidak ada penggabungan modul yang diusulkan dari evaluasi awal.
+- Dua penggantian nama menjadi kandidat karena nama tidak menggambarkan bisnis dengan baik: `HR/Departements` dan `DocumentManagement/Foundation`.
+- `HR/IntegrationContracts` diusulkan dihentikan sebagai shell modul teknis. Kontraknya tidak dihapus; ownership-nya dipindahkan sesuai ADR-0002.
 
-### Console Boundary (11 modules)
-System administration: user management, system settings, audit logs, backup/restore, access control, activity tracking, search, notifications, monitoring.
+## Console
 
-### DocumentManagement Boundary (1 module)
-Document management with version control and approval workflow.
+| Modul saat ini | Tanggung jawab yang terlihat pada kode | Data utama | Evaluasi | Usulan |
+|---|---|---|---|---|
+| `AccessControls` | Pengelolaan role dan permission | tabel Spatie Permission | Mandiri sebagai kapabilitas akses | Dipertahankan |
+| `ActivityCenters` | Pusat aktivitas/notifikasi dan aksi mark-as-read | read model/notifikasi framework | Kapabilitas aplikasi lintas sumber | Dipertahankan |
+| `AuditLogs` | Pencatatan dan pembacaan audit | `audit_logs` | Mandiri dan sensitif kepatuhan | Dipertahankan |
+| `BackupRestores` | Export, backup, dan restore | file/arsip backup | Kapabilitas operasional dengan risiko tersendiri | Dipertahankan |
+| `GlobalSearches` | Pencarian command palette dan entity provider | tanpa tabel khusus | Read capability lintas modul | Dipertahankan |
+| `LoginActivities` | Monitoring login dan percobaan autentikasi | `login_activities` | Kapabilitas keamanan | Dipertahankan |
+| `NotificationTemplates` | Pengelolaan template notifikasi | `notification_templates` | Kapabilitas konfigurasi pesan | Dipertahankan |
+| `QueueMonitors` | Monitoring dan operasi failed jobs | tabel queue Laravel | Kapabilitas operasional | Dipertahankan |
+| `SchedulerMonitors` | Monitoring dan eksekusi scheduler | runtime scheduler | Kapabilitas operasional | Dipertahankan |
+| `SystemSettings` | Konfigurasi email, branding, security, maintenance, dan lainnya | `system_settings` | Kapabilitas konfigurasi sistem | Dipertahankan |
+| `UserManagements` | User, role assignment, avatar, dan impersonation | `users`, relasi role | Kapabilitas identitas administratif | Dipertahankan |
 
-## Total: 28 Modules
+## HR
+
+| Modul saat ini | Tanggung jawab yang terlihat pada kode | Data utama | Evaluasi | Usulan |
+|---|---|---|---|---|
+| `Departements` | Master departemen dan hierarki | `hr_departements` | Mandiri; nama salah eja | Dipertahankan, kandidat rename ke `Departments` |
+| `EmployeeContracts` | Riwayat kontrak effective-dated dan terminasi kontrak | `hr_employee_contracts` | Lifecycle mandiri dan memiliki kontrak integrasi aktif | Dipertahankan |
+| `EmployeeDocuments` | Metadata, compliance, verifikasi, dan attachment dokumen pegawai | `hr_employee_documents` | Ownership metadata HR berbeda dari storage DMS | Dipertahankan |
+| `EmployeeMovements` | Perubahan assignment effective-dated, approval, apply, cancel, archive | `hr_employee_movements` | Lifecycle mandiri | Dipertahankan |
+| `Employees` | Profil inti dan assignment aktif pegawai | `hr_employees` | Aggregate/master utama HR | Dipertahankan |
+| `EmploymentStatuses` | Master status hubungan kerja | `hr_employment_statuses` | Referensi bisnis yang dipakai lifecycle | Dipertahankan |
+| `EmploymentTypes` | Master tipe hubungan kerja | `hr_employment_types` | Referensi bisnis yang dipakai kontrak | Dipertahankan |
+| `HRReferenceData` | Kategori dan nilai referensi umum HR | `hr_reference_categories`, `hr_reference_data` | Supporting business capability | Dipertahankan |
+| `HRReports` | Query laporan HR read-only | tanpa tabel khusus | Read capability bisnis yang jelas | Dipertahankan |
+| `IntegrationContracts` | Registry/snapshot/event contract teknis | tanpa tabel/route/use case bisnis | Tidak mandiri sebagai modul bisnis | Deprecation melalui `DEP-HR-001` |
+| `JobLevels` | Master level/grade jabatan | `hr_job_levels` | Referensi bisnis | Dipertahankan |
+| `Offboardings` | Template, checklist, readiness, dan finalisasi keluar | tabel `hr_offboarding_*` | Lifecycle mandiri | Dipertahankan |
+| `Onboardings` | Template, checklist, assignment, dan penyelesaian masuk | tabel `hr_onboarding_*` | Lifecycle mandiri | Dipertahankan |
+| `OrganizationStructures` | Node struktur formal dan reporting line | `hr_organization_structures` | Struktur formal berbeda dari master departemen/posisi | Dipertahankan |
+| `Positions` | Master jabatan yang terkait departemen | `hr_positions` | Referensi bisnis | Dipertahankan |
+| `WorkLocations` | Master lokasi kerja | `hr_work_locations` | Referensi bisnis | Dipertahankan |
+
+## DocumentManagement
+
+| Modul saat ini | Tanggung jawab yang terlihat pada kode | Data utama | Evaluasi | Usulan |
+|---|---|---|---|---|
+| `Foundation` | Ingestion, versioning, archive/restore, secure delivery, dan access decision | `dm_documents`, `dm_document_versions`, `dm_idempotency_keys`, `dm_delivery_tokens` | Kapabilitas bisnis nyata; nama/description “contract-only foundation” tidak sesuai perilaku | Dipertahankan, kandidat rename ke `Documents` |
+
+## Aturan Evaluasi
+
+1. Modul tidak digabung hanya karena menggunakan tabel atau framework yang sama.
+2. Modul dapat tetap ada tanpa tabel bila memiliki use case/read capability/risiko operasional yang mandiri.
+3. Modul yang hanya mengelompokkan kontrak teknis tidak dianggap kapabilitas bisnis.
+4. Rename atau merge tidak boleh mengubah route, permission, data, contract semantics, atau hasil use case.
+5. Kandidat rename membutuhkan work item dan compatibility plan sebelum coding.
+
+## Sumber Bukti
+
+- `app/Modules/*/*/module.php`
+- migration pada `app/Modules/**/Database/Migrations/` dan `database/migrations/`
+- route dan service provider tiap modul
+- pencarian import namespace lintas modul pada 2026-08-13
+
+Katalog historis sebelum SEOS tersedia melalui `BL-2026-001-pre-seos` dan tidak menjadi sumber kebenaran aktif.

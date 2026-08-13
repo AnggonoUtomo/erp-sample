@@ -1,67 +1,68 @@
-# ARC-DDD-LITE-001 — Restrukturisasi Struktur Modul ke DDD-Lite Layers
+# ARC-DDD-LITE-001 — Restrukturisasi Modul ke DDD-Lite Adaptif
 
 ```yaml
 id: ARC-DDD-LITE-001
 kind: architecture-change
 classification: CRITICAL
-status: proposed
+status: in_progress
 owner: unassigned
 created_at: 2026-08-12
-updated_at: 2026-08-12
+updated_at: 2026-08-13
 parent: null
 discovered_by: null
 depends_on: []
 blocks: []
-related_adrs: []
+related_adrs: [ADR-0001, ADR-0002]
 ```
 
 ## Tujuan
 
-Mengonversi struktur folder modul dari flat structure ke DDD-Lite layered structure sesuai acuan `docs/DDD-Lite-Modular-Monolith-Laravel-Acuan.md`. Restrukturisasi ini bertujuan untuk:
+Menjadikan ADR-0001 sebagai struktur target utama sekarang, memigrasikan modul secara incremental tanpa perubahan perilaku, serta memulihkan keterlacakan keputusan historis ke dalam baseline SEOS aktif.
 
-1. Menetapkan pola arsitektur yang konsisten di semua modul.
-2. Memisahkan tanggung jawab setiap layer (Application, Domain, Infrastructure, Presentation).
-3. Memudahkan penelusuran kode dan maintenance.
-4. Menyiapkan fondasi untuk evolusi arsitektur selanjutnya.
+## Scope
 
-## Scope / Non-Scope
+- Struktur DDD-Lite baku tetapi minimal sesuai kebutuhan.
+- Evaluasi seluruh katalog modul berdasarkan tanggung jawab bisnis aktual.
+- Pemindahan test, route, class, dan namespace secara bertahap per module slice.
+- Compatibility check untuk contract/event lintas modul.
+- Sinkronisasi dokumentasi aktif berdasarkan bukti kode.
 
-### Scope
-- Restrukturisasi folder semua modul HR (16 modul) dan DocumentManagement.
-- Update module generator (`MakeModuleCommand`) untuk generate struktur DDD-Lite.
-- Migrasi namespace di semua file yang terdampak.
-- Migrasi tests dari `tests/` ke dalam tiap modul.
-- Migrasi routes dari `routes/` ke dalam tiap modul.
-- Update autoloader dan konfigurasi.
+## Non-Scope
 
-### Non-Scope
-- Mengubah logika bisnis.
-- Menambah fitur baru.
-- Mengubah kontrak antar-modul yang sudah ada.
-- Refactoring kode di luar struktur folder.
+- Migrasi primary key ke ULID; dipisahkan ke `MIG-ID-001`.
+- Fitur baru atau perubahan perilaku bisnis.
+- Public API, webhook, broker, outbox, atau microservice.
+- Penghapusan langsung `HR/IntegrationContracts`; dikelola oleh `DEP-HR-001`.
 
-## Indeks Dokumen
+## Status Gate
 
-| Dokumen | Path | Status |
-|---|---|---|
-| Discovery Record | `01-DISCOVERY-RECORD.md` | draft |
-| Boundary Proposal | `02-BOUNDARY-PROPOSAL.md` | draft |
-| Impact Assessment | `03-IMPACT-ASSESSMENT.md` | draft |
-| Implementation Plan | `04-IMPLEMENTATION-PLAN.md` | draft |
-| Validation Report | `05-VALIDATION-REPORT.md` | draft |
-| Completion Report | `06-COMPLETION-REPORT.md` | draft |
-| Context Pack | `CONTEXT-PACK.md` | draft |
-| Deviation Record | `DEVIATION-RECORD.md` | — |
-| Evidence Manifest | `EVIDENCE-MANIFEST.md` | — |
+```yaml
+gate: architecture-approval
+decision: approved
+approver: Pemilik proyek
+date: 2026-08-13
+conditions:
+  - perilaku aplikasi dipertahankan
+  - lokasi baku menggunakan struktur minimal
+  - perubahan kontrak dan ULID mempunyai work item terpisah
+evidence:
+  - ADR-0001
+  - konfirmasi eksplisit melalui interview evaluasi
+```
 
-## Keputusan Saat Ini / Aksi Berikutnya
+Task restore module tooling telah selesai dan terverifikasi. Work item tetap `in_progress`; hal ini tidak berarti restrukturisasi seluruh modul sudah selesai.
 
-- [x] Dokumen work item dibuat
-- [ ] Isi Discovery Record
-- [ ] Isi Boundary Proposal
-- [ ] Isi Impact Assessment
-- [ ] Isi Implementation Plan
-- [ ] Human Decision Gate approval
-- [ ] Mulai implementasi
+## Dokumen
 
-</contents>
+| Dokumen | Status |
+|---|---|
+| `01-DISCOVERY-RECORD.md` | updated |
+| `02-BOUNDARY-PROPOSAL.md` | approved via ADR-0001 dan ADR-0002 |
+| `03-IMPACT-ASSESSMENT.md` | updated |
+| `04-IMPLEMENTATION-PLAN.md` | updated |
+| `05-VALIDATION-REPORT.md` | criteria prepared; execution pending |
+| `06-COMPLETION-REPORT.md` | not started |
+| `TASKS.md` | task restore completed; tidak ada task coding aktif |
+| `CONTEXT-PACK.md` | documentation context current |
+| `EVIDENCE-MANIFEST.md` | discovery evidence recorded |
+| `DEVIATION-RECORD.md` | three planning deviations recorded |

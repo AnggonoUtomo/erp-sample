@@ -1,12 +1,19 @@
-﻿# pekerjaan item registry
+# Work Item Registry
 
-| ID | jenis | klasifikasi | nama | status | Pemilik | induk | path | target rilis |
+| ID | Jenis | Klasifikasi | Nama | Status | Owner | Induk | Path | Target rilis |
 |---|---|---|---|---|---|---|---|---|
-| ARC-DDD-LITE-001 | architecture-change | CRITICAL | Restrukturisasi Struktur Modul ke DDD-Lite Layers | proposed | unassigned | null | docs/07-work-items/architecture-changes/ARC-DDD-LITE-001 | v1.0.0 |
+| `ARC-DDD-LITE-001` | architecture-change | CRITICAL | Restrukturisasi Modul ke DDD-Lite Adaptif | in_progress | unassigned | null | `docs/07-work-items/architecture-changes/ARC-DDD-LITE-001` | belum ditetapkan |
+| `DEP-HR-001` | deprecation-removal | CRITICAL | Deprecation Modul Teknis HR IntegrationContracts | approved | unassigned | `ARC-DDD-LITE-001` | `docs/07-work-items/deprecations/DEP-HR-001` | belum ditetapkan |
+| `MIG-ID-001` | data-migration | CRITICAL | Evaluasi dan Migrasi Identifier ke ULID | deferred | unassigned | null | `docs/07-work-items/data-migrations/MIG-ID-001` | belum ditetapkan |
+
+## Task Implementasi yang Dipilih
+
+`TSK-ARC-DDD-LITE-001-01 — Pulihkan konsistensi module tooling` telah `completed` dengan restore exact dan verifikasi terfokus. Tidak ada task coding aktif berikutnya.
 
 ## Aturan
 
-- tambahkan setiap non-trivial pekerjaan item sebelum implementasi.
-- pertahankan status tersinkron dengan work item induk dokumen.
-- Turunan tasks boleh live di paket `TASKS.md`; signifikan child pekerjaan item receive mereka own registry row.
-- jangan pernah hapus selesai baris; arsipkan oleh status dan path.
+- Daftarkan setiap work item non-trivial sebelum implementasi.
+- Pertahankan status registry sinkron dengan dokumen induk.
+- Significant child work item mempunyai registry row dan paket sendiri.
+- Jangan menghapus baris completed; arsipkan melalui status dan release reference.
+- Hanya satu task boleh berstatus `in_progress` pada satu waktu.

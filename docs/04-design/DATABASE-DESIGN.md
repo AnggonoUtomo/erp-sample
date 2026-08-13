@@ -1,246 +1,60 @@
-﻿# Database Design
+---
+id: DB-DESIGN-001
+title: Baseline Kepemilikan Database Aktual
+document_type: data-design
+status: active
+version: 1.0.0
+owner: Pemilik proyek
+created: 2026-08-12
+updated: 2026-08-13
+source_work_item: ARC-DDD-LITE-001
+related: [MIG-ID-001, ADR-0001]
+---
 
-## Overview
+# Baseline Kepemilikan Database Aktual
 
-Database design untuk ERP system dengan arsitektur DDD-Lite Modular Monolith. Single database dengan shared schema untuk semua modul.
+## Strategi Identifier Saat Ini
 
-## Entity Relationship Diagram
+Migration aplikasi memakai `$table->id()` dan `foreignId()` untuk primary/foreign key utama. Artinya baseline saat ini adalah integer/bigint auto-increment, bukan ULID `CHAR(26)`.
 
-```mermaid
-erDiagram
-    hr_employees ||--o{ hr_employee_contracts : has
-    hr_employees ||--o{ hr_employee_documents : has
-    hr_employees ||--o{ hr_onboardings : undergoes
-    hr_employees ||--o{ hr_offboardings : undergoes
-    hr_employees ||--o{ hr_employee_movements : experiences
-    hr_positions ||--o{ hr_employees : assigned_to
-    hr_organization_structures ||--o{ hr_positions : contains
-    hr_organization_structures ||--o{ hr_departements : contains
-    hr_work_locations ||--o{ hr_employees : located_at
-    hr_employment_types ||--o{ hr_employees : categorized_by
-    hr_employment_statuses ||--o{ hr_employees : status
-    hr_job_levels ||--o{ hr_positions : leveled_by
-    hr_onboardings ||--o{ hr_onboarding_tasks : contains
-    hr_onboarding_templates ||--o{ hr_onboarding_template_items : contains
-    hr_offboardings ||--o{ hr_offboarding_tasks : contains
-    documents ||--o{ document_versions : has_versions
-    documents ||--o{ document_approvals : requires_approval
-```
+ULID hanya ditemukan untuk sebagian storage object key DMS dan bukan primary key relasional. Perubahan primary key ke ULID dipisahkan ke `MIG-ID-001`, berstatus `deferred`, dan tidak termasuk restrukturisasi DDD-Lite.
 
-## Tabel HR/WorkLocations
+## Kepemilikan Tabel Modul
 
-| Kolom | Tipe | Constraint | Deskripsi |
-|---|---|---|---|
-| id | CHAR(26) | PRIMARY KEY, ULID | Primary key |
-| name | VARCHAR(255) | NOT NULL | Nama lokasi |
-| slug | VARCHAR(255) | UNIQUE, NOT NULL | Slug unik |
-| address | TEXT | NULL | Alamat lengkap |
-| city | VARCHAR(100) | NULL | Kota |
-| province | VARCHAR(100) | NULL | Provinsi |
-| country | VARCHAR(100) | DEFAULT 'Indonesia' | Negara |
-| is_active | BOOLEAN | DEFAULT TRUE | Status aktif |
-| created_at | TIMESTAMP | NULL | Created timestamp |
-| updated_at | TIMESTAMP | NULL | Updated timestamp |
-| deleted_at | TIMESTAMP | NULL | Soft delete timestamp |
+| Modul pemilik | Tabel yang dibuktikan migration |
+|---|---|
+| `Console/UserManagements` | `users`, `password_reset_tokens`, `sessions` |
+| `Console/AccessControls` | `permissions`, `roles`, `model_has_permissions`, `model_has_roles`, `role_has_permissions` |
+| `Console/AuditLogs` | `audit_logs` |
+| `Console/LoginActivities` | `login_activities` |
+| `Console/NotificationTemplates` | `notification_templates` |
+| `Console/SystemSettings` | `system_settings` |
+| Laravel infrastructure | `cache`, `cache_locks`, `jobs`, `job_batches`, `failed_jobs`, `media` |
+| `HR/Departements` | `hr_departements` |
+| `HR/JobLevels` | `hr_job_levels` |
+| `HR/WorkLocations` | `hr_work_locations` |
+| `HR/EmploymentStatuses` | `hr_employment_statuses` |
+| `HR/EmploymentTypes` | `hr_employment_types` |
+| `HR/HRReferenceData` | `hr_reference_categories`, `hr_reference_data` |
+| `HR/Positions` | `hr_positions` |
+| `HR/OrganizationStructures` | `hr_organization_structures` |
+| `HR/Employees` | `hr_employees` |
+| `HR/EmployeeContracts` | `hr_employee_contracts` |
+| `HR/EmployeeDocuments` | `hr_employee_documents` |
+| `HR/EmployeeMovements` | `hr_employee_movements` |
+| `HR/Onboardings` | `hr_onboarding_templates`, `hr_onboarding_template_items`, `hr_onboardings`, `hr_onboarding_tasks` |
+| `HR/Offboardings` | `hr_offboarding_templates`, `hr_offboarding_template_items`, `hr_offboardings`, `hr_offboarding_tasks` |
+| `DocumentManagement/Foundation` | `dm_documents`, `dm_idempotency_keys`, `dm_document_versions`, `dm_delivery_tokens` |
 
-## Tabel HR/Positions
+## Koreksi terhadap Baseline Lama
 
-| Kolom | Tipe | Constraint | Deskripsi |
-|---|---|---|---|
-| id | CHAR(26) | PRIMARY KEY, ULID | Primary key |
-| title | VARCHAR(255) | NOT NULL | Jabatan |
-| slug | VARCHAR(255) | UNIQUE, NOT NULL | Slug unik |
-| code | VARCHAR(50) | NULL | Kode posisi |
-| level_id | CHAR(26) | FOREIGN KEY -> hr_job_levels.id | Level jabatan |
-| department_id | CHAR(26) | FOREIGN KEY -> hr_departements.id | Departemen |
-| is_active | BOOLEAN | DEFAULT TRUE | Status aktif |
-| created_at | TIMESTAMP | NULL | Created timestamp |
-| updated_at | TIMESTAMP | NULL | Updated timestamp |
-| deleted_at | TIMESTAMP | NULL | Soft delete timestamp |
+- Tabel DMS memakai prefix `dm_`; tidak ada bukti tabel `documents`, `document_versions`, atau `document_approvals` pada migration aktif.
+- Employee Documents menyimpan referensi logis DMS sesuai kontrak; ia tidak mengambil alih ownership storage/version.
+- `HR/IntegrationContracts`, `HR/HRReports`, dan beberapa modul Console read/operational tidak memiliki tabel sendiri. Ketiadaan tabel tidak otomatis berarti modul tidak valid.
 
-## Tabel HR/Employees
+## Aturan
 
-| Kolom | Tipe | Constraint | Deskripsi |
-|---|---|---|---|
-| id | CHAR(26) | PRIMARY KEY, ULID | Primary key |
-| user_id | CHAR(26) | FOREIGN KEY -> users.id, NULL | User ID |
-| employee_number | VARCHAR(50) | UNIQUE, NOT NULL | Nomor karyawan |
-| full_name | VARCHAR(255) | NOT NULL | Nama lengkap |
-| email | VARCHAR(255) | UNIQUE, NOT NULL | Email |
-| phone | VARCHAR(50) | NULL | Telepon |
-| birth_date | DATE | NULL | Tanggal lahir |
-| gender | ENUM('male', 'female') | NULL | Jenis kelamin |
-| work_location_id | CHAR(26) | FOREIGN KEY -> hr_work_locations.id | Lokasi kerja |
-| position_id | CHAR(26) | FOREIGN KEY -> hr_positions.id | Posisi |
-| employment_type_id | CHAR(26) | FOREIGN KEY -> hr_employment_types.id | Tipe employment |
-| employment_status_id | CHAR(26) | FOREIGN KEY -> hr_employment_statuses.id | Status employment |
-| hire_date | DATE | NOT NULL | Tanggal hire |
-| is_active | BOOLEAN | DEFAULT TRUE | Status aktif |
-| created_at | TIMESTAMP | NULL | Created timestamp |
-| updated_at | TIMESTAMP | NULL | Updated timestamp |
-| deleted_at | TIMESTAMP | NULL | Soft delete timestamp |
-
-## Tabel HR/EmployeeContracts
-
-| Kolom | Tipe | Constraint | Deskripsi |
-|---|---|---|---|
-| id | CHAR(26) | PRIMARY KEY, ULID | Primary key |
-| employee_id | CHAR(26) | FOREIGN KEY -> hr_employees.id | Employee |
-| contract_type | ENUM('permanent', 'fixed_term', 'probation', 'outsourced') | NOT NULL | Tipe kontrak |
-| start_date | DATE | NOT NULL | Tanggal mulai |
-| end_date | DATE | NULL | Tanggal berakhir (untuk fixed_term) |
-| salary | BIGINT | NULL | Gaji (dalam sen) |
-| currency | VARCHAR(3) | DEFAULT 'IDR' | Mata uang |
-| benefits | JSON | NULL | Benefits |
-| status | ENUM('active', 'expired', 'terminated', 'renewed') | DEFAULT 'active' | Status kontrak |
-| document_id | CHAR(26) | FOREIGN KEY -> documents.id, NULL | Dokumen kontrak |
-| created_at | TIMESTAMP | NULL | Created timestamp |
-| updated_at | TIMESTAMP | NULL | Updated timestamp |
-
-## Tabel HR/EmployeeDocuments
-
-| Kolom | Tipe | Constraint | Deskripsi |
-|---|---|---|---|
-| id | CHAR(26) | PRIMARY KEY, ULID | Primary key |
-| employee_id | CHAR(26) | FOREIGN KEY -> hr_employees.id | Employee |
-| document_type_id | CHAR(26) | FOREIGN KEY -> hr_reference_data.id | Tipe dokumen |
-| title | VARCHAR(255) | NOT NULL | Judul dokumen |
-| document_id | CHAR(26) | FOREIGN KEY -> documents.id | Dokumen fisik |
-| issue_date | DATE | NULL | Tanggal terbit |
-| expiry_date | DATE | NULL | Tanggal expiry |
-| is_verified | BOOLEAN | DEFAULT FALSE | Terverifikasi |
-| verified_at | TIMESTAMP | NULL | Tanggal verifikasi |
-| verified_by | CHAR(26) | FOREIGN KEY -> users.id, NULL | Verifier |
-| created_at | TIMESTAMP | NULL | Created timestamp |
-| updated_at | TIMESTAMP | NULL | Updated timestamp |
-
-## Tabel HR/Onboardings
-
-| Kolom | Tipe | Constraint | Deskripsi |
-|---|---|---|---|
-| id | CHAR(26) | PRIMARY KEY, ULID | Primary key |
-| employee_id | CHAR(26) | FOREIGN KEY -> hr_employees.id, UNIQUE | Employee |
-| template_id | CHAR(26) | FOREIGN KEY -> hr_onboarding_templates.id | Template |
-| status | ENUM('pending', 'in_progress', 'completed', 'cancelled') | DEFAULT 'pending' | Status |
-| started_at | DATE | NULL | Tanggal mulai |
-| completed_at | DATE | NULL | Tanggal selesai |
-| created_at | TIMESTAMP | NULL | Created timestamp |
-| updated_at | TIMESTAMP | NULL | Updated timestamp |
-
-## Tabel HR/OnboardingTasks
-
-| Kolom | Tipe | Constraint | Deskripsi |
-|---|---|---|---|
-| id | CHAR(26) | PRIMARY KEY, ULID | Primary key |
-| onboarding_id | CHAR(26) | FOREIGN KEY -> hr_onboardings.id | Onboarding |
-| template_item_id | CHAR(26) | FOREIGN KEY -> hr_onboarding_template_items.id | Template item |
-| title | VARCHAR(255) | NOT NULL | Judul task |
-| assignee_id | CHAR(26) | FOREIGN KEY -> users.id, NULL | Ditugaskan ke |
-| status | ENUM('pending', 'in_progress', 'completed', 'skipped') | DEFAULT 'pending' | Status |
-| due_date | DATE | NULL | Tanggal jatuh tempo |
-| completed_at | TIMESTAMP | NULL | Tanggal selesai |
-| completed_by | CHAR(26) | FOREIGN KEY -> users.id, NULL | Yang menyelesaikan |
-| created_at | TIMESTAMP | NULL | Created timestamp |
-| updated_at | TIMESTAMP | NULL | Updated timestamp |
-
-## Tabel HR/Offboardings
-
-| Kolom | Tipe | Constraint | Deskripsi |
-|---|---|---|---|
-| id | CHAR(26) | PRIMARY KEY, ULID | Primary key |
-| employee_id | CHAR(26) | FOREIGN KEY -> hr_employees.id, UNIQUE | Employee |
-| template_id | CHAR(26) | FOREIGN KEY -> hr_offboarding_templates.id | Template |
-| reason | TEXT | NOT NULL | Alasan |
-| resignation_type | ENUM('voluntary', 'involuntary', 'retirement', 'end_of_contract') | NOT NULL | Tipe resignasi |
-| status | ENUM('pending', 'in_progress', 'completed', 'cancelled') | DEFAULT 'pending' | Status |
-| requested_date | DATE | NOT NULL | Tanggal pengajuan |
-| effective_date | DATE | NOT NULL | Tanggal efektif |
-| completed_at | DATE | NULL | Tanggal selesai |
-| created_at | TIMESTAMP | NULL | Created timestamp |
-| updated_at | TIMESTAMP | NULL | Updated timestamp |
-
-## Tabel Documents
-
-| Kolom | Tipe | Constraint | Deskripsi |
-|---|---|---|---|
-| id | CHAR(26) | PRIMARY KEY, ULID | Primary key |
-| category_id | CHAR(26) | FOREIGN KEY -> hr_reference_data.id | Kategori |
-| title | VARCHAR(255) | NOT NULL | Judul |
-| slug | VARCHAR(255) | NOT NULL | Slug |
-| owner_type | VARCHAR(255) | NOT NULL | Owner model type |
-| owner_id | CHAR(26) | NOT NULL | Owner model id |
-| current_version | INTEGER | DEFAULT 1 | Versi saat ini |
-| status | ENUM('draft', 'pending_approval', 'approved', 'rejected', 'archived') | DEFAULT 'draft' | Status |
-| is_confidential | BOOLEAN | DEFAULT FALSE | Rahasia |
-| created_at | TIMESTAMP | NULL | Created timestamp |
-| updated_at | TIMESTAMP | NULL | Updated timestamp |
-
-## Tabel DocumentVersions
-
-| Kolom | Tipe | Constraint | Deskripsi |
-|---|---|---|---|
-| id | CHAR(26) | PRIMARY KEY, ULID | Primary key |
-| document_id | CHAR(26) | FOREIGN KEY -> documents.id | Document |
-| version | INTEGER | NOT NULL | Nomor versi |
-| file_path | VARCHAR(255) | NOT NULL | Path file |
-| mime_type | VARCHAR(100) | NOT NULL | Tipe MIME |
-| file_size | BIGINT | NOT NULL | Ukuran file (bytes) |
-| uploaded_by | CHAR(26) | FOREIGN KEY -> users.id | Uploader |
-| change_summary | TEXT | NULL | Ringkasan perubahan |
-| created_at | TIMESTAMP | NULL | Created timestamp |
-
-## Tabel DocumentApprovals
-
-| Kolom | Tipe | Constraint | Deskripsi |
-|---|---|---|---|
-| id | CHAR(26) | PRIMARY KEY, ULID | Primary key |
-| document_id | CHAR(26) | FOREIGN KEY -> documents.id | Document |
-| approver_id | CHAR(26) | FOREIGN KEY -> users.id | Approver |
-| status | ENUM('pending', 'approved', 'rejected') | DEFAULT 'pending' | Status |
-| comment | TEXT | NULL | Komentar |
-| approved_at | TIMESTAMP | NULL | Tanggal approval |
-| created_at | TIMESTAMP | NULL | Created timestamp |
-| updated_at | TIMESTAMP | NULL | Updated timestamp |
-
-## Indexes
-
-```sql
--- HR/Employees
-CREATE INDEX idx_employees_number ON hr_employees(employee_number);
-CREATE INDEX idx_employees_email ON hr_employees(email);
-CREATE INDEX idx_employees_status ON hr_employees(employment_status_id);
-CREATE INDEX idx_employees_location ON hr_employees(work_location_id);
-
--- HR/EmployeeDocuments
-CREATE INDEX idx_employee_docs_expiry ON hr_employee_documents(expiry_date);
-CREATE INDEX idx_employee_docs_employee ON hr_employee_documents(employee_id);
-
--- HR/EmployeeContracts
-CREATE INDEX idx_employee_contracts_end ON hr_employee_contracts(end_date);
-CREATE INDEX idx_employee_contracts_employee ON hr_employee_contracts(employee_id);
-
--- Documents
-CREATE INDEX idx_documents_owner ON documents(owner_type, owner_id);
-CREATE INDEX idx_documents_status ON documents(status);
-
--- Audit Log
-CREATE INDEX idx_audit_log_user ON audit_log(user_id);
-CREATE INDEX idx_audit_log_created ON audit_log(created_at);
-```
-
-## Migration Strategy
-
-1. Shared tables (users, roles, permissions) dibuat pertama
-2. HR reference data tables
-3. HR master data tables (work_locations, positions, departments, job_levels, employment_types, employment_statuses)
-4. HR transaction tables (employees, contracts, documents, onboardings, offboardings)
-5. Document management tables
-6. Audit log table
-
-## Seed Data
-
-1. Roles: super_admin, admin, hr_admin, hr_staff, manager, employee
-2. Permissions: CRUD untuk setiap modul
-3. Employment types: permanent, contract, probation, outsourced
-4. Employment statuses: active, on_leave, suspended, terminated
-5. Document categories: identity, education, contract, certificate, other
+1. Hanya modul pemilik yang melakukan mutation terhadap tabelnya.
+2. Foreign key lintas modul tidak mengalihkan ownership.
+3. Perubahan type identifier, key, atau constraint memerlukan work item data migration dan rollback plan.
+4. Detail kolom authoritative berada pada migration sampai schema snapshot otomatis tersedia.
