@@ -61,3 +61,12 @@ Bukti task berikutnya ditambahkan secara incremental.
 - module:validate HR.WorkLocations: exit 0, valid.
 - Pencarian namespace DTO lama: nol hasil.
 - Pint terfokus dan git diff --check: exit 0.
+
+### TSK-REF-HR-WLOC-001-03
+
+- WorkLocationsTransaction dipindahkan exact selain namespace ke Infrastructure/Transactions dan import service diperbarui.
+- HRWorkLocationTest: exit 0, 9 test/27 assertion, 4,70 detik.
+- module:validate HR.WorkLocations: exit 0, valid.
+- Pencarian namespace transaction lama: nol hasil.
+- Pint terfokus dan git diff --check: exit 0.
+- Rangkaian command memakan sekitar 107 detik pada runner; tidak ada failure dan durasi bukan baseline performa aplikasi.

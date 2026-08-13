@@ -5,8 +5,8 @@ namespace App\Modules\HR\WorkLocations\Services;
 use App\Modules\Console\AuditLogs\Services\AuditLogService;
 use App\Modules\Console\SystemSettings\Services\SystemSettingService;
 use App\Modules\HR\WorkLocations\Application\DTOs\WorkLocationData;
+use App\Modules\HR\WorkLocations\Infrastructure\Transactions\WorkLocationsTransaction;
 use App\Modules\HR\WorkLocations\Models\WorkLocation;
-use App\Modules\HR\WorkLocations\Transactions\WorkLocationsTransaction;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 

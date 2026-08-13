@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\HR\WorkLocations\Transactions;
+namespace App\Modules\HR\WorkLocations\Infrastructure\Transactions;
 
 use Illuminate\Support\Facades\DB;
 
