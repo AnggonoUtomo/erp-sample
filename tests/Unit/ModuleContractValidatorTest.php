@@ -42,6 +42,16 @@ class ModuleContractValidatorTest extends TestCase
         $this->assertTrue($codes->contains('unknown_dependency'));
     }
 
+    public function test_contract_accepts_presentation_route_export_without_legacy_route_file(): void
+    {
+        $this->writeModule('HR', 'WorkLocations');
+        File::delete($this->root.'/HR/WorkLocations/routes.php');
+        File::ensureDirectoryExists($this->root.'/HR/WorkLocations/Presentation/Routes');
+        File::put($this->root.'/HR/WorkLocations/Presentation/Routes/web.php', '<?php return [];');
+
+        $this->assertSame([], app(ModuleContractValidator::class)->validate());
+    }
+
     public function test_contract_rejects_navigation_without_group_items_shape(): void
     {
         $this->writeModule('HR', 'Contracts');

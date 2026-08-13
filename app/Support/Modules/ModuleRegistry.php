@@ -124,10 +124,22 @@ class ModuleRegistry
     public static function routeFiles(): array
     {
         return self::modules()
-            ->map(fn (array $module) => $module['path'].DIRECTORY_SEPARATOR.'routes.php')
-            ->filter(fn (string $path) => File::exists($path))
+            ->map(fn (array $module) => self::routeFile($module['path']))
+            ->filter(fn (?string $path) => $path !== null)
             ->values()
             ->all();
+    }
+
+    public static function routeFile(string $modulePath): ?string
+    {
+        $target = $modulePath.DIRECTORY_SEPARATOR.'Presentation'.DIRECTORY_SEPARATOR.'Routes'.DIRECTORY_SEPARATOR.'web.php';
+        if (File::exists($target)) {
+            return $target;
+        }
+
+        $legacy = $modulePath.DIRECTORY_SEPARATOR.'routes.php';
+
+        return File::exists($legacy) ? $legacy : null;
     }
 
     /**

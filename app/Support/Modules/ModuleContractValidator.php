@@ -99,8 +99,9 @@ class ModuleContractValidator
             $enabled = $manifest['exports'][$export] ?? null;
             if (! is_bool($enabled)) {
                 $errors[] = $this->error($module['key'], $module['path'], 'invalid_export', "Export {$export} must be boolean.");
-            } elseif ($enabled && ! File::exists($module['path'].DIRECTORY_SEPARATOR.$export.'.php')) {
-                $errors[] = $this->error($module['key'], $module['path'], 'missing_export', "Export {$export} requires {$export}.php.");
+            } elseif ($enabled && ! $this->exportExists($module['path'], $export)) {
+                $expected = $export === 'routes' ? 'Presentation/Routes/web.php or routes.php' : "{$export}.php";
+                $errors[] = $this->error($module['key'], $module['path'], 'missing_export', "Export {$export} requires {$expected}.");
             }
         }
 
@@ -117,6 +118,15 @@ class ModuleContractValidator
         }
 
         return $errors;
+    }
+
+    private function exportExists(string $modulePath, string $export): bool
+    {
+        if ($export === 'routes') {
+            return ModuleRegistry::routeFile($modulePath) !== null;
+        }
+
+        return File::exists($modulePath.DIRECTORY_SEPARATOR.$export.'.php');
     }
 
     private function validNavigation(string $path): bool

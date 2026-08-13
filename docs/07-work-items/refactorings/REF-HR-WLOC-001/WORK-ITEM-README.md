@@ -2,7 +2,7 @@
 id: DOC-REF-HR-WLOC-001-README
 title: Identitas Work Item REF-HR-WLOC-001
 document_type: work-item-readme
-status: ready
+status: in_progress
 version: 1.0.0
 owner: Pemilik proyek
 created: 2026-08-14
@@ -16,7 +16,7 @@ related: [ARC-DDD-LITE-001, ADR-0001, FTR-ENG-001]
 ID: REF-HR-WLOC-001
 Jenis: refactoring
 Klasifikasi: CRITICAL
-Status: ready
+Status: in_progress
 Owner: Pemilik proyek
 Induk: ARC-DDD-LITE-001
 Ditemukan oleh: null; work item ini merupakan paket implementasi TSK-ARC-DDD-LITE-001-02, bukan pekerjaan emergent.
@@ -53,7 +53,7 @@ Scope mencakup pemindahan class/backend, route, provider, test milik modul, impo
 
 ## Keputusan Saat Ini dan Aksi Berikutnya
 
-Work item telah memenuhi pra-kerja dan berstatus ready. Task berikutnya yang dipilih adalah TSK-REF-HR-WLOC-001-01, tetapi belum berstatus in_progress dan coding belum dimulai. Aksi berikutnya adalah mengaktifkan satu task tersebut ketika Pemilik proyek memerintahkan implementasi.
+Work item telah memasuki implementasi. TSK-REF-HR-WLOC-001-01 adalah satu-satunya task in_progress; task lainnya tetap pending.
 
 ## Persetujuan dan Readiness
 

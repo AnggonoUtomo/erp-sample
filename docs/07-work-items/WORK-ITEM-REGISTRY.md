@@ -9,7 +9,7 @@
 | `PHASE-01-FOUNDATION-CONSOLE-CORE` | feature | CRITICAL | Paket Perencanaan Foundation dan Console Core Lama | superseded | unassigned | `ARC-DDD-LITE-001` | `docs/07-work-items/features/PHASE-01-FOUNDATION-CONSOLE-CORE` | tidak berlaku |
 | `FTR-PROD-001` | feature | SIGNIFICANT | Rekonsiliasi Baseline Produk dan Requirement | completed | Pemilik proyek | null | `docs/07-work-items/features/FTR-PROD-001-product-baseline-reconciliation` | dokumentasi |
 | `FTR-ENG-001` | feature | SIGNIFICANT | Rekonsiliasi Baseline Engineering dan Testing | completed | Pemilik proyek | null | `docs/07-work-items/features/FTR-ENG-001-engineering-baseline-reconciliation` | dokumentasi |
-| `REF-HR-WLOC-001` | refactoring | CRITICAL | Pilot DDD-Lite HR WorkLocations | ready | Pemilik proyek | `ARC-DDD-LITE-001` | `docs/07-work-items/refactorings/REF-HR-WLOC-001` | belum ditetapkan |
+| `REF-HR-WLOC-001` | refactoring | CRITICAL | Pilot DDD-Lite HR WorkLocations | in_progress | Pemilik proyek | `ARC-DDD-LITE-001` | `docs/07-work-items/refactorings/REF-HR-WLOC-001` | belum ditetapkan |
 
 ## Task Implementasi yang Dipilih
 
@@ -21,7 +21,7 @@ Seluruh task `FTR-PROD-001` telah selesai. Tidak ada task aplikasi, coding, atau
 
 Seluruh task `FTR-ENG-001` telah selesai. Tidak ada task engineering atau dokumentasi yang aktif.
 
-`TSK-REF-HR-WLOC-001-01 — Route Discovery Target-First/Fallback` telah dipilih sebagai task coding berikutnya dan berstatus `ready`, bukan `in_progress`. Tidak ada coding pilot yang telah dimulai.
+`TSK-REF-HR-WLOC-001-01 — Route Discovery Target-First/Fallback` adalah satu-satunya task coding `in_progress`.
 
 ## Aturan
 

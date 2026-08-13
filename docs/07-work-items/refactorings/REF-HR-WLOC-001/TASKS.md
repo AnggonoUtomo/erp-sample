@@ -2,7 +2,7 @@
 id: DOC-REF-HR-WLOC-001-TASKS
 title: Task REF-HR-WLOC-001
 document_type: work-item-tasks
-status: ready
+status: active
 version: 1.0.0
 owner: Pemilik proyek
 created: 2026-08-14
@@ -18,8 +18,8 @@ related: [ADR-0001]
 | Urutan | Task ID | Tujuan | Bergantung pada | Status |
 |---:|---|---|---|---|
 | 0 | TSK-REF-HR-WLOC-001-00 | Pra-kerja, baseline, approval, readiness | FTR-ENG-001 | completed |
-| 1 | TSK-REF-HR-WLOC-001-01 | Route discovery target-first/fallback | task 00 | ready |
-| 2 | TSK-REF-HR-WLOC-001-02 | Pindahkan DTO | task 01 | pending |
+| 1 | TSK-REF-HR-WLOC-001-01 | Route discovery target-first/fallback | task 00 | completed |
+| 2 | TSK-REF-HR-WLOC-001-02 | Pindahkan DTO | task 01 | in_progress |
 | 3 | TSK-REF-HR-WLOC-001-03 | Pindahkan transaction | task 02 | pending |
 | 4 | TSK-REF-HR-WLOC-001-04 | Pindahkan service | task 03 | pending |
 | 5 | TSK-REF-HR-WLOC-001-05 | Cutover model dan semua consumer | task 04 | pending |
@@ -31,11 +31,11 @@ related: [ADR-0001]
 | 11 | TSK-REF-HR-WLOC-001-11 | Colocation test modul dan discovery PHPUnit | task 10 | pending |
 | 12 | TSK-REF-HR-WLOC-001-12 | Verifikasi, review, dan baseline sync | task 11 | pending |
 
-Hanya task 01 yang telah dipilih sebagai task berikutnya. Tidak ada task coding berstatus in_progress pada penyelesaian pra-kerja ini.
+Task 02 adalah satu-satunya task coding berstatus in_progress.
 
 ## TSK-REF-HR-WLOC-001-01 — Route Discovery Target-First/Fallback
 
-Status: ready. Owner: unassigned. Ukuran: small.
+Status: completed. Owner: Codex. Ukuran: small.
 
 Tujuan: membuat ModuleRegistry dan ModuleContractValidator menerima Presentation/Routes/web.php sebagai target utama dan root routes.php sebagai fallback umum.
 
@@ -56,6 +56,8 @@ Verifikasi:
     php artisan module:validate
     php artisan route:list --path=hr/work-locations --json
     git diff --check
+
+Hasil: 5 test/6 assertion lulus; seluruh module contract valid; enam route baseline tidak berubah; Pint dan diff check lulus.
 
 ## TSK-REF-HR-WLOC-001-02 — Pindahkan DTO
 

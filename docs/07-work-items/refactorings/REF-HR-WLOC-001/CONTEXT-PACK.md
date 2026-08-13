@@ -1,6 +1,6 @@
 ---
 id: DOC-REF-HR-WLOC-001-CONTEXT
-title: Context Pack TSK-REF-HR-WLOC-001-01
+title: Context Pack TSK-REF-HR-WLOC-001-02
 document_type: context-pack
 status: ready
 version: 1.0.0
@@ -11,11 +11,11 @@ source_work_item: REF-HR-WLOC-001
 related: [ADR-0001, FTR-ENG-001]
 ---
 
-# Context Pack TSK-REF-HR-WLOC-001-01
+# Context Pack TSK-REF-HR-WLOC-001-02
 
 ## Task yang Dipilih
 
-TSK-REF-HR-WLOC-001-01 — Route Discovery Target-First/Fallback. Status ready; belum in_progress dan belum ada coding.
+TSK-REF-HR-WLOC-001-02 — Pindahkan DTO. Status in_progress; ini satu-satunya task coding aktif.
 
 ## Work Item Induk
 
@@ -23,19 +23,16 @@ REF-HR-WLOC-001, child CRITICAL dari ARC-DDD-LITE-001 dan implementasi terkontro
 
 ## Fakta Repository yang Terverifikasi
 
-- ModuleRegistry saat ini menemukan root routes.php.
-- ModuleContractValidator saat ini mengharuskan root routes.php.
-- Seluruh modul aktif masih menggunakan root routes.php pada baseline audit.
-- HR/WorkLocations mendaftarkan enam route web/session dan validasi modul lulus.
-- ADR-0001 menetapkan route modul di Presentation/Routes/.
-- Generator tidak diubah pada task ini.
+- TSK-REF-HR-WLOC-001-01 telah membuat route discovery target-first/fallback dan seluruh pemeriksaannya lulus.
+- WorkLocationData saat ini berada di DTO/ dan dipakai oleh dua FormRequest serta WorkLocationsService.
+- ADR-0001 menetapkan DTO di Application/DTOs/.
+- Field, default, fromArray, dan normalization DTO harus tetap persis.
 
 ## Requirement dan Kriteria Penerimaan
 
-- REF-WLOC-REQ-005 dan REF-WLOC-NFR-001.
-- Resolver bersifat umum, target-first, fallback root, dan tidak double-load.
-- Existing modules tetap valid sebelum dimigrasikan.
-- Snapshot enam route WorkLocations tidak berubah.
+- REF-WLOC-REQ-002, REF-WLOC-REQ-004, REF-WLOC-REQ-006, dan REF-WLOC-NFR-001.
+- File/namespace berpindah ke Application/DTOs/ dan tiga consumer langsung diperbarui.
+- Tidak ada perubahan field, default, transformasi, validation, atau behavior HTTP.
 
 ## ADR dan Baseline
 
@@ -47,15 +44,16 @@ REF-HR-WLOC-001, child CRITICAL dari ARC-DDD-LITE-001 dan implementasi terkontro
 
 ## File dan Area yang Diizinkan
 
-- app/Support/Modules/ModuleRegistry.php
-- app/Support/Modules/ModuleContractValidator.php
-- tests/Unit/ModuleContractValidatorTest.php
-- tests/Unit/ModuleRegistryTest.php bila test baru diperlukan
+- app/Modules/HR/WorkLocations/DTO/WorkLocationData.php
+- app/Modules/HR/WorkLocations/Application/DTOs/WorkLocationData.php
+- app/Modules/HR/WorkLocations/Http/Requests/StoreWorkLocationRequest.php
+- app/Modules/HR/WorkLocations/Http/Requests/UpdateWorkLocationRequest.php
+- app/Modules/HR/WorkLocations/Services/WorkLocationsService.php
 - dokumen evidence, deviasi, dan task work item ini
 
 ## File dan Area yang Dilarang
 
-- app/Modules/** pada task 01
+- seluruh file selain allowlist task 02
 - database/** dan seluruh migration
 - resources/js/**
 - app/Support/Modules/Commands/MakeModuleCommand.php
@@ -63,18 +61,17 @@ REF-HR-WLOC-001, child CRITICAL dari ARC-DDD-LITE-001 dan implementasi terkontro
 
 ## Pola yang Harus Dipertahankan
 
-- Path dibentuk dari basePath modul yang sudah ditemukan registry.
-- Urutan modul dan exception behavior tetap.
-- Target/fallback menghasilkan paling banyak satu route file per modul.
-- Validator dan runtime memakai aturan resolusi yang sama.
+- WorkLocationData tetap final readonly.
+- Constructor dan fromArray tetap identik selain namespace.
+- Consumer hanya mengubah import.
 
 ## Perintah Verifikasi
 
-    php artisan test tests/Unit/ModuleContractValidatorTest.php tests/Unit/ModuleRegistryTest.php
-    php artisan module:validate
-    php artisan route:list --path=hr/work-locations --json
+    php artisan test tests/Feature/HRWorkLocationTest.php
+    php artisan module:validate HR.WorkLocations --json
+    vendor/bin/pint --test app/Modules/HR/WorkLocations/Application/DTOs/WorkLocationData.php app/Modules/HR/WorkLocations/Http/Requests app/Modules/HR/WorkLocations/Services/WorkLocationsService.php
     git diff --check
 
 ## Risiko dan Keputusan
 
-Risiko utama adalah validator dan runtime berbeda atau route dimuat ganda. Mitigasinya satu aturan target-first yang dibuktikan untuk tiga kondisi: hanya legacy, hanya target, dan keduanya ada. Tidak ada pertanyaan keputusan blocking.
+Risiko utama adalah import lama terlewat atau perubahan mekanis ikut mengubah DTO. Mitigasinya pencarian namespace lama, diff exact selain namespace, dan HRWorkLocationTest. Tidak ada pertanyaan keputusan blocking.

@@ -43,4 +43,13 @@ Rerun final tiga tahap—module validation, route snapshot, lalu 39 test—seles
 
 ## Bukti Pascakerja
 
-Belum tersedia. Tambahkan command persis, exit code, ringkasan hasil, file berubah, commit/PR, serta limitation setelah coding.
+### TSK-REF-HR-WLOC-001-01
+
+- RED: dua test baru gagal karena validator hanya menerima root routes.php dan runtime memilih legacy.
+- GREEN: shared ModuleRegistry::routeFile memilih target terlebih dahulu lalu fallback; validator memakai resolver yang sama.
+- `php artisan test tests/Unit/ModuleContractValidatorTest.php tests/Unit/ModuleRegistryTest.php`: exit 0, 5 test/6 assertion.
+- `php artisan module:validate`: exit 0, seluruh contract valid.
+- route snapshot WorkLocations: exit 0, enam route tetap.
+- Pint terfokus dan git diff --check: exit 0.
+
+Bukti task berikutnya ditambahkan secara incremental.
