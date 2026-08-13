@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\HR\WorkLocations\Policies;
+namespace App\Modules\HR\WorkLocations\Presentation\Policies;
 
 use App\Models\User;
 use App\Modules\HR\WorkLocations\Infrastructure\Models\WorkLocation;

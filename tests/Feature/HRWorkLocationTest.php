@@ -4,7 +4,9 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Modules\HR\WorkLocations\Infrastructure\Models\WorkLocation;
+use App\Modules\HR\WorkLocations\Presentation\Policies\WorkLocationPolicy;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Gate;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
@@ -50,6 +52,11 @@ class HRWorkLocationTest extends TestCase
         $this->actingAs($user)
             ->get(route('hr.work-locations.index'))
             ->assertOk();
+    }
+
+    public function test_gate_maps_work_location_to_its_policy(): void
+    {
+        $this->assertInstanceOf(WorkLocationPolicy::class, Gate::getPolicyFor(WorkLocation::class));
     }
 
     public function test_authorized_users_can_create_work_location(): void

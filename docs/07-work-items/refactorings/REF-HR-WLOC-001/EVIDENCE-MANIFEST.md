@@ -41,6 +41,7 @@ Rerun final tiga tahap—module validation, route snapshot, lalu 39 test—seles
 - Perintah inspeksi awal memakai slug paket induk yang tidak ada; path kanonis ditemukan dengan `rg --files docs` dan inspeksi diulang berhasil.
 - Copy-Item WorkLocationsService timeout tanpa membuat target; keadaan diverifikasi sebelum pemindahan dilanjutkan dengan apply_patch.
 - Pint pertama pada cutover model menerima path sumber yang sudah dihapus dan gagal sebagai path tidak terbaca; rerun menyaring hanya file PHP yang ada.
+- Characterization test Gate pertama gagal karena assertion membandingkan instance dengan class-string; output menunjukkan policy target benar dan assertion dikoreksi menjadi assertInstanceOf.
 - Test pasca-implementasi, composer quality:check, npm build, dan review kode belum dijalankan karena pekerjaan ini baru pra-kerja.
 
 ## Bukti Pascakerja
@@ -96,3 +97,9 @@ Bukti task berikutnya ditambahkan secara incremental.
 - HRWorkLocationTest: exit 0, 9 test/27 assertion, 2,41 detik.
 - module:validate HR.WorkLocations: exit 0, valid.
 - Pencarian namespace request lama: nol hasil; Pint terfokus dan git diff --check lulus.
+
+### TSK-REF-HR-WLOC-001-07
+
+- WorkLocationPolicy dipindahkan exact selain namespace ke Presentation/Policies; import provider diperbarui.
+- Characterization test Gate ditambahkan; focused suite lulus 10 test/28 assertion dalam 2,51 detik.
+- Existing allow/deny HTTP test tetap lulus; module validation valid; namespace policy lama nol; Pint dan diff check lulus.

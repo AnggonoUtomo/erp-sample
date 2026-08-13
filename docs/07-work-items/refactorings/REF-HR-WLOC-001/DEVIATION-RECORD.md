@@ -61,4 +61,10 @@ Status: resolved. ADR baru tidak diperlukan.
 
 Daftar otomatis dari git diff memasukkan path model sumber yang sudah dihapus sehingga Pint menolaknya sebagai tidak terbaca. Pemeriksaan diperbaiki dengan menyaring hanya file PHP yang masih ada. Ini kegagalan invokasi tooling, bukan kegagalan kode atau test.
 
+## DEV-REF-HR-WLOC-001-009 — Assertion Awal Gate Salah Bentuk
+
+Status: resolved. ADR baru tidak diperlukan.
+
+Characterization test awal membandingkan hasil Gate::getPolicyFor dengan class-string, sedangkan Laravel mengembalikan instance policy. Output membuktikan instance yang benar telah terdaftar. Assertion dikoreksi menjadi assertInstanceOf tanpa perubahan kode produksi.
+
 Belum ada deviasi implementasi karena coding belum dimulai.
