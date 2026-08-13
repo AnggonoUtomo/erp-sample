@@ -18,6 +18,7 @@ Outcome tercapai: `app/Support/Modules/Commands/MakeModuleCommand.php` identik d
 - ULID dikelola oleh `MIG-ID-001` dan dilarang masuk scope ARC.
 - Dokumen historis adalah evidence melalui `BL-2026-001-pre-seos`.
 - Runtime module tooling telah dipulihkan dan diverifikasi untuk task restore; adaptasi generator DDD-Lite belum aktif.
+- Baseline engineering/testing telah direkonsiliasi melalui `FTR-ENG-001`: web/session aktif, API/token deferred, test module-local incremental, dan angka kualitas belum menjadi gate.
 
 ## Area yang Diizinkan
 

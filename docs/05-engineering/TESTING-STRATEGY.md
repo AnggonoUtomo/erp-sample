@@ -1,327 +1,169 @@
-﻿# Testing Strategy
+---
+id: ENG-TEST-001
+title: Strategi Testing Aktual dan Incremental
+document_type: testing-strategy
+status: approved
+version: 1.0.0
+owner: Pemilik proyek
+created: 2026-08-12
+updated: 2026-08-13
+source_work_item: FTR-ENG-001
+related: [ENG-TECH-001, ADR-0001, NFR-005]
+---
 
-## Overview
+# Strategi Testing Aktual dan Incremental
 
-Strategi testing untuk ERP system dengan arsitektur DDD-Lite Modular Monolith.
+## Tujuan
 
-## Testing Pyramid
+Strategi ini menetapkan cara membuktikan perubahan tanpa mengklaim tooling, lokasi test, coverage, atau quality gate yang belum tersedia. Test dipilih berdasarkan risiko dan perilaku yang berubah, bukan sekadar nama folder.
 
-```
-        /\
-       /  \
-      / E2E \
-     /--------\
-    / Integration \
-   /----------------\
-  /     Unit Tests     \
- /------------------------\
-```
+Snapshot jumlah test pada dokumen ini berasal dari audit 2026-08-13. Jumlah tersebut bukan target tetap.
 
-## Testing Levels
+## Topologi Test Aktual
 
-### 1. Unit Tests
+| Area | Framework | Lokasi aktual | Snapshot |
+|---|---|---|---:|
+| Backend feature/integration | PHPUnit + Laravel testing helpers | tests/Feature | 101 file test |
+| Backend unit | PHPUnit | tests/Unit | 5 file test |
+| Frontend unit/component/hook | Vitest + React Testing Library | resources/js/**/*.test.ts(x) | 12 file, 28 test |
+| Architecture | command dan test yang ada | tidak ada suite tests/Architecture | 0 file pada lokasi target |
+| Module-local | PHPUnit | belum ada app/Modules/*/*/Tests | 0 file |
 
-**Tujuan:** Test individual classes dan methods dalam isolasi.
+phpunit.xml mendaftarkan suite tests/Unit dan tests/Feature. Test backend aktual memakai class PHPUnit; contoh Pest tidak menjadi konvensi aktif karena Pest tidak terpasang.
 
-**Scope:**
-- Actions
-- Services
-- DTOs
-- Value Objects
-- Domain Events
-- Queries
+Vitest memakai environment jsdom dan setup resources/js/test/setup.ts.
 
-**Framework:** PHPUnit
+## Level Testing
 
-**Lokasi:** app/Modules/{Boundary}/{Module}/Tests/Unit/
+### Unit
 
-**Contoh:**
-```php
-// Tests/Unit/CreateEmployeeActionTest.php
-it('creates an employee with valid data', function () {
-    $action = new CreateEmployeeAction();
-    $data = CreateEmployeeData::from([
-        'full_name' => 'John Doe',
-        'email' => 'john@example.com',
-        // ...
-    ]);
+Menguji aturan atau transformasi terisolasi tanpa HTTP dan tanpa integrasi eksternal. Unit test harus ditempatkan dekat ownership-nya sesuai kebijakan lokasi di bawah.
 
-    $employee = $action->execute($data);
+### Feature
 
-    expect($employee)->toBeInstanceOf(Employee::class);
-    expect($employee->employee_number)->toBeString();
-});
+Menguji route, middleware, authentication, authorization, request validation, controller/action, persistence, dan response sebagai satu flow Laravel. Karena interface aktif adalah web/session, contoh dan acceptance tidak boleh mengasumsikan /api/v1 atau token authentication.
 
-it('throws exception for duplicate employee number', function () {
-    // ...
-})->throws(DuplicateEmployeeNumberException::class);
-```
+### Integration dan Contract
 
-### 2. Feature Tests
+Menguji interaksi database, binding, provider, event/listener, dan kontrak lintas modul. Label integration menjelaskan scope perilaku; saat ini sebagian bukti integration masih berada di tests/Feature atau tests/Unit.
 
-**Tujuan:** Test HTTP endpoints dan request-response cycle.
+### Architecture
 
-**Scope:**
-- Controllers
-- Form Requests
-- API Resources
-- Routes
-- Middleware
+Menguji manifest modul, namespace, dependency direction, dan boundary. Gate aktif yang tersedia adalah php artisan module:validate serta test repository yang benar-benar ada. PHPStan custom rules atau suite tests/Architecture merupakan rekomendasi/deferred sampai tooling dan rule-nya disetujui.
 
-**Framework:** PHPUnit + Laravel testing helpers
+### Frontend
 
-**Lokasi:** app/Modules/{Boundary}/{Module}/Tests/Feature/
+Menguji utility, hook, komponen, presenter, dan interaksi pengguna dengan Vitest dan React Testing Library. End-to-end browser testing belum menjadi gate repository aktif.
 
-**Contoh:**
-```php
-// Tests/Feature/EmployeeControllerTest.php
-it('can list employees', function () {
-    $response = $this->actingAs($user)
-        ->getJson('/api/v1/employees');
+## Kebijakan Lokasi: Aktual dan Target
 
-    $response->assertStatus(200)
-        ->assertJsonStructure([
-            'success',
-            'data' => [['id', 'employee_number', 'full_name']],
-            'pagination'
-        ]);
-});
+Tidak ada pemindahan massal.
 
-it('validates employee creation request', function () {
-    $response = $this->actingAs($user)
-        ->postJson('/api/v1/employees', [
-            'full_name' => '' // invalid
-        ]);
+- Test arsitektur, bootstrap, tooling, dan lintas sistem tetap boleh berada di tests/.
+- Test milik satu modul mengikuti target ADR-0001 ke app/Modules/{Boundary}/{Module}/Tests/ secara incremental bersama slice modul yang dimigrasikan.
+- Folder Feature/, Integration/, atau Unit/ di dalam modul hanya dibuat bila jenis test tersebut benar-benar dibutuhkan.
+- Test lama tidak dipindahkan hanya agar struktur terlihat seragam.
+- phpunit.xml, autoload, dan discovery test harus diperbarui serta diverifikasi pada work item migrasi yang benar-benar memindahkan test.
 
-    $response->assertStatus(422)
-        ->assertJsonValidationErrors('full_name');
-});
-```
+## Environment Test Aktual
 
-### 3. Integration Tests
+phpunit.xml menetapkan environment terisolasi berikut:
 
-**Tujuan:** Test cross-module interactions dan kontrak.
+| Concern | Nilai test |
+|---|---|
+| Database | SQLite in-memory |
+| Cache | array |
+| Queue | sync |
+| Session | array |
+| Mail | array |
+| Hash rounds | 4 |
 
-**Scope:**
-- Contract implementations
-- Event listeners
-- Cross-module queries
-- Database transactions
+Factory dan seeder dipakai sesuai kebutuhan test yang sudah ada. Dokumen ini tidak mewajibkan setiap modul mempunyai factory atau seeder.
 
-**Framework:** PHPUnit
+## Strategi Berdasarkan Jenis Perubahan
 
-**Lokasi:** app/Modules/{Boundary}/{Module}/Tests/Integration/
+| Perubahan | Bukti minimum |
+|---|---|
+| Dokumentasi saja | validasi metadata/link/fence/inventory/scope; command aplikasi dipilih proporsional |
+| Logic/domain | unit test terfokus dan regression/feature test untuk perilaku observabel |
+| Route/controller/auth | feature test untuk happy path, validation, authentication, authorization, dan failure relevan |
+| Persistence/query/migration | database test, compatibility, rollback/recovery, dan reconciliation sesuai risiko |
+| Kontrak/event lintas modul | contract/integration test pada producer dan consumer terdampak |
+| Frontend component/hook | Vitest/React Testing Library untuk state, interaction, loading, empty, error, dan accessibility relevan |
+| Struktur modul | test terfokus, module:validate, autoload/bootstrap, serta architecture check yang tersedia |
+| Dependency/config/CI | command yang menggunakan dependency/config/workflow tersebut dan review compatibility/security |
 
-**Contoh:**
-```php
-// Tests/Integration/EmployeeSnapshotProviderTest.php
-it('returns employee snapshot with related data', function () {
-    $employee = Employee::factory()->create();
-    $provider = app(EmployeeSnapshotProvider::class);
+Pekerjaan CRITICAL atau perubahan authentication, authorization, data, kontrak, dan deployment memerlukan bukti tambahan sesuai work item dan Human Decision Gate.
 
-    $snapshot = $provider->forEmployee($employee->id);
+## Perintah Aktif
 
-    expect($snapshot)->not->toBeNull();
-    expect($snapshot->employee_number)->toBe($employee->employee_number);
-    expect($snapshot->position)->toBe($employee->position->title);
-});
+    php artisan test
+    composer test
+    composer quality:check
+    php artisan module:validate
+    npm run test:frontend
+    npm run lint:check
+    npm run format:check
+    npm run typecheck
+    npm run build
+    npm run quality:check
 
-it('returns null for non-existent employee', function () {
-    $provider = app(EmployeeSnapshotProvider::class);
-    expect($provider->forEmployee(99999))->toBeNull();
-});
-```
+Filter test dapat dipakai bila nama test yang dituju benar-benar ada, misalnya php artisan test --filter=NamaTest. Command coverage tidak menjadi gate aktif karena PCOV/Xdebug tidak tersedia pada runner lokal saat audit dan target coverage belum disetujui.
 
-### 4. Architecture Tests
+## Snapshot Verifikasi Baseline
 
-**Tujuan:** Test dependency rules dan architectural constraints.
+Hasil berikut adalah bukti work item FTR-ENG-001 pada 2026-08-13, bukan jaminan permanen:
 
-**Scope:**
-- Layer dependencies
-- Module boundaries
-- Namespace rules
-- Forbidden imports
+| Command | Hasil |
+|---|---|
+| composer quality:check | lulus; module validation, Pint, 523 test / 3.256 assertion |
+| npm run lint:check | lulus |
+| npm run format:check | lulus |
+| npm run typecheck | lulus |
+| npm run test:frontend | lulus ketika dijalankan terisolasi; 12 file / 28 test |
+| npm run build | lulus; 2.204 modul ditransformasi |
 
-**Framework:** PHPUnit + PHPStan custom rules
+npm run quality:check pernah melewati timeout runner sekitar lima menit. Percobaan menjalankan beberapa command Node paralel juga menimbulkan tiga worker timeout pada Vitest, sementara rerun Vitest terisolasi lulus. Kejadian ini dicatat sebagai keterbatasan runner dan kandidat stabilisasi; tidak diperlakukan sebagai kegagalan test aplikasi yang dapat direproduksi.
 
-**Lokasi:** tests/Architecture/
+## CI Aktual
 
-**Contoh:**
-```php
-// tests/Architecture/DependencyRulesTest.php
-it('does not allow Presentation to depend on Infrastructure', function () {
-    // Check that Presentation layer classes
-    // do not import Infrastructure classes directly
-})->group('architecture');
-
-it('does not allow cross-module direct model access', function () {
-    // Check that modules do not access
-    // other modules models directly
-})->group('architecture');
-```
-
-### 5. Frontend Tests
-
-**Tujuan:** Test React components dan user interactions.
-
-**Scope:**
-- UI components
-- Page components
-- Form validation
-- User interactions
-
-**Framework:** Vitest + React Testing Library
-
-**Lokasi:** resources/js/**/*.test.tsx
-
-**Contoh:**
-```tsx
-// resources/js/Pages/HR/Employees/__tests__/EmployeeList.test.tsx
-import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
-import EmployeeList from '../EmployeeList';
-
-describe('EmployeeList', () => {
-  it('renders employee list', () => {
-    const employees = [
-      { id: 1, full_name: 'John Doe', employee_number: 'EMP-001' }
-    ];
-
-    render(<EmployeeList employees={employees} />);
-
-    expect(screen.getByText('John Doe')).toBeInTheDocument();
-    expect(screen.getByText('EMP-001')).toBeInTheDocument();
-  });
-
-  it('shows empty state when no employees', () => {
-    render(<EmployeeList employees={[]} />);
-
-    expect(screen.getByText('No employees found')).toBeInTheDocument();
-  });
-});
-```
-
-## Test Coverage Targets
-
-| Level | Target | Measurement |
+| Workflow | Trigger branch | Pemeriksaan aktual |
 |---|---|---|
-| Unit Tests | >90% | PHPUnit coverage |
-| Feature Tests | >85% | PHPUnit coverage |
-| Integration Tests | >80% | PHPUnit coverage |
-| Frontend Tests | >80% | Vitest coverage |
-| Overall | >85% | Combined |
+| .github/workflows/tests.yml | develop, main | install dependency, build, module:validate, PHPUnit |
+| .github/workflows/lint.yml | develop, main | Pint, ESLint, Prettier check, TypeScript |
 
-## Test Data Management
+Gap yang diketahui:
 
-### Factories
+- branch aktif dev tidak sama dengan filter develop;
+- Vitest tidak dijalankan pada workflow yang ada;
+- setup coverage tidak sama dengan bukti coverage yang benar-benar dijalankan;
+- hasil lokal tidak membuktikan workflow GitHub berhasil.
 
-Setiap modul memiliki factory untuk model-nya:
+Perubahan workflow berada di luar scope FTR-ENG-001 dan harus mempunyai work item CI tersendiri.
 
-```php
-// Database/Factories/EmployeeFactory.php
-class EmployeeFactory extends Factory
-{
-    public function definition(): array
-    {
-        return [
-            'employee_number' => 'EMP-' . fake()->unique()->numberBetween(1000, 9999),
-            'full_name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'hire_date' => fake()->dateTimeBetween('-5 years', 'now'),
-            // ...
-        ];
-    }
+## Coverage dan Target Numerik
 
-    public function active(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'is_active' => true,
-            'employment_status_id' => EmploymentStatus::active()->id,
-        ]);
-    }
-}
-```
+Tidak ada target persentase unit, feature, integration, frontend, atau overall coverage yang aktif. Tidak ada minimum jumlah test yang boleh menggantikan penilaian terhadap perilaku dan risiko.
 
-### Seeders
+Coverage, performance, reliability, accessibility, dan operational threshold dipromosikan melalui work item kualitas/performa/operasional setelah baseline, cara ukur, environment, dan angka penerimaannya disetujui.
 
-Setiap modul memiliki seeder untuk data referensi:
+## Aturan Bukti
 
-```php
-// Database/Seeders/EmploymentStatusSeeder.php
-class EmploymentStatusSeeder extends Seeder
-{
-    public function run(): void
-    {
-        EmploymentStatus::firstOrCreate(['name' => 'Active']);
-        EmploymentStatus::firstOrCreate(['name' => 'On Leave']);
-        EmploymentStatus::firstOrCreate(['name' => 'Suspended']);
-        EmploymentStatus::firstOrCreate(['name' => 'Terminated']);
-    }
-}
-```
+- Catat command persis, tanggal, exit code, ringkasan hasil, dan limitation.
+- Bedakan lulus, gagal assertion, timeout runner, tool tidak tersedia, dan test yang sengaja dilewati.
+- Jangan menyatakan seluruh aplikasi aman atau production-ready hanya karena suite lulus.
+- Jika command agregat gagal, isolasi tahapnya sebelum menyimpulkan penyebab.
+- Review dampak security, authorization, database, API/contract, deployment, dan rollback walaupun kesimpulannya no change required.
+- Perubahan test mengikuti work item implementasi yang sama; pekerjaan dokumentasi ini tidak mengubah test.
 
-## CI/CD Testing
+## Deferred dan Rekomendasi
 
-### GitHub Actions Workflow
+- static analysis PHP dan architecture rules otomatis;
+- suite architecture khusus;
+- end-to-end browser test;
+- coverage instrumentation dan threshold;
+- policy wajib untuk strict_types/final/readonly/PHPDoc/JSDoc;
+- stabilisasi durasi command quality frontend;
+- penyelarasan branch dan cakupan CI.
 
-```yaml
-name: Tests
-
-on: [push, pull_request]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: secret
-          MYSQL_DATABASE: testing
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-      - name: Install dependencies
-        run: composer install
-      - name: Run tests
-        run: php artisan test --coverage
-      - name: Upload coverage
-        uses: codecov/codecov-action@v3
-```
-
-## Test Commands
-
-```bash
-# Run all tests
-php artisan test
-
-# Run specific module tests
-php artisan test --filter=HRWorkLocation
-
-# Run with coverage
-php artisan test --coverage
-
-# Run frontend tests
-npm run test:frontend
-
-# Run quality checks
-composer quality:check
-npm run quality:check
-```
-
-## Test Organization
-
-```
-tests/
-├── Architecture/           # Architecture tests
-├── Feature/               # Legacy feature tests (migrating to modules)
-└── Unit/                  # Legacy unit tests (migrating to modules)
-
-app/Modules/{Boundary}/{Module}/Tests/
-├── Feature/               # Module feature tests
-├── Integration/           # Module integration tests
-└── Unit/                  # Module unit tests
-```
+Daftar ini bukan approval, task aktif, atau quality gate.

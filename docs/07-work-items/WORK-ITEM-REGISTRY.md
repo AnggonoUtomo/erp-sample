@@ -8,6 +8,7 @@
 | `ARC-SEOS-WORK-001` | architecture-change | SIGNIFICANT | Standardisasi Paket Dokumentasi per Pekerjaan | completed | Pemilik proyek | null | `docs/07-work-items/architecture-changes/ARC-SEOS-WORK-001` | dokumentasi |
 | `PHASE-01-FOUNDATION-CONSOLE-CORE` | feature | CRITICAL | Paket Perencanaan Foundation dan Console Core Lama | superseded | unassigned | `ARC-DDD-LITE-001` | `docs/07-work-items/features/PHASE-01-FOUNDATION-CONSOLE-CORE` | tidak berlaku |
 | `FTR-PROD-001` | feature | SIGNIFICANT | Rekonsiliasi Baseline Produk dan Requirement | completed | Pemilik proyek | null | `docs/07-work-items/features/FTR-PROD-001-product-baseline-reconciliation` | dokumentasi |
+| `FTR-ENG-001` | feature | SIGNIFICANT | Rekonsiliasi Baseline Engineering dan Testing | completed | Pemilik proyek | null | `docs/07-work-items/features/FTR-ENG-001-engineering-baseline-reconciliation` | dokumentasi |
 
 ## Task Implementasi yang Dipilih
 
@@ -16,6 +17,8 @@
 `TSK-ARC-SEOS-WORK-001-05` telah selesai sebagai pekerjaan dokumentasi. Tidak ada task aplikasi atau coding yang aktif.
 
 Seluruh task `FTR-PROD-001` telah selesai. Tidak ada task aplikasi, coding, atau dokumentasi yang aktif.
+
+Seluruh task `FTR-ENG-001` telah selesai. Tidak ada task engineering atau dokumentasi yang aktif.
 
 ## Aturan
 

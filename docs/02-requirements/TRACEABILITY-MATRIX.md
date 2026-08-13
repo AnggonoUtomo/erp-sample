@@ -3,12 +3,12 @@ id: TRACE-001
 title: Matriks Keterlacakan Produk dan Implementasi
 document_type: traceability-matrix
 status: active
-version: 2.0.0
+version: 2.1.0
 owner: Pemilik proyek
 created: 2026-08-12
 updated: 2026-08-13
 source_work_item: FTR-PROD-001
-related: [DOC-PROJECT-BRIEF, PRD-001, SCOPE-001, REQ-CATALOG-001, ADR-0001, ADR-0002]
+related: [DOC-PROJECT-BRIEF, PRD-001, SCOPE-001, REQ-CATALOG-001, ADR-0001, ADR-0002, FTR-ENG-001]
 ---
 
 # Matriks Keterlacakan Produk dan Implementasi
@@ -67,7 +67,7 @@ related: [DOC-PROJECT-BRIEF, PRD-001, SCOPE-001, REQ-CATALOG-001, ADR-0001, ADR-
 | `NFR-002` | runtime/operasi | deployment, monitoring, rollback, dan availability evidence | menunggu `CAND-QUAL-001`/operational work item |
 | `NFR-003` | data/query/workload bertumbuh | capacity/load evidence bila target disetujui | menunggu `CAND-QUAL-001` |
 | `NFR-004` | seluruh input, data privat, session, dan aksi sensitif | security review, authorization baseline, test | menunggu `CAND-SEC-001` untuk detail kontrol |
-| `NFR-005` | seluruh perubahan | ADR/boundary, test, lint/static check, review | tanpa persentase sampai dibaselining |
+| `NFR-005` | seluruh perubahan | ADR/boundary bila relevan, test, lint/type check yang tersedia, dan review | tanpa persentase sampai work item kualitas menyetujui cara ukur dan target |
 | `NFR-006` | mutation, migration, backup/restore | transaction/failure/recovery evidence | menunggu `CAND-QUAL-001` dan operational work item |
 | `NFR-007` | flow UI | frontend/accessibility review proporsional | menunggu baseline kualitas |
 | `NFR-008` | public/internal contract dan environment aktif | compatibility/deprecation/migration evidence | menunggu compatibility matrix |
@@ -81,13 +81,16 @@ related: [DOC-PROJECT-BRIEF, PRD-001, SCOPE-001, REQ-CATALOG-001, ADR-0001, ADR-
 | Ownership kontrak integrasi | ADR-0002 | kontrak tersebar pada modul bisnis dan shell pusat | accepted; transisi melalui `DEP-HR-001` |
 | Identifier database | `DATABASE-DESIGN.md`, `MIG-ID-001` | bigint aktif | ULID deferred dan di luar baseline produk |
 | Authorization | `AUTHORIZATION-MATRIX.md`, `CAND-SEC-001` | policy/permission tersebar pada module | detail baseline belum direkonsiliasi |
-| Interface HTTP | `API-SPEC.md` dan route module | route internal berbasis auth ditemukan | runtime/full contract belum diverifikasi pada work item ini |
+| Interface HTTP | `API-SPEC.md`, `TECHNICAL-SPEC.md`, dan route module | 191 route; 178 memakai middleware `auth`; tidak ada prefix `api`/`api/v1` pada audit 2026-08-13 | web/session aktif; public API dan token authentication deferred |
+| Testing | `TESTING-STRATEGY.md` | 106 file test PHP terpusat dan 12 file test frontend; tidak ada module-local test | lokasi aktual dipertahankan; module-owned test berpindah incremental bersama slice ADR-0001 |
+| CI | `TECHNICAL-SPEC.md`, `TESTING-STRATEGY.md`, dan `.github/workflows` | workflow memantau `develop`/`main`, sedangkan branch pengembangan aktif `dev`; Vitest belum dijalankan di workflow | gap dicatat sebagai kandidat, bukan diperbaiki melalui dokumentasi |
 
 ## Work Item Terkait
 
 | Work item | Scope | Status pada 2026-08-13 |
 |---|---|---|
 | `FTR-PROD-001` | rekonsiliasi baseline produk dan requirement | completed |
+| `FTR-ENG-001` | rekonsiliasi baseline engineering dan testing | completed |
 | `ARC-DDD-LITE-001` | struktur DDD-Lite seluruh module | in_progress; tidak ada task coding aktif |
 | `DEP-HR-001` | deprecation shell `HR/IntegrationContracts` | approved, belum ready |
 | `MIG-ID-001` | evaluasi/migrasi primary key ke ULID | deferred |

@@ -3,12 +3,12 @@ id: DOC-ARC-DDD-001-PLAN
 title: Rencana Kerja ARC-DDD-LITE-001
 document_type: work-plan
 status: active
-version: 1.0.0
+version: 1.1.0
 owner: Pemilik proyek
 created: 2026-08-13
 updated: 2026-08-13
 source_work_item: ARC-DDD-LITE-001
-related: [ADR-0001, ADR-0002]
+related: [ADR-0001, ADR-0002, FTR-ENG-001]
 ---
 
 # Rencana Kerja — ARC-DDD-LITE-001
@@ -35,4 +35,4 @@ Modul berpindah ke struktur ADR-0001 secara incremental tanpa perubahan perilaku
 
 ## Checkpoint Berikutnya
 
-Belum dipilih. `TSK-ARC-DDD-LITE-001-02` tetap pending sampai pra-kerja pilot direview.
+Baseline produk dan engineering telah direkonsiliasi melalui `FTR-PROD-001` dan `FTR-ENG-001`. `TSK-ARC-DDD-LITE-001-02` tetap pending sampai paket pra-kerja pilot `HR/WorkLocations`, impact analysis, acceptance perilaku, scope file, dan readiness direview. Belum ada task coding aktif.

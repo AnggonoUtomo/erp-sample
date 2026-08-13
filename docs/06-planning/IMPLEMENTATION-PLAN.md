@@ -3,12 +3,12 @@ id: PLAN-DDD-001
 title: Rencana Implementasi DDD-Lite Berbasis Readiness
 document_type: implementation-plan
 status: active
-version: 1.0.0
+version: 1.1.0
 owner: Pemilik proyek
 created: 2026-08-12
 updated: 2026-08-13
 source_work_item: ARC-DDD-LITE-001
-related: [ADR-0001, ADR-0002, DEP-HR-001, MIG-ID-001]
+related: [ADR-0001, ADR-0002, DEP-HR-001, MIG-ID-001, FTR-ENG-001]
 ---
 
 # Rencana Implementasi DDD-Lite Berbasis Readiness
@@ -24,6 +24,7 @@ Tidak ada target “28 modul dalam 8 minggu” atau klaim production-ready tanpa
 3. Review ADR-0002 dan paket `DEP-HR-001`.
 4. Pisahkan ULID ke `MIG-ID-001` dan pertahankan status `deferred`.
 5. Pulihkan blocker working tree dan kumpulkan bukti verifikasi sebelum melanjutkan ke pilot.
+6. Rekonsiliasi baseline engineering/testing melalui `FTR-ENG-001` sebelum menyusun pra-kerja pilot.
 
 ## Tahap 1 — Baseline Tooling yang Valid
 
@@ -65,7 +66,8 @@ Urutan modul berikutnya ditentukan setelah pilot, berdasarkan graph import aktua
 | Area | Status | Alasan |
 |---|---|---|
 | Target struktur DDD-Lite | approved | ADR-0001 diterima |
+| Baseline engineering/testing | completed | `FTR-ENG-001` selesai; current, target, deferred, dan rekomendasi telah dipisahkan |
 | Katalog modul | evaluated | 27 target; dua kandidat rename; tanpa merge |
 | Deprecation IntegrationContracts | approved, not ready | ADR-0002 accepted; compatibility dan removal readiness belum terpenuhi |
 | Migrasi ULID | deferred | dipisahkan dan belum memiliki migration design |
-| Coding restrukturisasi | not ready untuk slice berikutnya | baseline tooling pulih; task adaptasi generator ke ADR-0001 belum memiliki pra-kerja/readiness tersendiri |
+| Coding restrukturisasi | not ready untuk slice berikutnya | baseline tooling dan engineering telah pulih; pilot `HR/WorkLocations` belum memiliki paket pra-kerja/readiness serta task aktif tersendiri |

@@ -18,7 +18,7 @@ Backlog ini menampung kandidat di luar scope aktif. Entri bukan persetujuan, buk
 | Kandidat | Klasifikasi awal | Tujuan | Sumber temuan | Status |
 |---|---|---|---|---|
 | `CAND-DOC-001` | SIGNIFICANT | Rekonsiliasi Product Brief, Scope, PRD, dan Requirements berbasis kapabilitas bisnis serta approval produk | AUD-004 | promoted ke `FTR-PROD-001` pada 2026-08-13 |
-| `CAND-DOC-002` | SIGNIFICANT | Rekonsiliasi Technical Spec dan Testing Strategy dengan route, auth, deployment, test location, dan dependency aktual | AUD-003 | discovered |
+| `CAND-DOC-002` | SIGNIFICANT | Rekonsiliasi Technical Spec dan Testing Strategy dengan route, auth, deployment, test location, dan dependency aktual | AUD-003 | promoted ke `FTR-ENG-001` pada 2026-08-13; completed |
 | `CAND-DOC-003` | SIGNIFICANT | Normalisasi metadata dan Bahasa Indonesia pada governance/template secara incremental | AUD-005, AUD-007 | discovered |
 | `CAND-DOC-004` | STANDARD | Isi dependency register berdasarkan lockfile dan kebijakan dukungan aktual | audit `05-engineering` | discovered |
 | `CAND-SEC-001` | CRITICAL | Isi authorization dan security baseline berdasarkan perilaku AccessControls/auth aktual | audit `04-design`/`08-quality` | discovered |
