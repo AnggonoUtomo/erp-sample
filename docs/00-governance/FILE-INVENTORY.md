@@ -3,19 +3,19 @@ id: DOC-FILE-INVENTORY-001
 title: Inventaris File Dokumentasi Aktual
 document_type: documentation-inventory
 status: active
-version: 2.0.0
+version: 2.1.0
 owner: Pemilik proyek
 created: 2026-08-13
 updated: 2026-08-13
 source_work_item: ARC-SEOS-WORK-001
-related: [DOC-PROP-001]
+related: [DOC-PROP-001, FTR-PROD-001]
 ---
 
 # Inventaris File Dokumentasi Aktual
 
-Inventaris ini mencakup 264 file fisik di bawah `docs/`: 253 Markdown dan 11 file penjaga direktori. Daftar diurutkan berdasarkan path dan menggantikan inventaris distribusi template lama yang mencampur file proyek dengan contoh di luar `docs/`.
+Inventaris ini mencakup 277 file fisik di bawah `docs/`: 266 Markdown dan 11 file penjaga direktori. Daftar diurutkan berdasarkan path dan menggantikan inventaris distribusi template lama yang mencampur file proyek dengan contoh di luar `docs/`.
 
-Fingerprint, ukuran, dan jumlah baris audit tersedia pada `docs/07-work-items/architecture-changes/ARC-SEOS-WORK-001/DOCUMENT-AUDIT-MANIFEST.md`.
+Fingerprint, ukuran, dan jumlah baris audit penetapan awal tersedia sebagai bukti historis pada `docs/07-work-items/architecture-changes/ARC-SEOS-WORK-001/DOCUMENT-AUDIT-MANIFEST.md`. Inventaris path aktif ini diperbarui melalui work item yang menambah atau mengubah dokumentasi.
 
 | Path | Jenis |
 |---|---|
@@ -124,6 +124,19 @@ Fingerprint, ukuran, dan jumlah baris audit tersedia pada `docs/07-work-items/ar
 | `docs/07-work-items/deprecations/DEP-HR-001/TASKS.md` | Markdown |
 | `docs/07-work-items/deprecations/DEP-HR-001/WORK-ITEM-README.md` | Markdown |
 | `docs/07-work-items/features/.gitkeep` | Penjaga direktori |
+| `docs/07-work-items/features/FTR-PROD-001-product-baseline-reconciliation/01-FEATURE-SPEC.md` | Markdown |
+| `docs/07-work-items/features/FTR-PROD-001-product-baseline-reconciliation/02-TECHNICAL-DESIGN.md` | Markdown |
+| `docs/07-work-items/features/FTR-PROD-001-product-baseline-reconciliation/03-IMPLEMENTATION-PLAN.md` | Markdown |
+| `docs/07-work-items/features/FTR-PROD-001-product-baseline-reconciliation/04-TEST-PLAN.md` | Markdown |
+| `docs/07-work-items/features/FTR-PROD-001-product-baseline-reconciliation/05-REVIEW-REPORT.md` | Markdown |
+| `docs/07-work-items/features/FTR-PROD-001-product-baseline-reconciliation/06-COMPLETION-REPORT.md` | Markdown |
+| `docs/07-work-items/features/FTR-PROD-001-product-baseline-reconciliation/BACKLOG.md` | Markdown |
+| `docs/07-work-items/features/FTR-PROD-001-product-baseline-reconciliation/CONTEXT-PACK.md` | Markdown |
+| `docs/07-work-items/features/FTR-PROD-001-product-baseline-reconciliation/DEVIATION-RECORD.md` | Markdown |
+| `docs/07-work-items/features/FTR-PROD-001-product-baseline-reconciliation/EVIDENCE-MANIFEST.md` | Markdown |
+| `docs/07-work-items/features/FTR-PROD-001-product-baseline-reconciliation/PLAN.md` | Markdown |
+| `docs/07-work-items/features/FTR-PROD-001-product-baseline-reconciliation/TASKS.md` | Markdown |
+| `docs/07-work-items/features/FTR-PROD-001-product-baseline-reconciliation/WORK-ITEM-README.md` | Markdown |
 | `docs/07-work-items/features/PHASE-01-FOUNDATION-CONSOLE-CORE/01-FEATURE-SPEC.md` | Markdown |
 | `docs/07-work-items/features/PHASE-01-FOUNDATION-CONSOLE-CORE/02-TECHNICAL-DESIGN.md` | Markdown |
 | `docs/07-work-items/features/PHASE-01-FOUNDATION-CONSOLE-CORE/03-IMPLEMENTATION-PLAN.md` | Markdown |

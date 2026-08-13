@@ -1,105 +1,114 @@
-﻿---
+---
 id: DOC-PROJECT-BRIEF
-title: ERP System - Project Brief
-status: draft
-versi: 0.1.0
-pemilik: product-owner
-reviewer: []
-dibuat: 2026-08-12
-diperbarui: 2026-08-12
-terkait: [ARC-DDD-LITE-001]
+title: Ringkasan Produk 12erp
+document_type: product-brief
+status: approved
+version: 1.0.0
+owner: Pemilik proyek
+created: 2026-08-12
+updated: 2026-08-13
+source_work_item: FTR-PROD-001
+related: [PRD-001, SCOPE-001, REQ-CATALOG-001, ADR-0001, ADR-0002]
 ---
 
-# Project Brief: ERP System
+# Ringkasan Produk 12erp
 
-## Project Identitas
+## Identitas Produk
 
-- Produk nama: Enterprise Resource Planning (ERP) System
-- Repository/proyek nama: 12erp
-- One-sentence deskripsi: Sistem ERP modular berbasis Laravel 12 dan React untuk manajemen HR, dokumen, dan operasional perusahaan dengan 28 modul
-- Saat Ini lifecycle stage: Development - Early Stage
+- Nama produk: `12erp`.
+- Bentuk produk: aplikasi web operasional internal.
+- Fokus: pengelolaan sumber daya manusia, dokumen privat/perusahaan, serta administrasi sistem.
+- Konteks arsitektur: Laravel modular monolith dengan frontend React/Inertia dan target struktur DDD-Lite adaptif.
 
-## Masalah
+Istilah ERP adalah payung proyek. Istilah tersebut tidak menjadi janji tersirat untuk menyediakan finance, accounting, inventory, procurement, sales, CRM, payroll, atau seluruh domain ERP umum.
 
-Perusahaan membutuhkan sistem terintegrasi untuk mengelola:
-1. Data karyawan dan siklus hidup karyawan (onboarding, offboarding, mutasi)
-2. Dokumen dan arsip perusahaan dengan kontrol akses
-3. Struktur organisasi, posisi, dan lokasi kerja
-4. Kontrak kerja karyawan dan kepatuhan dokumen
-5. System administration (user management, audit logs, backup, monitoring)
+## Masalah yang Diselesaikan
 
-Masalah saat ini: Sistem yang terpisah-pisah menyebabkan duplikasi data, inkonsistensi, dan sulitnya pelacakan.
+Organisasi membutuhkan satu aplikasi internal untuk:
 
-## Desired Hasil
+1. menjaga data pegawai, referensi tenaga kerja, dan struktur organisasi tetap konsisten;
+2. mengendalikan lifecycle kontrak, onboarding, perubahan penugasan, dan offboarding;
+3. mengelola metadata, kepatuhan, versioning, akses, serta delivery dokumen privat;
+4. menyediakan administrasi user, kontrol akses, audit, konfigurasi, dan operasi sistem;
+5. menyajikan informasi operasional yang dapat ditelusuri tanpa menjadikan laporan sebagai pemilik aturan bisnis.
 
-1. Single source of truth untuk data karyawan dan sistem
-2. Workflow otomatis untuk onboarding dan offboarding
-3. Tracking kepatuhan dokumen dengan alert expiry
-4. Integrasi data lintas modul melalui kontrak yang terdefinisi
-5. Audit trail untuk semua transaksi penting
-6. System monitoring dan backup yang terintegrasi
+## Outcome Produk
 
-## Target Pengguna dan Stakeholders
-
-| Aktor | Need | Influence |
+| ID | Outcome | Indikator keberhasilan tanpa target spekulatif |
 |---|---|---|
-| HR Staff | Input dan kelola data karyawan | High |
-| HR Manager | Approval workflow, reporting | High |
-| Employee | Akses dokumen pribadi, profile | Medium |
-| Manager | Approval, team management | Medium |
-| Admin | System configuration, user management | High |
-| System Admin | Monitoring, backup, audit | High |
-| Management | Dashboard, analytics | High |
+| `OUT-001` | Integritas informasi tenaga kerja | data pegawai dan referensinya dapat dikelola dengan aturan validasi serta lifecycle yang eksplisit |
+| `OUT-002` | Lifecycle pegawai dapat ditelusuri | onboarding, kontrak, movement, dan offboarding memiliki status serta transisi yang dapat diverifikasi |
+| `OUT-003` | Dokumen privat terkendali | dokumen memiliki ownership, metadata, versioning/lifecycle, dan akses yang terkontrol |
+| `OUT-004` | Administrasi sistem terkendali | user, akses, konfigurasi, audit, dan operasi sistem mempunyai surface pengelolaan yang jelas |
+| `OUT-005` | Keputusan berbasis informasi operasional | laporan dan pencarian menyajikan data read-only yang relevan serta dapat ditelusuri ke sumbernya |
 
-## Nilai Proposition
+## Pengguna Tingkat Tinggi
 
-1. Efisiensi operasional melalui otomatisasi workflow HR
-2. Kepatuhan melalui tracking dokumen expiry
-3. Visibilitas melalui reporting terintegrasi
-4. Skalabilitas melalui arsitektur modular (28 modul)
-5. Keamanan melalui audit trail dan access control
+| Kelompok | Kebutuhan utama | Catatan |
+|---|---|---|
+| Pengelola HR | mengelola data dan lifecycle tenaga kerja | role serta permission rinci ditetapkan melalui baseline authorization tersendiri |
+| Pemberi persetujuan/manager | meninjau dan menjalankan aksi lifecycle yang diotorisasi | alur approval per kapabilitas harus dibuktikan, bukan diasumsikan dari nama persona |
+| Pengelola dokumen | mengelola metadata, kepatuhan, penyimpanan, dan akses dokumen | dapat berupa fungsi HR atau fungsi internal lain sesuai keputusan organisasi |
+| Administrator/operator sistem | mengelola user, akses, konfigurasi, audit, backup, queue, dan scheduler | aksi sensitif memerlukan review keamanan terpisah |
+| Pengguna laporan/manajemen | membaca ringkasan dan laporan operasional | akses data mengikuti authorization yang berlaku |
 
-## Batasan
+Employee sebagai pengguna self-service langsung belum menjadi keputusan aktif. Pada baseline ini employee adalah subjek data dan peserta lifecycle; kebutuhan portal self-service tetap `deferred`.
 
-- Bisnis: Budget terbatas, tim kecil
-- Teknis: Laravel 12, PHP 8.2+, React 19, TypeScript
-- Regulatory/kepatuhan: UU Ketenagakerjaan Indonesia, perlindungan data pribadi
-- Budget/time/tim: MVP dalam 8 bulan dengan tim 3-5 developer (28 modul)
+## Nilai Produk
 
-## Success Indicators
+1. Mengurangi duplikasi serta inkonsistensi data tenaga kerja.
+2. Membuat perubahan lifecycle eksplisit, dapat diaudit, dan lebih aman dijalankan.
+3. Menjaga dokumen privat dekat dengan ownership serta aturan aksesnya.
+4. Menyatukan kapabilitas administrasi yang dibutuhkan aplikasi internal.
+5. Memungkinkan evolusi incremental melalui boundary bisnis dan DDD-Lite tanpa menjadikan jumlah modul sebagai target produk.
 
-| Indicator | baseline | target | pengukuran sumber |
-|---|---|---|---|
-| Module coverage | 28 modul aktif | 28 modul dengan DDD-Lite structure | Module registry |
-| Test coverage | ~80% | >85% | PHPUnit report |
-| API response time | <500ms | <200ms | Laravel Telescope |
-| Page load time | <3s | <2s | Browser DevTools |
-| Bug rate | TBD | <5 bugs per sprint | Issue tracker |
+## Prinsip Produk
 
-## Diverifikasi Fakta
+- Capability bisnis adalah unit scope; module adalah keputusan arsitektur.
+- Perilaku kode adalah bukti keadaan saat ini, bukan approval requirement otomatis.
+- Perilaku yang sudah ada dipertahankan sebagai baseline kompatibilitas sampai perubahan disetujui melalui work item.
+- Kapabilitas baru, perubahan scope, dan target kualitas terukur harus mempunyai acceptance serta approval.
+- Urutan implementasi ditentukan per work item berdasarkan nilai bisnis, dependensi, risiko, dan readiness.
 
-1. Tech stack: Laravel 12, PHP 8.2+, React 19, TypeScript 5, Inertia.js, Tailwind CSS 4
-2. Database: MySQL/PostgreSQL (via Eloquent ORM)
-3. Arsitektur: DDD-Lite Modular Monolith
-4. 28 modul sudah ada: HR (16), Console (11), DocumentManagement (1)
-5. Module system dengan MakeModuleCommand
-6. Spatie Laravel Permission untuk RBAC
-7. Spatie Media Library untuk file management
-8. Tests menggunakan PHPUnit dan Vitest
+## Batasan Aktif
 
-## Asumsi
+- Digunakan untuk operasi internal satu organisasi; multi-tenant SaaS belum termasuk scope.
+- Delivery utama adalah aplikasi web; native mobile belum termasuk scope.
+- Target arsitektur mengikuti ADR-0001 dan ADR-0002.
+- Detail deployment, availability, kapasitas, browser support, dan disaster recovery belum boleh diklaim sebelum memiliki baseline serta approval.
+- Detail authorization ditetapkan melalui work item keamanan tersendiri.
 
-1. Tim familiar dengan Laravel dan React
-2. Deployment ke cloud (AWS/GCP/Azure)
-3. Single database untuk semua modul
-4. Queue worker untuk async jobs
-5. CI/CD pipeline akan di-setup
+## Keberhasilan Baseline Produk
 
-## Pertanyaan Terbuka
+Baseline dinilai sehat ketika:
 
-1. Apakah perlu multi-tenant support?
-2. Integrasi dengan sistem eksternal apa saja?
-3. Mobile app requirement?
-4. Real-time notification requirement?
-5. Multi-language support?
-6. Apakah Console modules memiliki prioritas lebih tinggi dari HR?
+1. setiap capability aktif mempunyai requirement dan acceptance yang dapat ditelusuri;
+2. setiap perubahan perilaku mempunyai work item dan bukti verifikasi;
+3. fakta implementasi, keputusan produk, asumsi, serta kandidat tindak lanjut tidak bercampur;
+4. tidak ada target modul, jadwal, kualitas, atau readiness yang diklaim tanpa bukti;
+5. dokumen historis tetap dapat digunakan untuk menelusuri asal keputusan.
+
+## Pertanyaan dan Keputusan Lanjutan
+
+- Prioritas rilis belum ditetapkan.
+- Persona serta responsibility matrix rinci belum disetujui.
+- Target performa, kapasitas, availability, reliability, maintainability, dan compatibility belum dibaselining.
+- Integrasi eksternal dan employee self-service belum disetujui.
+
+Seluruh item tersebut berada di backlog `FTR-PROD-001` dan bukan requirement aktif.
+
+## Persetujuan
+
+```yaml
+gate: product-baseline-approval
+decision: approved
+approver: Pemilik proyek
+date: 2026-08-13
+conditions:
+  - capability bisnis menjadi unit scope
+  - jumlah modul hanya fakta arsitektur
+  - bukti kode tidak otomatis menjadi requirement
+  - target tanpa baseline tidak menjadi komitmen aktif
+evidence:
+  - interview dan konfirmasi eksplisit pada FTR-PROD-001
+```

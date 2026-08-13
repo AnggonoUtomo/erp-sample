@@ -1,175 +1,132 @@
-﻿# Produk Requirement Dokumen
+---
+id: PRD-001
+title: Product Requirements Document 12erp
+document_type: product-requirements-document
+status: approved
+version: 1.0.0
+owner: Pemilik proyek
+created: 2026-08-12
+updated: 2026-08-13
+source_work_item: FTR-PROD-001
+related: [DOC-PROJECT-BRIEF, SCOPE-001, REQ-CATALOG-001, TRACE-001]
+---
 
-## Executive Summary
+# Product Requirements Document 12erp
 
-Sistem ERP modular untuk manajemen HR dan dokumen perusahaan dengan arsitektur DDD-Lite Modular Monolith. Sistem ini menyediakan workflow otomatis untuk siklus hidup karyawan, tracking kepatuhan dokumen, dan reporting terintegrasi.
+## Ringkasan
 
-## Tujuan
+`12erp` adalah aplikasi web operasional internal untuk HR, pengelolaan dokumen, dan administrasi sistem. Produk mengutamakan integritas data tenaga kerja, lifecycle yang dapat ditelusuri, dokumen privat yang terkendali, serta kemampuan administrasi yang diperlukan untuk menjalankan aplikasi.
 
-1. Menyediakan single source of truth untuk data karyawan
-2. Mengotomatisasi workflow onboarding dan offboarding
-3. Tracking kepatuhan dokumen dengan alert expiry
-4. Menyediakan reporting dan analytics terintegrasi
-5. Mendukung skalabilitas melalui arsitektur modular
+## Tujuan Produk
+
+1. Menjadi sumber informasi operasional tenaga kerja yang konsisten.
+2. Menjalankan lifecycle pegawai melalui state dan tindakan yang eksplisit.
+3. Menjaga dokumen privat/perusahaan beserta metadata, versi, dan aksesnya.
+4. Mendukung administrasi, audit, konfigurasi, serta operasi aplikasi internal.
+5. Menyediakan laporan dan discovery read-only untuk kebutuhan operasional.
 
 ## Bukan Tujuan
 
-1. Sistem payroll atau penggajian
-2. Sistem recruitment atau ATS
-3. Learning management system
-4. Time and attendance tracking
-5. Performance management system
+- Menyediakan seluruh domain yang lazim ada pada produk ERP.
+- Menjadikan jumlah module atau bentuk folder sebagai indikator keberhasilan produk.
+- Menjanjikan jadwal, fase, skala, availability, atau performa tanpa baseline.
+- Mengesahkan setiap perilaku kode sebagai requirement bisnis.
+- Menetapkan authorization rinci di luar work item keamanan.
 
-## Pengguna/Personas
+## Model Kapabilitas
 
-### HR Staff (Primary User)
-- Input dan kelola data karyawan
-- Jalankan workflow onboarding/offboarding
-- Track dokumen expiry
-- Generate report HR
+### Core
 
-### HR Manager (Decision Maker)
-- Approval workflow
-- Team management
-- Dashboard dan analytics
-- Policy configuration
+| ID | Kapabilitas | Nilai bisnis | Bukti perilaku saat ini |
+|---|---|---|---|
+| `CAP-HR-001` | Data induk pegawai | sumber informasi tenaga kerja | CRUD, archive/restore, dan relasi referensi pada area Employees |
+| `CAP-HR-002` | Struktur dan referensi tenaga kerja | konsistensi organisasi, posisi, lokasi, status, tipe, level, dan referensi HR | surface pengelolaan master/reference pada area HR |
+| `CAP-HR-003` | Lifecycle kontrak kerja | riwayat hubungan kerja effective-dated dan dapat ditelusuri | create, activate, terminate, cancel, supersede, archive/restore |
+| `CAP-HR-004` | Onboarding pegawai | checklist masuk yang terkendali | template, instance, task, activate, complete, cancel, archive/restore |
+| `CAP-HR-005` | Perubahan penugasan pegawai | perubahan assignment dengan before/after history | create, approve, apply, cancel, archive/restore |
+| `CAP-HR-006` | Offboarding pegawai | checklist keluar dan finalisasi yang terkendali | template, instance, task, activate, mark-ready, finalize, cancel, archive/restore |
+| `CAP-DOC-001` | Dokumen pegawai dan kepatuhan | metadata, verifikasi, attachment, dan status kedaluwarsa dokumen pegawai | create, verify/reject/resubmit, attachment, delivery, expiry state, archive/restore |
+| `CAP-DOC-002` | Lifecycle dokumen privat/perusahaan | ingestion, versioning, archive/restore, dan delivery terkontrol | endpoint document ingestion, version, lifecycle, dan token delivery |
 
-### Employee (End User)
-- Akses dokumen pribadi
-- Update profile
-- Lihat history employment
-- Submit requests
+### Supporting
 
-### Manager (Secondary User)
-- Approval untuk team
-- Team member overview
-- Request employee changes
+| ID | Kapabilitas | Peran pendukung | Bukti perilaku saat ini |
+|---|---|---|---|
+| `CAP-ADM-001` | User dan kontrol akses | mengelola identitas administratif, role, dan permission | user lifecycle, role assignment, impersonation, role/permission management |
+| `CAP-AUD-001` | Audit dan aktivitas keamanan | menelusuri aksi penting serta aktivitas login | audit log dan login activity |
+| `CAP-CFG-001` | Konfigurasi dan template sistem | mengelola konfigurasi aplikasi dan template notifikasi | system settings dan notification templates |
+| `CAP-OPS-001` | Operasi dan pemulihan sistem | mendukung backup/restore, queue, dan scheduler | backup/restore, failed job operation, scheduler monitor/run |
+| `CAP-EXP-001` | Discovery dan aktivitas pengguna | membantu menemukan data serta aktivitas yang diizinkan | global search dan activity center |
+| `CAP-RPT-001` | Laporan HR read-only | menyajikan headcount, status, serta masa berlaku kontrak/dokumen | UI/command laporan tanpa mutation bisnis |
 
-### Admin (Technical User)
-- System configuration
-- User management
-- Role and permission management
-- Module management
+### Deferred
 
-## Pengguna Journeys
-
-### Journey 1: Employee Onboarding
-1. HR Staff create employee record
-2. System generate onboarding checklist
-3. Tasks assigned to relevant parties
-4. Progress tracking
-5. Completion notification
-6. Employee activated
-
-### Journey 2: Document Expiry Alert
-1. System check document expiry dates daily
-2. Alert generated 30 days before expiry
-3. Notification sent to employee and HR
-4. Document renewal tracked
-5. Escalation if not renewed
-
-### Journey 3: Employee Offboarding
-1. Resignation/termination initiated
-2. Offboarding checklist generated
-3. Asset return tracking
-4. Document handover
-5. Final settlement
-6. Employee deactivated
-
-## Produk Requirements
-
-| ID | Requirement | Prioritas | Penerimaan Indikator | Status |
-|---|---|---|---|---|
-| REQ-001 | Sistem harus memiliki 18 modul HR dan DocumentManagement | Must Have | All 18 modules functional | Draft |
-| REQ-002 | Sistem harus menggunakan DDD-Lite structure | Must Have | All modules follow layered structure | Draft |
-| REQ-003 | Sistem harus memiliki RBAC dengan Spatie Permission | Must Have | Role-permission matrix defined | Draft |
-| REQ-004 | Sistem harus memiliki audit trail untuk semua transaksi | Should Have | Audit log table populated | Draft |
-| REQ-005 | Sistem harus mengirim notifikasi dokumen expiry | Should Have | Email/notification sent 30 days before | Draft |
-| REQ-006 | Sistem harus memiliki workflow onboarding | Must Have | Onboarding checklist auto-generated | Draft |
-| REQ-007 | Sistem harus memiliki workflow offboarding | Must Have | Offboarding checklist auto-generated | Draft |
-| REQ-008 | Sistem harus memiliki module generator | Should Have | php artisan make:module works | Draft |
-| REQ-009 | Sistem harus memiliki test coverage >85% | Should Have | PHPUnit coverage report | Draft |
-| REQ-010 | Sistem harus support Inertia.js React frontend | Must Have | All pages render correctly | Draft |
-
-## Fungsional Overview
-
-### HR Module Cluster
-- Employee Management
-- Onboarding/Offboarding
-- Document Management
-- Contract Management
-- Organization Structure
-- Position Management
-- Department Management
-- Employment Status/Type
-- Job Levels
-- Work Locations
-- Employee Movement
-- HR Reference Data
-- HR Reports
-- Integration Contracts
-
-### Document Management Module
-- Document CRUD
-- Version control
-- Approval workflow
-- Access control
-- Storage management
-
-### Shared Module
-- Value Objects (Money, DateRange, etc.)
-- Domain Events
-- Base classes
-
-## Non-Fungsional Expectations
-
-| Atribut | Target | Verifikasi |
+| ID | Kandidat kapabilitas | Alasan belum aktif |
 |---|---|---|
-| Performance | API response <200ms | Load testing |
-| Availability | 99.9% uptime | Monitoring |
-| Scalability | Support 1000 concurrent users | Load testing |
-| Security | OWASP Top 10 compliant | Security audit |
-| Maintainability | Test coverage >85% | Coverage report |
-| Reliability | Zero data loss on failure | Disaster recovery test |
+| `CAP-NOT-001` | Notifikasi bisnis otomatis | template dan activity surface ada, tetapi pengiriman otomatis untuk expiry/lifecycle belum menjadi perilaku dan requirement terverifikasi |
+| `CAP-SELF-001` | Employee self-service | pengguna, use case, data exposure, dan authorization belum disetujui |
+| `CAP-INT-001` | Integrasi sistem eksternal | target sistem, kontrak, data, failure mode, dan ownership belum ditetapkan |
+| `CAP-I18N-001` | Multi-language | kebutuhan pengguna dan acceptance belum ditetapkan |
+| `CAP-RT-001` | Notifikasi real-time | kebutuhan channel, delivery guarantee, dan biaya operasional belum ditetapkan |
 
-## Analytics dan Reporting
+Daftar module aktual dan target arsitektur hanya tersedia pada `docs/03-architecture/MODULE-CATALOG.md`. Perubahan nama, jumlah, atau lokasi module tidak mengubah capability ID di atas.
 
-1. Employee headcount report
-2. Onboarding/offboarding status report
-3. Document compliance report
-4. Document expiry report
-5. Organization structure report
-6. Employee contract expiry report
+## Alur Pengguna Tingkat Produk
 
-## Dependensi
+### Mengelola data dan lifecycle pegawai
 
-1. Laravel 12 framework
-2. PHP 8.2+ runtime
-3. MySQL/PostgreSQL database
-4. Redis for cache/queue (optional)
-5. Node.js 18+ for frontend build
-6. Composer and NPM package managers
+1. Pengelola yang diotorisasi membuat atau memperbarui data pegawai.
+2. Data referensi dan struktur organisasi digunakan sesuai aturan kapabilitas.
+3. Kontrak, onboarding, movement, atau offboarding dibuat sebagai lifecycle terpisah.
+4. Aksi hanya dapat dilakukan bila state, input, dan authorization mengizinkan.
+5. Hasil penting dapat ditelusuri melalui state, riwayat, atau audit yang relevan.
 
-## Risiko
+### Mengelola dokumen privat
 
-| Risiko | Dampak | Mitigasi |
-|---|---|---|
-| Kompleksitas DDD | High learning curve | Dokumentasi dan training |
-| Performance dengan banyak modul | Slower autoloading | Optimized autoloading, OPcache |
-| Cross-module dependency | Tight coupling | Contract-based communication |
-| Test maintenance | High effort | Modular testing strategy |
+1. Pengelola yang diotorisasi mencatat atau mengingest dokumen.
+2. Sistem menjaga metadata, version/lifecycle, dan ownership.
+3. Akses/delivery diberikan melalui mekanisme yang terkontrol.
+4. Dokumen pegawai dapat dinilai status verifikasi dan kedaluwarsanya.
 
-## Strategi Rilis
+### Menjalankan administrasi sistem
 
-- Phase 1: Core HR modules + Module Generator
-- Phase 2: Document Management + Integration
-- Phase 3: Reporting + Analytics
-- Phase 4: Optimization + Polish
+1. Administrator mengelola user, role/permission, konfigurasi, dan template.
+2. Operator meninjau audit, aktivitas login, queue, scheduler, serta backup/restore sesuai authorization.
+3. Search, activity center, dan laporan hanya menyajikan data yang boleh dibaca pengguna.
+
+## Prinsip Penerimaan Produk
+
+| ID | Prinsip |
+|---|---|
+| `PA-001` | Capability aktif harus mempunyai requirement serta acceptance yang dapat ditelusuri. |
+| `PA-002` | Perubahan perilaku tidak boleh diselipkan ke dalam restrukturisasi atau rekonsiliasi dokumentasi. |
+| `PA-003` | Aksi sensitif harus melalui authentication, authorization, validation, serta audit sesuai risiko. |
+| `PA-004` | Akses dokumen privat tidak boleh melewati ownership dan kontrol delivery yang berlaku. |
+| `PA-005` | Laporan/discovery tidak boleh mengambil alih mutation atau aturan bisnis pemilik data. |
+| `PA-006` | Target kualitas numerik memerlukan baseline, metode ukur, dan approval tersendiri. |
+
+## Dependensi Keputusan
+
+- ADR-0001 mengatur struktur DDD-Lite target.
+- ADR-0002 mengatur ownership kontrak lintas modul.
+- `REQUIREMENTS.md` mengatur requirement rinci.
+- `SCOPE.md` mengatur status scope capability.
+- Authorization, operasi production, serta target kualitas rinci menunggu work item masing-masing.
+
+## Prioritas dan Rilis
+
+Dokumen ini tidak menetapkan fase atau jadwal. Pemilihan pekerjaan dilakukan per work item menggunakan nilai bisnis, dependensi, risiko, dan readiness. Status `core` menunjukkan nilai produk, bukan urutan coding otomatis.
 
 ## Persetujuan
 
 ```yaml
-status: draft
-approved_by: []
-approval_date: null
+gate: product-baseline-approval
+decision: approved
+approver: Pemilik proyek
+date: 2026-08-13
+conditions:
+  - capability menjadi unit scope stabil
+  - perilaku kode tetap dibedakan dari keputusan requirement
+evidence:
+  - SPEC-FTR-PROD-001
 ```

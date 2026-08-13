@@ -1,57 +1,110 @@
-﻿# Project Scope
+---
+id: SCOPE-001
+title: Scope Produk 12erp
+document_type: product-scope
+status: approved
+version: 1.0.0
+owner: Pemilik proyek
+created: 2026-08-12
+updated: 2026-08-13
+source_work_item: FTR-PROD-001
+related: [DOC-PROJECT-BRIEF, PRD-001, REQ-CATALOG-001]
+---
 
-## Dalam Scope
+# Scope Produk 12erp
 
-| ID | Kapabilitas | Rasional | Rilis/Fase |
-|---|---|---|---|
-| CAP-001 | HR Employee Management | Core HR data management | Phase 1 |
-| CAP-002 | HR Onboarding Workflow | Automated employee onboarding | Phase 2 |
-| CAP-003 | HR Offboarding Workflow | Automated employee offboarding | Phase 2 |
-| CAP-004 | HR Document Management | Employee document tracking | Phase 2 |
-| CAP-005 | HR Contract Management | Employment contract lifecycle | Phase 2 |
-| CAP-006 | Organization Structure | Org chart, positions, departments | Phase 1 |
-| CAP-007 | Document Management System | Company-wide document management | Phase 3 |
-| CAP-008 | RBAC & Authorization | Role-based access control | Phase 1 |
-| CAP-009 | Audit Logging | Track all important actions | Phase 2 |
-| CAP-010 | Reporting & Dashboard | HR and document analytics | Phase 4 |
-| CAP-011 | Notification System | Email and in-app notifications | Phase 3 |
-| CAP-012 | Module Generator | DDD-Lite module scaffolding | Phase 1 |
-| CAP-013 | User Management | User accounts, impersonation | Phase 2 |
-| CAP-014 | System Settings | System configuration, email, branding | Phase 2 |
-| CAP-015 | Backup & Restore | Database backup and restore | Phase 3 |
-| CAP-016 | Access Control | Access policies and restrictions | Phase 3 |
-| CAP-017 | Activity Center | Activity tracking across modules | Phase 3 |
-| CAP-018 | Global Search | Cross-module search | Phase 3 |
-| CAP-019 | Login Monitoring | Login activity tracking | Phase 3 |
-| CAP-020 | Queue Monitoring | Queue health monitoring | Phase 3 |
-| CAP-021 | Scheduler Monitoring | Scheduled task monitoring | Phase 3 |
+## Aturan Status Scope
 
-## Di Luar Scope
+| Status | Makna |
+|---|---|
+| `core` | nilai utama produk; perubahan atau penghapusannya memerlukan evaluasi produk |
+| `supporting` | diperlukan untuk menjalankan, mengendalikan, atau mengoperasikan kapabilitas core |
+| `deferred` | kandidat bernilai yang belum menjadi komitmen implementasi |
+| `excluded` | secara eksplisit bukan tujuan baseline produk saat ini |
 
-| Item | Alasan | Peninjauan Ulang Memicu |
+Status scope bukan status implementasi dan bukan urutan rilis. Bukti implementasi tersedia pada `TRACEABILITY-MATRIX.md`; urutan kerja ditentukan melalui work item.
+
+## Core Scope
+
+| Capability ID | Kapabilitas | Outcome |
 |---|---|---|
-| Mobile app native | Fokus web app dulu | User demand >50% mobile usage |
-| Multi-tenant SaaS | Single company deployment | Business model change |
-| Payroll processing | Kompleksitas tinggi, regulasi khusus | Dedicated payroll module request |
-| Performance management | Bukan prioritas saat ini | Annual review cycle requirement |
-| Recruitment/ATS | Sistem terpisah sudah ada | Integrasi ATS eksisting |
-| Learning Management | Bukan core HR | LMS integration request |
-| Time & attendance | Sistem terpisah sudah ada | Integration request |
+| `CAP-HR-001` | Data induk pegawai | `OUT-001` |
+| `CAP-HR-002` | Struktur dan referensi tenaga kerja | `OUT-001` |
+| `CAP-HR-003` | Lifecycle kontrak kerja | `OUT-002` |
+| `CAP-HR-004` | Onboarding pegawai | `OUT-002` |
+| `CAP-HR-005` | Perubahan penugasan pegawai | `OUT-002` |
+| `CAP-HR-006` | Offboarding pegawai | `OUT-002` |
+| `CAP-DOC-001` | Dokumen pegawai dan kepatuhan | `OUT-003` |
+| `CAP-DOC-002` | Lifecycle dokumen privat/perusahaan | `OUT-003` |
 
-## Boundaries
+## Supporting Scope
 
-- Sistem boundary: Web application dengan React frontend dan Laravel backend
-- Organizational boundary: Internal company use, tidak untuk client eksternal
-- Data boundary: Single database, shared antara semua modul (28 modul)
-- Integrasi boundary: API internal antar modul melalui kontrak, tidak ada external API untuk saat ini
+| Capability ID | Kapabilitas | Outcome |
+|---|---|---|
+| `CAP-ADM-001` | User dan kontrol akses | `OUT-004` |
+| `CAP-AUD-001` | Audit dan aktivitas keamanan | `OUT-004` |
+| `CAP-CFG-001` | Konfigurasi dan template sistem | `OUT-004` |
+| `CAP-OPS-001` | Operasi dan pemulihan sistem | `OUT-004` |
+| `CAP-EXP-001` | Discovery dan aktivitas pengguna | `OUT-005` |
+| `CAP-RPT-001` | Laporan HR read-only | `OUT-005` |
 
-## Ruang Lingkup Perubahan Proses
+## Deferred Scope
 
-Usulan scope perubahan wajib dokumen nilai, biaya, risiko, terdampak requirement, terdampak arsitektur, dan rilis dampak sebelum persetujuan.
+| Capability ID | Kandidat | Syarat promosi minimum |
+|---|---|---|
+| `CAP-NOT-001` | Notifikasi bisnis otomatis | trigger, penerima, channel, timing, retry, privacy, dan acceptance disetujui |
+| `CAP-SELF-001` | Employee self-service | persona, use case, data exposure, serta authorization disetujui |
+| `CAP-INT-001` | Integrasi sistem eksternal | target, contract, ownership, security, dan failure mode disetujui |
+| `CAP-I18N-001` | Multi-language | bahasa target, ownership konten, fallback, dan acceptance disetujui |
+| `CAP-RT-001` | Notifikasi real-time | kebutuhan latency, channel, delivery guarantee, serta operasi disetujui |
 
-Proses perubahan scope:
-1. Ajukan perubahan dalam format written proposal
-2. Impact assessment oleh technical lead
-3. Review oleh product owner
-4. Approval atau rejection dengan documented rationale
-5. Update dokumen terkait jika approved
+Item `deferred` bukan requirement aktif dan tidak boleh diimplementasikan hanya karena terdapat library, template, atau kode pendukung.
+
+## Excluded Scope
+
+| Area | Alasan baseline |
+|---|---|
+| Payroll/penggajian | domain regulasi dan perhitungan tersendiri; belum diputuskan |
+| Time and attendance | bukan capability aktif produk |
+| Recruitment/ATS | bukan capability aktif produk |
+| Performance management | bukan capability aktif produk |
+| Learning management | bukan capability aktif produk |
+| Finance/accounting | istilah ERP tidak menjadi janji domain ini |
+| Procurement dan inventory | istilah ERP tidak menjadi janji domain ini |
+| Sales dan CRM | istilah ERP tidak menjadi janji domain ini |
+| Native mobile application | delivery aktif adalah web internal |
+| Multi-tenant SaaS | konteks aktif adalah satu organisasi internal |
+
+`excluded` dapat dievaluasi ulang melalui proposal scope baru; tabel ini bukan larangan permanen.
+
+## Boundary Scope
+
+- Produk digunakan di dalam satu organisasi.
+- Boundary bisnis aktif adalah Console, HR, dan DocumentManagement sesuai `BOUNDARY-REGISTRY.md`.
+- Nama boundary/module tidak digunakan sebagai capability ID.
+- API eksternal tidak menjadi komitmen produk saat ini.
+- Detail akses ditentukan authorization baseline; dokumen ini tidak memberikan permission.
+
+## Perubahan Scope
+
+Setiap promosi, penghapusan, atau perubahan makna capability wajib:
+
+1. mempunyai work item terdaftar;
+2. menjelaskan nilai, pengguna, dampak, risiko, dependensi, dan acceptance;
+3. memperbarui PRD, Requirements, serta Traceability;
+4. memperoleh persetujuan manusia bila menyentuh Human Decision Gate;
+5. tidak menghapus bukti keputusan sebelumnya.
+
+## Persetujuan
+
+```yaml
+gate: product-scope-approval
+decision: approved
+approver: Pemilik proyek
+date: 2026-08-13
+conditions:
+  - status capability tidak menentukan urutan coding
+  - prioritas rilis ditetapkan per work item
+evidence:
+  - SPEC-FTR-PROD-001
+```
