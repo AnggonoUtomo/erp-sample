@@ -53,3 +53,11 @@ Rerun final tiga tahap—module validation, route snapshot, lalu 39 test—seles
 - Pint terfokus dan git diff --check: exit 0.
 
 Bukti task berikutnya ditambahkan secara incremental.
+
+### TSK-REF-HR-WLOC-001-02
+
+- WorkLocationData dipindahkan exact selain namespace ke Application/DTOs dan tiga import diperbarui.
+- HRWorkLocationTest: exit 0, 9 test/27 assertion.
+- module:validate HR.WorkLocations: exit 0, valid.
+- Pencarian namespace DTO lama: nol hasil.
+- Pint terfokus dan git diff --check: exit 0.

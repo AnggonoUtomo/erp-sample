@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\HR\WorkLocations\DTO;
+namespace App\Modules\HR\WorkLocations\Application\DTOs;
 
 final readonly class WorkLocationData
 {

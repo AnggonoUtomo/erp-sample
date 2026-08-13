@@ -2,7 +2,7 @@
 
 namespace App\Modules\HR\WorkLocations\Http\Requests;
 
-use App\Modules\HR\WorkLocations\DTO\WorkLocationData;
+use App\Modules\HR\WorkLocations\Application\DTOs\WorkLocationData;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
