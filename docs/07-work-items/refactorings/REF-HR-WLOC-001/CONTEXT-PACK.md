@@ -1,6 +1,6 @@
 ---
 id: DOC-REF-HR-WLOC-001-CONTEXT
-title: Context Pack TSK-REF-HR-WLOC-001-08
+title: Context Pack TSK-REF-HR-WLOC-001-09
 document_type: context-pack
 status: ready
 version: 1.0.0
@@ -11,11 +11,11 @@ source_work_item: REF-HR-WLOC-001
 related: [ADR-0001, FTR-ENG-001]
 ---
 
-# Context Pack TSK-REF-HR-WLOC-001-08
+# Context Pack TSK-REF-HR-WLOC-001-09
 
 ## Task yang Dipilih
 
-TSK-REF-HR-WLOC-001-08 — Pindahkan Controller. Status in_progress; ini satu-satunya task coding aktif.
+TSK-REF-HR-WLOC-001-09 — Pindahkan Provider. Status in_progress; ini satu-satunya task coding aktif.
 
 ## Work Item Induk
 
@@ -24,15 +24,15 @@ REF-HR-WLOC-001, child CRITICAL dari ARC-DDD-LITE-001 dan implementasi terkontro
 ## Fakta Repository yang Terverifikasi
 
 - TSK-REF-HR-WLOC-001-01 telah membuat route discovery target-first/fallback dan seluruh pemeriksaannya lulus.
-- Seluruh concern sebelum controller telah berpindah dan focused/regression test lulus.
-- Controller berada di Http/Controllers dan dipakai root routes.php.
-- Target Presentation/Http/Controllers tidak mengubah method, middleware, response, atau redirect.
+- Controller dan concern sebelumnya telah berpindah; focused/regression test lulus.
+- WorkLocationsServiceProvider berada di Providers/ dan direferensikan module.php.
+- Target Infrastructure/Providers mempertahankan Gate::policy.
 
 ## Requirement dan Kriteria Penerimaan
 
-- REF-WLOC-REQ-001, REF-WLOC-REQ-002, REF-WLOC-REQ-004, dan REF-WLOC-REQ-006.
-- Controller berpindah dan import route diperbarui.
-- Enam action, middleware, Inertia page, redirects, dan messages tetap.
+- REF-WLOC-REQ-001, REF-WLOC-REQ-004, REF-WLOC-REQ-006, dan REF-WLOC-NFR-004.
+- Provider berpindah dan import module.php diperbarui.
+- Gate mapping tetap menunjuk model/policy target.
 
 ## ADR dan Baseline
 
@@ -44,7 +44,7 @@ REF-HR-WLOC-001, child CRITICAL dari ARC-DDD-LITE-001 dan implementasi terkontro
 
 ## File dan Area yang Diizinkan
 
-- WorkLocationsController sumber/target dan routes.php
+- WorkLocationsServiceProvider sumber/target, module.php, dan HRWorkLocationTest
 - dokumen evidence, deviasi, dan task work item ini
 
 ## File dan Area yang Dilarang
@@ -57,16 +57,16 @@ REF-HR-WLOC-001, child CRITICAL dari ARC-DDD-LITE-001 dan implementasi terkontro
 
 ## Pola yang Harus Dipertahankan
 
-- Controller tetap identik selain namespace.
-- Route hanya mengubah import.
+- Provider tetap identik selain namespace.
+- module.php hanya mengubah import provider.
 
 ## Perintah Verifikasi
 
     php artisan test tests/Feature/HRWorkLocationTest.php
     php artisan module:validate HR.WorkLocations --json
-    vendor/bin/pint --test app/Modules/HR/WorkLocations/Presentation/Http/Controllers/WorkLocationsController.php app/Modules/HR/WorkLocations/routes.php
+    vendor/bin/pint --test app/Modules/HR/WorkLocations/Infrastructure/Providers/WorkLocationsServiceProvider.php app/Modules/HR/WorkLocations/module.php tests/Feature/HRWorkLocationTest.php
     git diff --check
 
 ## Risiko dan Keputusan
 
-Risiko utama adalah route action atau middleware mengarah ke class lama. Mitigasinya namespace search, focused test, dan snapshot route. Tidak ada pertanyaan keputusan blocking.
+Risiko utama adalah manifest membuang provider yang tidak dapat di-resolve atau Gate mapping hilang. Mitigasinya module validation, Gate assertion, allow/deny test, dan namespace search. Tidak ada pertanyaan keputusan blocking.

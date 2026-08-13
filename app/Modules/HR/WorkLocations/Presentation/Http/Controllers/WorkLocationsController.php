@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\HR\WorkLocations\Http\Controllers;
+namespace App\Modules\HR\WorkLocations\Presentation\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\HR\WorkLocations\Application\Services\WorkLocationsService;

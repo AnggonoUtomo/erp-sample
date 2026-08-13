@@ -103,3 +103,10 @@ Bukti task berikutnya ditambahkan secara incremental.
 - WorkLocationPolicy dipindahkan exact selain namespace ke Presentation/Policies; import provider diperbarui.
 - Characterization test Gate ditambahkan; focused suite lulus 10 test/28 assertion dalam 2,51 detik.
 - Existing allow/deny HTTP test tetap lulus; module validation valid; namespace policy lama nol; Pint dan diff check lulus.
+
+### TSK-REF-HR-WLOC-001-08
+
+- WorkLocationsController dipindahkan exact selain namespace ke Presentation/Http/Controllers; import route diperbarui.
+- Focused suite lulus 10 test/28 assertion dalam 2,23 detik.
+- Route snapshot tetap enam route dengan verb, URI, name, middleware, dan binding sama; action FQCN menunjuk controller target.
+- module validation valid; namespace controller lama nol; Pint dan diff check lulus.

@@ -1,6 +1,6 @@
 <?php
 
-use App\Modules\HR\WorkLocations\Http\Controllers\WorkLocationsController;
+use App\Modules\HR\WorkLocations\Presentation\Http\Controllers\WorkLocationsController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->prefix('hr/work-locations')->name('hr.work-locations.')->group(function () {
