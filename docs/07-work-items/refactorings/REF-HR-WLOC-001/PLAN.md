@@ -2,8 +2,8 @@
 id: DOC-REF-HR-WLOC-001-PLAN
 title: Rencana Kerja REF-HR-WLOC-001
 document_type: work-plan
-status: approved
-version: 1.0.0
+status: completed
+version: 1.1.0
 owner: Pemilik proyek
 created: 2026-08-14
 updated: 2026-08-14
@@ -24,19 +24,19 @@ Scope adalah route discovery kompatibel, pemindahan namespace/class WorkLocation
 ## Urutan dan Dependensi
 
 1. Persiapan dokumen, baseline, keputusan, dan readiness — selesai.
-2. Tooling discovery route target/fallback.
-3. Pemindahan class per concern dan cutover model atomik.
-4. Pemindahan route serta test.
-5. Validasi, review, completion, dan baseline sync.
+2. Tooling discovery route target/fallback — selesai.
+3. Pemindahan class per concern dan cutover model atomik — selesai.
+4. Pemindahan route serta test — selesai.
+5. Validasi, review, completion, dan baseline sync — selesai.
 
-FTR-ENG-001 dan task restore tooling induk telah selesai. TSK-ARC-DDD-LITE-001-03 menunggu pilot ini terverifikasi.
+FTR-ENG-001, task restore tooling induk, dan pilot ini telah selesai. `TSK-ARC-DDD-LITE-001-03` sekarang dapat menilai hasil pilot dan menyusun dependency order; task tersebut belum dimulai.
 
 ## Checkpoint
 
 - Setiap task terfokus lulus sebelum task berikutnya.
-- Namespace model tidak boleh berada pada kondisi setengah berpindah di akhir task.
-- Root routes.php baru dihapus setelah target discovery terverifikasi.
-- Completion hanya setelah acceptance matrix mempunyai bukti aktual.
+- Namespace model dipindahkan atomik dan pencarian akhir tidak menemukan namespace lama.
+- Root routes.php dihapus setelah target discovery terverifikasi.
+- Acceptance matrix, review, evidence, dan baseline sync telah diisi dengan hasil aktual.
 
 ## Risiko dan Mitigasi
 

@@ -1,12 +1,12 @@
 # Context Pack — ARC-DDD-LITE-001
 
-## Task Aktif
+## Task Berikutnya
 
-Tidak ada task coding aktif. `TSK-REF-HR-WLOC-001-01 — Route Discovery Target-First/Fallback` telah dipilih sebagai task berikutnya dan berstatus `ready`. Context implementasinya berada di `docs/07-work-items/refactorings/REF-HR-WLOC-001/CONTEXT-PACK.md`.
+Tidak ada task aktif. `TSK-ARC-DDD-LITE-001-03 — Review hasil pilot dan susun dependency order` berstatus `ready`. Pilot child `REF-HR-WLOC-001` telah completed dan context-nya sekarang menjadi bukti historis task tersebut.
 
-## Outcome Task
+## Outcome Task Sebelumnya
 
-Outcome tercapai: `app/Support/Modules/Commands/MakeModuleCommand.php` identik dengan commit `f1f64b2661e081ff6f2bf7418ffd9795a0ff11bd`; test generator dan module validation lulus.
+Outcome restore tooling tercapai: `app/Support/Modules/Commands/MakeModuleCommand.php` identik dengan commit `f1f64b2661e081ff6f2bf7418ffd9795a0ff11bd`; test generator dan module validation lulus. Outcome pilot berikutnya juga tercapai melalui `REF-HR-WLOC-001`; keduanya menjadi input task review yang ready.
 
 ## Fakta Wajib
 
@@ -20,17 +20,18 @@ Outcome tercapai: `app/Support/Modules/Commands/MakeModuleCommand.php` identik d
 - Runtime module tooling telah dipulihkan dan diverifikasi untuk task restore; adaptasi generator DDD-Lite belum aktif.
 - Baseline engineering/testing telah direkonsiliasi melalui `FTR-ENG-001`: web/session aktif, API/token deferred, test module-local incremental, dan angka kualitas belum menjadi gate.
 - Keputusan pilot WorkLocations telah disetujui: struktur minimal, route target-first/fallback, namespace tanpa shim, refactor struktural murni, test module-local incremental, dan policy Laravel/Spatie di Presentation.
+- Pilot WorkLocations telah membuktikan keputusan tersebut dengan full quality 527 test/3.260 assertion, enam route ekuivalen, authorization allow/deny, dan build frontend yang lulus.
 
 ## Area yang Diizinkan
 
 - dokumen task pada `docs/07-work-items/architecture-changes/ARC-DDD-LITE-001/` dan child `REF-HR-WLOC-001`;
 - read-only inspection dan command verifikasi repository;
-- area kode task 01 sudah tercatat pada context child, tetapi belum aktif sampai coding diperintahkan.
+- read-only audit graph import untuk task 03 setelah task tersebut diaktifkan.
 
 ## Area yang Dilarang
 
 - perubahan isi/perilaku generator;
-- seluruh modul bisnis, test, migration, route, config, dependency, dan generated artifact;
+- perubahan modul bisnis, test, migration, route, config, dependency, dan generated artifact pada task review;
 - `HR/IntegrationContracts` dan work item ULID.
 
 ## Risiko

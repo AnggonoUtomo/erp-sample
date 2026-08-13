@@ -3,7 +3,7 @@ id: SEC-BASELINE-001
 title: Baseline Keamanan Aktif
 document_type: security-baseline
 status: active
-version: 1.0.0
+version: 1.1.0
 owner: Pemilik proyek
 created: 2026-08-12
 updated: 2026-08-14
@@ -60,4 +60,4 @@ Lima event audit WorkLocation.created, updated, deleted, restored, dan force-del
 
 ## Risiko Diterima dan Tanggal Review
 
-Risiko struktur campuran selama migrasi diterima untuk pilot pada 2026-08-14 dengan compatibility resolver dan test additive. Review ulang dilakukan pada review pascakerja REF-HR-WLOC-001 dan setelah pilot sebelum urutan migrasi modul berikutnya ditetapkan.
+Risiko struktur campuran selama migrasi diterima pada 2026-08-14 dengan compatibility resolver dan test additive. Review pascakerja `REF-HR-WLOC-001` tidak menemukan finding security Critical/Required: Gate mapping, allow/deny termasuk HTTP 403, validation, audit, route binding, serta no-change auth/session/permission/dependency telah diverifikasi. Risiko transisi ditinjau kembali pada task penyusunan urutan migrasi berikutnya.

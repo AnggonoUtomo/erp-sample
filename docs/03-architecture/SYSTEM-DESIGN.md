@@ -3,7 +3,7 @@ id: ARC-SYS-001
 title: Desain Sistem Aktual dan Target DDD-Lite
 document_type: architecture-baseline
 status: active
-version: 1.1.0
+version: 1.2.0
 owner: Pemilik proyek
 created: 2026-08-12
 updated: 2026-08-14
@@ -20,10 +20,10 @@ Aplikasi adalah Laravel modular monolith dengan frontend React/Inertia. Kode mem
 ## Kondisi Aktual yang Terverifikasi
 
 - Modul berada pada `app/Modules/{Boundary}/{Module}/`.
-- Struktur internal masih dominan datar: `Models`, `Services`, `Http`, `Providers`, `routes.php`, dan folder lain berada di root modul.
+- Struktur internal masih dominan datar, tetapi `HR/WorkLocations` telah menjadi pilot terverifikasi yang memakai `Application/`, `Infrastructure/`, `Presentation/`, dan `Tests/` secara minimal.
 - Migration modul sudah berada pada `Database/Migrations`.
-- Test masih berada pada root `tests/`; belum ada test module-local.
-- Route HTTP mayoritas berada pada `routes.php` masing-masing modul.
+- Test mayoritas berada pada root `tests/`; satu test milik WorkLocations sekarang berada module-local dan ditemukan oleh suite PHPUnit `Module`.
+- Route HTTP mayoritas berada pada `routes.php` masing-masing modul; WorkLocations memakai `Presentation/Routes/web.php` melalui resolver target-first/fallback.
 - Kontrak integrasi aktif sudah ditemukan pada beberapa modul bisnis.
 - `HR/IntegrationContracts` adalah shell teknis tanpa data dan route; deprecation-nya diusulkan pada ADR-0002.
 - `MakeModuleCommand.php` sempat hilang dari working tree dan telah dipulihkan exact dari commit `f1f64b2661e081ff6f2bf7418ffd9795a0ff11bd`. Test generator dan validasi kontrak modul pascarestore lulus pada 2026-08-13.
@@ -44,7 +44,7 @@ Lintas modul notifikasi -> Integration Event milik producer
 Read-only lintas modul -> Query/read model terdokumentasi
 ```
 
-Policy authorization yang bergantung pada Laravel/Spatie, model User, dan operasi controller berada pada `Presentation/Policies/`; aturan domain murni tidak ditempatkan di adapter framework tersebut. Pilot pertama yang siap menerapkan pola ini adalah `REF-HR-WLOC-001`, tetapi coding belum dimulai sehingga kondisi aktual tetap struktur lama.
+Policy authorization yang bergantung pada Laravel/Spatie, model User, dan operasi controller berada pada `Presentation/Policies/`; aturan domain murni tidak ditempatkan di adapter framework tersebut. `REF-HR-WLOC-001` telah menerapkan dan memverifikasi pola ini pada WorkLocations tanpa membuat `Domain/` atau `Integration/` kosong.
 
 ## Boundary Aktif
 
@@ -70,7 +70,7 @@ Repository membuktikan satu aplikasi Laravel dan satu unit build frontend. Dokum
 ## Risiko Terbuka
 
 1. Generator lama telah pulih dan tervalidasi, tetapi masih menghasilkan struktur datar; penyesuaian ke ADR-0001 harus menjadi task terpisah.
-2. Struktur target belum diimplementasikan; namespace dan route loading masih menggunakan struktur lama.
+2. Struktur target baru diimplementasikan pada pilot WorkLocations; modul lain masih dominan memakai namespace dan route loading lama selama transisi incremental.
 3. Beberapa dokumen lama mengklaim API, ULID, dan event yang tidak ada pada kode.
 4. Dashboard/read model perlu audit terpisah untuk direct cross-module model access.
 

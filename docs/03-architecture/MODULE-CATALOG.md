@@ -3,10 +3,10 @@ id: MOD-CATALOG-001
 title: Katalog Modul Aktif dan Target
 document_type: architecture-catalog
 status: active
-version: 1.0.0
+version: 1.1.0
 owner: Pemilik proyek
 created: 2026-08-12
-updated: 2026-08-13
+updated: 2026-08-14
 source_work_item: ARC-DDD-LITE-001
 related: [ADR-0001, ADR-0002, DEP-HR-001]
 ---
@@ -61,7 +61,7 @@ Katalog ini membedakan fakta implementasi saat ini dari keputusan target. `Diper
 | `Onboardings` | Template, checklist, assignment, dan penyelesaian masuk | tabel `hr_onboarding_*` | Lifecycle mandiri | Dipertahankan |
 | `OrganizationStructures` | Node struktur formal dan reporting line | `hr_organization_structures` | Struktur formal berbeda dari master departemen/posisi | Dipertahankan |
 | `Positions` | Master jabatan yang terkait departemen | `hr_positions` | Referensi bisnis | Dipertahankan |
-| `WorkLocations` | Master lokasi kerja | `hr_work_locations` | Referensi bisnis | Dipertahankan |
+| `WorkLocations` | Master lokasi kerja | `hr_work_locations` | Referensi bisnis; pilot struktur ADR-0001 terverifikasi | Dipertahankan |
 
 ## DocumentManagement
 
@@ -85,3 +85,7 @@ Katalog ini membedakan fakta implementasi saat ini dari keputusan target. `Diper
 - pencarian import namespace lintas modul pada 2026-08-13
 
 Katalog historis sebelum SEOS tersedia melalui `BL-2026-001-pre-seos` dan tidak menjadi sumber kebenaran aktif.
+
+## Status Struktur Incremental
+
+Pada 2026-08-14, `HR/WorkLocations` menjadi modul pertama yang terverifikasi memakai struktur minimal ADR-0001. Fakta ini tidak mengubah jumlah, nama, tanggung jawab, data ownership, atau usulan deprecation modul. Modul lain tetap dievaluasi/migrasikan melalui work item terpisah berdasarkan readiness dan dependency order.

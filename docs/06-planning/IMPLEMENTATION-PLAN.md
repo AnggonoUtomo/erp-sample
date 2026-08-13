@@ -3,7 +3,7 @@ id: PLAN-DDD-001
 title: Rencana Implementasi DDD-Lite Berbasis Readiness
 document_type: implementation-plan
 status: active
-version: 1.2.0
+version: 1.3.0
 owner: Pemilik proyek
 created: 2026-08-12
 updated: 2026-08-14
@@ -40,7 +40,7 @@ Kriteria minimum yang telah dipenuhi:
 
 ## Tahap 2 — Modul Percontohan
 
-`HR/WorkLocations` telah dipilih sebagai modul kecil dengan route, model, service, policy, dan test yang representatif. Paket child `REF-HR-WLOC-001` telah berstatus `ready`. Pemindahan hanya membuat folder target yang benar-benar diperlukan; Domain/ dan Integration/ tidak dibuat pada pilot ini.
+`HR/WorkLocations` telah selesai sebagai modul percontohan dengan route, model, service, policy, dan test yang representatif. Child `REF-HR-WLOC-001` berstatus `completed`. Pemindahan hanya membuat folder target yang benar-benar diperlukan; Domain/ dan Integration/ tidak dibuat.
 
 Gate per irisan:
 
@@ -50,6 +50,8 @@ Gate per irisan:
 4. route, permission, database behavior, dan response dibandingkan;
 5. test terfokus, lint, serta architecture check lulus;
 6. dokumentasi dan evidence manifest disinkronkan.
+
+Seluruh gate pilot lulus pada 2026-08-14: quality backend 527 test/3.260 assertion, regression consumer 41 test/215 assertion, enam route ekuivalen, module validation, authorization allow/deny, strict PSR autoload, build 2.204 module, invariance diff, dan review pascakerja.
 
 ## Tahap 3 — Migrasi Berdasarkan Dependensi
 
@@ -70,4 +72,5 @@ Urutan modul berikutnya ditentukan setelah pilot, berdasarkan graph import aktua
 | Katalog modul | evaluated | 27 target; dua kandidat rename; tanpa merge |
 | Deprecation IntegrationContracts | approved, not ready | ADR-0002 accepted; compatibility dan removal readiness belum terpenuhi |
 | Migrasi ULID | deferred | dipisahkan dan belum memiliki migration design |
-| Coding restrukturisasi | ready untuk task pertama pilot | `REF-HR-WLOC-001` telah memiliki baseline, approval, task, allowlist, verifikasi, rollback, dan context; task berikutnya `TSK-REF-HR-WLOC-001-01` belum in_progress |
+| Pilot restrukturisasi WorkLocations | completed | `REF-HR-WLOC-001` selesai dan terverifikasi tanpa perubahan perilaku yang terdeteksi |
+| Review urutan migrasi | ready | `TSK-ARC-DDD-LITE-001-03` menjadi checkpoint berikutnya; belum in_progress |

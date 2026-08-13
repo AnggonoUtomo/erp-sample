@@ -6,8 +6,8 @@
 |---:|---|---|---|---|
 | 0 | `TSK-ARC-DDD-LITE-001-00` | Rekonsiliasi dokumen aktif dengan bukti kode | - | completed |
 | 1 | `TSK-ARC-DDD-LITE-001-01` | Pulihkan konsistensi module tooling | persetujuan restore | completed |
-| 2 | `TSK-ARC-DDD-LITE-001-02` | Migrasi pilot `HR/WorkLocations` melalui `REF-HR-WLOC-001` | task 01 verified | ready |
-| 3 | `TSK-ARC-DDD-LITE-001-03` | Review hasil pilot dan susun dependency order | task 02 verified | pending |
+| 2 | `TSK-ARC-DDD-LITE-001-02` | Migrasi pilot `HR/WorkLocations` melalui `REF-HR-WLOC-001` | task 01 verified | completed |
+| 3 | `TSK-ARC-DDD-LITE-001-03` | Review hasil pilot dan susun dependency order | task 02 verified | ready |
 
 ## TSK-ARC-DDD-LITE-001-01 — Pulihkan Konsistensi Module Tooling
 
@@ -96,4 +96,8 @@ git diff --check
 
 `REF-HR-WLOC-001` menjadi paket child kanonis untuk implementasi pilot ini. Pra-kerja, behavior baseline, scope file, acceptance, rollback, approval manusia, dan context task pertama telah tersedia pada `docs/07-work-items/refactorings/REF-HR-WLOC-001/`.
 
-Status task induk: `ready`. Task coding child berikutnya adalah `TSK-REF-HR-WLOC-001-01`, tetapi belum `in_progress`.
+Status task induk: `completed`. Child `REF-HR-WLOC-001` telah terverifikasi: quality gate 527 test/3.260 assertion, regression consumer 41 test/215 assertion, build, route/module validation, authorization, invariance, review, dan baseline sync lulus.
+
+## TSK-ARC-DDD-LITE-001-03 — Review Pilot dan Dependency Order
+
+Status: `ready`, belum `in_progress`. Task ini hanya mengevaluasi bukti pilot serta graph import aktual untuk menentukan urutan slice berikutnya; tidak otomatis mengizinkan migrasi modul baru, perubahan generator, deprecation IntegrationContracts, atau ULID.

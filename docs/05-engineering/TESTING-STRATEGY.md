@@ -3,12 +3,12 @@ id: ENG-TEST-001
 title: Strategi Testing Aktual dan Incremental
 document_type: testing-strategy
 status: approved
-version: 1.0.0
+version: 1.1.0
 owner: Pemilik proyek
 created: 2026-08-12
 updated: 2026-08-13
 source_work_item: FTR-ENG-001
-related: [ENG-TECH-001, ADR-0001, NFR-005]
+related: [ENG-TECH-001, ADR-0001, NFR-005, REF-HR-WLOC-001]
 ---
 
 # Strategi Testing Aktual dan Incremental
@@ -17,19 +17,19 @@ related: [ENG-TECH-001, ADR-0001, NFR-005]
 
 Strategi ini menetapkan cara membuktikan perubahan tanpa mengklaim tooling, lokasi test, coverage, atau quality gate yang belum tersedia. Test dipilih berdasarkan risiko dan perilaku yang berubah, bukan sekadar nama folder.
 
-Snapshot jumlah test pada dokumen ini berasal dari audit 2026-08-13. Jumlah tersebut bukan target tetap.
+Snapshot awal berasal dari audit 2026-08-13 dan diperbarui setelah pilot WorkLocations pada 2026-08-14. Jumlah tersebut bukan target tetap.
 
 ## Topologi Test Aktual
 
 | Area | Framework | Lokasi aktual | Snapshot |
 |---|---|---|---:|
-| Backend feature/integration | PHPUnit + Laravel testing helpers | tests/Feature | 101 file test |
-| Backend unit | PHPUnit | tests/Unit | 5 file test |
+| Backend feature/integration lintas sistem/root | PHPUnit + Laravel testing helpers | tests/Feature | 100 file test |
+| Backend unit/tooling | PHPUnit | tests/Unit | 6 file test |
 | Frontend unit/component/hook | Vitest + React Testing Library | resources/js/**/*.test.ts(x) | 12 file, 28 test |
 | Architecture | command dan test yang ada | tidak ada suite tests/Architecture | 0 file pada lokasi target |
-| Module-local | PHPUnit | belum ada app/Modules/*/*/Tests | 0 file |
+| Module-local | PHPUnit | app/Modules/*/*/Tests | 1 file WorkLocations, 11 test |
 
-phpunit.xml mendaftarkan suite tests/Unit dan tests/Feature. Test backend aktual memakai class PHPUnit; contoh Pest tidak menjadi konvensi aktif karena Pest tidak terpasang.
+phpunit.xml mendaftarkan suite Unit, Feature, dan Module. Suite Module memindai file `*Test.php` di bawah app/Modules secara additive. Test backend aktual memakai class PHPUnit; contoh Pest tidak menjadi konvensi aktif karena Pest tidak terpasang.
 
 Vitest memakai environment jsdom dan setup resources/js/test/setup.ts.
 
@@ -124,6 +124,20 @@ Hasil berikut adalah bukti work item FTR-ENG-001 pada 2026-08-13, bukan jaminan 
 | npm run build | lulus; 2.204 modul ditransformasi |
 
 npm run quality:check pernah melewati timeout runner sekitar lima menit. Percobaan menjalankan beberapa command Node paralel juga menimbulkan tiga worker timeout pada Vitest, sementara rerun Vitest terisolasi lulus. Kejadian ini dicatat sebagai keterbatasan runner dan kandidat stabilisasi; tidak diperlakukan sebagai kegagalan test aplikasi yang dapat direproduksi.
+
+## Snapshot Setelah Pilot WorkLocations
+
+Hasil berikut berasal dari `REF-HR-WLOC-001` pada 2026-08-14 dan tidak menggantikan kewajiban menjalankan ulang gate pada perubahan berikutnya:
+
+| Command | Hasil |
+|---|---|
+| composer quality:check | lulus; module validation, Pint, 527 test / 3.260 assertion |
+| regression WorkLocations dan consumer | lulus; 41 test / 215 assertion |
+| suite Module / path WorkLocations | lulus; 11 test / 29 assertion |
+| composer dump-autoload --strict-psr | lulus; 7.404 class |
+| npm run build | lulus; 2.204 module ditransformasi |
+
+Pilot membuktikan colocation incremental; tidak mengharuskan pemindahan massal test lain.
 
 ## CI Aktual
 

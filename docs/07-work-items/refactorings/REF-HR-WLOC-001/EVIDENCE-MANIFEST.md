@@ -2,8 +2,8 @@
 id: DOC-REF-HR-WLOC-001-EVIDENCE
 title: Manifest Bukti REF-HR-WLOC-001
 document_type: evidence-manifest
-status: active
-version: 1.0.0
+status: verified
+version: 1.1.0
 owner: Pemilik proyek
 created: 2026-08-14
 updated: 2026-08-14
@@ -14,10 +14,10 @@ related: [ADR-0001, FTR-ENG-001]
 # Manifest Bukti REF-HR-WLOC-001
 
 Work item: REF-HR-WLOC-001.
-Commit atau PR: belum ada.
-Perubahan saat ini: dokumentasi pra-kerja saja.
+Commit atau PR: `43fe02a` untuk pra-kerja; `b22302d` sampai `0ad01d6` untuk implementasi incremental; commit penutupan memuat bukti akhir.
+Perubahan saat ini: pilot selesai dan baseline disinkronkan.
 Migration: tidak dijalankan karena schema/data di luar scope.
-Limitation: tidak ada baseline performa numerik yang disetujui; coding dan validasi setelah perubahan belum dilakukan.
+Limitation: tidak ada baseline performa numerik yang disetujui; tidak ada release/deployment, browser E2E, atau CI remote yang dijalankan pada work item ini.
 
 ## Bukti Pra-Implementasi
 
@@ -44,7 +44,9 @@ Rerun final tiga tahap—module validation, route snapshot, lalu 39 test—seles
 - Characterization test Gate pertama gagal karena assertion membandingkan instance dengan class-string; output menunjukkan policy target benar dan assertion dikoreksi menjadi assertInstanceOf.
 - Focused test provider pertama gagal 9/10 karena migration path relatif tidak lagi mencapai Database/Migrations; path disesuaikan satu level tanpa mengubah migration/schema lalu test diulang.
 - apply_patch move route pertama ditolak karena hunk kosong; tidak ada perubahan parsial dan move diulang dengan hunk identitas.
-- Test pasca-implementasi, composer quality:check, npm build, dan review kode belum dijalankan karena pekerjaan ini baru pra-kerja.
+- Output akhir percobaan pertama `composer quality:check` hilang ketika cell terminal berakhir; command diulang dari awal dan lulus, sehingga percobaan tanpa exit code tidak dipakai sebagai bukti.
+- Satu regression command menyebut file WorkSchedules/Attendances yang tidak ada; pencarian consumer namespace menemukan enam file test aktual dan command yang benar kemudian lulus.
+- Dua pemeriksaan PowerShell awal salah memproses koleksi JSON route dan memakai namespace command `modules:validate`; keduanya dikoreksi menjadi enumerasi JSON yang benar dan `module:validate`, lalu lulus.
 
 ## Bukti Pascakerja
 
@@ -134,3 +136,27 @@ Bukti task berikutnya ditambahkan secara incremental.
 - Characterization denial index tanpa permission ditambahkan; tidak ada assertion lama yang dikurangi.
 - Path langsung dan suite Module masing-masing lulus 11 test/29 assertion dalam 2,46 dan 2,89 detik.
 - `composer dump-autoload --strict-psr`: exit 0, 7.404 class; Pint dan diff check lulus.
+
+### TSK-REF-HR-WLOC-001-12
+
+- `composer quality:check`: exit 0; seluruh kontrak modul valid, Pint lulus, 527 test/3.260 assertion lulus dalam 92,68 detik.
+- Regression WorkLocations dan seluruh consumer aktual: exit 0, 41 test/215 assertion dalam 6,26 detik.
+- `npm run build`: exit 0; Vite mentransformasi 2.204 module.
+- `npm run typecheck`: exit 0; TypeScript tidak melaporkan error.
+- `composer dump-autoload --strict-psr`: exit 0; 7.404 class.
+- `php artisan module:validate`: exit 0; seluruh kontrak modul valid.
+- Snapshot route terfilter: tepat enam route WorkLocations; verb, URI, name, middleware, binding, dan operasi sama. FQCN action/model berubah hanya untuk menunjuk lokasi target.
+- Pencarian sembilan namespace lama pada app/, database/, dan tests/: nol hasil.
+- Struktur: seluruh file target ada; root/lokasi legacy, Domain/, dan Integration/ tidak hadir.
+- `git diff --name-only 43fe02a` pada migration, permission/navigation/Support/Permissions, resources/js terkait, composer/package manifest dan lockfile: tidak ada perubahan.
+- Topologi test akhir: 100 file Feature root, 6 file Unit root, dan 1 file module-local berisi 11 test.
+- Review lima sumbu: tidak ada finding Critical atau Required; verdict `APPROVE_WITH_FOLLOW_UP`.
+- Audit dokumentasi: paket tetap 13 file dan seluruh Markdown mempunyai frontmatter/H1/fence valid; 24 dokumen berubah tidak memiliki referensi path docs yang hilang; inventaris tetap tepat 303 file (292 Markdown, 11 `.gitkeep`).
+- `git diff --check`: exit 0.
+
+## Limitation Akhir
+
+- Hasil lokal tidak membuktikan workflow CI remote, deployment, atau production readiness.
+- Browser E2E bukan quality gate aktif repository dan tidak dijalankan; frontend WorkLocations sendiri tidak berubah serta build lulus.
+- Tidak ada benchmark; durasi command bukan threshold performa.
+- Struktur campuran antar-modul tetap merupakan kondisi transisi work item induk.

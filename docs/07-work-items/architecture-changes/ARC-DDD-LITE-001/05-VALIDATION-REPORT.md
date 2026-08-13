@@ -4,9 +4,9 @@
 
 ```yaml
 work_item: ARC-DDD-LITE-001
-status: criteria-prepared
+status: pilot-verified
 owner: unassigned
-last_updated: 2026-08-13
+last_updated: 2026-08-14
 ```
 
 ## Gate per Task
@@ -37,9 +37,9 @@ last_updated: 2026-08-13
 
 ## Status
 
-Belum ada validasi implementasi DDD-Lite karena coding belum dimulai. Dokumen ini tidak boleh digunakan sebagai klaim bahwa work item telah verified.
+Validasi implementasi pertama tersedia melalui child `REF-HR-WLOC-001`. Pilot WorkLocations telah verified, tetapi status ini tidak menyatakan seluruh `ARC-DDD-LITE-001` selesai.
 
-Paket validasi pilot telah disiapkan pada `docs/07-work-items/refactorings/REF-HR-WLOC-001/04-BEHAVIOR-VALIDATION.md`. Baseline sebelum coding adalah enam route dan 39 test/213 assertion lulus. Hasil setelah coding masih pending.
+Baseline sebelum coding adalah enam route dan 39 test/213 assertion. Setelah pilot, enam route tetap ekuivalen, regression consumer lulus 41 test/215 assertion, dan quality gate penuh lulus 527 test/3.260 assertion. Rincian berada pada `docs/07-work-items/refactorings/REF-HR-WLOC-001/04-BEHAVIOR-VALIDATION.md`.
 
 ## TSK-ARC-DDD-LITE-001-01 — Hasil yang Akan Diisi
 
@@ -68,3 +68,17 @@ Percobaan pertama setelah restore timeout 120 detik tanpa output. Pemeriksaan ti
 | Performance | tidak ada perubahan runtime dibanding baseline `HEAD` |
 
 Verdict: `APPROVE` untuk task restore. Tidak ada finding Critical atau Required.
+
+## TSK-ARC-DDD-LITE-001-02 — Hasil Pilot WorkLocations
+
+| Pemeriksaan | Hasil aktual |
+|---|---|
+| struktur | Application, Infrastructure, Presentation, Database, Tests, dan metadata root minimal; tanpa Domain/Integration kosong |
+| route | tepat enam, target-first/fallback, tanpa double-load |
+| authorization | Gate mapping dan allow/deny lulus; policy framework berada di Presentation |
+| consumer | namespace lama nol; 41 test/215 assertion lulus |
+| quality | 527 test/3.260 assertion, Pint, dan kontrak modul lulus |
+| frontend/autoload | build 2.204 module dan strict PSR 7.404 class lulus |
+| invariant | migration, permission/navigation, frontend, dan dependency manifest tidak berubah |
+
+Verdict child: `APPROVE_WITH_FOLLOW_UP`. Tidak ada finding Critical atau Required; tiga follow-up tetap kandidat terpisah.

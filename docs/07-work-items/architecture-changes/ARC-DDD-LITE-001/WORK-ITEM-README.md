@@ -52,7 +52,7 @@ evidence:
   - konfirmasi eksplisit melalui interview evaluasi
 ```
 
-Task restore module tooling telah selesai dan terverifikasi. Pra-kerja pilot WorkLocations tersedia di child `REF-HR-WLOC-001` dan berstatus `ready`. Work item induk tetap `in_progress`; hal ini tidak berarti coding pilot atau restrukturisasi seluruh modul sudah selesai.
+Task restore module tooling dan pilot WorkLocations melalui child `REF-HR-WLOC-001` telah selesai serta terverifikasi. Work item induk tetap `in_progress` karena katalog modul lain, dependency order, dan deprecation terpisah belum selesai. Task berikutnya `TSK-ARC-DDD-LITE-001-03` berstatus `ready`, belum aktif.
 
 ## Dokumen
 
@@ -62,9 +62,9 @@ Task restore module tooling telah selesai dan terverifikasi. Pra-kerja pilot Wor
 | `02-BOUNDARY-PROPOSAL.md` | approved via ADR-0001 dan ADR-0002 |
 | `03-IMPACT-ASSESSMENT.md` | updated |
 | `04-IMPLEMENTATION-PLAN.md` | updated |
-| `05-VALIDATION-REPORT.md` | criteria prepared; execution pending |
+| `05-VALIDATION-REPORT.md` | bukti restore dan pilot diperbarui |
 | `06-COMPLETION-REPORT.md` | not started |
-| `TASKS.md` | task pilot ready melalui child `REF-HR-WLOC-001`; tidak ada task coding aktif |
-| `CONTEXT-PACK.md` | menunjuk context pack child untuk task berikutnya |
-| `EVIDENCE-MANIFEST.md` | discovery evidence recorded |
+| `TASKS.md` | task pilot completed; task review dependency order ready |
+| `CONTEXT-PACK.md` | menunjuk task review berikutnya; tidak ada task aktif |
+| `EVIDENCE-MANIFEST.md` | discovery, restore, dan pilot evidence recorded |
 | `DEVIATION-RECORD.md` | lima deviasi tercatat; gangguan runner telah resolved |

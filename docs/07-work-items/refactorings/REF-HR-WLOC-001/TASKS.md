@@ -2,8 +2,8 @@
 id: DOC-REF-HR-WLOC-001-TASKS
 title: Task REF-HR-WLOC-001
 document_type: work-item-tasks
-status: active
-version: 1.0.0
+status: completed
+version: 1.1.0
 owner: Pemilik proyek
 created: 2026-08-14
 updated: 2026-08-14
@@ -29,9 +29,9 @@ related: [ADR-0001]
 | 9 | TSK-REF-HR-WLOC-001-09 | Pindahkan provider | task 08 | completed |
 | 10 | TSK-REF-HR-WLOC-001-10 | Pindahkan route | task 09 | completed |
 | 11 | TSK-REF-HR-WLOC-001-11 | Colocation test modul dan discovery PHPUnit | task 10 | completed |
-| 12 | TSK-REF-HR-WLOC-001-12 | Verifikasi, review, dan baseline sync | task 11 | in_progress |
+| 12 | TSK-REF-HR-WLOC-001-12 | Verifikasi, review, dan baseline sync | task 11 | completed |
 
-Task 12 adalah satu-satunya task aktif dan hanya memuat verifikasi, review, dokumentasi pascakerja, serta baseline sync.
+Seluruh task selesai. Tidak ada task aktif pada work item ini.
 
 ## TSK-REF-HR-WLOC-001-01 — Route Discovery Target-First/Fallback
 
@@ -108,6 +108,8 @@ Area diizinkan adalah file test lama dan baru serta phpunit.xml.
 ## TSK-REF-HR-WLOC-001-12 — Verifikasi dan Baseline Sync
 
 Jalankan seluruh perintah 04-BEHAVIOR-VALIDATION.md, lakukan review multi-axis, isi evidence/deviasi/completion, sinkronkan registry, induk ARC-DDD-LITE-001, implementation plan, module catalog bila status struktur berubah, dan file inventory. Dilarang memperbaiki temuan di luar scope tanpa klasifikasi.
+
+Status: completed. Quality gate lulus 527 test/3.260 assertion; regression consumer lulus 41 test/215 assertion; build 2.204 module, strict PSR autoload, module validation, snapshot enam route, pencarian namespace lama, invariance diff, review lima sumbu, serta sinkronisasi baseline seluruhnya lulus.
 
 ## Allowlist Implementasi Lengkap
 

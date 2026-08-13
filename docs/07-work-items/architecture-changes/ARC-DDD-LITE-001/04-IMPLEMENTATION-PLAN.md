@@ -32,4 +32,4 @@ Setiap task memuat daftar file sebelum/sesudah, test baseline, dan commit/refere
 
 ## Task Pertama yang Dipilih
 
-`TSK-ARC-DDD-LITE-001-01 — Pulihkan konsistensi module tooling` telah selesai. Paket child `REF-HR-WLOC-001` kini menjadi sumber scope, baseline, task, dan evidence pilot `TSK-ARC-DDD-LITE-001-02`. Task coding berikutnya `TSK-REF-HR-WLOC-001-01` berstatus `ready`, belum `in_progress`. Adaptasi generator ke ADR-0001 tetap menjadi kandidat terpisah `CAND-ARC-GEN-001`.
+`TSK-ARC-DDD-LITE-001-01` dan pilot `TSK-ARC-DDD-LITE-001-02` melalui child `REF-HR-WLOC-001` telah selesai serta terverifikasi. Task berikutnya `TSK-ARC-DDD-LITE-001-03` berstatus `ready` untuk review bukti pilot dan penyusunan dependency order; belum `in_progress`. Adaptasi generator ke ADR-0001 tetap menjadi kandidat terpisah `CAND-ARC-GEN-001`.

@@ -3,7 +3,7 @@ id: DOC-REF-HR-WLOC-001-DEVIATION
 title: Catatan Deviasi REF-HR-WLOC-001
 document_type: deviation-record
 status: active
-version: 1.0.0
+version: 1.1.0
 owner: Pemilik proyek
 created: 2026-08-14
 updated: 2026-08-14
@@ -79,4 +79,18 @@ Status: resolved. ADR baru tidak diperlukan.
 
 Percobaan apply_patch pertama untuk memindahkan routes.php ditolak karena move tanpa hunk tidak valid. File tidak berubah pada percobaan tersebut. Pemindahan diulang dengan hunk identitas dan berhasil.
 
-Belum ada deviasi implementasi karena coding belum dimulai.
+## DEV-REF-HR-WLOC-001-012 — Output Quality Gate Pertama Tidak Tersedia
+
+Status: resolved. ADR baru tidak diperlukan.
+
+Cell terminal percobaan pertama `composer quality:check` sudah tidak tersedia setelah sesi terinterupsi sehingga exit code akhirnya tidak dapat dipakai sebagai bukti. Quality gate diulang penuh; rerun lulus 527 test/3.260 assertion dan menjadi bukti kanonis.
+
+## DEV-REF-HR-WLOC-001-013 — Invokasi Verifikasi Ad-Hoc Salah
+
+Status: resolved. ADR baru tidak diperlukan.
+
+Satu command regression awal menyebut nama file test yang tidak ada. Dua command audit berikutnya salah mengiterasi JSON route dan memakai `modules:validate` alih-alih `module:validate`. Semua merupakan kesalahan invokasi alat; daftar consumer ditemukan melalui pencarian namespace, route difilter ulang dengan enumerasi yang benar, command modul dikoreksi, dan seluruh rerun lulus. Tidak ada perubahan kode akibat kegagalan tersebut.
+
+## Kesimpulan
+
+Tidak ada deviasi perilaku, schema, kontrak, atau authorization semantics. Deviasi transisi yang diterima tetap terbuka pada induk/backlog; seluruh deviasi eksekusi lain telah resolved.

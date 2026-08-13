@@ -2,8 +2,8 @@
 id: DOC-REF-HR-WLOC-001-CONTEXT
 title: Context Pack TSK-REF-HR-WLOC-001-12
 document_type: context-pack
-status: active
-version: 1.0.0
+status: completed
+version: 1.1.0
 owner: Pemilik proyek
 created: 2026-08-14
 updated: 2026-08-14
@@ -13,9 +13,9 @@ related: [ADR-0001, FTR-ENG-001]
 
 # Context Pack TSK-REF-HR-WLOC-001-12
 
-## Task Aktif
+## Task Terakhir
 
-TSK-REF-HR-WLOC-001-12 — Verifikasi, review, dan baseline sync. Ini satu-satunya task aktif; tidak ada coding fitur atau struktur lanjutan.
+TSK-REF-HR-WLOC-001-12 — Verifikasi, review, dan baseline sync telah selesai. Tidak ada task aktif pada REF-HR-WLOC-001.
 
 ## Work Item Induk
 
@@ -28,12 +28,14 @@ REF-HR-WLOC-001, child CRITICAL dari ARC-DDD-LITE-001 dan implementasi TSK-ARC-D
 - Domain/ dan Integration/ tidak dibuat.
 - Route target-first/fallback berlaku umum; WorkLocations tidak mempunyai root routes.php.
 - Test module-local ditemukan; test lintas sistem tetap pada tests/Feature.
+- Quality gate penuh lulus 527 test/3.260 assertion dan build frontend lulus.
+- Enam route, Gate mapping, allow/deny, migration, permission, navigation, frontend, dan dependency manifest terverifikasi ekuivalen atau tidak berubah sesuai scope.
 
-## Kriteria Penerimaan
+## Hasil Kriteria Penerimaan
 
-- Seluruh REF-WLOC-REQ-001 sampai REF-WLOC-REQ-008 dan REF-WLOC-NFR-001 sampai REF-WLOC-NFR-005 mempunyai bukti.
+- Seluruh REF-WLOC-REQ-001 sampai REF-WLOC-REQ-008 dan REF-WLOC-NFR-001 sampai REF-WLOC-NFR-005 mempunyai bukti lulus.
 - Full backend quality, consumer regression, route/module validation, frontend build, namespace/no-change checks, review lima sumbu, dan documentation sync lulus.
-- Deviasi aktual dicatat; residual legacy/candidate tidak disembunyikan.
+- Deviasi aktual dicatat; residual legacy/candidate tetap transparan pada BACKLOG.md.
 
 ## File dan Area yang Diizinkan
 
@@ -56,6 +58,6 @@ REF-HR-WLOC-001, child CRITICAL dari ARC-DDD-LITE-001 dan implementasi TSK-ARC-D
 
 Pemeriksaan tambahan: namespace lama nol, tepat enam route, file migration/permission/navigation/frontend tidak berubah, root route/test lama tidak ada, dan inventaris docs sinkron.
 
-## Risiko
+## Risiko Residual
 
-Risiko tersisa adalah regresi di luar focused set, dokumentasi status tidak sinkron, atau residual namespace lama. Full suite, build, pencarian global, diff allowlist, serta review lima sumbu menjadi gate akhir.
+Risiko transisi struktur campuran masih berlaku pada work item induk. Coupling langsung lintas modul, generator lama, dan dua mekanisme export permission tetap kandidat terpisah; tidak ada temuan tersebut yang diam-diam dianggap selesai oleh pilot.

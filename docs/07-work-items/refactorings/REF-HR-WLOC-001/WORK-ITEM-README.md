@@ -2,8 +2,8 @@
 id: DOC-REF-HR-WLOC-001-README
 title: Identitas Work Item REF-HR-WLOC-001
 document_type: work-item-readme
-status: in_progress
-version: 1.0.0
+status: completed
+version: 1.1.0
 owner: Pemilik proyek
 created: 2026-08-14
 updated: 2026-08-14
@@ -16,7 +16,7 @@ related: [ARC-DDD-LITE-001, ADR-0001, FTR-ENG-001]
 ID: REF-HR-WLOC-001
 Jenis: refactoring
 Klasifikasi: CRITICAL
-Status: in_progress
+Status: completed
 Owner: Pemilik proyek
 Induk: ARC-DDD-LITE-001
 Ditemukan oleh: null; work item ini merupakan paket implementasi TSK-ARC-DDD-LITE-001-02, bukan pekerjaan emergent.
@@ -41,19 +41,19 @@ Scope mencakup pemindahan class/backend, route, provider, test milik modul, impo
 | 01-REFACTORING-PROPOSAL.md | keputusan scope dan acceptance | approved |
 | 02-BEHAVIOR-BASELINE.md | perilaku sebelum perubahan | approved |
 | 03-IMPLEMENTATION-PLAN.md | transformasi dan rollback | approved |
-| 04-BEHAVIOR-VALIDATION.md | tempat bukti equivalence pascakerja | prepared |
-| 05-COMPLETION-REPORT.md | laporan akhir | pending |
-| PLAN.md | urutan work item | approved |
-| TASKS.md | sumber status task | ready |
+| 04-BEHAVIOR-VALIDATION.md | bukti equivalence pascakerja | verified |
+| 05-COMPLETION-REPORT.md | laporan akhir | completed |
+| PLAN.md | urutan work item | completed |
+| TASKS.md | sumber status task | completed |
 | BACKLOG.md | kandidat di luar scope | active |
-| CONTEXT-PACK.md | konteks task pertama yang dipilih | ready |
-| EVIDENCE-MANIFEST.md | bukti aktual | active |
+| CONTEXT-PACK.md | konteks task terakhir | completed |
+| EVIDENCE-MANIFEST.md | bukti aktual | verified |
 | DEVIATION-RECORD.md | deviasi aktual | active |
-| REVIEW-REPORT.md | review pra dan pasca implementasi | prepared |
+| REVIEW-REPORT.md | review pra dan pasca implementasi | completed |
 
 ## Keputusan Saat Ini dan Aksi Berikutnya
 
-Work item telah memasuki implementasi. TSK-REF-HR-WLOC-001-01 adalah satu-satunya task in_progress; task lainnya tetap pending.
+Seluruh task REF-HR-WLOC-001 telah selesai. Pilot membuktikan struktur DDD-Lite minimal, route target-first/fallback, cutover namespace tanpa shim, policy di Presentation, dan test module-local tanpa perubahan perilaku yang terdeteksi. Tidak ada task aktif di work item ini; task induk `TSK-ARC-DDD-LITE-001-03` siap untuk review dependency order sebagai pekerjaan berikutnya.
 
 ## Persetujuan dan Readiness
 

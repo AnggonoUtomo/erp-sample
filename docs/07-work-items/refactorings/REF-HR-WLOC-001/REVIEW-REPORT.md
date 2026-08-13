@@ -2,8 +2,8 @@
 id: DOC-REF-HR-WLOC-001-REVIEW
 title: Laporan Review REF-HR-WLOC-001
 document_type: review-report
-status: prepared
-version: 0.1.0
+status: completed
+version: 1.0.0
 owner: Pemilik proyek
 created: 2026-08-14
 updated: 2026-08-14
@@ -17,28 +17,45 @@ related: [ADR-0001]
 
 Scope, baseline, keputusan teknis, peta file, acceptance, risiko, rollback, test, dan context task pertama telah direview. Tidak ada keputusan blocking yang tersisa.
 
-Review lima sumbu pra-implementasi:
+| Sumbu | Hasil pra-implementasi |
+|---|---|
+| Correctness | enam route, CRUD/arsip, validation, audit, page props, dan consumer mempunyai baseline/test |
+| Readability | pemindahan dipisahkan per concern; cutover model diberi batas atomik |
+| Architecture | lokasi mengikuti ADR-0001 minimal; policy framework di Presentation |
+| Security | semantics authorization tetap; denial 403 dan Gate mapping diwajibkan |
+| Performance | tidak ada query/algoritma atau klaim peningkatan dalam scope |
 
-- Correctness: enam route, CRUD/arsip, validation, audit, page props, dan consumer mempunyai baseline/test.
-- Readability: pemindahan dipisahkan per concern; cutover model yang besar diberi alasan atomik.
-- Architecture: lokasi mengikuti ADR-0001 minimal; Domain/ dan Integration/ tidak dibuat; policy framework berada di Presentation.
-- Security: semantics authorization tidak berubah, denial 403 serta Gate mapping diwajibkan sebagai bukti pascakerja.
-- Performance: tidak ada query/algoritma dalam scope dan tidak ada klaim peningkatan performa.
-
-| Tingkat | Temuan | Aksi | Status |
-|---|---|---|---|
-| follow-up | direct model/table coupling lintas modul belum mempunyai kontrak target | tetap di CAND-ARC-DEP-001 | di luar scope |
-| follow-up | permission diekspor oleh dua mekanisme | CAND-REF-WLOC-001 | di luar scope |
-| follow-up | generator belum menghasilkan struktur ADR-0001 | CAND-ARC-GEN-001 | di luar scope |
-
-Putusan pra-implementasi: APPROVE_TO_IMPLEMENT.
-Reviewer: Pemilik proyek.
-Tanggal: 2026-08-14.
-
-Verifikasi dokumentasi pra-kerja: 13 file paket memiliki frontmatter dan H1, tidak ada code fence ganjil atau placeholder template, empat referensi path docs yang eksplisit seluruhnya ada, registry mempunyai tepat satu row work item, inventaris mencocokkan 303 path fisik, tidak ada file non-docs berubah, dan `git diff --check` lulus.
+Putusan pra-implementasi: `APPROVE_TO_IMPLEMENT`, diberikan Pemilik proyek pada 2026-08-14.
 
 ## Review Pascakerja
 
-Belum dilakukan. Correctness, readability, arsitektur/boundary, keamanan/privacy, performa, hasil test, dan diff akhir wajib direview setelah coding.
+Review dilakukan terhadap diff dari baseline pra-coding `43fe02a` sampai implementasi `0ad01d6`, hasil test, route snapshot, autoload, invariance diff, dan dokumen pascakerja.
 
-Putusan pascakerja: PENDING.
+| Sumbu | Hasil pascakerja |
+|---|---|
+| Correctness | isi class produksi tetap selain namespace/import dan migration path relatif yang wajib mengikuti lokasi provider; 527 test/3.260 assertion serta 41 test consumer lulus |
+| Readability/maintainability | concern sekarang dapat ditemukan pada Application, Infrastructure, Presentation, Database, dan Tests; tidak ada folder Domain/Integration atau abstraksi spekulatif |
+| Architecture/boundary | resolver route umum target-first/fallback mempunyai unit test; namespace lama nol; policy Laravel/Spatie tetap adapter Presentation |
+| Security/privacy | Gate memetakan model target ke policy target; allow/deny lulus; permission, role mapping, validation, auth/session, secret, dan data exposure tidak berubah |
+| Performance/operasional | query/algoritma/dependency/config tidak berubah; build lulus; tidak ada benchmark atau klaim peningkatan performa/production-ready |
+
+## Temuan
+
+| Tingkat | Temuan | Aksi | Status |
+|---|---|---|---|
+| Critical | tidak ada | - | closed |
+| Required | tidak ada | - | closed |
+| Follow-up | direct model/table coupling lintas modul tetap ada | `CAND-ARC-DEP-001` | tracked |
+| Follow-up | permission diekspor oleh dua mekanisme | `CAND-REF-WLOC-001` | tracked |
+| Follow-up | generator belum menghasilkan struktur ADR-0001 | `CAND-ARC-GEN-001` | tracked |
+
+Follow-up tidak memblokir pilot karena tidak muncul akibat perubahan perilaku dan telah berada di luar scope sejak pra-kerja.
+
+## Putusan
+
+Putusan pascakerja: `APPROVE_WITH_FOLLOW_UP`.
+
+Alasan: seluruh acceptance pilot memiliki bukti, tidak ada finding Critical/Required, dan follow-up terdaftar sebagai kandidat terpisah. Putusan ini menyetujui completion child pilot, bukan menyatakan seluruh migrasi DDD-Lite atau production readiness selesai.
+
+Reviewer: Codex berdasarkan gate dan keputusan Pemilik proyek.
+Tanggal: 2026-08-14.
