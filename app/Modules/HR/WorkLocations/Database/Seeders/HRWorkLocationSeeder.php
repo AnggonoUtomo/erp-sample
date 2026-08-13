@@ -2,7 +2,7 @@
 
 namespace App\Modules\HR\WorkLocations\Database\Seeders;
 
-use App\Modules\HR\WorkLocations\Models\WorkLocation;
+use App\Modules\HR\WorkLocations\Infrastructure\Models\WorkLocation;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;

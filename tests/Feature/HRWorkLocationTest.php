@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use App\Modules\HR\WorkLocations\Models\WorkLocation;
+use App\Modules\HR\WorkLocations\Infrastructure\Models\WorkLocation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;

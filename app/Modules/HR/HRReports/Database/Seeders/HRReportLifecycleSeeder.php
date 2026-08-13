@@ -25,7 +25,7 @@ use App\Modules\HR\Onboardings\Models\Onboarding;
 use App\Modules\HR\Onboardings\Models\OnboardingTemplate;
 use App\Modules\HR\Onboardings\Models\OnboardingTemplateItem;
 use App\Modules\HR\Positions\Models\Position;
-use App\Modules\HR\WorkLocations\Models\WorkLocation;
+use App\Modules\HR\WorkLocations\Infrastructure\Models\WorkLocation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;

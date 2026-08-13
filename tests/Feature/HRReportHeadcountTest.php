@@ -8,7 +8,7 @@ use App\Modules\HR\Employees\Models\Employee;
 use App\Modules\HR\EmploymentStatuses\Models\EmploymentStatus;
 use App\Modules\HR\HRReports\DTO\HeadcountReportFilters;
 use App\Modules\HR\HRReports\Services\HeadcountReportService;
-use App\Modules\HR\WorkLocations\Models\WorkLocation;
+use App\Modules\HR\WorkLocations\Infrastructure\Models\WorkLocation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;
 use Tests\TestCase;

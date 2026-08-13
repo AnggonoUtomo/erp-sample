@@ -11,7 +11,7 @@ use App\Modules\HR\IntegrationContracts\DTO\EmployeeAssignmentSnapshotV1;
 use App\Modules\HR\IntegrationContracts\Support\ForbiddenIntegrationFieldGuard;
 use App\Modules\HR\JobLevels\Models\JobLevel;
 use App\Modules\HR\Positions\Models\Position;
-use App\Modules\HR\WorkLocations\Models\WorkLocation;
+use App\Modules\HR\WorkLocations\Infrastructure\Models\WorkLocation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Notification;

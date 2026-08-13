@@ -13,7 +13,7 @@ use App\Modules\HR\EmploymentStatuses\Models\EmploymentStatus;
 use App\Modules\HR\EmploymentTypes\Models\EmploymentType;
 use App\Modules\HR\JobLevels\Models\JobLevel;
 use App\Modules\HR\Positions\Models\Position;
-use App\Modules\HR\WorkLocations\Models\WorkLocation;
+use App\Modules\HR\WorkLocations\Infrastructure\Models\WorkLocation;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

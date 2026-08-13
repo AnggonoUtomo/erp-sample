@@ -3,7 +3,7 @@
 namespace App\Modules\HR\WorkLocations\Http\Requests;
 
 use App\Modules\HR\WorkLocations\Application\DTOs\WorkLocationData;
-use App\Modules\HR\WorkLocations\Models\WorkLocation;
+use App\Modules\HR\WorkLocations\Infrastructure\Models\WorkLocation;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 

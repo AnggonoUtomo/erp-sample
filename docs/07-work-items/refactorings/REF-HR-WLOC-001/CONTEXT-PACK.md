@@ -1,6 +1,6 @@
 ---
 id: DOC-REF-HR-WLOC-001-CONTEXT
-title: Context Pack TSK-REF-HR-WLOC-001-05
+title: Context Pack TSK-REF-HR-WLOC-001-06
 document_type: context-pack
 status: ready
 version: 1.0.0
@@ -11,11 +11,11 @@ source_work_item: REF-HR-WLOC-001
 related: [ADR-0001, FTR-ENG-001]
 ---
 
-# Context Pack TSK-REF-HR-WLOC-001-05
+# Context Pack TSK-REF-HR-WLOC-001-06
 
 ## Task yang Dipilih
 
-TSK-REF-HR-WLOC-001-05 — Cutover Model dan Semua Consumer. Status in_progress; ini satu-satunya task coding aktif.
+TSK-REF-HR-WLOC-001-06 — Pindahkan Request. Status in_progress; ini satu-satunya task coding aktif.
 
 ## Work Item Induk
 
@@ -24,15 +24,15 @@ REF-HR-WLOC-001, child CRITICAL dari ARC-DDD-LITE-001 dan implementasi terkontro
 ## Fakta Repository yang Terverifikasi
 
 - TSK-REF-HR-WLOC-001-01 telah membuat route discovery target-first/fallback dan seluruh pemeriksaannya lulus.
-- DTO, transaction, dan service telah berada di lokasi target serta focused test lulus.
-- Model WorkLocation memiliki consumer pada WorkLocations, Console Dashboard, Employees, EmployeeMovements, HRReports, seeder, dan enam test.
-- Tidak ada alias namespace lama sesuai keputusan manusia.
+- DTO, transaction, service, model, dan seluruh consumer model telah berpindah; regression set lulus.
+- Dua FormRequest berada di Http/Requests dan dipakai controller.
+- Target Presentation/Http/Requests tidak mengubah authorization atau validation.
 
 ## Requirement dan Kriteria Penerimaan
 
-- REF-WLOC-REQ-001 sampai REF-WLOC-REQ-006 dan REF-WLOC-NFR-001.
-- Model berpindah ke Infrastructure/Models dan seluruh import diperbarui atomik.
-- Table, fillable, casts, SoftDeletes, relasi, schema, serta perilaku consumer tetap.
+- REF-WLOC-REQ-001, REF-WLOC-REQ-002, REF-WLOC-REQ-004, REF-WLOC-REQ-006, dan REF-WLOC-NFR-004.
+- Dua request berpindah dan import controller diperbarui.
+- Authorization, validation rule, toDto, dan normalization tetap.
 
 ## ADR dan Baseline
 
@@ -44,7 +44,7 @@ REF-HR-WLOC-001, child CRITICAL dari ARC-DDD-LITE-001 dan implementasi terkontro
 
 ## File dan Area yang Diizinkan
 
-- file model sumber/target dan seluruh consumer persis pada allowlist lengkap TASKS.md
+- dua request sumber/target dan WorkLocationsController pada allowlist TASKS.md
 - dokumen evidence, deviasi, dan task work item ini
 
 ## File dan Area yang Dilarang
@@ -57,16 +57,16 @@ REF-HR-WLOC-001, child CRITICAL dari ARC-DDD-LITE-001 dan implementasi terkontro
 
 ## Pola yang Harus Dipertahankan
 
-- WorkLocation tetap identik selain namespace.
-- Seluruh consumer hanya mengubah import.
+- Kedua request tetap identik selain namespace.
+- Controller hanya mengubah import.
 
 ## Perintah Verifikasi
 
-    php artisan test tests/Feature/HRWorkLocationTest.php tests/Feature/HREmployeeMovementTest.php tests/Feature/HREmployeeTest.php tests/Feature/HRIntegrationAssignmentSnapshotTest.php tests/Feature/HRReportCommandTest.php tests/Feature/HRReportHeadcountTest.php
+    php artisan test tests/Feature/HRWorkLocationTest.php
     php artisan module:validate HR.WorkLocations --json
-    vendor/bin/pint --test app/Modules/HR/WorkLocations app/Http/Controllers/Console/DashboardController.php app/Modules/HR/Employees app/Modules/HR/EmployeeMovements app/Modules/HR/HRReports tests/Feature/HRWorkLocationTest.php tests/Feature/HREmployeeMovementTest.php tests/Feature/HREmployeeTest.php tests/Feature/HRIntegrationAssignmentSnapshotTest.php tests/Feature/HRReportCommandTest.php tests/Feature/HRReportHeadcountTest.php
+    vendor/bin/pint --test app/Modules/HR/WorkLocations/Presentation/Http/Requests app/Modules/HR/WorkLocations/Http/Controllers/WorkLocationsController.php
     git diff --check
 
 ## Risiko dan Keputusan
 
-Risiko utama adalah satu consumer terlewat sehingga autoload/test gagal. Mitigasinya cutover atomik, pencarian namespace lama nol hasil, dan regression set 39 test. Tidak ada pertanyaan keputusan blocking.
+Risiko utama adalah rule atau authorize berubah saat pemindahan. Mitigasinya diff review exact, pencarian namespace lama, serta feature test validation dan denial. Tidak ada pertanyaan keputusan blocking.

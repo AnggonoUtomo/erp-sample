@@ -22,8 +22,8 @@ related: [ADR-0001]
 | 2 | TSK-REF-HR-WLOC-001-02 | Pindahkan DTO | task 01 | completed |
 | 3 | TSK-REF-HR-WLOC-001-03 | Pindahkan transaction | task 02 | completed |
 | 4 | TSK-REF-HR-WLOC-001-04 | Pindahkan service | task 03 | completed |
-| 5 | TSK-REF-HR-WLOC-001-05 | Cutover model dan semua consumer | task 04 | in_progress |
-| 6 | TSK-REF-HR-WLOC-001-06 | Pindahkan request | task 05 | pending |
+| 5 | TSK-REF-HR-WLOC-001-05 | Cutover model dan semua consumer | task 04 | completed |
+| 6 | TSK-REF-HR-WLOC-001-06 | Pindahkan request | task 05 | in_progress |
 | 7 | TSK-REF-HR-WLOC-001-07 | Pindahkan policy | task 06 | pending |
 | 8 | TSK-REF-HR-WLOC-001-08 | Pindahkan controller | task 07 | pending |
 | 9 | TSK-REF-HR-WLOC-001-09 | Pindahkan provider | task 08 | pending |
@@ -31,7 +31,7 @@ related: [ADR-0001]
 | 11 | TSK-REF-HR-WLOC-001-11 | Colocation test modul dan discovery PHPUnit | task 10 | pending |
 | 12 | TSK-REF-HR-WLOC-001-12 | Verifikasi, review, dan baseline sync | task 11 | pending |
 
-Task 05 adalah satu-satunya task coding berstatus in_progress.
+Task 06 adalah satu-satunya task coding berstatus in_progress.
 
 ## TSK-REF-HR-WLOC-001-01 — Route Discovery Target-First/Fallback
 

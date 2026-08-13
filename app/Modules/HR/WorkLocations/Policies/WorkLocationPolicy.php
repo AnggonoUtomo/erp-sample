@@ -3,7 +3,7 @@
 namespace App\Modules\HR\WorkLocations\Policies;
 
 use App\Models\User;
-use App\Modules\HR\WorkLocations\Models\WorkLocation;
+use App\Modules\HR\WorkLocations\Infrastructure\Models\WorkLocation;
 
 class WorkLocationPolicy
 {

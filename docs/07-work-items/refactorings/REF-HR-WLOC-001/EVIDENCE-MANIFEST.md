@@ -40,6 +40,7 @@ Rerun final tiga tahap—module validation, route snapshot, lalu 39 test—seles
 - php artisan module:validate --module=HR.WorkLocations --json gagal karena option --module tidak tersedia; perintah positional yang benar kemudian lulus.
 - Perintah inspeksi awal memakai slug paket induk yang tidak ada; path kanonis ditemukan dengan `rg --files docs` dan inspeksi diulang berhasil.
 - Copy-Item WorkLocationsService timeout tanpa membuat target; keadaan diverifikasi sebelum pemindahan dilanjutkan dengan apply_patch.
+- Pint pertama pada cutover model menerima path sumber yang sudah dihapus dan gagal sebagai path tidak terbaca; rerun menyaring hanya file PHP yang ada.
 - Test pasca-implementasi, composer quality:check, npm build, dan review kode belum dijalankan karena pekerjaan ini baru pra-kerja.
 
 ## Bukti Pascakerja
@@ -79,3 +80,11 @@ Bukti task berikutnya ditambahkan secara incremental.
 - module:validate HR.WorkLocations: exit 0, valid.
 - Pencarian namespace service lama: nol hasil.
 - Pint terfokus dan git diff --check: exit 0.
+
+### TSK-REF-HR-WLOC-001-05
+
+- WorkLocation dipindahkan exact selain namespace ke Infrastructure/Models; 18 consumer produksi/test diperbarui atomik tanpa alias.
+- Pencarian namespace model lama pada app/, database/, dan tests/: nol hasil.
+- Regression set: exit 0, 39 test/213 assertion, 6,85 detik.
+- module:validate HR.WorkLocations: exit 0, valid.
+- Route snapshot: enam route tetap; middleware sama dan FQCN model menunjuk lokasi target.

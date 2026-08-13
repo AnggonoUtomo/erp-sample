@@ -2,7 +2,7 @@
 
 namespace App\Modules\HR\WorkLocations\Providers;
 
-use App\Modules\HR\WorkLocations\Models\WorkLocation;
+use App\Modules\HR\WorkLocations\Infrastructure\Models\WorkLocation;
 use App\Modules\HR\WorkLocations\Policies\WorkLocationPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;

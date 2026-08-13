@@ -21,7 +21,7 @@ use App\Modules\HR\Offboardings\Models\Offboarding;
 use App\Modules\HR\Onboardings\Models\Onboarding;
 use App\Modules\HR\OrganizationStructures\Models\OrganizationStructure;
 use App\Modules\HR\Positions\Models\Position;
-use App\Modules\HR\WorkLocations\Models\WorkLocation;
+use App\Modules\HR\WorkLocations\Infrastructure\Models\WorkLocation;
 use App\Support\Modules\ModulePermissionRegistry;
 use App\Support\Modules\ModuleRegistry;
 use Illuminate\Http\Request;

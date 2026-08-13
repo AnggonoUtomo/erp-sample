@@ -55,4 +55,10 @@ Status: resolved. ADR baru tidak diperlukan.
 
 Percobaan Copy-Item untuk memindahkan WorkLocationsService timeout setelah 10 detik tanpa membuat file target. Pemeriksaan Test-Path memastikan target tidak ada dan sumber tetap utuh. Pemindahan kemudian dilakukan dengan apply_patch sesuai aturan edit repository.
 
+## DEV-REF-HR-WLOC-001-008 — Pint Menerima Path Model yang Sudah Dihapus
+
+Status: resolved. ADR baru tidak diperlukan.
+
+Daftar otomatis dari git diff memasukkan path model sumber yang sudah dihapus sehingga Pint menolaknya sebagai tidak terbaca. Pemeriksaan diperbaiki dengan menyaring hanya file PHP yang masih ada. Ini kegagalan invokasi tooling, bukan kegagalan kode atau test.
+
 Belum ada deviasi implementasi karena coding belum dimulai.
