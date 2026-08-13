@@ -73,4 +73,10 @@ Status: resolved. ADR baru tidak diperlukan.
 
 Setelah provider dipindahkan ke Infrastructure/Providers, path relatif `__DIR__.'/../Database/Migrations'` menunjuk lokasi yang salah. Focused test gagal karena tabel hr_work_locations tidak dibuat. Path diperbarui menjadi `__DIR__.'/../../Database/Migrations'`, yaitu migration yang sama pada root modul; tidak ada migration atau schema yang berubah.
 
+## DEV-REF-HR-WLOC-001-011 — Move Route Memerlukan Hunk
+
+Status: resolved. ADR baru tidak diperlukan.
+
+Percobaan apply_patch pertama untuk memindahkan routes.php ditolak karena move tanpa hunk tidak valid. File tidak berubah pada percobaan tersebut. Pemindahan diulang dengan hunk identitas dan berhasil.
+
 Belum ada deviasi implementasi karena coding belum dimulai.

@@ -43,6 +43,7 @@ Rerun final tiga tahap—module validation, route snapshot, lalu 39 test—seles
 - Pint pertama pada cutover model menerima path sumber yang sudah dihapus dan gagal sebagai path tidak terbaca; rerun menyaring hanya file PHP yang ada.
 - Characterization test Gate pertama gagal karena assertion membandingkan instance dengan class-string; output menunjukkan policy target benar dan assertion dikoreksi menjadi assertInstanceOf.
 - Focused test provider pertama gagal 9/10 karena migration path relatif tidak lagi mencapai Database/Migrations; path disesuaikan satu level tanpa mengubah migration/schema lalu test diulang.
+- apply_patch move route pertama ditolak karena hunk kosong; tidak ada perubahan parsial dan move diulang dengan hunk identitas.
 - Test pasca-implementasi, composer quality:check, npm build, dan review kode belum dijalankan karena pekerjaan ini baru pra-kerja.
 
 ## Bukti Pascakerja
@@ -118,3 +119,10 @@ Bukti task berikutnya ditambahkan secara incremental.
 - First run menangkap migration path relatif salah; path dikoreksi ke migration yang sama tanpa perubahan schema.
 - Focused suite rerun lulus 10 test/28 assertion dalam 2,03 detik; Gate mapping dan allow/deny tetap lulus.
 - module validation valid; namespace provider lama nol; Pint dan diff check lulus.
+
+### TSK-REF-HR-WLOC-001-10
+
+- Root routes.php dipindahkan ke Presentation/Routes/web.php; file legacy tidak tersisa.
+- Focused WorkLocations dan unit tooling lulus 15 test/34 assertion dalam 3,03 detik.
+- module validation valid; route snapshot tepat enam route dengan verb, URI, name, middleware, dan binding ekuivalen.
+- Pint route dan git diff --check lulus.

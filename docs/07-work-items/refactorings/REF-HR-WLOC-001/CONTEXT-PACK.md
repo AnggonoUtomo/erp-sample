@@ -1,6 +1,6 @@
 ---
 id: DOC-REF-HR-WLOC-001-CONTEXT
-title: Context Pack TSK-REF-HR-WLOC-001-10
+title: Context Pack TSK-REF-HR-WLOC-001-11
 document_type: context-pack
 status: ready
 version: 1.0.0
@@ -11,11 +11,11 @@ source_work_item: REF-HR-WLOC-001
 related: [ADR-0001, FTR-ENG-001]
 ---
 
-# Context Pack TSK-REF-HR-WLOC-001-10
+# Context Pack TSK-REF-HR-WLOC-001-11
 
 ## Task yang Dipilih
 
-TSK-REF-HR-WLOC-001-10 — Pindahkan Route. Status in_progress; ini satu-satunya task coding aktif.
+TSK-REF-HR-WLOC-001-11 — Colocation Test dan Discovery PHPUnit. Status in_progress; ini satu-satunya task coding aktif.
 
 ## Work Item Induk
 
@@ -23,16 +23,16 @@ REF-HR-WLOC-001, child CRITICAL dari ARC-DDD-LITE-001 dan implementasi terkontro
 
 ## Fakta Repository yang Terverifikasi
 
-- TSK-REF-HR-WLOC-001-01 telah membuat route discovery target-first/fallback dan seluruh pemeriksaannya lulus.
-- Provider dan seluruh class backend pilot telah berpindah; focused/regression test lulus.
-- Root routes.php masih dipakai melalui fallback yang sudah terbukti.
-- Target Presentation/Routes/web.php harus menang tanpa double registration.
+- Seluruh backend dan route WorkLocations telah berada di lokasi target; focused/regression test lulus.
+- HRWorkLocationTest masih berada di tests/Feature dengan namespace Tests/Feature.
+- Target ADR-0001 memindahkan hanya test milik modul; test lintas sistem tetap di tests/Feature.
 
 ## Requirement dan Kriteria Penerimaan
 
-- REF-WLOC-REQ-001, REF-WLOC-REQ-004, REF-WLOC-REQ-005, dan REF-WLOC-REQ-006.
-- routes.php berpindah ke Presentation/Routes/web.php.
-- Enam route dan seluruh semantics tetap; root routes.php hilang.
+- REF-WLOC-REQ-001, REF-WLOC-REQ-007, REF-WLOC-REQ-008, dan REF-WLOC-NFR-003.
+- HRWorkLocationTest berpindah ke Tests/Feature di dalam modul dengan namespace App yang sesuai path.
+- phpunit.xml menemukan test module-local secara additive; test lintas sistem tetap.
+- Characterization test denial 403 pada index ditambahkan tanpa mengurangi assertion lama.
 
 ## ADR dan Baseline
 
@@ -44,29 +44,32 @@ REF-HR-WLOC-001, child CRITICAL dari ARC-DDD-LITE-001 dan implementasi terkontro
 
 ## File dan Area yang Diizinkan
 
-- routes.php, Presentation/Routes/web.php, route/module verification, dan HRWorkLocationTest
+- tests/Feature/HRWorkLocationTest.php
+- app/Modules/HR/WorkLocations/Tests/Feature/HRWorkLocationTest.php
+- phpunit.xml
 - dokumen evidence, deviasi, dan task work item ini
 
 ## File dan Area yang Dilarang
 
-- seluruh file selain allowlist task 02
+- test lintas sistem lain
 - database/** dan seluruh migration
 - resources/js/**
-- app/Support/Modules/Commands/MakeModuleCommand.php
-- permission, policy, authentication, public API, dan integration contract
+- generator, permission, policy, authentication, public API, dan integration contract
 
 ## Pola yang Harus Dipertahankan
 
-- Isi route tetap identik.
-- ModuleRegistry memilih target dan tidak memuat fallback bila target ada.
+- Test memakai Tests/TestCase dan RefreshDatabase seperti baseline.
+- Namespace test target mengikuti App/Modules path; behavior assertion tetap.
+- PHPUnit menambah suite Module tanpa mengganti Unit/Feature.
 
 ## Perintah Verifikasi
 
-    php artisan test tests/Feature/HRWorkLocationTest.php
-    php artisan module:validate HR.WorkLocations --json
-    vendor/bin/pint --test app/Modules/HR/WorkLocations/Presentation/Routes/web.php
+    php artisan test app/Modules/HR/WorkLocations/Tests/Feature/HRWorkLocationTest.php
+    php artisan test --testsuite=Module
+    composer dump-autoload --strict-psr
+    vendor/bin/pint --test app/Modules/HR/WorkLocations/Tests/Feature/HRWorkLocationTest.php
     git diff --check
 
 ## Risiko dan Keputusan
 
-Risiko utama adalah route hilang atau terdaftar ganda. Mitigasinya focused test, module validation, snapshot tepat enam route, dan verifikasi root routes.php tidak ada. Tidak ada pertanyaan keputusan blocking.
+Risiko utama adalah PHPUnit tidak menemukan test target atau production autoload tidak konsisten. Mitigasinya path eksplisit, suite Module, Composer strict PSR, dan full suite pada task 12. Tidak ada pertanyaan keputusan blocking.
