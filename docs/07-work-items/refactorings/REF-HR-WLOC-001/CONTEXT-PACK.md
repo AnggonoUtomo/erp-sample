@@ -1,6 +1,6 @@
 ---
 id: DOC-REF-HR-WLOC-001-CONTEXT
-title: Context Pack TSK-REF-HR-WLOC-001-04
+title: Context Pack TSK-REF-HR-WLOC-001-05
 document_type: context-pack
 status: ready
 version: 1.0.0
@@ -11,11 +11,11 @@ source_work_item: REF-HR-WLOC-001
 related: [ADR-0001, FTR-ENG-001]
 ---
 
-# Context Pack TSK-REF-HR-WLOC-001-04
+# Context Pack TSK-REF-HR-WLOC-001-05
 
 ## Task yang Dipilih
 
-TSK-REF-HR-WLOC-001-04 — Pindahkan Service. Status in_progress; ini satu-satunya task coding aktif.
+TSK-REF-HR-WLOC-001-05 — Cutover Model dan Semua Consumer. Status in_progress; ini satu-satunya task coding aktif.
 
 ## Work Item Induk
 
@@ -24,15 +24,15 @@ REF-HR-WLOC-001, child CRITICAL dari ARC-DDD-LITE-001 dan implementasi terkontro
 ## Fakta Repository yang Terverifikasi
 
 - TSK-REF-HR-WLOC-001-01 telah membuat route discovery target-first/fallback dan seluruh pemeriksaannya lulus.
-- DTO dan transaction telah berada di lokasi target serta focused test lulus.
-- WorkLocationsService berada di Services/ dan dipakai controller.
-- Target Application/Services menempatkan orkestrasi use case di Application tanpa mengubah query/audit.
+- DTO, transaction, dan service telah berada di lokasi target serta focused test lulus.
+- Model WorkLocation memiliki consumer pada WorkLocations, Console Dashboard, Employees, EmployeeMovements, HRReports, seeder, dan enam test.
+- Tidak ada alias namespace lama sesuai keputusan manusia.
 
 ## Requirement dan Kriteria Penerimaan
 
-- REF-WLOC-REQ-002, REF-WLOC-REQ-004, REF-WLOC-REQ-006, dan REF-WLOC-NFR-005.
-- Service berpindah ke Application/Services dan import controller diperbarui.
-- Query, pagination, map settings, CRUD, transaction, dan lima audit event tetap identik.
+- REF-WLOC-REQ-001 sampai REF-WLOC-REQ-006 dan REF-WLOC-NFR-001.
+- Model berpindah ke Infrastructure/Models dan seluruh import diperbarui atomik.
+- Table, fillable, casts, SoftDeletes, relasi, schema, serta perilaku consumer tetap.
 
 ## ADR dan Baseline
 
@@ -44,9 +44,7 @@ REF-HR-WLOC-001, child CRITICAL dari ARC-DDD-LITE-001 dan implementasi terkontro
 
 ## File dan Area yang Diizinkan
 
-- app/Modules/HR/WorkLocations/Services/WorkLocationsService.php
-- app/Modules/HR/WorkLocations/Application/Services/WorkLocationsService.php
-- app/Modules/HR/WorkLocations/Http/Controllers/WorkLocationsController.php
+- file model sumber/target dan seluruh consumer persis pada allowlist lengkap TASKS.md
 - dokumen evidence, deviasi, dan task work item ini
 
 ## File dan Area yang Dilarang
@@ -59,16 +57,16 @@ REF-HR-WLOC-001, child CRITICAL dari ARC-DDD-LITE-001 dan implementasi terkontro
 
 ## Pola yang Harus Dipertahankan
 
-- WorkLocationsService tetap identik selain namespace.
-- Consumer hanya mengubah import.
+- WorkLocation tetap identik selain namespace.
+- Seluruh consumer hanya mengubah import.
 
 ## Perintah Verifikasi
 
-    php artisan test tests/Feature/HRWorkLocationTest.php
+    php artisan test tests/Feature/HRWorkLocationTest.php tests/Feature/HREmployeeMovementTest.php tests/Feature/HREmployeeTest.php tests/Feature/HRIntegrationAssignmentSnapshotTest.php tests/Feature/HRReportCommandTest.php tests/Feature/HRReportHeadcountTest.php
     php artisan module:validate HR.WorkLocations --json
-    vendor/bin/pint --test app/Modules/HR/WorkLocations/Application/Services/WorkLocationsService.php app/Modules/HR/WorkLocations/Http/Controllers/WorkLocationsController.php
+    vendor/bin/pint --test app/Modules/HR/WorkLocations app/Http/Controllers/Console/DashboardController.php app/Modules/HR/Employees app/Modules/HR/EmployeeMovements app/Modules/HR/HRReports tests/Feature/HRWorkLocationTest.php tests/Feature/HREmployeeMovementTest.php tests/Feature/HREmployeeTest.php tests/Feature/HRIntegrationAssignmentSnapshotTest.php tests/Feature/HRReportCommandTest.php tests/Feature/HRReportHeadcountTest.php
     git diff --check
 
 ## Risiko dan Keputusan
 
-Risiko utama adalah controller gagal me-resolve service atau perubahan mekanis menyentuh query/audit. Mitigasinya diff review, pencarian namespace lama, dan HRWorkLocationTest. Tidak ada pertanyaan keputusan blocking.
+Risiko utama adalah satu consumer terlewat sehingga autoload/test gagal. Mitigasinya cutover atomik, pencarian namespace lama nol hasil, dan regression set 39 test. Tidak ada pertanyaan keputusan blocking.

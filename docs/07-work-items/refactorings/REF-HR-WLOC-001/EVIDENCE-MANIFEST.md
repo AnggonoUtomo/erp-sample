@@ -39,6 +39,7 @@ Rerun final tiga tahap—module validation, route snapshot, lalu 39 test—seles
 
 - php artisan module:validate --module=HR.WorkLocations --json gagal karena option --module tidak tersedia; perintah positional yang benar kemudian lulus.
 - Perintah inspeksi awal memakai slug paket induk yang tidak ada; path kanonis ditemukan dengan `rg --files docs` dan inspeksi diulang berhasil.
+- Copy-Item WorkLocationsService timeout tanpa membuat target; keadaan diverifikasi sebelum pemindahan dilanjutkan dengan apply_patch.
 - Test pasca-implementasi, composer quality:check, npm build, dan review kode belum dijalankan karena pekerjaan ini baru pra-kerja.
 
 ## Bukti Pascakerja
@@ -70,3 +71,11 @@ Bukti task berikutnya ditambahkan secara incremental.
 - Pencarian namespace transaction lama: nol hasil.
 - Pint terfokus dan git diff --check: exit 0.
 - Rangkaian command memakan sekitar 107 detik pada runner; tidak ada failure dan durasi bukan baseline performa aplikasi.
+
+### TSK-REF-HR-WLOC-001-04
+
+- WorkLocationsService dipindahkan exact selain namespace ke Application/Services dan import controller diperbarui.
+- HRWorkLocationTest: exit 0, 9 test/27 assertion, 20,34 detik.
+- module:validate HR.WorkLocations: exit 0, valid.
+- Pencarian namespace service lama: nol hasil.
+- Pint terfokus dan git diff --check: exit 0.

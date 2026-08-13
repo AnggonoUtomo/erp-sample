@@ -49,4 +49,10 @@ Status: accepted_for_pilot. ADR baru tidak diperlukan.
 
 Support/Permissions.php tetap berada di lokasi saat ini karena ModulePermissionRegistry masih memakainya dan isinya menambah role mapping yang tidak seluruhnya terdapat pada permissions.php. Memindahkan atau mengonsolidasikannya pada pilot akan memperluas perubahan authorization. Kondisi ini transparan sebagai residual legacy `CAND-REF-WLOC-001`; pilot hanya menyatakan concern yang berada dalam scope telah mengikuti lokasi target, bukan menyatakan seluruh legacy permission mechanism selesai.
 
+## DEV-REF-HR-WLOC-001-007 — Perintah Copy Service Timeout
+
+Status: resolved. ADR baru tidak diperlukan.
+
+Percobaan Copy-Item untuk memindahkan WorkLocationsService timeout setelah 10 detik tanpa membuat file target. Pemeriksaan Test-Path memastikan target tidak ada dan sumber tetap utuh. Pemindahan kemudian dilakukan dengan apply_patch sesuai aturan edit repository.
+
 Belum ada deviasi implementasi karena coding belum dimulai.

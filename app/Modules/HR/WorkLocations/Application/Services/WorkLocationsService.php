@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\HR\WorkLocations\Services;
+namespace App\Modules\HR\WorkLocations\Application\Services;
 
 use App\Modules\Console\AuditLogs\Services\AuditLogService;
 use App\Modules\Console\SystemSettings\Services\SystemSettingService;
