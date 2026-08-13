@@ -1,8 +1,8 @@
 ---
 id: DOC-REF-HR-WLOC-001-CONTEXT
-title: Context Pack TSK-REF-HR-WLOC-001-11
+title: Context Pack TSK-REF-HR-WLOC-001-12
 document_type: context-pack
-status: ready
+status: active
 version: 1.0.0
 owner: Pemilik proyek
 created: 2026-08-14
@@ -11,65 +11,51 @@ source_work_item: REF-HR-WLOC-001
 related: [ADR-0001, FTR-ENG-001]
 ---
 
-# Context Pack TSK-REF-HR-WLOC-001-11
+# Context Pack TSK-REF-HR-WLOC-001-12
 
-## Task yang Dipilih
+## Task Aktif
 
-TSK-REF-HR-WLOC-001-11 — Colocation Test dan Discovery PHPUnit. Status in_progress; ini satu-satunya task coding aktif.
+TSK-REF-HR-WLOC-001-12 — Verifikasi, review, dan baseline sync. Ini satu-satunya task aktif; tidak ada coding fitur atau struktur lanjutan.
 
 ## Work Item Induk
 
-REF-HR-WLOC-001, child CRITICAL dari ARC-DDD-LITE-001 dan implementasi terkontrol untuk TSK-ARC-DDD-LITE-001-02.
+REF-HR-WLOC-001, child CRITICAL dari ARC-DDD-LITE-001 dan implementasi TSK-ARC-DDD-LITE-001-02.
 
 ## Fakta Repository yang Terverifikasi
 
-- Seluruh backend dan route WorkLocations telah berada di lokasi target; focused/regression test lulus.
-- HRWorkLocationTest masih berada di tests/Feature dengan namespace Tests/Feature.
-- Target ADR-0001 memindahkan hanya test milik modul; test lintas sistem tetap di tests/Feature.
+- Semua task implementasi 01–11 telah selesai dan diperiksa per slice.
+- Backend WorkLocations memakai Application, Infrastructure, Presentation, Database, Tests, serta metadata root minimal.
+- Domain/ dan Integration/ tidak dibuat.
+- Route target-first/fallback berlaku umum; WorkLocations tidak mempunyai root routes.php.
+- Test module-local ditemukan; test lintas sistem tetap pada tests/Feature.
 
-## Requirement dan Kriteria Penerimaan
+## Kriteria Penerimaan
 
-- REF-WLOC-REQ-001, REF-WLOC-REQ-007, REF-WLOC-REQ-008, dan REF-WLOC-NFR-003.
-- HRWorkLocationTest berpindah ke Tests/Feature di dalam modul dengan namespace App yang sesuai path.
-- phpunit.xml menemukan test module-local secara additive; test lintas sistem tetap.
-- Characterization test denial 403 pada index ditambahkan tanpa mengurangi assertion lama.
-
-## ADR dan Baseline
-
-- docs/03-architecture/adr/ADR-0001-DDD-Lite-Module-Structure.md
-- docs/05-engineering/TESTING-STRATEGY.md
-- 01-REFACTORING-PROPOSAL.md
-- 02-BEHAVIOR-BASELINE.md
-- 03-IMPLEMENTATION-PLAN.md
+- Seluruh REF-WLOC-REQ-001 sampai REF-WLOC-REQ-008 dan REF-WLOC-NFR-001 sampai REF-WLOC-NFR-005 mempunyai bukti.
+- Full backend quality, consumer regression, route/module validation, frontend build, namespace/no-change checks, review lima sumbu, dan documentation sync lulus.
+- Deviasi aktual dicatat; residual legacy/candidate tidak disembunyikan.
 
 ## File dan Area yang Diizinkan
 
-- tests/Feature/HRWorkLocationTest.php
-- app/Modules/HR/WorkLocations/Tests/Feature/HRWorkLocationTest.php
-- phpunit.xml
-- dokumen evidence, deviasi, dan task work item ini
+- dokumen REF-HR-WLOC-001, ARC-DDD-LITE-001, registry, baseline arsitektur/engineering/security/testing, katalog, planning, dan inventory sesuai sync matrix;
+- read-only command terhadap seluruh repository;
+- perbaikan defect dalam scope hanya bila test membuktikan defect dan dicatat.
 
 ## File dan Area yang Dilarang
 
-- test lintas sistem lain
-- database/** dan seluruh migration
-- resources/js/**
-- generator, permission, policy, authentication, public API, dan integration contract
-
-## Pola yang Harus Dipertahankan
-
-- Test memakai Tests/TestCase dan RefreshDatabase seperti baseline.
-- Namespace test target mengikuti App/Modules path; behavior assertion tetap.
-- PHPUnit menambah suite Module tanpa mengganti Unit/Feature.
+- fitur, migration/schema/ULID, permission semantics, frontend, generator, IntegrationContracts, kontrak baru, dependency, dan redesign coupling.
 
 ## Perintah Verifikasi
 
-    php artisan test app/Modules/HR/WorkLocations/Tests/Feature/HRWorkLocationTest.php
-    php artisan test --testsuite=Module
-    composer dump-autoload --strict-psr
-    vendor/bin/pint --test app/Modules/HR/WorkLocations/Tests/Feature/HRWorkLocationTest.php
+    composer quality:check
+    php artisan test app/Modules/HR/WorkLocations/Tests/Feature/HRWorkLocationTest.php tests/Feature/HREmployeeMovementTest.php tests/Feature/HREmployeeTest.php tests/Feature/HRIntegrationAssignmentSnapshotTest.php tests/Feature/HRReportCommandTest.php tests/Feature/HRReportHeadcountTest.php
+    php artisan module:validate HR.WorkLocations --json
+    php artisan route:list --path=hr/work-locations --json
+    npm run build
     git diff --check
 
-## Risiko dan Keputusan
+Pemeriksaan tambahan: namespace lama nol, tepat enam route, file migration/permission/navigation/frontend tidak berubah, root route/test lama tidak ada, dan inventaris docs sinkron.
 
-Risiko utama adalah PHPUnit tidak menemukan test target atau production autoload tidak konsisten. Mitigasinya path eksplisit, suite Module, Composer strict PSR, dan full suite pada task 12. Tidak ada pertanyaan keputusan blocking.
+## Risiko
+
+Risiko tersisa adalah regresi di luar focused set, dokumentasi status tidak sinkron, atau residual namespace lama. Full suite, build, pencarian global, diff allowlist, serta review lima sumbu menjadi gate akhir.

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace App\Modules\HR\WorkLocations\Tests\Feature;
 
 use App\Models\User;
 use App\Modules\HR\WorkLocations\Infrastructure\Models\WorkLocation;
@@ -57,6 +57,13 @@ class HRWorkLocationTest extends TestCase
     public function test_gate_maps_work_location_to_its_policy(): void
     {
         $this->assertInstanceOf(WorkLocationPolicy::class, Gate::getPolicyFor(WorkLocation::class));
+    }
+
+    public function test_users_without_permission_cannot_view_work_locations(): void
+    {
+        $this->actingAs(User::factory()->create())
+            ->get(route('hr.work-locations.index'))
+            ->assertForbidden();
     }
 
     public function test_authorized_users_can_create_work_location(): void

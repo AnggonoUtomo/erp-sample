@@ -126,3 +126,11 @@ Bukti task berikutnya ditambahkan secara incremental.
 - Focused WorkLocations dan unit tooling lulus 15 test/34 assertion dalam 3,03 detik.
 - module validation valid; route snapshot tepat enam route dengan verb, URI, name, middleware, dan binding ekuivalen.
 - Pint route dan git diff --check lulus.
+
+### TSK-REF-HR-WLOC-001-11
+
+- HRWorkLocationTest dipindahkan ke module-local Tests/Feature dengan namespace App yang sesuai PSR-4.
+- PHPUnit menambah suite Module secara additive; Unit dan Feature tetap.
+- Characterization denial index tanpa permission ditambahkan; tidak ada assertion lama yang dikurangi.
+- Path langsung dan suite Module masing-masing lulus 11 test/29 assertion dalam 2,46 dan 2,89 detik.
+- `composer dump-autoload --strict-psr`: exit 0, 7.404 class; Pint dan diff check lulus.
