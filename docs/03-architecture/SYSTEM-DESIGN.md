@@ -75,4 +75,4 @@ Repository membuktikan satu aplikasi Laravel dan satu unit build frontend. Dokum
 ## ADR Terkait
 
 - ADR-0001: Struktur Modul DDD-Lite yang Baku dan Adaptif.
-- ADR-0002: Kepemilikan Kontrak Integrasi oleh Modul Bisnis (diusulkan).
+- ADR-0002: Kepemilikan Kontrak Integrasi oleh Modul Bisnis (accepted).

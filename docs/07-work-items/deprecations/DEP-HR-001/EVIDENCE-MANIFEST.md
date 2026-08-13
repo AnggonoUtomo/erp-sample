@@ -17,7 +17,7 @@ documentation_inspected:
   - keputusan historis stable HR integration contracts pada commit main
   - ADR-0002 accepted oleh Pemilik proyek pada 2026-08-13
 known_limitations:
-  - runtime/dynamic consumer belum dapat diverifikasi karena artisan bootstrap gagal
+  - runtime/dynamic consumer belum diverifikasi dalam scope deprecation setelah tooling pulih
 ```
 
 ## Bukti
@@ -30,4 +30,4 @@ known_limitations:
 | Module-owned contract surface | ditemukan pada Employees, EmployeeContracts, EmployeeDocuments, EmployeeMovements, Offboardings |
 | Architecture approval | ADR-0002 disetujui eksplisit oleh Pemilik proyek pada 2026-08-13 |
 
-Tidak ada test yang dijalankan sebagai bagian dari deprecation karena belum ada implementasi dan working tree bootstrap sedang rusak.
+Tidak ada test yang dijalankan sebagai bagian dari deprecation karena belum ada implementasi. Gangguan bootstrap historis telah pulih pada task induk; verifikasi runtime khusus deprecation tetap pending.

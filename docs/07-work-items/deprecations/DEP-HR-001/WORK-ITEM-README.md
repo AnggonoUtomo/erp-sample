@@ -13,6 +13,8 @@ discovered_by: TSK-ARC-DDD-LITE-001-00
 depends_on: [ADR-0002]
 blocks: []
 related_adrs: [ADR-0002]
+affected_boundaries: [HR]
+affected_modules: [IntegrationContracts, Employees, EmployeeContracts, EmployeeDocuments]
 ```
 
 ## Tujuan

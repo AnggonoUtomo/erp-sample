@@ -25,4 +25,4 @@ Namespace/binding/test berubah, tetapi behavior snapshot, versioning, dan privac
 
 ## Keputusan
 
-ADR-0002 membutuhkan acceptance final sebelum implementasi.
+ADR-0002 telah accepted. Implementasi tetap menunggu behavior baseline, keputusan compatibility, readiness checklist, dan removal gate.

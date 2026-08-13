@@ -1,4 +1,6 @@
-"# Implementation Plan — Phase 1: Foundation + Console Core
+# Implementation Plan — Phase 1: Foundation + Console Core
+
+> **SUPERSEDED:** Rencana historis ini tidak aktif. Urutan dan task baru harus berasal dari paket work item yang terdaftar dan mengikuti ADR-0001 serta `MIG-ID-001`.
 
 ## Sprint 1: Foundation (Week 1)
 
@@ -280,4 +282,3 @@
 - [ ] Documentation updated
 - [ ] Code reviewed
 - [ ] Merged to dev branch
-"

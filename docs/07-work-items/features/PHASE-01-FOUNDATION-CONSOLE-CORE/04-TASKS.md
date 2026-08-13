@@ -1,5 +1,7 @@
 # Task Breakdown - Phase 1: Foundation + Console Core
 
+> **SUPERSEDED:** Seluruh status `ready` di bawah bersifat historis dan tidak mengizinkan coding. Sumber task aktif adalah `TASKS.md` pada paket work item yang terdaftar.
+
 ## Fitur
 
 - Fitur ID: PHASE-01-FOUNDATION-CONSOLE-CORE

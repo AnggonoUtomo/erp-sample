@@ -6,8 +6,8 @@ klasifikasikan setiap diusulkan perubahan sebelum perencanaan atau coding.
 
 | tingkat | Contoh Umum contoh | Minimum dokumentasi | Persetujuan |
 |---|---|---|---|
-| `TRIVIAL` | Typo, komentar, lokal rename, tanpa perubahan perilaku formatting | Task catat, verifikasi bukti | AI/self-review kecuali dilindungi area |
-| `STANDARD` | kecil fitur, terisolasi bug, terbatas refactor | work item ringkas, tasks, pengujian, penyelesaian laporan | work item pemilik |
+| `TRIVIAL` | Typo, komentar, lokal rename, tanpa perubahan perilaku formatting | Paket ringkas: README, plan, task, backlog, bukti, penyelesaian | AI/self-review kecuali dilindungi area |
+| `STANDARD` | kecil fitur, terisolasi bug, terbatas refactor | Paket work item, plan, tasks, backlog, pengujian, penyelesaian laporan | work item pemilik |
 | `SIGNIFICANT` | baru module, schema/API perubahan, eksternal integrasi, lintas-boundary refactor | lengkap paket, dampak penilaian, ADR ketika arsitektural | manusia persetujuan wajib |
 | `CRITICAL` | Authentication/authorization, destruktif migrasi, breaking API, kepatuhan, berbiaya tinggi infrastruktur | lengkap paket, threat/risiko review, rollback, rilis gate | ditunjuk manusia pemberi persetujuan wajib |
 
@@ -21,6 +21,8 @@ klasifikasikan setiap diusulkan perubahan sebelum perencanaan atau coding.
 - itu menambahkan baru dependensi atau eksternal vendor?
 
 pilih tertinggi berlaku tingkat. catat rasional di work item metadata.
+
+Semua tingkat tetap mempunyai satu folder work item. Klasifikasi mengatur kedalaman dokumen dan gate, bukan menghapus keterlacakan folder.
 
 ## Eskalasi aturan
 

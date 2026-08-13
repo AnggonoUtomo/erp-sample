@@ -16,5 +16,6 @@ gunakan ini matriks sebelum menandai apa pun pekerjaan item selesai.
 | breaking perubahan | ADR, kompatibilitas rencana, deprecation/removal paket, rilis catatan |
 | insiden perbaikan | insiden catat, induk cause, pencegahan aksi, runbook/pengujian |
 | performa perubahan | performa baseline, benchmark laporan, kapasitas asumsi |
+| setiap pekerjaan | registry, README work item, plan, tasks, backlog, context, evidence, review/completion, dan baseline terdampak |
 
 penyelesaian laporan wajib daftar setiap diperiksa dokumen, termasuk yang dikonfirmasi sebagai `no change required`.

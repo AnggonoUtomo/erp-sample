@@ -11,6 +11,7 @@ AI boleh investigasi, draft, bandingkan opsi, dan siapkan bukti. AI dilarang men
 - kepatuhan, legal, privasi, atau audit kontrol perubahan
 - produksi rollout dengan signifikan gangguan layanan atau rollback risiko
 - Relaxation dari kualitas, keamanan, atau kriteria penerimaan
+- kategori dokumentasi top-level baru, struktur paket reusable baru, atau perubahan sumber kebenaran status pekerjaan
 
 ## gate catat
 

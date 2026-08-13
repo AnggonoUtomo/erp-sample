@@ -1,4 +1,6 @@
-"# Technical Design — Phase 1: Foundation + Console Core
+# Technical Design — Phase 1: Foundation + Console Core
+
+> **SUPERSEDED:** Dokumen historis. Jangan gunakan desain ULID, delapan layer, `/api/v1`, atau Shared Kernel di dalamnya untuk coding. Lihat `WORK-ITEM-README.md`, ADR-0001, dan `MIG-ID-001`.
 
 ## 1. Module Generator (MakeModuleCommand)
 
@@ -498,4 +500,3 @@ public function up(): void
 - [ ] Buat Feature tests
 - [ ] Buat Integration tests
 - [ ] Run all tests, pastikan pass
-"

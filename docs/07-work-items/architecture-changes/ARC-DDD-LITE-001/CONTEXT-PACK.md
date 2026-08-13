@@ -17,13 +17,13 @@ Outcome tercapai: `app/Support/Modules/Commands/MakeModuleCommand.php` identik d
 - `HR/IntegrationContracts` dikelola oleh `DEP-HR-001`, bukan dimigrasikan sebagai modul target.
 - ULID dikelola oleh `MIG-ID-001` dan dilarang masuk scope ARC.
 - Dokumen historis adalah evidence melalui `BL-2026-001-pre-seos`.
-- Runtime module tooling saat ini terblokir oleh class command yang hilang.
+- Runtime module tooling telah dipulihkan dan diverifikasi untuk task restore; adaptasi generator DDD-Lite belum aktif.
 
 ## Area yang Diizinkan
 
-- `app/Support/Modules/Commands/MakeModuleCommand.php` hanya untuk restore exact dari `HEAD`;
 - dokumen task pada `docs/07-work-items/architecture-changes/ARC-DDD-LITE-001/`;
-- read-only inspection dan command verifikasi repository.
+- read-only inspection dan command verifikasi repository;
+- belum ada area kode yang diizinkan karena tidak ada task coding aktif.
 
 ## Area yang Dilarang
 

@@ -23,7 +23,7 @@ last_updated: 2026-08-13
 
 ## Compatibility
 
-Keputusan antara alias/shim sementara dan cut-over langsung belum dibuat. Search menunjukkan tidak ada production import eksternal modul, tetapi dynamic consumer belum dapat dibuktikan karena artisan bootstrap rusak. Pilihan dibuat setelah tooling valid.
+Keputusan antara alias/shim sementara dan cut-over langsung belum dibuat. Search menunjukkan tidak ada production import eksternal modul. Artisan bootstrap telah pulih, tetapi pemeriksaan dynamic/runtime consumer khusus work item ini belum dijalankan; pilihan dibuat setelah bukti tersebut tersedia.
 
 ## Telemetry/Bukti
 

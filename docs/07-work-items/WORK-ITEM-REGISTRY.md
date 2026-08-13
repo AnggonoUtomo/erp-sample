@@ -5,10 +5,14 @@
 | `ARC-DDD-LITE-001` | architecture-change | CRITICAL | Restrukturisasi Modul ke DDD-Lite Adaptif | in_progress | unassigned | null | `docs/07-work-items/architecture-changes/ARC-DDD-LITE-001` | belum ditetapkan |
 | `DEP-HR-001` | deprecation-removal | CRITICAL | Deprecation Modul Teknis HR IntegrationContracts | approved | unassigned | `ARC-DDD-LITE-001` | `docs/07-work-items/deprecations/DEP-HR-001` | belum ditetapkan |
 | `MIG-ID-001` | data-migration | CRITICAL | Evaluasi dan Migrasi Identifier ke ULID | deferred | unassigned | null | `docs/07-work-items/data-migrations/MIG-ID-001` | belum ditetapkan |
+| `ARC-SEOS-WORK-001` | architecture-change | SIGNIFICANT | Standardisasi Paket Dokumentasi per Pekerjaan | completed | Pemilik proyek | null | `docs/07-work-items/architecture-changes/ARC-SEOS-WORK-001` | dokumentasi |
+| `PHASE-01-FOUNDATION-CONSOLE-CORE` | feature | CRITICAL | Paket Perencanaan Foundation dan Console Core Lama | superseded | unassigned | `ARC-DDD-LITE-001` | `docs/07-work-items/features/PHASE-01-FOUNDATION-CONSOLE-CORE` | tidak berlaku |
 
 ## Task Implementasi yang Dipilih
 
 `TSK-ARC-DDD-LITE-001-01 — Pulihkan konsistensi module tooling` telah `completed` dengan restore exact dan verifikasi terfokus. Tidak ada task coding aktif berikutnya.
+
+`TSK-ARC-SEOS-WORK-001-05` telah selesai sebagai pekerjaan dokumentasi. Tidak ada task aplikasi atau coding yang aktif.
 
 ## Aturan
 

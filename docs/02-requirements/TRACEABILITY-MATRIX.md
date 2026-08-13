@@ -49,6 +49,6 @@ Kepemilikan tabel authoritative dicatat pada `docs/04-design/DATABASE-DESIGN.md`
 
 | Work item | Tanggal | Scope | Status |
 |---|---|---|---|
-| `ARC-DDD-LITE-001` | 2026-08-12 | Struktur DDD-Lite seluruh modul | approved, belum ready |
+| `ARC-DDD-LITE-001` | 2026-08-12 | Struktur DDD-Lite seluruh modul | in_progress; task tooling selesai, tidak ada task coding aktif |
 | `DEP-HR-001` | 2026-08-13 | Deprecation `HR/IntegrationContracts` | approved, belum ready |
 | `MIG-ID-001` | 2026-08-13 | Evaluasi/migrasi primary key ke ULID | deferred |

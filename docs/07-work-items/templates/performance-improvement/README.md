@@ -10,4 +10,4 @@ Gunakan paket ini untuk pekerjaan `performance-improvement`. Salin seluruh direk
 4. `04-BENCHMARK-REPORT.md` — perbandingan metrik sebelum/sesudah, variasi, regresi, kapasitas, dan interpretasi.
 5. `05-COMPLETION-REPORT.md` — pencapaian target, observasi produksi, trade-off biaya, dan tindak lanjut.
 
-Tambahkan juga `CONTEXT-PACK.md`, `DEVIATION-RECORD.md` bila diperlukan, serta `EVIDENCE-MANIFEST.md` sebelum pekerjaan berstatus selesai.
+Gabungkan paket ini dengan seluruh file `templates/shared/`. `PLAN.md`, `TASKS.md`, `BACKLOG.md`, context, deviation, evidence, review, dan completion merupakan artefak inti; dokumen khusus dalam paket ini menggantikan template shared yang setara.

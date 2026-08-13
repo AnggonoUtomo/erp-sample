@@ -10,4 +10,4 @@ gunakan ini paket untuk `incident-follow-up` pekerjaan. salin seluruh direktori 
 4. `04-VALIDATION-REPORT.md` — perbaikan pengujian, monitoring, game day/replay dan residual risiko.
 5. `05-LESSONS-AND-RUNBOOK-UPDATES.md` — Lessons, runbook/alert/pengujian/dokumen perubahan dan knowledge sharing.
 
-Tambahkan juga `CONTEXT-PACK.md`, `DEVIATION-RECORD.md` bila diperlukan, dan `EVIDENCE-MANIFEST.md` sebelum pekerjaan distatus selesai.
+Gabungkan paket ini dengan seluruh file `templates/shared/`. `PLAN.md`, `TASKS.md`, `BACKLOG.md`, context, deviation, evidence, review, dan completion merupakan artefak inti; dokumen khusus dalam paket ini menggantikan template shared yang setara.

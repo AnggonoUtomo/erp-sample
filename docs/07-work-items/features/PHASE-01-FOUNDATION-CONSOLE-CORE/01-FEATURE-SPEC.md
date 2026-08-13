@@ -1,5 +1,7 @@
 # Feature Specification - Phase 1: Foundation + Console Core
 
+> **SUPERSEDED:** Dokumen historis. Jangan gunakan status, scope, ULID, delapan layer, atau task di dalamnya untuk coding. Lihat `WORK-ITEM-README.md`, ADR-0001, dan `MIG-ID-001`.
+
 > Dokumen acuan kerja untuk Phase 1 implementation.
 
 ## Metadata

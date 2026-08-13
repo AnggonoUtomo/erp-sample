@@ -12,4 +12,4 @@ Gunakan paket ini untuk pekerjaan `integration`. Salin seluruh direktori ke kole
 6. `06-SANDBOX-TEST-REPORT.md` — test case, response provider, jalur error, rate limit, dan bukti.
 7. `07-PRODUCTION-READINESS.md` — credential, limit, alert, runbook, kontak dukungan, biaya, rollback, dan persetujuan.
 
-Tambahkan juga `CONTEXT-PACK.md`, `DEVIATION-RECORD.md` bila diperlukan, serta `EVIDENCE-MANIFEST.md` sebelum pekerjaan berstatus selesai.
+Gabungkan paket ini dengan seluruh file `templates/shared/`. `PLAN.md`, `TASKS.md`, `BACKLOG.md`, context, deviation, evidence, review, dan completion merupakan artefak inti; dokumen khusus dalam paket ini menggantikan template shared yang setara.

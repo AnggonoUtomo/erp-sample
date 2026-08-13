@@ -2,7 +2,7 @@
 
 ## Task Aktif
 
-Tidak ada. Work item masih proposed/not-ready.
+Tidak ada. Work item `approved`, tetapi masih `not-ready`.
 
 ## Work Item Induk
 
@@ -14,7 +14,7 @@ Tidak ada. Work item masih proposed/not-ready.
 - Consumer import di luar modul hanya ditemukan pada test.
 - Module-owned integration surface sudah ada pada beberapa HR modules.
 - Keputusan historis tentang versioning dan privacy tetap valid.
-- Runtime verification terblokir oleh missing `MakeModuleCommand`.
+- Tooling module telah dipulihkan; runtime/dynamic consumer verification khusus deprecation masih pending.
 
 ## Area yang Diizinkan Sekarang
 

@@ -13,6 +13,8 @@ discovered_by: null
 depends_on: []
 blocks: []
 related_adrs: [ADR-0001, ADR-0002]
+affected_boundaries: [Console, HR, DocumentManagement]
+affected_modules: [all]
 ```
 
 ## Tujuan
@@ -65,4 +67,4 @@ Task restore module tooling telah selesai dan terverifikasi. Work item tetap `in
 | `TASKS.md` | task restore completed; tidak ada task coding aktif |
 | `CONTEXT-PACK.md` | documentation context current |
 | `EVIDENCE-MANIFEST.md` | discovery evidence recorded |
-| `DEVIATION-RECORD.md` | three planning deviations recorded |
+| `DEVIATION-RECORD.md` | lima deviasi tercatat; gangguan runner telah resolved |

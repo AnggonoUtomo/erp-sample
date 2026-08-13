@@ -63,6 +63,34 @@ Ketika scope atau perilaku sistem berubah:
 
 Baseline boleh berkembang secara terkendali melalui `DOCUMENT-CREATION-POLICY.md`. Dokumen project-specific baru wajib ditempatkan pada kategori yang sudah dikelola. Template reusable baru memerlukan `DOCUMENT-PROPOSAL.md` dan persetujuan. Evolusi arsitektur menggunakan paket `architecture-change`.
 
+## Paket Dokumentasi per Pekerjaan
+
+Setiap pekerjaan repository, termasuk `TRIVIAL`, wajib mempunyai tepat satu folder kanonis di bawah `docs/07-work-items/<kategori>/`. Paket `TRIVIAL` boleh ringkas; pekerjaan non-trivial menggunakan paket jenis yang lengkap.
+
+Artefak inti dan perannya:
+
+| Artefak | Peran kanonis |
+|---|---|
+| `WORK-ITEM-README.md` | identitas, scope, klasifikasi, lifecycle, boundary, dan module |
+| `PLAN.md` | urutan kontrol pekerjaan, checkpoint, risiko, dan rollback |
+| `TASKS.md` | detail dan status task; hanya satu task boleh `in_progress` |
+| `BACKLOG.md` | kandidat tindak lanjut di luar scope; bukan approval atau status aktif |
+| `CONTEXT-PACK.md` | konteks terbatas untuk task aktif |
+| `DEVIATION-RECORD.md` | perbedaan antara rencana dan kondisi aktual |
+| `EVIDENCE-MANIFEST.md` | perintah, hasil aktual, limitation, dan bukti |
+| dokumen jenis pekerjaan | pra-kerja dan pascakerja khusus feature/bug/migration dan jenis lain |
+
+Sumber status tidak boleh diduplikasi:
+
+1. `WORK-ITEM-REGISTRY.md` adalah sumber status work item.
+2. `TASKS.md` lokal adalah sumber status task.
+3. `BACKLOG.md` tidak boleh menyatakan kandidat sebagai `approved`, `ready`, atau `in_progress`.
+4. `docs/tasks/*` adalah arsip historis dan bukan sumber kebenaran aktif.
+
+Backlog hanya menjadi intake singkat. Temuan material menurut `CHANGE-CLASSIFICATION.md` wajib dipromosikan menjadi work item terdaftar sebelum task terdampak dilanjutkan; backlog tidak boleh digunakan untuk menunda kewajiban registrasi.
+
+Aturan ini disetujui melalui `DOC-PROP-001`.
+
 ## Review Berkala
 
 Review dokumen baseline pada milestone atau release utama, dan review dokumen work item sebelum implementasi serta sebelum pekerjaan dinyatakan selesai.

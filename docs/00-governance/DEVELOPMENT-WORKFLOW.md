@@ -28,7 +28,7 @@ keluar gate: implementasi pendekatan adalah koheren dan risiko adalah diketahui.
 
 ### rencana
 
-Output: implementasi slice, dependensi, tasks, pengujian rencana, rollback rencana.
+Output: folder work item kanonis, `PLAN.md`, `TASKS.md`, `BACKLOG.md`, implementasi slice, dependensi, pengujian rencana, dan rollback rencana.
 
 keluar gate: definisi of Ready adalah terpenuhi.
 
@@ -72,11 +72,12 @@ ketika baru boundary, submodule family, kontrak, integrasi, data pemilik, atau a
 
 1. Pause terdampak implementasi slice at safe status.
 2. buat Arsitektur Penemuan catat.
-3. Decide whether saat ini task dapat continue, wajib blocked, atau sebaiknya pecah.
-4. jika arsitektur perubahan, buat lengkap Arsitektur perubahan paket.
-5. Approve proposal, dampak penilaian, dan ADR.
-6. perbarui baseline catalogs dan traceability.
-7. buat baru siap tasks dan lanjutkan incremental implementasi.
-8. selesai validasi dan penyelesaian laporan setelah coding.
+3. catat temuan pada `BACKLOG.md` lokal sebagai intake; temuan material wajib segera diklasifikasikan, diregistrasi, dan diberi paket sebelum task terdampak dilanjutkan.
+4. Decide whether saat ini task dapat continue, wajib blocked, atau sebaiknya pecah.
+5. jika arsitektur perubahan, buat lengkap Arsitektur perubahan paket.
+6. Approve proposal, dampak penilaian, dan ADR.
+7. perbarui baseline catalogs dan traceability.
+8. buat baru siap tasks dan lanjutkan incremental implementasi.
+9. selesai validasi dan penyelesaian laporan setelah coding.
 
  penemuan itu sendiri adalah tidak persetujuan ke implement.

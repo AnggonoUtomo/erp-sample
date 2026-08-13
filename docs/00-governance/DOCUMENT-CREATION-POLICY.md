@@ -52,6 +52,19 @@ itu tidak secara otomatis become reusable template.
 - -nya pembuatan aturan adalah terdokumentasi;
 - itu has stabil location di bawah `docs/07-work-items/templates/`.
 
+## Struktur Reusable yang Telah Disetujui
+
+`DOC-PROP-001` menyetujui komposisi paket per pekerjaan. AI dan developer boleh membuat instance paket tersebut tanpa proposal baru selama:
+
+- paket berada pada kategori work item yang sudah ada;
+- folder menggunakan ID stabil dan slug deskriptif;
+- artefak inti berasal dari `docs/07-work-items/templates/shared/`;
+- dokumen khusus jenis berasal dari template kategori yang sesuai;
+- tidak ada kategori top-level atau jenis template baru yang diciptakan;
+- boundary/module dicatat sebagai metadata dan tidak menjadi registry paralel.
+
+Perubahan terhadap komposisi reusable itu sendiri tetap membutuhkan `DOCUMENT-PROPOSAL.md` baru dan persetujuan manusia.
+
 ## Metadata Wajib
 
 setiap baru terkelola dokumen wajib sertakan:

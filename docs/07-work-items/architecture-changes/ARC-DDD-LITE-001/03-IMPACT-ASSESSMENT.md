@@ -40,4 +40,4 @@ Tidak ada dampak data dalam ARC. Semua perubahan identifier dipindahkan ke `MIG-
 
 ## Risiko Working Tree
 
-Deletion `MakeModuleCommand.php` telah diselesaikan melalui restore exact versi commit sumber setelah approval Pemilik proyek. Runtime module tooling belum dapat dinyatakan valid sampai diff/test/module validation menghasilkan bukti aktual.
+Deletion `MakeModuleCommand.php` telah diselesaikan melalui restore exact versi commit sumber setelah approval Pemilik proyek. Diff, syntax check, test generator, dan `module:validate` kemudian lulus; limitation verifikasi dicatat pada evidence manifest.

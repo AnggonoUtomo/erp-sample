@@ -11,4 +11,4 @@ gunakan ini paket untuk `architecture-change` pekerjaan. salin seluruh direktori
 5. `05-VALIDATION-REPORT.md` — dependensi arah, enkapsulasi, kontrak, ownership dan arsitektur pengujian.
 6. `06-COMPLETION-REPORT.md` — akhir structure, deviasi, bukti, baseline registry dan evolusi log memperbarui.
 
-Tambahkan juga `CONTEXT-PACK.md`, `DEVIATION-RECORD.md` bila diperlukan, dan `EVIDENCE-MANIFEST.md` sebelum pekerjaan distatus selesai.
+Gabungkan paket ini dengan seluruh file `templates/shared/`. `PLAN.md`, `TASKS.md`, `BACKLOG.md`, context, deviation, evidence, review, dan completion merupakan artefak inti; dokumen khusus dalam paket ini menggantikan template shared yang setara.

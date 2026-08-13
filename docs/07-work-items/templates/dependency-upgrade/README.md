@@ -10,4 +10,4 @@ gunakan ini paket untuk `dependency-upgrade` pekerjaan. salin seluruh direktori 
 4. `04-VALIDATION-REPORT.md` — Build, pengujian, keamanan scan, performa dan runtime observation.
 5. `05-COMPLETION-REPORT.md` — versi adopted, perubahan, exceptions, tindak lanjut dan registry perbarui.
 
-Tambahkan juga `CONTEXT-PACK.md`, `DEVIATION-RECORD.md` bila diperlukan, dan `EVIDENCE-MANIFEST.md` sebelum pekerjaan distatus selesai.
+Gabungkan paket ini dengan seluruh file `templates/shared/`. `PLAN.md`, `TASKS.md`, `BACKLOG.md`, context, deviation, evidence, review, dan completion merupakan artefak inti; dokumen khusus dalam paket ini menggantikan template shared yang setara.

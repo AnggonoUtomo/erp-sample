@@ -10,4 +10,4 @@ Gunakan paket ini untuk pekerjaan `bug-fix`. Salin seluruh direktori ke koleksi 
 4. `04-REGRESSION-TEST.md` — pengujian gagal sebelum perbaikan dan lulus setelah perbaikan, kasus terkait, dan gap pengujian sebelumnya.
 5. `05-VERIFICATION-REPORT.md` — hasil reproduksi, pemeriksaan, efek samping, observasi deployment, dan penutupan.
 
-Tambahkan juga `CONTEXT-PACK.md`, `DEVIATION-RECORD.md` bila diperlukan, serta `EVIDENCE-MANIFEST.md` sebelum pekerjaan berstatus selesai.
+Gabungkan paket ini dengan seluruh file `templates/shared/`. `PLAN.md`, `TASKS.md`, `BACKLOG.md`, context, deviation, evidence, review, dan completion merupakan artefak inti; dokumen khusus dalam paket ini menggantikan template shared yang setara.

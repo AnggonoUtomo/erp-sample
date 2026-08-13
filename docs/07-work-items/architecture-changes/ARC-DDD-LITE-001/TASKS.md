@@ -57,11 +57,11 @@ evidence:
 ### Kriteria Penerimaan
 
 - [x] Keputusan restore versi terakhir yang bekerja disetujui.
-- [ ] File hasil restore identik dengan versi `HEAD` sebelum deletion working tree.
-- [ ] Artisan bootstrap berhasil.
-- [ ] Test generator terfokus lulus.
-- [ ] Module validation lulus.
-- [ ] Tidak ada perubahan perilaku generator, modul bisnis, migration, atau ULID.
+- [x] File hasil restore identik dengan versi `HEAD` sebelum deletion working tree.
+- [x] Artisan bootstrap berhasil.
+- [x] Test generator terfokus lulus.
+- [x] Module validation lulus.
+- [x] Tidak ada perubahan perilaku generator, modul bisnis, migration, atau ULID.
 
 ### Perintah Verifikasi
 

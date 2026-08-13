@@ -18,6 +18,8 @@
 
 ## Task readiness
 
+- [ ] Folder work item kanonis tersedia dan terdaftar.
+- [ ] `PLAN.md`, `TASKS.md`, dan `BACKLOG.md` tersedia serta tidak menduplikasi status.
 - [ ] Task has satu terbatas tujuan.
 - [ ] Referensi point ke disetujui specifications.
 - [ ] diizinkan dan dilarang perubahan areas adalah identified.
@@ -26,6 +28,7 @@
 - [ ] wajib pengujian adalah ditunjuk.
 - [ ] dependensi adalah selesai atau secara eksplisit tersedia.
 - [ ] Task dapat menjadi selesai tanpa inventing missing requirement.
+- [ ] `CONTEXT-PACK.md` menunjuk task aktif, scope file, pola, dan perintah verifikasi yang tepat.
 
 ## Putusan
 

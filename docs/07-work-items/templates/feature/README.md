@@ -11,4 +11,4 @@ gunakan ini paket untuk `feature` pekerjaan. salin seluruh direktori ke dalam se
 5. `05-REVIEW-REPORT.md` — Correctness, arsitektur, readability, keamanan, performa dan belum diselesaikan temuan.
 6. `06-COMPLETION-REPORT.md` — hasil implementasi scope, deviasi, bukti, baseline sync dan tindak lanjut pekerjaan.
 
-Tambahkan juga `CONTEXT-PACK.md`, `DEVIATION-RECORD.md` bila diperlukan, dan `EVIDENCE-MANIFEST.md` sebelum pekerjaan distatus selesai.
+Gabungkan paket ini dengan seluruh file `templates/shared/`. `PLAN.md`, `TASKS.md`, `BACKLOG.md`, context, deviation, evidence, review, dan completion merupakan artefak inti; dokumen khusus dalam paket ini menggantikan template shared yang setara.

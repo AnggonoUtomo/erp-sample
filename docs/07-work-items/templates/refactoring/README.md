@@ -10,4 +10,4 @@ gunakan ini paket untuk `refactoring` pekerjaan. salin seluruh direktori ke dala
 4. `04-BEHAVIOR-VALIDATION.md` — sebelum/setelah equivalence, pengujian, API/data kompatibilitas dan performa comparison.
 5. `05-COMPLETION-REPORT.md` — Structure improved, perilaku preserved, deviasi dan utang teknis reduced/dibuat.
 
-Tambahkan juga `CONTEXT-PACK.md`, `DEVIATION-RECORD.md` bila diperlukan, dan `EVIDENCE-MANIFEST.md` sebelum pekerjaan distatus selesai.
+Gabungkan paket ini dengan seluruh file `templates/shared/`. `PLAN.md`, `TASKS.md`, `BACKLOG.md`, context, deviation, evidence, review, dan completion merupakan artefak inti; dokumen khusus dalam paket ini menggantikan template shared yang setara.

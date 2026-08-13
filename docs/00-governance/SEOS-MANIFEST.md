@@ -14,6 +14,17 @@
 4. baseline dokumen jelaskan saat ini kebenaran; work item dokumen pertahankan perubahan riwayat.
 5. AI boleh propose perubahan, tetapi human gate lindungi high-impact keputusan.
 6. satu aktif task, terbatas konteks, terukur kriteria penerimaan, verifiable bukti.
+7. setiap pekerjaan mempunyai tepat satu folder work item kanonis yang menyatukan pra-kerja, plan, task, backlog lokal, konteks, dan pascakerja.
+
+## Paket Pekerjaan Kanonis
+
+Lokasi paket mengikuti jenis pekerjaan:
+
+```text
+docs/07-work-items/<kategori>/<ID>-<slug>/
+```
+
+Boundary dan module terdampak dicatat pada metadata paket, bukan dengan membuat sumber status paralel per module. `WORK-ITEM-REGISTRY.md` mengendalikan status work item, sedangkan `TASKS.md` di dalam paket mengendalikan status task. `BACKLOG.md` hanya memuat kandidat tindak lanjut yang belum disetujui.
 
 ## Canonical lifecycle
 

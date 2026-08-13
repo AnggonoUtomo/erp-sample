@@ -10,4 +10,4 @@ Gunakan paket ini untuk pekerjaan `deprecation-removal`. Salin seluruh direktori
 4. `04-REMOVAL-READINESS.md` — penggunaan sudah nol atau disetujui, backup, rollback, dokumentasi/pengujian, dan gate persetujuan.
 5. `05-REMOVAL-REPORT.md` — artefak yang dihapus, status consumer, insiden, cleanup, dan release.
 
-Tambahkan juga `CONTEXT-PACK.md`, `DEVIATION-RECORD.md` bila diperlukan, serta `EVIDENCE-MANIFEST.md` sebelum pekerjaan berstatus selesai.
+Gabungkan paket ini dengan seluruh file `templates/shared/`. `PLAN.md`, `TASKS.md`, `BACKLOG.md`, context, deviation, evidence, review, dan completion merupakan artefak inti; dokumen khusus dalam paket ini menggantikan template shared yang setara.

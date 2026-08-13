@@ -13,6 +13,8 @@ discovered_by: ARC-DDD-LITE-001
 depends_on: []
 blocks: []
 related_adrs: []
+affected_boundaries: [Console, HR, DocumentManagement]
+affected_modules: [all-data-owning-modules]
 ```
 
 ## Tujuan

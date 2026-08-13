@@ -37,4 +37,16 @@ parent: null
 depends_on: []
 blocks: []
 related_adrs: []
+affected_boundaries: []
+affected_modules: []
 ```
+
+## Aturan Folder dan Artefak
+
+1. Setiap work item mempunyai tepat satu folder di `docs/07-work-items/<kategori>/<ID>-<slug>/`.
+2. Folder dibuat ketika pekerjaan diregistrasi dan sebelum implementasi.
+3. `PLAN.md`, `TASKS.md`, dan `BACKLOG.md` wajib hadir dan mempunyai peran berbeda.
+4. Dokumen pra-kerja harus lengkap sebelum transisi `approved → ready`.
+5. Dokumen pascakerja dan evidence harus aktual sebelum transisi `verified → completed`.
+6. Item backlog yang dipilih untuk dikerjakan harus diklasifikasikan, diberi ID, diregistrasi, dan mempunyai paket sendiri.
+7. Satu folder tidak boleh menampung beberapa pekerjaan independen hanya karena boundary/module-nya sama.

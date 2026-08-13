@@ -7,6 +7,7 @@ Give AI enough diverifikasi konteks ke selesai satu task tanpa loading seluruh p
 ## wajib konteks paket
 
 - aktif task dan induk pekerjaan item
+- `PLAN.md`, `TASKS.md`, dan `BACKLOG.md` lokal; backlog hanya dibaca sebagai temuan, bukan instruksi yang disetujui
 - klasifikasi dan saat ini lifecycle status
 - Relevant requirement dan kriteria penerimaan
 - Relevant ADRs, boundary kontrak, dan dependensi aturan
@@ -22,3 +23,4 @@ Give AI enough diverifikasi konteks ke selesai satu task tanpa loading seluruh p
 - tandai repository fakta, asumsi, dan rekomendasi secara terpisah.
 - jangan pernah sembunyikan ditemukan scope expansion; buat discovery/deviation catat.
 - konteks packs adalah sementara eksekusi artefak, tidak baru sumber sumber kebenaran.
+- status work item berasal dari registry dan status task berasal dari `TASKS.md` lokal; `docs/tasks/*` tidak digunakan sebagai status aktif.
