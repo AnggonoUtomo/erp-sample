@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Modules\HR\WorkLocations\Http\Requests;
+namespace App\Modules\HR\WorkLocations\Presentation\Http\Requests;
 
 use App\Modules\HR\WorkLocations\Application\DTOs\WorkLocationData;
-use App\Modules\HR\WorkLocations\Infrastructure\Models\WorkLocation;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreWorkLocationRequest extends FormRequest
+class UpdateWorkLocationRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->can('create', WorkLocation::class) ?? false;
+        return $this->user()?->can('update', $this->route('workLocation')) ?? false;
     }
 
     /**
@@ -19,8 +18,10 @@ class StoreWorkLocationRequest extends FormRequest
      */
     public function rules(): array
     {
+        $workLocationId = $this->route('workLocation')?->id;
+
         return [
-            'code' => ['required', 'string', 'max:32', 'alpha_dash:ascii', 'unique:hr_work_locations,code'],
+            'code' => ['required', 'string', 'max:32', 'alpha_dash:ascii', Rule::unique('hr_work_locations', 'code')->ignore($workLocationId)],
             'name' => ['required', 'string', 'max:255'],
             'address' => ['nullable', 'string', 'max:2000'],
             'city' => ['nullable', 'string', 'max:120'],

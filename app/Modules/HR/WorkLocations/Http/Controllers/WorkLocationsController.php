@@ -4,9 +4,9 @@ namespace App\Modules\HR\WorkLocations\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\HR\WorkLocations\Application\Services\WorkLocationsService;
-use App\Modules\HR\WorkLocations\Http\Requests\StoreWorkLocationRequest;
-use App\Modules\HR\WorkLocations\Http\Requests\UpdateWorkLocationRequest;
 use App\Modules\HR\WorkLocations\Infrastructure\Models\WorkLocation;
+use App\Modules\HR\WorkLocations\Presentation\Http\Requests\StoreWorkLocationRequest;
+use App\Modules\HR\WorkLocations\Presentation\Http\Requests\UpdateWorkLocationRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;

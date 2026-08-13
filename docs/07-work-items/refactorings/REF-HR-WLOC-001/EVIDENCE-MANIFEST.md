@@ -88,3 +88,11 @@ Bukti task berikutnya ditambahkan secara incremental.
 - Regression set: exit 0, 39 test/213 assertion, 6,85 detik.
 - module:validate HR.WorkLocations: exit 0, valid.
 - Route snapshot: enam route tetap; middleware sama dan FQCN model menunjuk lokasi target.
+- Setelah formatter mekanis pada service, regression set diulang: 39 test/213 assertion lulus dalam 7,87 detik; Pint lulus.
+
+### TSK-REF-HR-WLOC-001-06
+
+- Dua FormRequest dipindahkan exact selain namespace ke Presentation/Http/Requests; import controller diperbarui.
+- HRWorkLocationTest: exit 0, 9 test/27 assertion, 2,41 detik.
+- module:validate HR.WorkLocations: exit 0, valid.
+- Pencarian namespace request lama: nol hasil; Pint terfokus dan git diff --check lulus.
