@@ -3,9 +3,9 @@ id: ADR-0001
 title: Struktur Modul DDD-Lite yang Baku dan Adaptif
 status: accepted
 created: 2026-08-12
-updated: 2026-08-13
+updated: 2026-08-14
 deciders: [Pemilik proyek]
-related: [ARC-DDD-LITE-001]
+related: [ARC-DDD-LITE-001, REF-HR-WLOC-001]
 ---
 
 # ADR-0001: Struktur Modul DDD-Lite yang Baku dan Adaptif
@@ -70,6 +70,7 @@ Opsi B diterima dengan ketentuan berikut.
    |   |   |-- Controllers/
    |   |   |-- Requests/
    |   |   `-- Resources/
+   |   |-- Policies/
    |   `-- Routes/
    |-- Integration/
    |   |-- Contracts/
@@ -87,10 +88,11 @@ Opsi B diterima dengan ketentuan berikut.
 2. Hanya folder dan file yang mempunyai isi serta alasan nyata yang dibuat. `Domain/` tidak diwajibkan untuk CRUD sederhana. `Integration/` hanya ada saat modul memiliki atau menggunakan kontrak/event lintas modul. `permissions.php` dan `navigation.php` juga hanya ada bila modul benar-benar mengekspornya.
 3. Eloquent model berada di `Infrastructure/Models/`; tidak diwajibkan membuat domain entity atau repository pembungkus Eloquent.
 4. HTTP berada di `Presentation/Http/`; route milik modul berada di `Presentation/Routes/`.
-5. Kontrak lintas modul dimiliki modul bisnis penyedia dan diekspos melalui `Integration/Contracts/` beserta DTO/event versioned yang relevan.
-6. Test yang secara jelas dimiliki modul ditempatkan di `Tests/`; test arsitektur dan lintas sistem boleh tetap berada pada test suite tingkat aplikasi.
-7. Migrasi dilakukan per vertical slice terkecil yang dapat diverifikasi. Struktur campuran sementara diperbolehkan dan harus dicatat.
-8. Perubahan primary key ke ULID tidak termasuk ADR atau work item struktur ini. Perubahan tersebut dipisahkan ke `MIG-ID-001` dan tetap ditunda sampai memiliki pemetaan data, rollback, serta persetujuan tersendiri.
+5. Policy authorization yang mengadaptasi Laravel/Spatie, model autentikasi, dan operasi controller berada di `Presentation/Policies/`. Aturan domain murni tidak boleh diletakkan di policy framework tersebut.
+6. Kontrak lintas modul dimiliki modul bisnis penyedia dan diekspos melalui `Integration/Contracts/` beserta DTO/event versioned yang relevan.
+7. Test yang secara jelas dimiliki modul ditempatkan di `Tests/`; test arsitektur dan lintas sistem boleh tetap berada pada test suite tingkat aplikasi.
+8. Migrasi dilakukan per vertical slice terkecil yang dapat diverifikasi. Struktur campuran sementara diperbolehkan dan harus dicatat.
+9. Perubahan primary key ke ULID tidak termasuk ADR atau work item struktur ini. Perubahan tersebut dipisahkan ke `MIG-ID-001` dan tetap ditunda sampai memiliki pemetaan data, rollback, serta persetujuan tersendiri.
 
 ## Konsekuensi
 
@@ -141,4 +143,5 @@ conditions:
   - migrasi ULID dipisahkan
 evidence:
   - konfirmasi eksplisit melalui percakapan evaluasi dokumentasi
+  - konfirmasi penempatan policy framework pada Presentation melalui interview pilot WorkLocations, 2026-08-14
 ```

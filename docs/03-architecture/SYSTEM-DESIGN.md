@@ -3,12 +3,12 @@ id: ARC-SYS-001
 title: Desain Sistem Aktual dan Target DDD-Lite
 document_type: architecture-baseline
 status: active
-version: 1.0.0
+version: 1.1.0
 owner: Pemilik proyek
 created: 2026-08-12
-updated: 2026-08-13
+updated: 2026-08-14
 source_work_item: ARC-DDD-LITE-001
-related: [ADR-0001, ADR-0002]
+related: [ADR-0001, ADR-0002, REF-HR-WLOC-001]
 ---
 
 # Desain Sistem Aktual dan Target DDD-Lite
@@ -43,6 +43,8 @@ Lintas modul sinkron -> Integration Contract milik provider
 Lintas modul notifikasi -> Integration Event milik producer
 Read-only lintas modul -> Query/read model terdokumentasi
 ```
+
+Policy authorization yang bergantung pada Laravel/Spatie, model User, dan operasi controller berada pada `Presentation/Policies/`; aturan domain murni tidak ditempatkan di adapter framework tersebut. Pilot pertama yang siap menerapkan pola ini adalah `REF-HR-WLOC-001`, tetapi coding belum dimulai sehingga kondisi aktual tetap struktur lama.
 
 ## Boundary Aktif
 

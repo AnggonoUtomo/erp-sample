@@ -3,12 +3,12 @@ id: ARC-GUIDE-001
 title: Acuan DDD-Lite Modular Monolith Laravel
 document_type: architecture-guide
 status: active
-version: 1.1.0
+version: 1.2.0
 owner: Pemilik proyek
 created: 2026-08-12
-updated: 2026-08-13
+updated: 2026-08-14
 source_work_item: ARC-DDD-LITE-001
-related: [ADR-0001, ADR-0002]
+related: [ADR-0001, ADR-0002, REF-HR-WLOC-001]
 ---
 
 # DDD-Lite Modular Monolith Laravel
@@ -160,6 +160,7 @@ app/
         │   │   ├── Controllers/
         │   │   ├── Requests/
         │   │   └── Resources/
+        │   ├── Policies/
         │   └── Routes/
         │
         ├── Database/
@@ -186,6 +187,7 @@ Student/
 │   ├── Http/
 │   │   ├── Controllers/
 │   │   └── Requests/
+│   ├── Policies/
 │   └── Routes/
 └── Tests/
 ```
@@ -200,6 +202,7 @@ Folder berikut dibuat hanya saat diperlukan:
 - `Domain/Events`
 - `Domain/Services`
 - `Repositories`
+- `Policies`
 - `Listeners`
 - `Jobs`
 
@@ -231,6 +234,7 @@ Presentation boleh:
 - Mengubah request menjadi DTO.
 - Memanggil Application Action atau Query.
 - Mengembalikan response.
+- Menyediakan policy authorization framework yang menghubungkan user/permission dengan operasi controller.
 
 Presentation tidak boleh:
 
@@ -238,6 +242,7 @@ Presentation tidak boleh:
 - Mengakses banyak model secara langsung untuk proses bisnis kompleks.
 - Mengatur transaksi bisnis.
 - Mengubah data milik modul lain.
+- Menyebut policy Laravel/Spatie sebagai aturan domain murni.
 
 ---
 

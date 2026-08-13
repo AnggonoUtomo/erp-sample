@@ -4,9 +4,9 @@
 
 ```yaml
 work_item: ARC-DDD-LITE-001
-status: proposed
+status: approved
 owner: unassigned
-last_updated: 2026-08-13
+last_updated: 2026-08-14
 ```
 
 ## Urutan
@@ -32,4 +32,4 @@ Setiap task memuat daftar file sebelum/sesudah, test baseline, dan commit/refere
 
 ## Task Pertama yang Dipilih
 
-`TSK-ARC-DDD-LITE-001-01 — Pulihkan konsistensi module tooling` telah selesai. File dipulihkan exact dari `HEAD`; test generator, module validation, syntax check, dan diff check lulus. Adaptasi generator ke ADR-0001 tetap menjadi task terpisah dan belum aktif.
+`TSK-ARC-DDD-LITE-001-01 — Pulihkan konsistensi module tooling` telah selesai. Paket child `REF-HR-WLOC-001` kini menjadi sumber scope, baseline, task, dan evidence pilot `TSK-ARC-DDD-LITE-001-02`. Task coding berikutnya `TSK-REF-HR-WLOC-001-01` berstatus `ready`, belum `in_progress`. Adaptasi generator ke ADR-0001 tetap menjadi kandidat terpisah `CAND-ARC-GEN-001`.

@@ -7,7 +7,7 @@ classification: CRITICAL
 status: in_progress
 owner: unassigned
 created_at: 2026-08-12
-updated_at: 2026-08-13
+updated_at: 2026-08-14
 parent: null
 discovered_by: null
 depends_on: []
@@ -52,7 +52,7 @@ evidence:
   - konfirmasi eksplisit melalui interview evaluasi
 ```
 
-Task restore module tooling telah selesai dan terverifikasi. Work item tetap `in_progress`; hal ini tidak berarti restrukturisasi seluruh modul sudah selesai.
+Task restore module tooling telah selesai dan terverifikasi. Pra-kerja pilot WorkLocations tersedia di child `REF-HR-WLOC-001` dan berstatus `ready`. Work item induk tetap `in_progress`; hal ini tidak berarti coding pilot atau restrukturisasi seluruh modul sudah selesai.
 
 ## Dokumen
 
@@ -64,7 +64,7 @@ Task restore module tooling telah selesai dan terverifikasi. Work item tetap `in
 | `04-IMPLEMENTATION-PLAN.md` | updated |
 | `05-VALIDATION-REPORT.md` | criteria prepared; execution pending |
 | `06-COMPLETION-REPORT.md` | not started |
-| `TASKS.md` | task restore completed; tidak ada task coding aktif |
-| `CONTEXT-PACK.md` | documentation context current |
+| `TASKS.md` | task pilot ready melalui child `REF-HR-WLOC-001`; tidak ada task coding aktif |
+| `CONTEXT-PACK.md` | menunjuk context pack child untuk task berikutnya |
 | `EVIDENCE-MANIFEST.md` | discovery evidence recorded |
 | `DEVIATION-RECORD.md` | lima deviasi tercatat; gangguan runner telah resolved |

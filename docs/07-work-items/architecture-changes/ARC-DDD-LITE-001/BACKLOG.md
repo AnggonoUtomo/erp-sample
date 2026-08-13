@@ -6,7 +6,7 @@ status: active
 version: 1.0.0
 owner: Pemilik proyek
 created: 2026-08-13
-updated: 2026-08-13
+updated: 2026-08-14
 source_work_item: ARC-DDD-LITE-001
 related: [ADR-0001]
 ---
@@ -18,5 +18,6 @@ related: [ADR-0001]
 | `CAND-ARC-REN-001` | SIGNIFICANT | Evaluasi rename `HR/Departements` ke `HR/Departments` dengan compatibility plan | module audit | discovered |
 | `CAND-ARC-REN-002` | SIGNIFICANT | Evaluasi rename `DocumentManagement/Foundation` ke `DocumentManagement/Documents` | module audit | discovered |
 | `CAND-ARC-DEP-001` | SIGNIFICANT | Audit direct cross-module model access pada dashboard/read model | impact assessment | discovered |
+| `CAND-ARC-GEN-001` | SIGNIFICANT | Sesuaikan generator untuk struktur minimal ADR-0001 setelah pola pilot terbukti | persiapan `REF-HR-WLOC-001` | discovered |
 
 Entri belum disetujui dan tidak boleh dikerjakan sebelum dipromosikan menjadi work item terdaftar.

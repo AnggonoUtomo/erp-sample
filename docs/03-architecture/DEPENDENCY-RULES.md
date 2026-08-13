@@ -3,12 +3,12 @@ id: DEP-RULES-001
 title: Aturan Dependensi DDD-Lite
 document_type: architecture-standard
 status: active
-version: 1.0.0
+version: 1.0.1
 owner: Pemilik proyek
 created: 2026-08-12
-updated: 2026-08-13
+updated: 2026-08-14
 source_work_item: ARC-DDD-LITE-001
-related: [ADR-0001, ADR-0002]
+related: [ADR-0001, ADR-0002, REF-HR-WLOC-001]
 ---
 
 # Aturan Dependensi DDD-Lite
@@ -24,7 +24,7 @@ Infrastructure -------'----------'
 Integration = surface lintas modul yang dimiliki modul bisnis
 ```
 
-- `Presentation` menangani HTTP/CLI dan memanggil use case Application.
+- `Presentation` menangani HTTP/CLI, policy authorization framework, dan pemanggilan use case Application. Policy Laravel/Spatie bukan aturan Domain murni.
 - `Application` mengorkestrasi use case dan transaksi; tidak bergantung pada Request/Response.
 - `Domain` hanya hadir bila terdapat invariant atau konsep bisnis nyata dan tidak bergantung pada Laravel HTTP/Presentation.
 - `Infrastructure` berisi Eloquent, binding, storage, dan adapter teknis.

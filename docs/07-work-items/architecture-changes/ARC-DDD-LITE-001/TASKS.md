@@ -6,7 +6,7 @@
 |---:|---|---|---|---|
 | 0 | `TSK-ARC-DDD-LITE-001-00` | Rekonsiliasi dokumen aktif dengan bukti kode | - | completed |
 | 1 | `TSK-ARC-DDD-LITE-001-01` | Pulihkan konsistensi module tooling | persetujuan restore | completed |
-| 2 | `TSK-ARC-DDD-LITE-001-02` | Migrasi pilot `HR/WorkLocations` | task 01 verified | pending |
+| 2 | `TSK-ARC-DDD-LITE-001-02` | Migrasi pilot `HR/WorkLocations` melalui `REF-HR-WLOC-001` | task 01 verified | ready |
 | 3 | `TSK-ARC-DDD-LITE-001-03` | Review hasil pilot dan susun dependency order | task 02 verified | pending |
 
 ## TSK-ARC-DDD-LITE-001-01 — Pulihkan Konsistensi Module Tooling
@@ -91,3 +91,9 @@ git diff --check
 ### Status Verifikasi
 
 `VERIFIED`. File identik dengan `HEAD`; syntax PHP lulus; `MakeModuleCommandTest` lulus 4 test/23 assertion; `module:validate` menyatakan seluruh contract valid; `git diff --check` bersih.
+
+## TSK-ARC-DDD-LITE-001-02 — Migrasi Pilot HR/WorkLocations
+
+`REF-HR-WLOC-001` menjadi paket child kanonis untuk implementasi pilot ini. Pra-kerja, behavior baseline, scope file, acceptance, rollback, approval manusia, dan context task pertama telah tersedia pada `docs/07-work-items/refactorings/REF-HR-WLOC-001/`.
+
+Status task induk: `ready`. Task coding child berikutnya adalah `TSK-REF-HR-WLOC-001-01`, tetapi belum `in_progress`.

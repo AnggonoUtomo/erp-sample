@@ -2,7 +2,7 @@
 
 ## Task Aktif
 
-Tidak ada task coding aktif. `TSK-ARC-DDD-LITE-001-01 — Pulihkan konsistensi module tooling` telah completed dan terverifikasi.
+Tidak ada task coding aktif. `TSK-REF-HR-WLOC-001-01 — Route Discovery Target-First/Fallback` telah dipilih sebagai task berikutnya dan berstatus `ready`. Context implementasinya berada di `docs/07-work-items/refactorings/REF-HR-WLOC-001/CONTEXT-PACK.md`.
 
 ## Outcome Task
 
@@ -19,12 +19,13 @@ Outcome tercapai: `app/Support/Modules/Commands/MakeModuleCommand.php` identik d
 - Dokumen historis adalah evidence melalui `BL-2026-001-pre-seos`.
 - Runtime module tooling telah dipulihkan dan diverifikasi untuk task restore; adaptasi generator DDD-Lite belum aktif.
 - Baseline engineering/testing telah direkonsiliasi melalui `FTR-ENG-001`: web/session aktif, API/token deferred, test module-local incremental, dan angka kualitas belum menjadi gate.
+- Keputusan pilot WorkLocations telah disetujui: struktur minimal, route target-first/fallback, namespace tanpa shim, refactor struktural murni, test module-local incremental, dan policy Laravel/Spatie di Presentation.
 
 ## Area yang Diizinkan
 
-- dokumen task pada `docs/07-work-items/architecture-changes/ARC-DDD-LITE-001/`;
+- dokumen task pada `docs/07-work-items/architecture-changes/ARC-DDD-LITE-001/` dan child `REF-HR-WLOC-001`;
 - read-only inspection dan command verifikasi repository;
-- belum ada area kode yang diizinkan karena tidak ada task coding aktif.
+- area kode task 01 sudah tercatat pada context child, tetapi belum aktif sampai coding diperintahkan.
 
 ## Area yang Dilarang
 

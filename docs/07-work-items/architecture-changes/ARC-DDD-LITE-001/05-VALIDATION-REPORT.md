@@ -39,6 +39,8 @@ last_updated: 2026-08-13
 
 Belum ada validasi implementasi DDD-Lite karena coding belum dimulai. Dokumen ini tidak boleh digunakan sebagai klaim bahwa work item telah verified.
 
+Paket validasi pilot telah disiapkan pada `docs/07-work-items/refactorings/REF-HR-WLOC-001/04-BEHAVIOR-VALIDATION.md`. Baseline sebelum coding adalah enam route dan 39 test/213 assertion lulus. Hasil setelah coding masih pending.
+
 ## TSK-ARC-DDD-LITE-001-01 — Hasil yang Akan Diisi
 
 | Pemeriksaan | Perintah | Hasil aktual | Exit code |

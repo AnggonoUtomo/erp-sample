@@ -27,6 +27,8 @@ documentation_inspected:
   - ADR dan katalog arsitektur
   - work item ARC-DDD-LITE-001
   - dokumen historis pada main commit
+  - paket pra-kerja `REF-HR-WLOC-001`
+  - ADR-0001 setelah sinkronisasi keputusan lokasi policy framework
 known_limitations:
   - full test suite tidak dijalankan; scope restore exact diverifikasi dengan test terfokus
   - route:list tidak termasuk scope task restore
@@ -43,6 +45,7 @@ known_limitations:
 | Identifier aktual | migration `$table->id()`/`foreignId()` | bigint, bukan ULID |
 | Dokumen lama tetap terlacak | main commit + baseline snapshot | diusulkan |
 | Provenance restore MakeModuleCommand | commit `f1f64b2661e081ff6f2bf7418ffd9795a0ff11bd`, blob `cd3c449747a14f0c286072a7a3374ba8b0ebbadf`, 11.468 byte | diterapkan |
+| Readiness pilot WorkLocations | paket child `REF-HR-WLOC-001`, baseline 39 test/213 assertion, enam route, module validation | ready; coding belum dimulai |
 
 ## Pemeriksaan Gagal/Dilewati
 

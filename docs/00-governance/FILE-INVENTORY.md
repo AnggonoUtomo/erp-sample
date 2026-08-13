@@ -3,17 +3,17 @@ id: DOC-FILE-INVENTORY-001
 title: Inventaris File Dokumentasi Aktual
 document_type: documentation-inventory
 status: active
-version: 2.2.0
+version: 2.3.1
 owner: Pemilik proyek
 created: 2026-08-13
-updated: 2026-08-13
+updated: 2026-08-14
 source_work_item: ARC-SEOS-WORK-001
-related: [DOC-PROP-001, FTR-PROD-001, FTR-ENG-001]
+related: [DOC-PROP-001, FTR-PROD-001, FTR-ENG-001, REF-HR-WLOC-001]
 ---
 
 # Inventaris File Dokumentasi Aktual
 
-Inventaris ini mencakup 290 file fisik di bawah `docs/`: 279 Markdown dan 11 file penjaga direktori. Daftar diurutkan berdasarkan path dan menggantikan inventaris distribusi template lama yang mencampur file proyek dengan contoh di luar `docs/`.
+Inventaris ini mencakup 303 file fisik di bawah `docs/`: 292 Markdown dan 11 file penjaga direktori. Daftar diurutkan berdasarkan path dan menggantikan inventaris distribusi template lama yang mencampur file proyek dengan contoh di luar `docs/`.
 
 Fingerprint, ukuran, dan jumlah baris audit penetapan awal tersedia sebagai bukti historis pada `docs/07-work-items/architecture-changes/ARC-SEOS-WORK-001/DOCUMENT-AUDIT-MANIFEST.md`. Inventaris path aktif ini diperbarui melalui work item yang menambah atau mengubah dokumentasi.
 
@@ -161,6 +161,19 @@ Fingerprint, ukuran, dan jumlah baris audit penetapan awal tersedia sebagai bukt
 | `docs/07-work-items/performance-improvements/.gitkeep` | Penjaga direktori |
 | `docs/07-work-items/README.md` | Markdown |
 | `docs/07-work-items/refactorings/.gitkeep` | Penjaga direktori |
+| `docs/07-work-items/refactorings/REF-HR-WLOC-001/01-REFACTORING-PROPOSAL.md` | Markdown |
+| `docs/07-work-items/refactorings/REF-HR-WLOC-001/02-BEHAVIOR-BASELINE.md` | Markdown |
+| `docs/07-work-items/refactorings/REF-HR-WLOC-001/03-IMPLEMENTATION-PLAN.md` | Markdown |
+| `docs/07-work-items/refactorings/REF-HR-WLOC-001/04-BEHAVIOR-VALIDATION.md` | Markdown |
+| `docs/07-work-items/refactorings/REF-HR-WLOC-001/05-COMPLETION-REPORT.md` | Markdown |
+| `docs/07-work-items/refactorings/REF-HR-WLOC-001/BACKLOG.md` | Markdown |
+| `docs/07-work-items/refactorings/REF-HR-WLOC-001/CONTEXT-PACK.md` | Markdown |
+| `docs/07-work-items/refactorings/REF-HR-WLOC-001/DEVIATION-RECORD.md` | Markdown |
+| `docs/07-work-items/refactorings/REF-HR-WLOC-001/EVIDENCE-MANIFEST.md` | Markdown |
+| `docs/07-work-items/refactorings/REF-HR-WLOC-001/PLAN.md` | Markdown |
+| `docs/07-work-items/refactorings/REF-HR-WLOC-001/REVIEW-REPORT.md` | Markdown |
+| `docs/07-work-items/refactorings/REF-HR-WLOC-001/TASKS.md` | Markdown |
+| `docs/07-work-items/refactorings/REF-HR-WLOC-001/WORK-ITEM-README.md` | Markdown |
 | `docs/07-work-items/security-changes/.gitkeep` | Penjaga direktori |
 | `docs/07-work-items/templates/architecture-change/01-DISCOVERY-RECORD.md` | Markdown |
 | `docs/07-work-items/templates/architecture-change/02-BOUNDARY-PROPOSAL.md` | Markdown |
