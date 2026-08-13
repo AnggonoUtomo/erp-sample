@@ -26,12 +26,12 @@ related: [ADR-0001]
 | 6 | TSK-REF-HR-WLOC-001-06 | Pindahkan request | task 05 | completed |
 | 7 | TSK-REF-HR-WLOC-001-07 | Pindahkan policy | task 06 | completed |
 | 8 | TSK-REF-HR-WLOC-001-08 | Pindahkan controller | task 07 | completed |
-| 9 | TSK-REF-HR-WLOC-001-09 | Pindahkan provider | task 08 | in_progress |
-| 10 | TSK-REF-HR-WLOC-001-10 | Pindahkan route | task 09 | pending |
+| 9 | TSK-REF-HR-WLOC-001-09 | Pindahkan provider | task 08 | completed |
+| 10 | TSK-REF-HR-WLOC-001-10 | Pindahkan route | task 09 | in_progress |
 | 11 | TSK-REF-HR-WLOC-001-11 | Colocation test modul dan discovery PHPUnit | task 10 | pending |
 | 12 | TSK-REF-HR-WLOC-001-12 | Verifikasi, review, dan baseline sync | task 11 | pending |
 
-Task 09 adalah satu-satunya task coding berstatus in_progress.
+Task 10 adalah satu-satunya task coding berstatus in_progress.
 
 ## TSK-REF-HR-WLOC-001-01 — Route Discovery Target-First/Fallback
 

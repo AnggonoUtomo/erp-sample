@@ -1,6 +1,6 @@
 <?php
 
-use App\Modules\HR\WorkLocations\Providers\WorkLocationsServiceProvider;
+use App\Modules\HR\WorkLocations\Infrastructure\Providers\WorkLocationsServiceProvider;
 
 return [
     'name' => 'WorkLocations',

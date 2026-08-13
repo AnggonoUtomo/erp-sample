@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\HR\WorkLocations\Providers;
+namespace App\Modules\HR\WorkLocations\Infrastructure\Providers;
 
 use App\Modules\HR\WorkLocations\Infrastructure\Models\WorkLocation;
 use App\Modules\HR\WorkLocations\Presentation\Policies\WorkLocationPolicy;
@@ -11,7 +11,7 @@ class WorkLocationsServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../../Database/Migrations');
     }
 
     public function boot(): void

@@ -67,4 +67,10 @@ Status: resolved. ADR baru tidak diperlukan.
 
 Characterization test awal membandingkan hasil Gate::getPolicyFor dengan class-string, sedangkan Laravel mengembalikan instance policy. Output membuktikan instance yang benar telah terdaftar. Assertion dikoreksi menjadi assertInstanceOf tanpa perubahan kode produksi.
 
+## DEV-REF-HR-WLOC-001-010 — Relative Migration Path Provider
+
+Status: resolved. ADR baru tidak diperlukan.
+
+Setelah provider dipindahkan ke Infrastructure/Providers, path relatif `__DIR__.'/../Database/Migrations'` menunjuk lokasi yang salah. Focused test gagal karena tabel hr_work_locations tidak dibuat. Path diperbarui menjadi `__DIR__.'/../../Database/Migrations'`, yaitu migration yang sama pada root modul; tidak ada migration atau schema yang berubah.
+
 Belum ada deviasi implementasi karena coding belum dimulai.
